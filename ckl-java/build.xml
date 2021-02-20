@@ -50,8 +50,8 @@
 
 	<target name="package" depends="test">
         <mkdir dir="../dist"/>
-        <copy file="src/base-library.txt" todir="build"/>
-		<jar basedir="build" destfile="../dist/ckl-java-repl.jar">
+        <copy file="src/base-library.ckl" todir="build"/>
+	<jar basedir="build" destfile="../dist/ckl-java-repl.jar">
             <manifest>
                 <attribute name="Main-Class" value="ch.checkerlang.REPL"/>
                 <attribute name="Class-Path" value="."/>
