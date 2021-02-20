@@ -36,7 +36,8 @@ import {
 } from "./values.mjs";
 
 
-export const checkerlang_version = "3.2.2-js";
+export const checkerlang_version = "3.2.3";
+export const checkerlang_platform = "js";
 
 
 export class Args {

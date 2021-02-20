@@ -23,7 +23,7 @@ import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
 import { baselib } from "./baselib.mjs";
-import { checkerlang_version } from "./interpreter.mjs"
+import { checkerlang_version, checkerlang_platform } from "./interpreter.mjs"
 
 import { 
     convertDateToOADate, 
@@ -167,6 +167,7 @@ export class Environment {
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("The maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("The minimal int value"));
         result.put("checkerlang_version", new ValueString(checkerlang_version));
+        result.put("checkerlang_platform", new ValueString(checkerlang_platform));
         return result;
     }
 

@@ -20,7 +20,8 @@
 
 # this is the base library of the checkerlang language
 
-def checkerlang_version = "3.2.3-java";
+def checkerlang_version = "3.2.3";
+def checkerlang_platform = "java";
 
 "
 is_list(obj) 

@@ -263,9 +263,9 @@ namespace CheckerLang
             result.Put("MAXDECIMAL", new ValueDecimal(decimal.MaxValue).WithInfo("The maximal decimal value"));
             result.Put("MINDECIMAL", new ValueDecimal(decimal.MinValue).WithInfo("The minimal decimal value"));
             var v = Assembly.GetAssembly(typeof(Environment)).GetName().Version;
-            var version = new ValueString(v.Major + "." + v.Minor + "." + v.Build + "-dotnet");
-            version.info = "The checkerlang version";
+            var version = new ValueString(v.Major + "." + v.Minor + "." + v.Build);
             result.Put("checkerlang_version", version);
+            result.Put("checkerlang_platform", new ValueString("dotnet"));
             return result;
         }
 
