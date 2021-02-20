@@ -35,8 +35,8 @@ namespace CheckerLang
                    "\r\n" +
                    "Currently, the | and . characters are escaped.\r\n" +
                    "\r\n" +
-                   ": escape_pattern('|') ==> '\\|'\r\n" +
-                   ": escape_pattern('|.|') ==> '\\|\\.\\|'\r\n";
+                   ": escape_pattern('|') ==> '\\\\|'\r\n" +
+                   ": escape_pattern('|.|') ==> '\\\\|\\\\.\\\\|'\r\n";
         }
         
         public override List<string> GetArgNames()

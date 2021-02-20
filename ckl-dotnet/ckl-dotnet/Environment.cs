@@ -218,6 +218,7 @@ namespace CheckerLang
             Add(result, new FuncPow());
             Add(result, new FuncPrint());
             Add(result, new FuncPrintln());
+            Add(result, new FuncProcessLines());
             Add(result, new FuncPut());
             Add(result, new FuncRandom());
             Add(result, new FuncRange());

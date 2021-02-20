@@ -126,7 +126,7 @@ namespace CheckerLang
         private string GetFuncallString(ValueFunc fn, Args args)
         {
             var result = new StringBuilder();
-            result.Append(fn.GetName()).Append("(").Append(args).Append(")");
+            result.Append(fn.GetName()).Append("(").Append(args.ToStringAbbrev()).Append(")");
             return result.ToString();
         }
 

@@ -846,3 +846,20 @@ def is_odd(n) do
   if not is_numeric(n) then return FALSE;
   return n % 2 == 1;
 end;
+
+
+"
+Appends all items to the list or set. The items
+can be in a list or a set.
+
+: def a = [1, 2, 3]; append_all(a, [4, 5, 6]); a ==> [1, 2, 3, 4, 5, 6]
+: def a = <<1, 2, 3>>; append_all(a, [2, 3, 4]); a ==> <<1, 2, 3, 4>>
+: def a = [1, 2, 3]; append_all(a, <<4, 5, 6>>); a ==> [1, 2, 3, 4, 5, 6]
+: def a = [1, 2, 3]; append_all(a, [2, 3, 4]); a ==> [1, 2, 3, 2, 3, 4]
+"
+def append_all(lst, items) do
+  for item in list(items) do 
+    lst !> append(item);
+  end;
+  lst;
+end;

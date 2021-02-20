@@ -76,6 +76,6 @@ public class FuncDiv extends FuncBase {
             return new ValueDecimal(a.asDecimal().getValue() / divisor);
         }
 
-        throw new ControlErrorException("Cannot divide " + a + " by " + b, pos);
+        throw new ControlErrorException("Cannot divide values", pos);
     }
 }

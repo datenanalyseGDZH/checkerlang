@@ -80,7 +80,7 @@ namespace CheckerLang
                 return new ValueDecimal(a.AsDecimal().GetValue() / divisor);
             }
             
-            throw new ControlErrorException("Cannot divide " + a + " by " + b, pos);
+            throw new ControlErrorException("Cannot divide values", pos);
         }
     }
 }

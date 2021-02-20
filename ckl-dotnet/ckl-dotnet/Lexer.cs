@@ -431,10 +431,30 @@ namespace CheckerLang
                             tokens.Add(new Token(token.ToString(), TokenType.String, new SourcePos(filename, line, column - token.Length - 2 + 1)));
                             token = new StringBuilder();
                             state = 0;
+                        } 
+                        else if (ch == '\\') 
+                        {
+                            state = 31;
                         }
                         else
                         {
                             token.Append(ch);
+                        }
+
+                        break;
+                    case 31: // double quotes escapes
+                        if (ch == 'n') {
+                            token.Append("\n");
+                            state = 3;
+                        } else if (ch == 'r') {
+                            token.Append('\r');
+                            state = 3;
+                        } else if (ch == 't') {
+                            token.Append('\t');
+                            state = 3;
+                        } else {
+                            token.Append(ch);
+                            state = 3;
                         }
 
                         break;
@@ -445,9 +465,29 @@ namespace CheckerLang
                             token = new StringBuilder();
                             state = 0;
                         }
+                        else if (ch == '\\') 
+                        {
+                            state = 41;
+                        }
                         else
                         {
                             token.Append(ch);
+                        }
+
+                        break;
+                    case 41: // single quotes escapes
+                        if (ch == 'n') {
+                            token.Append("\n");
+                            state = 4;
+                        } else if (ch == 'r') {
+                            token.Append('\r');
+                            state = 4;
+                        } else if (ch == 't') {
+                            token.Append('\t');
+                            state = 4;
+                        } else {
+                            token.Append(ch);
+                            state = 4;
                         }
 
                         break;

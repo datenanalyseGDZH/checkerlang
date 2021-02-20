@@ -147,7 +147,13 @@ namespace Tests
             Assert.AreEqual("[if, UploadID_KTR, is, empty, then, return, TRUE, ;] @ 0",
                 new Lexer(new StringReader("#comment\nif UploadID_KTR is empty then return TRUE;"), "test").ToString());
         }
-        
+
+        [Test]
+        public void TestStringLiteralWithNewline()
+        {
+            Assert.AreEqual("[one\\ntwo] @ 0", new Lexer(new StringReader("'one\\ntwo'"), "test").ToString());
+        }
+
         [Test]
         public void TestSourcePos()
         {

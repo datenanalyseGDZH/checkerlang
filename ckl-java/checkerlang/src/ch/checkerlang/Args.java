@@ -70,6 +70,17 @@ public class Args {
         return result.toString();
     }
 
+    public String toStringAbbrev() {
+        StringBuilder result = new StringBuilder();
+        for(String argname : args.keySet()) {
+            String value = args.get(argname).toString();
+            if (value.length() > 50) value = value.substring(0, 50) + "... " + value.substring(value.length() - 5);
+            result.append(argname).append("=").append(value).append(", ");
+        }
+        if (result.length() > 0) result.setLength(result.length() - 2);
+        return result.toString();
+    }
+
     public void setArgs(List<String> names, List<Value> values) {
         ValueList rest = new ValueList();
         for (int i = 0; i < values.size(); i++) {

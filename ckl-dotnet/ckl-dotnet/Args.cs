@@ -329,5 +329,17 @@ namespace CheckerLang
             if (result.Length > 0) result.Remove(result.Length - 2, 2);
             return result.ToString();
         }
+
+        public string ToStringAbbrev() {
+            var result = new StringBuilder();
+            foreach (var argname in args.Keys) {
+                var value = args[argname].ToString();
+                if (value.Length > 50) value = value.Substring(0, 50) + "... " + value.Substring(value.Length - 5, 5);
+                result.Append(argname).Append("=").Append(value).Append(", ");
+            }
+            if (result.Length > 0) result.Remove(result.Length - 2, 2);
+            return result.ToString();
+        }
+        
     }
 }

@@ -103,7 +103,7 @@ public class NodeFuncall implements Node {
     }
 
     private String getFuncallString(ValueFunc fn, Args args) {
-        return fn.getName() + "(" + args + ")";
+        return fn.getName() + "(" + args.toStringAbbrev() + ")";
     }
 
     public String toString() {

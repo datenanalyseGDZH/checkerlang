@@ -35,7 +35,7 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return value;
+            return value.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
         }
 
         public bool IsEquals(object obj)

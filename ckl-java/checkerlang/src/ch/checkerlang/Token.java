@@ -32,7 +32,7 @@ public class Token {
     }
 
     public String toString() {
-        return value;
+        return value.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
     }
 
     public boolean isEquals(Object obj) {

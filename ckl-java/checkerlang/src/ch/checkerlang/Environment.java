@@ -122,6 +122,7 @@ public class Environment {
         add(result, new FuncPow());
         add(result, new FuncPrint());
         add(result, new FuncPrintln());
+        add(result, new FuncProcessLines());
         add(result, new FuncPut());
         add(result, new FuncRandom());
         add(result, new FuncRange());

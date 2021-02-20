@@ -20,8 +20,12 @@
 */
 package ch.checkerlang.values;
 
+import ch.checkerlang.ControlErrorException;
+import ch.checkerlang.SourcePos;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.function.Function;
 
 public class ValueInput extends Value {
     private BufferedReader input;
@@ -30,6 +34,21 @@ public class ValueInput extends Value {
     public ValueInput(BufferedReader input) {
         this.input = input;
         this.closed = false;
+    }
+
+    public int process(Function<String, Value> callback) {
+        try {
+            String line = input.readLine();
+            int count = 0;
+            while (line != null) {
+                count++;
+                callback.apply(line);
+                line = input.readLine();
+            }
+            return count;
+        } catch (IOException e) {
+            throw new ControlErrorException("Cannot process file", SourcePos.Unknown);
+        }
     }
 
     public String readLine() throws IOException {

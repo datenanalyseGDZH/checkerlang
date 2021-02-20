@@ -98,6 +98,11 @@ public class TestLexer {
     }
 
     @Test
+    public void testStringLiteralWithNewline() throws IOException {
+        Assert.assertEquals("[one\\ntwo] @ 0", new Lexer(new StringReader("'one\\ntwo'"), "test").toString());
+    }
+
+    @Test
     public void TestSourcePos() throws IOException {
         Lexer lexer = new Lexer(new StringReader("1 / 2\r\nx == 3"), "test");
         Token token = lexer.next();

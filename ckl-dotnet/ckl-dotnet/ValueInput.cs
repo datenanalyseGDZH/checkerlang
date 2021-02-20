@@ -18,6 +18,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
+using System;
 using System.IO;
 
 namespace CheckerLang
@@ -29,6 +31,21 @@ namespace CheckerLang
         public ValueInput(TextReader input)
         {
             this.input = input;
+        }
+
+        public int Process(Func<string, Value> callback) {
+            try {
+                var line = input.ReadLine();
+                var count = 0;
+                while (line != null) {
+                    count++;
+                    callback.Invoke(line);
+                    line = input.ReadLine();
+                }
+                return count;
+            } catch (IOException) {
+                throw new ControlErrorException("Cannot process file", SourcePos.Unknown);
+            }
         }
 
         public string ReadLine()

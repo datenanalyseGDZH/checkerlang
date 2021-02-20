@@ -347,8 +347,26 @@ public class Lexer {
                         tokens.add(new Token(token.toString(), TokenType.String, new SourcePos(filename, line, column - token.length() - 2 + 1)));
                         token = new StringBuilder();
                         state = 0;
+                    } else if (ch == '\\') {
+                        state = 31;
                     } else {
                         token.append(ch);
+                    }
+
+                    break;
+                case 31: // double quotes escapes
+                    if (ch == 'n') {
+                        token.append("\n");
+                        state = 3;
+                    } else if (ch == 'r') {
+                        token.append('\r');
+                        state = 3;
+                    } else if (ch == 't') {
+                        token.append('\t');
+                        state = 3;
+                    } else {
+                        token.append(ch);
+                        state = 3;
                     }
 
                     break;
@@ -357,8 +375,26 @@ public class Lexer {
                         tokens.add(new Token(token.toString(), TokenType.String, new SourcePos(filename, line, column - token.length() - 2 + 1)));
                         token = new StringBuilder();
                         state = 0;
+                    } else if (ch == '\\') {
+                        state = 41;
                     } else {
                         token.append(ch);
+                    }
+
+                    break;
+                case 41: // single quotes escapes
+                    if (ch == 'n') {
+                        token.append("\n");
+                        state = 4;
+                    } else if (ch == 'r') {
+                        token.append('\r');
+                        state = 4;
+                    } else if (ch == 't') {
+                        token.append('\t');
+                        state = 4;
+                    } else {
+                        token.append(ch);
+                        state = 4;
                     }
 
                     break;
@@ -467,6 +503,8 @@ public class Lexer {
                     break;
                 case 3:
                 case 4:
+                case 31:
+                case 41:
                     tokens.add(new Token(t, TokenType.String, new SourcePos(filename, line, column - t.length() - 2)));
                     break;
                 case 7:
