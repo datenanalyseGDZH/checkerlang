@@ -1,0 +1,208 @@
+# Ermittelt die Lösungen des sogenannten Acht-Damen-Problems.
+# Dieses besteht darin, auf einem Schachbrett, acht Damen so
+# zu platzieren, dass keine Dame eine andere schlagen kann.
+# Damen können beliebig weit in gerader Richtung (hoch, quer
+# und diagonal) fahren und schlagen.
+
+def empty_board = [
+". . . . ",
+" . . . .",
+". . . . ",
+" . . . .",
+". . . . ",
+" . . . .",
+". . . . ",
+" . . . ."
+];
+
+#################################################################
+
+def print_board(board) do
+  def y = 8;
+  for row in reverse(board) do
+    println(string(y) + " " + row);
+    y -= 1;
+  end;
+  println("  abcdefgh");
+end;
+
+#################################################################
+
+def set_queen(board, x, y) do 
+  def old_row = board[y];
+  def new_row = substitute(old_row, x, '*');
+  substitute(board, y, new_row)
+end;
+
+#################################################################
+
+def valid(board) do
+  for x in range(8) do
+    for y in range(8) do
+      if not check_at(board, x, y) then return FALSE
+    end;
+  end;
+end;
+
+def check_at(board, x, y) do
+  board[y][x] <> '*' or
+    check_at_horz(board, x, y) and
+    check_at_vert(board, x, y) and
+    check_at_diag(board, x, y)
+end;
+
+def check_at_horz(board, x, y) do
+  for xx in range(8) - [x] do
+    if board[y][xx] == '*' then return FALSE
+  end;
+end;
+
+def check_at_vert(board, x, y) do
+  for yy in range(8) - [y] do
+    if board[yy][x] == '*' then return FALSE
+  end;
+end;
+
+def check_at_diag(board, x, y) do
+  for i in range(-8, 9) - [0] do
+    if not (0 <= x + i < 8) then continue
+    if not (0 <= y + i < 8) then continue
+    if board[y + i][x + i] == '*' then return FALSE
+  end;
+  for i in range(-8, 9) - [0] do
+    if not (0 <= x + i < 8) then continue
+    if not (0 <= y - i < 8) then continue
+    if board[y - i][x + i] == '*' then return FALSE
+  end;
+end;
+
+#################################################################
+
+"
+Ermittelt eine Lösung des Acht-Damen-Problems. Sobald eine
+Lösung gefunden ist, wird abgebrochen und eine Liste zurückgegeben,
+deren erstes Element TRUE ist, und deren zweites Element die
+gefundene Lösung ist. Diese kann mit print_board visualisiert
+werden.
+
+Da alle Parameter Default-Werte haben, kann die Funktion ohne
+Argumente aufgerufen werden.
+"
+def eight_queens_first_solution(board = empty_board, x = 0) do
+  if not valid(board) then [FALSE, board]
+  if x == 8 then [TRUE, board]
+  else do
+    for y in range(8) do
+      def result = eight_queens_first_solution(set_queen(board, x, y), x + 1);
+      if result[0] then return result;
+    end;
+    return [FALSE, board]
+  end;
+end;
+
+#################################################################
+
+"
+Ermittelt alle Lösungen des Acht-Damen-Problems. Das Resultat ist eine
+Liste von drei Elementen: das erste ist TRUE, das zweite die erste Lösung
+und das dritte eine Liste mit allen Lösungen (inklusive der ersten).
+
+Die Lösungen können mit print_board visualisiert werden.
+
+Da alle Parameter Default-Werte haben, kann die Funktion ohne 
+Argumente aufgerufen werden.
+"
+def eight_queens_all_solutions(board = empty_board, x = 0, solutions = []) do
+  if not valid(board) then [FALSE, board, solutions]
+  if x == 8 then [TRUE, board, solutions + [board]]
+  else do
+    for y in range(8) do
+      def result = eight_queens_all_solutions(set_queen(board, x, y), x + 1, solutions);
+      solutions = result[2];
+    end;
+    if not is_empty(solutions) then return [TRUE, solutions[0], solutions]
+    else return [FALSE, empty_board, solutions]
+  end;
+end;
+
+#################################################################
+
+def run_one_solution() do
+  def result = eight_queens_first_solution();
+  println("Erste Lösung:");
+  println("");
+  print_board(result[1]);
+end;
+
+#################################################################
+
+def run_all_solutions() do
+  def result = eight_queens_all_solutions();
+  println("Anzahl Lösungen: " + length(result[2]));
+  println("");
+  println("Erste Lösung:");
+  print_board(result[2][0]);
+  println("");
+  println("Zweite Lösung:");
+  print_board(result[2][1]);
+  println("");
+  println("Dritte Lösung:");
+  print_board(result[2][2]);
+  println("");
+  println("Alle Lösungen einzeilig:");
+  for i in range(length(result[2])) do
+    println("#" + string(i) + " " + string(result[2][i]));
+  end;
+end;
+
+#################################################################
+
+def render_as_html(solutions, filename = "") do
+  def out = stdout;
+  if filename != "" then do
+    out = file_output(filename);
+  end;
+  println("<html>", out);
+  println("<style>", out);
+  println(".black { background-color: black; color: white; }", out);
+  println(".white { background-color: white; color: black; }", out);
+  println("#board td { display: inline-block; height: 1.8em; width: 1.8em; font-size: 1.5em; }", out);
+  println("#board td span { display: block; margin-left: 0.4em; margin-top: 0.2em; }", out);
+  println("table { border: 1px solid black; border-spacing: 0; }", out);
+  println("</style>", out);
+  println("<body>", out);
+  println("<p>" + string(length(solutions)) + " L&ouml;sungen gefunden</p>", out);
+  def i = 1;
+  for solution in solutions do
+    println("<p>" + string(i) + ". L&ouml;sung:</p>", out);
+    println("<table id='board'>", out);
+    def x = 1;
+    for row in reverse(solution) do
+      print("<tr>", out);
+      def y = 1;
+      for col in row do
+        if y % 2 == 0 and x % 2 == 0 then print("<td class='white'>", out)
+        if y % 2 == 0 and x % 2 == 1 then print("<td class='black'>", out)
+        if y % 2 == 1 and x % 2 == 0 then print("<td class='black'>", out)
+        if y % 2 == 1 and x % 2 == 1 then print("<td class='white'>", out);
+        if col == "*" then print("<span>&#9813;</span>", out);
+        print("</td>", out);
+        y += 1;
+      end;
+      println("</tr>", out);
+      x += 1;
+    end;
+    println("</table>", out);
+    i += 1;
+  end;
+  println("</body>", out);
+  println("</html>", out);
+  if filename != "" then do
+    close(out);
+  end;
+end;
+
+#################################################################
+
+run_all_solutions()
+#run_one_solution();

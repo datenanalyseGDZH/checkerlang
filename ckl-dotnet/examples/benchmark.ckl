@@ -1,0 +1,45 @@
+# This performs a series of (micro) benchmarks and appends
+# the results to the file "examples/benchmark-results.txt". 
+
+def started = format_date(now(), fmt = 'yyyyMMdd-HHmmss');
+
+def benchmark_split() split('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20', ',');
+def benchmark_split2() split2('1-a,2-b,3-c,4-d,5-a,6-b,7-c,8-d,9-e,10-a,11-b,12-c,13-d,14-e', ',', '-');
+def benchmark_label_data() label_data(['a', 'b', 'c'], [1, 2, 3]);
+def benchmark_regex() '756.1234.1234.78' matches //^756[.][0-9]{4}[.][0-9]{4}[.][0-9]{2}$//;
+def benchmark_is_in() do 5 is in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 1 is in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 11 is in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; end;
+def benchmark_zip() zip(range(1, 50), range(101, 150));
+def benchmark_zip_and_map() map(zip(range(1, 50), range(101, 150)));
+def benchmark_zip_map() zip_map(range(1, 50), range(101, 150));
+def benchmark_div0() do div0(12, 0); div0(12, 4); div0(12, 3); end;
+def benchmark_fibonacci() do def fibo(n) if n == 1 then 1 if n == 2 then 2 else fibo(n - 2) + fibo(n - 1); fibo(5); end; # naive fibonacci tests function call performance
+def benchmark_escape_pattern() do escape_pattern('|'); escape_pattern('|.|'); end;
+def benchmark_replace() replace('123a456a789', 'a', 'b');
+def benchmark_sum_lessequals() do def a = 1; sum([a, a, a, a, a, a, a, a, a, a]) <= 12; end;
+def benchmark_create_pairs() pairs(range(50));
+def benchmark_literal_set() 5 in set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+def repeat(code, times=40000) do
+    def start_ts = timestamp();
+    def i = 0;
+    while i < times do
+        eval(code);
+        i = i + 1;
+    end;
+    return timestamp() - start_ts;
+end;
+
+def run_benchmarks() do
+    def result = [];
+    for s in [s for s in ls() if str_starts_with(s, 'benchmark_')] do
+        def id = substr(s, length('benchmark_'));
+        def code = body(eval(s));
+        append(result, [id, repeat(code)]);
+    end;
+end;
+
+def out = file_output("examples/benchmark-results.txt", append = TRUE);
+for benchmark in run_benchmarks() do
+    println(started + ", " + benchmark[0] + ", " + benchmark[1], out = out);
+end;
+close(out);

@@ -1,0 +1,62 @@
+# This extracts the documentation of the functions and
+# writes it as a HTML file.
+
+def out = file_output("documentation/documentation.html");
+
+println("<html>", out);
+println("<style>", out);
+println("h1 { font-family: Arial Black; font-height: 18pt; }", out);
+println("h2 { font-family: Arial Black; font-height: 14pt; }", out);
+println("body { font-family: Arial; font-height: 11pt; }", out);
+println(".toc { list-style-type: none; column-count: 4; margin: 0; padding: 0; }", out);
+println(".toc li { margin: 0; padding: 0; }", out);
+println(".examples_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
+println(".examples { padding: 0.5em 1em 1em 1 em; }", out);
+println(".example { font-family: Courier New; font-height: 12pt; }", out);
+println("</style>", out);
+println("<body>", out);
+println("<h1>CheckerLang " + checkerlang_version + " function reference</h1>", out);
+
+println("<h2>Table of contents</h2>", out);
+println("<ul class='toc'>", out);
+for symbol in ls() do
+    def lines = split(info(eval(symbol)), //\n|\r\n//);
+	if is_empty(lines) then continue;
+    if first(lines) == "" then do lines = rest(lines); end;
+    if lines is empty then continue;
+    println("<li><a href='#" + symbol + "'>" + symbol + "</a></li>", out);
+end;
+println("</ul>", out);
+
+for symbol in ls() do
+    def lines = split(info(eval(symbol)), //\n|\r\n//);
+	if is_empty(lines) then continue;
+    if first(lines) == "" then do lines = rest(lines); end;
+    if lines is empty then continue;
+    println("<h2 id='" + symbol + "'>" + symbol + "</h2>", out);
+    println("<p>", out);
+    def in_examples = FALSE;
+    for line in lines do
+        if str_starts_with(line, ":") then do
+            if not in_examples then do
+                println("<div class='examples'>", out);
+                println("<div class='examples_title'>Examples:</div>", out);
+                in_examples = TRUE;
+            end;
+            println("<div class='example'>" + esc(substr(line, 1)) + "</div>", out);
+        end else do
+            if line == "" then do 
+                println("</p><p>", out);
+            end else do 
+                println(esc(line), out);
+            end;
+        end;
+    end;
+    if in_examples then print("</div>", out);
+    println("</p>", out);
+end;
+
+println("</body>", out);
+println("</html>", out);
+
+close(out);

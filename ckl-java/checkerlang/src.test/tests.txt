@@ -1,0 +1,22 @@
+# extracts tests from the info associated to functions
+# and runs and verifies them.
+
+for symbol in ls() do
+	def lines = [substr(s, 1) for s in split(info(eval(symbol)), '[\r\n]+') if str_starts_with(s, ':')];
+	def tests = [label_data(['test', 'expected'], split(line, escape_pattern(' ==> '))) for line in lines];
+	for test in tests do
+	    def executor(test) do
+            #println(test);
+            def result = eval(test['test']);
+            def expected = test['expected'];
+            if not str_starts_with(expected, '<') then do expected = eval(expected); end;
+            if is_string(expected) and str_starts_with(expected, "'") then do expected = substr(expected, 1, length(expected) - 1); end;
+            if is_string(expected) and not is_string(result) then do result = string(result); end;
+            if result != expected then do
+                println('Test ' + test['test'] + ' expected ' + expected + ' but got ' + result);
+                error 'Test ' + test['test'] + ' expected ' + expected + ' but got ' + result;
+            end;
+	    end;
+	    executor(test);
+	end;
+end;

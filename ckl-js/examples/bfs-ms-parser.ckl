@@ -1,0 +1,238 @@
+def process_bfs_ms_file(input, callback, zh_data = NULL) do
+    def delim = escape_pattern('|');
+    def state = 'start';
+    def linenr = 1;
+    def start_linenr = 1;
+    def skz = '-';
+    def case = [];
+    input !> process_lines(fn (line) do
+        line = line !> trim();
+        if state == 'start' and line !> starts_with('MX') then do 
+            state = 'found-mx'; 
+            skz = line !> split(delim)[2]; 
+        end
+        if state == 'found-mx' and line !> starts_with('MB') then do 
+            # skip first MB if directly after MX
+            state = 'ok' 
+        end
+        if case is not empty and line !> starts_with('MB') then do
+            def case_data = parse_bfs_ms_case(case, zh_data, start_linenr);
+            # TODO augment ZO and ZP data from zh_data
+            callback(case_data, start_linenr);
+            case = [line];
+            start_linenr = linenr;
+        end
+        else do
+            if line !> starts_with('MB') then start_linenr = linenr;
+            case !> append(line);
+        end;
+        linenr += 1;
+    end);
+    if case is not empty then do 
+        def case_data = parse_bfs_ms_case(case, zh_data, start_linenr);
+        # TODO augment ZO and ZP data from zh_data
+        callback(case_data, start_linenr);
+    end;
+end;
+
+
+def parse_bfs_ms_case(case_lines, zh_data, start_linenr) do
+    def delim = escape_pattern('|');
+    def diagnoses = [];
+    def treatments = [];
+    def case_data = map();
+    case_data['skz'] = '';
+    case_data['diagnosen'] = diagnoses;
+    case_data['behandlungen'] = treatments;
+    for line in case_lines do
+        if line !> starts_with('MB') then do
+            def fields = split(line, delim);
+            case_data['burnr'] = get_field(fields, 1);
+            case_data['statistikfall'] = get_field(fields, 5);
+            case_data['agey'] = get_field(fields, 12);
+            case_data['wohnkanton'] = kanton_from_wohnregion(get_field(fields, 13));
+            case_data['ed'] = get_field(fields, 15);
+            case_data['ave'] = get_field(fields, 16);
+            case_data['ana'] = get_field(fields, 27);
+            case_data['behandlungsart'] = get_field(fields, 19);
+            case_data['ea'] = get_field(fields, 17);
+            case_data['ei'] = get_field(fields, 18);
+            case_data['ad'] = calculate_stay_duration(get_field(fields, 15), get_field(fields, 25), get_field(fields, 22));
+            case_data['birthdate'] = get_field(fields, 11);
+        end
+        if line !> starts_with('MD') then do
+            def fields = split(line, delim);
+            case_data['plz'] = get_field(fields, 1);
+            case_data['weg'] = calculate_weg(get_field(fields, 665), get_field(fields, 668), get_field(fields, 671), get_field(fields, 674));
+            collect_diagnoses(diagnoses, fields);
+            collect_treatments(treatments, fields);
+            case_data['dmb'] = normalize_number(get_field(fields, 654));
+            case_data['gew'] = get_field(fields, 660);
+            case_data['fallid'] = get_field(fields, 662);
+            case_data['tarifsystem'] = get_field(fields, 676);
+
+        end
+        if line !> starts_with('MN') then do
+            def fields = split(line, delim);
+            case_data['ggw'] = normalize_number(get_field(fields, 6));
+            case_data['ssw'] = normalize_number(get_field(fields, 12));
+        end
+        if line !> starts_with('ZP') then do
+            # TODO
+        end
+        if line !> starts_with('ZO') then do
+            # TODO
+        end
+    end;
+    case_data['aged'] = calculate_age_in_days(case_data['agey'], case_data['ed'], case_data['birthdate']);
+    return case_data;
+end;
+
+
+def collect_diagnoses(diagnoses, fields) do
+    for i in range(50) do
+        def idx = 3 + i * 3 + (if i > 0 then 1 else 0);
+        diagnoses !> append(<<<
+            'rang' => i,
+            'code' => get_field(fields, idx),
+            'seitigkeit' => get_field(fields, idx + 1),
+            'zusatz' => (if i == 0 then get_field(fields, idx + 3) else '')
+        >>>);
+    end;
+end;
+
+
+def collect_treatments(treatments, fields) do
+    for i in range(100) do
+        def idx = 154 + i * 5;
+        treatments !> append(<<<
+            'rang' => i,
+            'code' => get_field(fields, idx),
+            'seitigkeit' => get_field(fields, idx + 1),
+            'beginn' => get_field(fields, idx + 2),
+            'ambExt' => get_field(fields, idx + 3)
+        >>>);
+    end;
+end;
+
+
+def get_field(fields, index, default = '') do
+    if index >= length(fields) then default
+    else fields[index];
+end;
+
+
+"
+Extract the kanton from the BFS wohnregion, if provided.
+
+: kanton_from_wohnregion('ZH01') ==> 'ZH'
+: kanton_from_wohnregion('AG13') ==> 'AG'
+: kanton_from_wohnregion('') ==> ''
+: kanton_from_wohnregion('8000') ==> ''
+"
+def kanton_from_wohnregion(wohnregion) do
+    if wohnregion !> matches(//^[A-Z]{2}[0-9]{2}$//) then return wohnregion !> substr(0, 2);
+    return '';
+end;
+
+
+"
+Calculates the age in days, given the age in years, the
+admission date and the birth date.
+
+If age in years is non-zero then the age in days is always
+zero: we only want to know the age in days for infants.
+
+: calculate_age_in_days('1', '20210101', '20200101') ==> '0'
+: calculate_age_in_days('0', '20210101', '20210101') ==> '1'
+: calculate_age_in_days('0', '20210103', '20210101') ==> '2'
+"
+def calculate_age_in_days(agey, admission, birth_date) do
+    if is_null(agey) or not is_numerical(agey) then agey = 0 else agey = int(agey);
+    if agey > 0 then return '0';
+    def ad = int(date(admission));
+    def bd = int(date(birth_date));
+    if is_null(ad) or is_null(bd) then return '0';
+    if ad <= bd then return '1'
+    else return string(ad - bd);
+end;
+
+
+"
+Calculates the duration of the hospital stay.
+
+This takes into account administrative vacation hours,
+but not any releases/re-admissions.
+
+: calculate_stay_duration('20210101', '20210110', '0') ==> '9'
+: calculate_stay_duration('20210101', '20210101', '0') ==> '1'
+: calculate_stay_duration('20210101', '20210110', '24') ==> '8'
+: calculate_stay_duration('20210101', '20210110', '48') ==> '7'
+: calculate_stay_duration('20210101', '20210110', '52') ==> '7'
+"
+def calculate_stay_duration(eintritt, austritt, urlaub) do
+    if is_null(austritt) or austritt == '' then return '';
+    def e = int(date(eintritt));
+    def a = int(date(austritt));
+    if is_null(e) or is_null(a) then return '';
+    def u = 0;
+    if not is_null(urlaub) and urlaub !> matches(//^[0-9]+(\.[0-9]*)?$//) then u = int(floor(decimal(urlaub) / 24.0));
+    if e == a then '1'
+    else string(a - e - u);
+end;
+
+
+"
+Calculates a summary reason for readmission from the four
+readmission-reasons contained in the MS.
+
+: calculate_weg('', '', '', '') ==> ''
+: calculate_weg('3', '', '', '') ==> 'RV'
+: calculate_weg('', '8', '', '') ==> 'WE'
+: calculate_weg('', '', '9', '') ==> 'UN'
+"
+def calculate_weg(a, b, c, d) do
+    if a == '3' or b == '3' or c == '3' or d == '3' then return 'RV'
+    if is_not_empty(a) and a != '9' then return 'WE'
+    if is_not_empty(b) and b != '9' then return 'WE'
+    if is_not_empty(c) and c != '9' then return 'WE'
+    if is_not_empty(d) and d != '9' then return 'WE'
+    if is_empty(a) and is_empty(b) and is_empty(c) and is_empty(d) then return ''
+    else return 'UN';
+end;
+
+
+"
+Normalizes a number by removing any leading '0' characters.
+
+: normalize_number(NULL) ==> ''
+: normalize_number('') ==> ''
+: normalize_number('1') ==> '1'
+: normalize_number('012') ==> '12'
+: normalize_number('0012') ==> '12'
+"
+def normalize_number(s) do
+    if is_null(s) or s == '' then return '';
+    while s !> starts_with('0') do s = s !> substr(1); end;
+    return s;
+end;
+
+
+def case_data_to_string(case_data) do
+    return 'skz = ' + case_data['skz'] + '; ' +
+           'burnr = ' + case_data['burnr'] + '; ' +
+           'caseid = ' + case_data['fallid'] + '; ' +
+           'age = ' + case_data['agey'] + '; ' +
+           'admission = ' + case_data['ed'] + '; ' +
+           'stay_in_days = ' + case_data['ad'] + '; ' +
+           'diagnoses = ' + (', ' !> join([d['code'] for d in case_data['diagnosen'] if d['code'] != ''])) + '; ' +
+           'treatments = ' + (', ' !> join([t['code'] for t in case_data['behandlungen'] if t['code'] != '']));
+end;
+
+
+def case_callback(case_data, start_linenr) do
+    println('@' + start_linenr + ': ' + case_data_to_string(case_data));
+end;
+
+
+for arg in args do process_bfs_ms_file(file_input(arg), case_callback); end;

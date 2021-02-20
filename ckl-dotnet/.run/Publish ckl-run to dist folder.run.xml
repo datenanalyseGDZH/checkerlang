@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish ckl-run to dist folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish runtime="win-x64" self_contained="true" target_folder="$PROJECT_DIR$/dist" target_framework="netcoreapp2.1" uuid_high="-5852645524363721666" uuid_low="-5219210753524199634" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ckl-java-repl" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="ch.checkerlang.REPL" />
+    <module name="ckl-java" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

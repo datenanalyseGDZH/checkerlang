@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="package" basedir="checkerlang">
+
+	<target name="clean">
+		<delete dir="build" />
+		<delete dir="build.test" />
+        <delete dir="reports" />
+		<delete file="../dist/ckl-java-repl.jar" />
+		<delete file="../dist/ckl-java-run.jar" />
+	</target>
+	
+	<target name="compile" depends="clean">
+		<mkdir dir="build" />
+		<mkdir dir="build.test" />
+		<javac target="1.8" source="1.8" srcdir="src" debug="true" debuglevel="lines,vars,source" destdir="build" includeAntRuntime="false">
+			<classpath>
+			    <pathelement path="${java.class.path}"/>
+			</classpath>
+		</javac>
+        <javac target="1.8" source="1.8" srcdir="src.test" destdir="build.test" includeAntRuntime="false">
+            <classpath>
+                <pathelement location="build"/>
+                <pathelement path="${java.class.path}"/>
+                <fileset dir="lib"><include name="**/*.jar"/></fileset>
+            </classpath>
+        </javac>
+	</target>
+		
+    <target name="test" depends="compile">
+        <mkdir dir="reports"/>
+        <junit printsummary="yes" haltonfailure="yes" dir=".">
+          <classpath>
+            <pathelement location="build.test"/>
+            <pathelement location="build"/>
+            <pathelement location="src" />
+            <pathelement location="src.test" />
+            <pathelement location="res.test" />
+            <pathelement path="${java.class.path}"/>
+            <fileset dir="lib"><include name="**/*.jar"/></fileset>
+          </classpath>
+          <formatter type="plain"/>
+          <batchtest fork="yes" todir="reports">
+            <fileset dir="src.test">
+              <include name="**/*Test*.java"/>
+            </fileset>
+          </batchtest>
+        </junit>
+    </target>
+
+	<target name="package" depends="test">
+        <mkdir dir="../dist"/>
+        <copy file="src/base-library.txt" todir="build"/>
+		<jar basedir="build" destfile="../dist/ckl-java-repl.jar">
+            <manifest>
+                <attribute name="Main-Class" value="ch.checkerlang.REPL"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+        </jar>
+		<jar basedir="build" destfile="../dist/ckl-java-run.jar">
+            <manifest>
+                <attribute name="Main-Class" value="ch.checkerlang.Run"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+        </jar>
+	</target>
+
+</project>
