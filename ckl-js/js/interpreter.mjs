@@ -307,7 +307,6 @@ export class Interpreter {
         if (!secure) {
             this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput()));
             this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));
-            this.baseEnvironment.put("run", new FuncRun(this));
         }
     }
 

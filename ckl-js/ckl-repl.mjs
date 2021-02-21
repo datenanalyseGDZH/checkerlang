@@ -22,7 +22,7 @@
 import { Interpreter } from "./js/interpreter.mjs";
 import { Parser } from "./js/parser.mjs";
 import { ValueNull } from "./js/values.mjs";
-import { FuncFileInput } from "./js/functions.mjs";
+import { FuncFileInput, FuncFileOutput, FuncRun } from "./js/functions.mjs";
 
 import * as fs from "fs";
 import { ValueList } from "./js/values.mjs";
@@ -31,6 +31,9 @@ const interpreter = new Interpreter(false);
 
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.baseEnvironment.parent.put("file_input", new FuncFileInput(fs));
+interpreter.baseEnvironment.parent.put("file_output", new FuncFileOutput(fs));
+interpreter.baseEnvironment.parent.put("run", new FuncRun(interpreter, fs));
+
 interpreter.environment.put("args", new ValueList());
 
 for (let scriptname of process.argv.slice(2)) {

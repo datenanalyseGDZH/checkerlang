@@ -30,6 +30,7 @@ import {
     convertOADateToDate,
     StringInput,
     FileInput,
+    FileOutput,
     StringOutput,
     Value,
     ValueBoolean,
@@ -77,6 +78,7 @@ export class Environment {
         Environment.add(result, new FuncBody());
         Environment.add(result, new FuncBoolean());
         Environment.add(result, new FuncCeiling());
+        Environment.add(result, new FuncClose());
         Environment.add(result, new FuncCompare());
         Environment.add(result, new FuncContains(), "str_contains");
         Environment.add(result, new FuncCos());
@@ -156,11 +158,6 @@ export class Environment {
         Environment.add(result, new FuncUpper());
         Environment.add(result, new FuncZip());
         Environment.add(result, new FuncZipMap());
-        if (!secure) {
-            Environment.add(result, new FuncFileInput());
-            Environment.add(result, new FuncFileOutput());
-            Environment.add(result, new FuncClose());
-        }
         result.put("NULL", ValueNull.NULL);
         result.put("PI", new ValueDecimal(Math.PI).withInfo("The mathematical constant pi."));
         result.put("E", new ValueDecimal(Math.E).withInfo("The mathematical constant e."));
@@ -853,8 +850,9 @@ export class FuncFileInput extends ValueFunc {
 }
 
 export class FuncFileOutput extends ValueFunc {
-    constructor() {
+    constructor(fs) {
         super("file_output");
+        this.fs = fs;
         this.info = "file_output(filename, encoding = 'UTF-8')\r\n" +
                 "\r\n" +
                 "Returns an output object, that writes to the given file. If\r\n" +
@@ -872,7 +870,7 @@ export class FuncFileOutput extends ValueFunc {
             encoding = args.getString("encoding").value;
         }
         try {
-            return new ValueOutput(filename, encoding); // TODO use actual output writer!
+            return new ValueOutput(new FileOutput(filename, encoding, this.fs));
         } catch (e) {
             throw new RuntimeError("Cannot open file " + filename, pos);
         }
@@ -2216,9 +2214,10 @@ export class FuncRound extends ValueFunc {
 }
 
 export class FuncRun extends ValueFunc {
-    constructor(interpreter) {
+    constructor(interpreter, fs) {
         super("run");
         this.interpreter = interpreter;
+        this.fs = fs;
         this.info = "run(file)\r\n" +
                 "\r\n" +
                 "Loads and interprets the file.\r\n";
@@ -2230,12 +2229,15 @@ export class FuncRun extends ValueFunc {
 
     execute(args, environment, pos) {
         const file = args.getString("file").value;
+        let path = file;
+        if (!path.startsWith("/") && !path.startsWith(".")) path = process.cwd() + "/" + path;
+        let script = "";
         try {
-            const script = ""; // TODO read file!
-            return interpreter.interpret(input, file); // TODO extract filename (remove path)
+            script = this.fs.readFileSync(path, {encoding: 'utf8', flag: 'r'});
         } catch (e) {
-            throw new RuntimeError("File " + file + " not found", pos);
+            throw new RuntimeError("File " + path + " not found", pos);
         }
+        return this.interpreter.interpret(script, file);
     }
 }
 

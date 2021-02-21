@@ -127,20 +127,6 @@ export class StringInput {
     close() {}
 }
 
-export class FileInput {
-    constructor(filename, encoding, fs) {
-        this.fs = fs;
-        // TODO rewrite to use open stream instead of reading all in at start.
-        const data = fs.readFileSync(filename, {encoding: encoding, flag: 'r'});
-        this.buffer = new StringInput(data);
-    }
-    process(callback) { this.buffer.process(callback); }
-    read() { return this.buffer.read(); }
-    readAll() { return this.buffer.readAll(); }
-    readLine() { return this.buffer.readLine(); }
-    close() { return this.buffer.close(); }
-}
-
 export class StringOutput {
     constructor() {
         this.output = "";
@@ -157,6 +143,7 @@ export class StringOutput {
     flush() {}
     close() {}
 }
+
 
 export class ConsoleOutput {
     constructor() {
@@ -186,6 +173,50 @@ export class ConsoleOutput {
 
     close() {}
 }
+
+
+export class FileInput {
+    constructor(filename, encoding, fs) {
+        this.fs = fs;
+        this.encoding = encoding.toLowerCase();
+        if (this.encoding === 'utf-8') this.encoding = 'utf8';
+        // TODO rewrite to use open stream instead of reading all in at start.
+        const data = fs.readFileSync(filename, {encoding: this.encoding, flag: 'r'});
+        this.buffer = new StringInput(data);
+    }
+    process(callback) { this.buffer.process(callback); }
+    read() { return this.buffer.read(); }
+    readAll() { return this.buffer.readAll(); }
+    readLine() { return this.buffer.readLine(); }
+    close() { return this.buffer.close(); }
+}
+
+
+export class FileOutput {
+    constructor(filename, encoding, fs) {
+        this.fs = fs;
+        this.encoding = encoding.toLowerCase();
+        if (this.encoding === 'utf-8') this.encoding = 'utf8';
+        this.fd = this.fs.openSync(filename, "w");
+    }
+    write(s) { 
+        this.fs.writeSync(this.fd, s, null, this.encoding);
+    }
+
+    writeLine(s) { 
+        this.fs.writeSync(this.fd, s + "\n", null, this.encoding);
+    }
+
+    flush() { 
+        // TODO how does this work in nodejs?
+    }
+
+    close() { 
+        this.fs.closeSync(this.fd);
+        this.fd = undefined;
+    }
+}
+
 
 export class Value {
     constructor() {
@@ -1126,7 +1157,7 @@ export class ValueOutput extends Value {
     }
 
     close() {
-        if (closed) return;
+        if (this.closed) return;
         this.output.close();
         this.closed = true;
     }

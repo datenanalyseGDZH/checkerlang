@@ -20,19 +20,30 @@
 */
 
 import { Interpreter } from "./js/interpreter.mjs";
-import { FuncFileInput } from "./js/functions.mjs";
+import { FuncFileInput, FuncFileOutput, FuncRun } from "./js/functions.mjs";
 
 import * as fs from "fs";
 import { ValueList } from "./js/values.mjs";
 import { ValueString } from "./js/values.mjs";
+import { exit } from "process";
+import { ValueNull } from "./js/values.mjs";
 
 const interpreter = new Interpreter(false);
 
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.baseEnvironment.parent.put("file_input", new FuncFileInput(fs));
+interpreter.baseEnvironment.parent.put("file_output", new FuncFileOutput(fs));
+interpreter.baseEnvironment.parent.put("run", new FuncRun(interpreter, fs));
+
+if (process.argv.length <= 2) exit(0);
 
 const scriptname = process.argv[2];
 const scriptargs = process.argv.slice(3);
+
+if (!fs.existsSync(scriptname)) {
+    process.stderr.write(`File not found '${scriptname}'\n`);
+    exit(1);
+}
 
 const args = new ValueList();
 for (const scriptarg of scriptargs) args.addItem(new ValueString(scriptarg));
@@ -42,7 +53,7 @@ const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'}); // TO
 
 try {
     const result = interpreter.interpret(script, scriptname);
-    if (!(result instanceof ValueNull)) {
+    if (result !== ValueNull.NULL) {
         process.stdout.write(result.toString());
         process.stdout.write("\n");
     }
