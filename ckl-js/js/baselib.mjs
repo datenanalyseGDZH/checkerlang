@@ -911,7 +911,7 @@ end;
 "
 Splits the string str into lines and returns them as a list.
 
-: lines('a\\\\nb c\\\\r\\\\nd') ==> ['a', 'b c', 'd']
+: lines('a\\nb c\\r\\nd') ==> ['a', 'b c', 'd']
 "
 def lines(str) do
   split(str, '\\r?\\n');
@@ -921,7 +921,7 @@ end;
 "
 Splits the string str into words and returns them as a list.
 
-: words('one  two\\\\tthree four') ==> ['one', 'two', 'three', 'four']
+: words('one  two\\tthree four') ==> ['one', 'two', 'three', 'four']
 "
 def words(str) do
   split(str, '[ \\t\\r\\n]+');
@@ -931,7 +931,7 @@ end;
 "
 Joins a list of lines into one string.
 
-: unlines(['a', 'b', 'c']) ==> 'a\\\\nb\\\\nc'
+: unlines(['a', 'b', 'c']) ==> 'a\\nb\\nc'
 "
 def unlines(lst) do
   lst !> join(sep = '\n');
