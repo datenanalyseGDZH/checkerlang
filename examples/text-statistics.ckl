@@ -1,0 +1,13 @@
+# Calculates some statistics about a file,
+# in particular: number of characters, of
+# words, of lines.
+#
+# Please provide the file path as the first
+# argument to the program.
+
+def text = read_file(args[0]);
+
+println(args[0]);
+println("Chars: " + length(text));
+println("Words: " + length(words(text)));
+println("Lines: " + length(lines(text)));

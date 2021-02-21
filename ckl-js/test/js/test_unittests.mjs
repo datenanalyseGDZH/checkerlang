@@ -347,6 +347,8 @@ interpreter_test("NumConv5", "decimal('-5')", "-5.0");
 interpreter_test("NumConv6", "decimal('-5.5')", "-5.5");
 interpreter_test("NumConv7", "decimal(-5.0)", "-5.0");
 interpreter_test("NumConv8", "decimal(-5)", "-5.0");
+interpreter_test("TestDoFinally1", "def a = 1; def b = 1; do a += 1; finally b += 2; end; [a, b]", "[2, 3]");
+interpreter_test("TestDoFinally2", "def a = 1; def f(x) a = x + 1; def b = 1; do f(3); finally b += 2; end; [a, b]", "[4, 3]");
 
 
 function collectvars_test(description, code, expected) {

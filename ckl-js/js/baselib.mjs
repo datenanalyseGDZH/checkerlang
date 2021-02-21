@@ -947,4 +947,82 @@ def unwords(lst) do
   lst !> join(sep = ' ');
 end;
 
+
+"
+Opens a file, reads the contents as a single
+string, closes the file and returns the string.
+"
+def read_file(filename, encoding = 'utf-8') do
+  def infile = file_input(filename, encoding);
+  do
+      read_all(infile);
+  finally
+      close(infile);
+  end;
+end;
+
+
+"
+Returns the top n elements of the list.
+
+: range(100) !> top_n(5) ==> [0, 1, 2, 3, 4]
+"
+def top_n(lst, n) do
+  lst !> sublist(0, n)
+end;
+
+
+"
+Returns the bottom n elements of the list.
+
+: range(100) !> bottom_n(5) ==> [95, 96, 97, 98, 99]
+"
+def bottom_n(lst, n) do
+  lst !> sublist(length(lst) - n)
+end;
+
+
+"
+Creates a list of groups, where all equal adjacent elements
+of a list are put together in one group.
+
+: [1, 1, 2, 2, 2, 3, 4, 5, 2] !> grouped() ==> [[1, 1], [2, 2, 2], [3], [4], [5], [2]]
+: [1, 1, 2, 2, 2] !> grouped() ==> [[1, 1], [2, 2, 2]]
+: [1, 1] !> grouped() ==> [[1, 1]]
+: [1] !> grouped() ==> [[1]]
+: [] !> grouped() ==> []
+: [[1, 'a'], [1, 'b'], [2, 'c']] !> grouped(key = fn(x) x[0]) ==> [[[1, 'a'], [1, 'b']], [[2, 'c']]]
+"
+def grouped(lst, cmp = compare, key = identity) do
+  if length(lst) == 0 then return [];
+  def result = [];
+  def current_group = [];
+  def current_key = key(lst[0]);
+  for element in lst do
+    def next_key = key(element);
+    
+    if cmp(current_key, next_key) <> 0 then do
+      result !> append(current_group);
+      current_group = [];
+      current_key = next_key;
+    end;
+    
+    current_group !> append(element);
+    end;
+  if length(current_group) > 0 then result !> append(current_group);
+  return result;
+end;
+
+
+"
+Calls the function func once for each successive element
+of the list lst.
+"
+def for_each(lst, func) do
+  for item in lst do
+    func(item);
+  end;
+  return NULL;
+end;
+
 `;

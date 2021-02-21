@@ -51,6 +51,7 @@ function interpretStatement(statement) {
         }
         process.stdout.write("> ");
     } catch (e) {
+        console.log(e);
         let errortext = e.msg + (e.pos !== undefined ? " " + e.pos.toString() : "");
         if ("stacktrace" in e) {
             errortext += "\n\nStacktrace:\n" + e.stacktrace.join("\n")

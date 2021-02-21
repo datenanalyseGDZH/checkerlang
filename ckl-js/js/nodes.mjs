@@ -180,7 +180,7 @@ export class NodeBlock {
         }
         if (this.expressions.length > 0) result = result.substr(0, result.length - 2);
         if (this.finallyexprs.length > 0) {
-            result = result.concat("finally ");
+            result = result.concat(" finally ");
             for (let expression of this.finallyexprs) {
                 result = result.concat(expression.toString(), ", ");
             }

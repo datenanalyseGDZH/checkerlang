@@ -837,7 +837,7 @@ export class FuncFileInput extends ValueFunc {
 
     execute(args, environment, pos) {
         const filename = args.getString("filename").value;
-        const encoding = "utf-8";
+        let encoding = "utf-8";
         if (args.hasArg("encoding")) {
             encoding = args.getString("encoding").value;
         }
@@ -865,7 +865,7 @@ export class FuncFileOutput extends ValueFunc {
 
     execute(args, environment, pos) {
         const filename = args.getString("filename").value;
-        const encoding = "utf-8";
+        let encoding = "utf-8";
         if (args.hasArg("encoding")) {
             encoding = args.getString("encoding").value;
         }

@@ -1,0 +1,25 @@
+# Reads a file, split the text into words and
+# counts the number of occurences of each word.
+# Writes the top 10 words with their count to
+# standard output
+#
+# Please provide the file path as the first
+# argument to the program.
+
+def normalize_word(w)
+    w !> replace(",", "")
+      !> replace(";", "")
+      !> replace(".", "")
+      !> replace("“", "")
+      !> replace("!", "")
+      !> replace("?", "");
+
+read_file(args[0]) !>
+words() !>
+map_list(func = normalize_word) !>
+sorted() !>
+grouped() !>
+map_list(func = fn(ws) [ws[0], length(ws)]) !>
+sorted(key = fn(item) -item[1]) !>
+top_n(10) !>
+for_each(fn(item) println(item[0] + ": " + item[1]));
