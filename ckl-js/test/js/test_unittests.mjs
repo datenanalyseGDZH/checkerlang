@@ -387,7 +387,7 @@ collectvars_test("TestPredefinedFunctions", "lower(a) < 'a'", '["a"]');
 const env = Environment.getBaseEnvironment(false);
 for (const symbol of env.getSymbols()) {
     const tests = [];
-    const info = env.get(symbol).info.replace(/\r/g, "\\r").replace(/\n/g, "\\n").replace(/\t/g, "\\t");
+    const info = env.get(symbol).info;
     info.split(/[\r\n]+/).forEach(line => { 
         if (line.startsWith(":")) {
             const [test, expected] = line.substr(1).split(" ==> ");
