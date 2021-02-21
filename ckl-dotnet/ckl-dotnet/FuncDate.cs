@@ -18,6 +18,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
+using System;
 using System.Collections.Generic;
 
 namespace CheckerLang
@@ -44,6 +46,7 @@ namespace CheckerLang
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
+            if (!args.HasArg("obj")) return new ValueDate(DateTime.Now);
             return args.GetAsDate("obj");
         }
     }

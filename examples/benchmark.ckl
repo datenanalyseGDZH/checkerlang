@@ -31,14 +31,15 @@ end;
 
 def run_benchmarks() do
     def result = [];
-    for s in [s for s in ls() if str_starts_with(s, 'benchmark_')] do
-        def id = substr(s, length('benchmark_'));
+    for s in [s for s in ls() if s !> starts_with('benchmark_')] do
+        def id = s !> substr(length('benchmark_'));
         def code = body(eval(s));
         append(result, [id, repeat(code)]);
     end;
 end;
 
 def out = file_output("examples/benchmark-results.txt", append = TRUE);
+println(checkerlang_version + "-" + checkerlang_platform, out = out);
 for benchmark in run_benchmarks() do
     println(started + ", " + benchmark[0] + ", " + benchmark[1], out = out);
 end;

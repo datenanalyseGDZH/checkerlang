@@ -217,6 +217,16 @@ export class Args {
         }
     }
 
+    getAsNode(name) {
+        const value = this.get(name);
+        try {
+            return value.asNode();
+        } catch (e) {
+            e.pos = this.pos;
+            throw e;
+        }
+    }
+
     getAsDate(name) {
         const value = this.get(name);
         try {

@@ -25,6 +25,7 @@ import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueBoolean;
 import ch.checkerlang.values.ValueOutput;
 
 import java.io.FileOutputStream;
@@ -38,14 +39,14 @@ import java.util.List;
 public class FuncFileOutput extends FuncBase {
     public FuncFileOutput() {
         super("file_output");
-        info = "file_output(filename, encoding = 'UTF-8')\r\n" +
+        info = "file_output(filename, encoding = 'UTF-8', append = FALSE\r\n" +
                 "\r\n" +
                 "Returns an output object, that writes to the given file. If\r\n" +
                 "the file exists it is overwritten.\r\n";
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("filename", "encoding");
+        return Arrays.asList("filename", "encoding", "append");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
@@ -54,8 +55,10 @@ public class FuncFileOutput extends FuncBase {
         if (args.hasArg("encoding")) {
             encoding = Charset.forName(args.getString("encoding").getValue());
         }
+        ValueBoolean append = ValueBoolean.FALSE;
+        if (args.hasArg("append")) append = args.get("append").asBoolean();
         try {
-            return new ValueOutput(new OutputStreamWriter(new FileOutputStream(filename), encoding));
+            return new ValueOutput(new OutputStreamWriter(new FileOutputStream(filename, append.getValue()), encoding));
         } catch (IOException e) {
             throw new ControlErrorException("Cannot open file " + filename, pos);
         }

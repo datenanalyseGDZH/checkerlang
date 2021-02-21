@@ -23,6 +23,7 @@ package ch.checkerlang.functions;
 import ch.checkerlang.*;
 import ch.checkerlang.nodes.Node;
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueNode;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class FuncEval extends FuncBase {
         super("eval");
         info = "eval(s)\r\n" +
                 "\r\n" +
-                "Evaluates the string s.\r\n" +
+                "Evaluates the string or node s.\r\n" +
                 "\r\n" +
                 ": eval('1+1') ==> 2\r\n";
     }
@@ -43,9 +44,10 @@ public class FuncEval extends FuncBase {
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
+        if (args.get(("s")).isNode()) return args.getAsNode("s").getValue().evaluate(environment);
         String s = args.getString("s").getValue();
         try {
-            Node node = Parser.parse(s, pos.filename);
+            Node node = Parser.parse(args.getString("s").getValue(), pos.filename);
             return node.evaluate(environment);
         } catch (IOException e) {
             throw new ControlErrorException("Cannot evaluate " + s, pos);

@@ -782,7 +782,7 @@ export class FuncEval extends ValueFunc {
         super("eval");
         this.info = "eval(s)\r\n" +
                 "\r\n" +
-                "Evaluates the string s.\r\n" +
+                "Evaluates the string or node s.\r\n" +
                 "\r\n" +
                 ": eval('1+1') ==> 2\r\n";
     }
@@ -792,6 +792,9 @@ export class FuncEval extends ValueFunc {
     }
 
     execute(args, environment, pos) {
+        if (args.get("s").isNode()) {
+            return args.getAsNode("s").value.evaluate(environment);
+        }
         const s = args.getString("s").value;
         try {
             const node = Parser.parseScript(s, pos.filename);
@@ -853,14 +856,14 @@ export class FuncFileOutput extends ValueFunc {
     constructor(fs) {
         super("file_output");
         this.fs = fs;
-        this.info = "file_output(filename, encoding = 'UTF-8')\r\n" +
+        this.info = "file_output(filename, encoding = 'UTF-8', append = FALSE)\r\n" +
                 "\r\n" +
                 "Returns an output object, that writes to the given file. If\r\n" +
                 "the file exists it is overwritten.\r\n";
     }
 
     getArgNames() {
-        return ["filename", "encoding"];
+        return ["filename", "encoding", "append"];
     }
 
     execute(args, environment, pos) {
@@ -869,8 +872,12 @@ export class FuncFileOutput extends ValueFunc {
         if (args.hasArg("encoding")) {
             encoding = args.getString("encoding").value;
         }
+        let append = false;
+        if (args.hasArg("append")) {
+            append = args.getAsBoolean("append").value;
+        }
         try {
-            return new ValueOutput(new FileOutput(filename, encoding, this.fs));
+            return new ValueOutput(new FileOutput(filename, encoding, append, this.fs));
         } catch (e) {
             throw new RuntimeError("Cannot open file " + filename, pos);
         }
@@ -966,13 +973,13 @@ export class FuncFormatDate extends ValueFunc {
         if (args.isNull("date")) return ValueNull.NULL;
         const date = args.getDate("date").value;
         let fmt = args.getString("fmt", "yyyy-MM-dd HH:mm:ss").value;
-        if (fmt.indexOf("yyyy") != -1) fmt = fmt.replaceAll("yyyy", this.fill(date.getFullYear(), 4));
-        if (fmt.indexOf("yy") != -1) fmt = fmt.replaceAll("yy", this.fill(date.getYear(), 2));
-        if (fmt.indexOf("MM") != -1) fmt = fmt.replaceAll("MM", this.fill(date.getMonth() + 1, 2));
-        if (fmt.indexOf("dd") != -1) fmt = fmt.replaceAll("dd", this.fill(date.getDate(), 2));
-        if (fmt.indexOf("HH") != -1) fmt = fmt.replaceAll("HH", this.fill(date.getHours(), 2));
-        if (fmt.indexOf("mm") != -1) fmt = fmt.replaceAll("mm", this.fill(date.getMinutes(), 2));
-        if (fmt.indexOf("ss") != -1) fmt = fmt.replaceAll("ss", this.fill(date.getSeconds(), 2));
+        if (fmt.indexOf("yyyy") != -1) fmt = fmt.replace(/yyyy/g, this.fill(date.getFullYear(), 4));
+        if (fmt.indexOf("yy") != -1) fmt = fmt.replace(/yy/g, this.fill(date.getYear(), 2));
+        if (fmt.indexOf("MM") != -1) fmt = fmt.replace(/MM/g, this.fill(date.getMonth() + 1, 2));
+        if (fmt.indexOf("dd") != -1) fmt = fmt.replace(/dd/g, this.fill(date.getDate(), 2));
+        if (fmt.indexOf("HH") != -1) fmt = fmt.replace(/HH/g, this.fill(date.getHours(), 2));
+        if (fmt.indexOf("mm") != -1) fmt = fmt.replace(/mm/g, this.fill(date.getMinutes(), 2));
+        if (fmt.indexOf("ss") != -1) fmt = fmt.replace(/ss/g, this.fill(date.getSeconds(), 2));
         return new ValueString(fmt);
     }
 

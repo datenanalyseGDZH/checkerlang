@@ -634,6 +634,14 @@ end;
 
 
 "
+now()
+
+Returns the current date.
+"
+def now() date();
+
+
+"
 date_year(value)
 
 Extracts the year part from the given date value and
@@ -811,6 +819,8 @@ end;
 
 
 "
+curry(f, arg)
+
 Partially applies the function f with the argument arg.
 This returns another function which takes the remaining
 args of the original function f.
@@ -821,6 +831,8 @@ def curry(f, arg) fn(args...) f(arg, ...args...);
 
 
 "
+apply(f, args)
+
 Applies the function with the arguments in the list args.
 
 : apply(fn(a, b, c) a + b + c, [1, 2, 3]) ==> 6
@@ -829,6 +841,8 @@ def apply(f, args) f(...args);
 
 
 "
+unique(lst, key = identity)
+
 Makes the elements of the list unique, by discarding duplicates,
 while retaining the original ordering. The first occurence of each
 duplicate is retained.
@@ -850,6 +864,8 @@ end;
 
 
 "
+filter(lst, predicate, key = identity)
+
 Returns a filtered copy of the list by discarding
 all elements for which the predicate returns FALSE.
 
@@ -868,6 +884,8 @@ end;
 
 
 "
+is_even(n)
+
 Returns TRUE if the number is even.
 
 : is_even(2) ==> TRUE
@@ -880,6 +898,8 @@ end;
 
 
 "
+is_odd(n)
+
 Returns TRUE if the number is odd.
 
 : is_odd(2) ==> FALSE
@@ -892,6 +912,8 @@ end;
 
 
 "
+append_all(lst, items)
+
 Appends all items to the list or set. The items
 can be in a list or a set.
 
@@ -909,6 +931,8 @@ end;
 
 
 "
+lines(str)
+
 Splits the string str into lines and returns them as a list.
 
 : lines('a\\\\nb c\\\\r\\\\nd') ==> ['a', 'b c', 'd']
@@ -919,6 +943,8 @@ end;
 
 
 "
+words(str)
+
 Splits the string str into words and returns them as a list.
 
 : words('one  two\\\\tthree four') ==> ['one', 'two', 'three', 'four']
@@ -929,6 +955,8 @@ end;
 
 
 "
+unlines(lst)
+
 Joins a list of lines into one string.
 
 : unlines(['a', 'b', 'c']) ==> 'a\\\\nb\\\\nc'
@@ -939,6 +967,8 @@ end;
 
 
 "
+unwords(lst)
+
 Joins a list of words into one string.
 
 : unwords(['a', 'b', 'c']) ==> 'a b c'
@@ -949,6 +979,8 @@ end;
 
 
 "
+read_file(filename, encoding = 'utf-8')
+
 Opens a file, reads the contents as a single
 string, closes the file and returns the string.
 "
@@ -963,6 +995,8 @@ end;
 
 
 "
+top_n(lst, n)
+
 Returns the top n elements of the list.
 
 : range(100) !> top_n(5) ==> [0, 1, 2, 3, 4]
@@ -973,6 +1007,8 @@ end;
 
 
 "
+bottom_n(lst, n)
+
 Returns the bottom n elements of the list.
 
 : range(100) !> bottom_n(5) ==> [95, 96, 97, 98, 99]
@@ -983,6 +1019,8 @@ end;
 
 
 "
+grouped(lst, cmp = compare, key = identity)
+
 Creates a list of groups, where all equal adjacent elements
 of a list are put together in one group.
 
@@ -1015,6 +1053,8 @@ end;
 
 
 "
+for_each(lst, func)
+
 Calls the function func once for each successive element
 of the list lst.
 "

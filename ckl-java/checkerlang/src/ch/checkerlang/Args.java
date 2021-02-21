@@ -250,6 +250,16 @@ public class Args {
         }
     }
 
+    public ValueNode getAsNode(String name) {
+        Value value = get(name);
+        try {
+            return value.asNode();
+        } catch (ControlErrorException e) {
+            e.pos = pos;
+            throw e;
+        }
+    }
+
     public ValueDate getAsDate(String name) {
         Value value = get(name);
         try {

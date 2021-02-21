@@ -193,11 +193,13 @@ export class FileInput {
 
 
 export class FileOutput {
-    constructor(filename, encoding, fs) {
+    constructor(filename, encoding, append, fs) {
         this.fs = fs;
         this.encoding = encoding.toLowerCase();
         if (this.encoding === 'utf-8') this.encoding = 'utf8';
-        this.fd = this.fs.openSync(filename, "w");
+        let flags = "w";
+        if (append) flags = "a";
+        this.fd = this.fs.openSync(filename, flags);
     }
     write(s) { 
         this.fs.writeSync(this.fd, s, null, this.encoding);

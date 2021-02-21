@@ -24,8 +24,10 @@ import ch.checkerlang.Args;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueDate;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class FuncDate extends FuncBase {
@@ -47,6 +49,7 @@ public class FuncDate extends FuncBase {
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
+        if (!args.hasArg("obj")) return new ValueDate(new Date());
         return args.getAsDate("obj");
     }
 }
