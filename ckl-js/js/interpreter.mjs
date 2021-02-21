@@ -21,7 +21,7 @@
 
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
-import { Environment, FuncRun } from "./functions.mjs";
+import { Environment } from "./functions.mjs";
 
 import { 
     StringInput,
@@ -305,8 +305,8 @@ export class Interpreter {
         this.environment = this.baseEnvironment.newEnv();
         this.baseEnvironment.put("console", new ValueOutput(new ConsoleOutput()));
         if (!secure) {
-            this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput()));
-            this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));
+            this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput())); // TODO in case of node.js use actual stdout
+            this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));  // TODO in case of node.js use actual stdin
         }
     }
 
@@ -319,25 +319,26 @@ export class Interpreter {
     }
 
     makeSecure() {
-        baseEnvironment.remove("stdout");
-        baseEnvironment.remove("stdin");
-        baseEnvironment.remove("run");
-        baseEnvironment.getParent().remove("file_input");
-        baseEnvironment.getParent().remove("file_output");
-        baseEnvironment.getParent().remove("close");
+        this.baseEnvironment.remove("stdout");
+        this.baseEnvironment.remove("stdin");
+        this.baseEnvironment.remove("run");
+        this.baseEnvironment.getParent().remove("file_input");
+        this.baseEnvironment.getParent().remove("file_output");
+        this.baseEnvironment.getParent().remove("close");
     }
 
     setStandardOutput(stdout) {
-        baseEnvironment.put("stdout", new ValueOutput(stdout));
+        this.baseEnvironment.put("stdout", new ValueOutput(stdout));
     }
 
     setStandardInput(stdin) {
-        baseEnvironment.put("stdin", new ValueInput(stdin));
+        this.baseEnvironment.put("stdin", new ValueInput(stdin));
     }
 
-    loadFile(filename, charset = "utf-8") {
-        // TODO read file contents
-        const contents = "";
+    loadFile(filename, encoding = "utf8") {
+        let enc = encoding.toLowerCase()
+        if (enc === 'utf-8') enc = 'utf8';
+        const contents = this.fs.readFileSync(filename, {encoding: enc, flag: 'r'});
         interpret(contents, filename); // TODO extract filename from path
     }
 

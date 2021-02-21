@@ -29,6 +29,7 @@ import { ValueList } from "./js/values.mjs";
 
 const interpreter = new Interpreter(false);
 
+interpreter.fs = fs;
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.baseEnvironment.parent.put("file_input", new FuncFileInput(fs));
 interpreter.baseEnvironment.parent.put("file_output", new FuncFileOutput(fs));
