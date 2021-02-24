@@ -139,7 +139,6 @@ namespace CheckerLang
                 builder.Append(item).Append(" => ").Append(value[item]).Append(", ");
             }
             if (builder.Length > "<<<".Length) builder.Remove(builder.Length - ", ".Length, ", ".Length);
-            else if (builder.Length == "<<<".Length) builder.Remove(builder.Length - 1, 1);
             builder.Append(">>>");
             return builder.ToString();
         }

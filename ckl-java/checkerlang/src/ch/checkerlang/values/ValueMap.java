@@ -113,7 +113,6 @@ public class ValueMap extends Value {
             builder.append(item).append(" => ").append(value.get(item)).append(", ");
         }
         if (builder.length() > "<<<".length()) builder.setLength(builder.length() - 2);
-        else if (builder.length() == "<<<".length()) builder.setLength(builder.length() - 1);
         builder.append(">>>");
         return builder.toString();
     }
