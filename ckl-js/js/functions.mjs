@@ -122,6 +122,7 @@ export class Environment {
         Environment.add(result, new FuncNotEquals());
         Environment.add(result, new FuncParse());
         Environment.add(result, new FuncParseDate());
+        Environment.add(result, new FuncParseJson());
         Environment.add(result, new FuncPattern());
         Environment.add(result, new FuncPow());
         Environment.add(result, new FuncPrint());
@@ -1377,7 +1378,9 @@ export class FuncLength extends ValueFunc {
                 "Returns the length of obj. This only works for strings, lists, sets and maps.\r\n" +
                 "\r\n" +
                 ": length('123') ==> 3\r\n" +
-                ": length([1, 2, 3]) ==> 3\r\n";
+                ": length([1, 2, 3]) ==> 3\r\n" +
+                ": length(<<1, 2, 3>>) ==> 3\r\n" +
+                ": length(<<<'a' => 1, 'b' => 2, 'c' => 3>>>) ==> 3\r\n";
     }
 
     getArgNames() {
@@ -1388,8 +1391,8 @@ export class FuncLength extends ValueFunc {
         const arg = args.get("obj");
         if (arg.isString()) return new ValueInt(arg.value.length);
         if (arg.isList()) return new ValueInt(arg.value.length);
-        if (arg.isSet()) return new ValueInt(arg.value.length);
-        if (arg.isMap()) return new ValueInt(arg.value.length);
+        if (arg.isSet()) return new ValueInt(arg.value.size);
+        if (arg.isMap()) return new ValueInt(arg.value.size);
         throw new RuntimeError("Cannot determine length of " + arg, pos);
     }
 }
@@ -1782,6 +1785,58 @@ export class FuncParseDate extends ValueFunc {
         }
 
         return ValueNull.NULL;
+    }
+}
+
+export class FuncParseJson extends ValueFunc {
+    constructor() {
+        super("parse_json");
+        this.info = "parse_json(s)\r\n" +
+                "\r\n" +
+                "Parses the JSON string s and returns a map or list.\r\n" +
+                "\r\n" +
+                ": parse_json('{\"a\": 12, \"b\": [1, 2, 3, 4]}') ==> '<<<\\\'a\\\' => 12, \\\'b\\\' => [1, 2, 3, 4]>>>'\r\n" +
+                ": parse_json('[1, 2, 3, 4]') ==> '[1, 2, 3, 4]'\r\n";
+    }
+
+    getArgNames() {
+        return ["s"];
+    }
+
+    objAsMap(obj) {
+        const result = new ValueMap();
+        for (const [key, value] of Object.entries(obj)) {
+            result.addItem(this.convertObj(key), this.convertObj(value));
+        }
+        return result;
+    }
+
+    arrayAsList(arr) {
+        const result = new ValueList();
+        for (const item of arr) {
+            result.addItem(this.convertObj(item));
+        }
+        return result;
+    }
+
+    convertObj(obj) {
+        if (typeof obj === "string") return new ValueString(obj);
+        if (typeof obj === "number") {
+            if (Math.trunc(obj) === obj) return new ValueInt(obj);
+            else return new ValueDecimal(obj);
+        }
+        if (typeof obj === "boolean") return ValueBoolean.from(obj);
+        if (obj instanceof Array) return this.arrayAsList(obj);
+        return this.objAsMap(obj);
+    }
+
+    execute(args, environment, pos) {
+        try {
+            const json = JSON.parse(args.getString("s").value);
+            return this.convertObj(json);
+        } catch (e) {
+            throw new RuntimeError("Cannot parse string as JSON", pos);
+        }
     }
 }
 

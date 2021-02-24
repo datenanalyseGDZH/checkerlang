@@ -1059,7 +1059,6 @@ export class ValueMap extends Value {
             result = result.concat(key.toString(), " => ", this.getItem(key).toString(), ", ");
         }
         if (result.length > "<<<".length) result = result.substr(0, result.length - 2);
-        else if (result.length == "<<<".length) result = result.substr(0, result.length - 1);
         return result.concat(">>>");
     }
 }
@@ -1319,7 +1318,6 @@ export class ValueSet extends Value {
             result = result.concat(item.asString().value, ", ");
         }
         if (result.length > "<<".length) result = result.substr(0, result.length - 2);
-        else if (result.length == "<< ".length) result = result.substr(0, result.length - 1);
         return result.concat(">>");
     }
 }
