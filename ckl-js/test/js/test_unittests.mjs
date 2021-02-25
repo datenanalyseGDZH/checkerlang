@@ -101,6 +101,7 @@ lexer_test("SpreadOperatorList", "...[1, 2]", "[... (interpunction), [ (interpun
 lexer_test("SpreadOperatorFuncall", "f(a, ...b, c)", "[f (identifier), ( (interpunction), a (identifier), , (interpunction), ... (interpunction), b (identifier), , (interpunction), c (identifier), ) (interpunction)] @ 0");
 lexer_test("InvokeOperator", "a!>b", "[a (identifier), !> (operator), b (identifier)] @ 0");
 lexer_test("StringLiteralWithNewline", "'one\\ntwo'", "[one\\ntwo (string)] @ 0");
+lexer_test("DerefProperty", "a->b ->c -> d", "[a (identifier), -> (operator), b (identifier), -> (operator), c (identifier), -> (operator), d (identifier)] @ 0");
 
 function parser_test(description, code, expected) {
     run_test("Parser:" + description, function() { return Parser.parseScript(code, "{test}").toString(); }, expected);
@@ -349,6 +350,8 @@ interpreter_test("NumConv7", "decimal(-5.0)", "-5.0");
 interpreter_test("NumConv8", "decimal(-5)", "-5.0");
 interpreter_test("TestDoFinally1", "def a = 1; def b = 1; do a += 1; finally b += 2; end; [a, b]", "[2, 3]");
 interpreter_test("TestDoFinally2", "def a = 1; def f(x) a = x + 1; def b = 1; do f(3); finally b += 2; end; [a, b]", "[4, 3]");
+interpreter_test("DerefProperty", "def a = <<<'x' => 1, 'y' => 2>>>; a->y", "2");
+interpreter_test("MapLiteralImplicitString", "<<<x => 1, y => 2>>>", "<<<'x' => 1, 'y' => 2>>>");
 
 
 function collectvars_test(description, code, expected) {

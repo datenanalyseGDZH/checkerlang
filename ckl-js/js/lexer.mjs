@@ -31,7 +31,8 @@ export const Keywords = [
 export const Operators = [
     "+", "-", "*", "/", "%", 
     "==", "<>", "!=", "<", "<=", ">", ">=", 
-    "=", "+=", "-=", "*=", "/=", "%=", "!>"
+    "=", "+=", "-=", "*=", "/=", "%=", 
+    "!>", "->"
 ];
 
 export class SourcePos {
@@ -405,10 +406,14 @@ export class Lexer {
                     }
                     break;
 
-                case 10: // potentially composite assign
+                case 10: // potentially composite assign or ->
                     if (ch === '=') {
                         token = token.concat(ch);
                         this.tokens.push(new Token(token, "operator", new SourcePos(filename, line, column)));
+                        token = "";
+                        state = 0;
+                    } else if (token === '-' && ch === '>') {
+                        this.tokens.push(new Token("->", "operator", new SourcePos(filename, line, column)));
                         token = "";
                         state = 0;
                     } else {

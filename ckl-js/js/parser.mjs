@@ -675,7 +675,10 @@ export class Parser {
         } else {
             const map = new NodeMap(token.pos);
             while (!lexer.peekn(1, ">>>", "interpunction")) {
-                const key = this.parseIfExpr(lexer);
+                let key = this.parseIfExpr(lexer);
+                if (key instanceof NodeIdentifier) {
+                    key = new NodeLiteral(new ValueString(key.value), key.pos);
+                }
                 lexer.match("=>", "interpunction");
                 const value = this.parseIfExpr(lexer);
                 map.addKeyValue(key, value);
@@ -757,7 +760,38 @@ export class Parser {
 
     _deref(lexer, node) {
         let interrupt = false;
-        if (lexer.matchIf("[", "interpunction")) {
+        if (lexer.matchIf("->", "operator")) {
+            const pos = lexer.getPos();
+            const identifier = lexer.matchIdentifier();
+            const index = new NodeLiteral(new ValueString(identifier), pos);
+            if (lexer.matchIf("=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, value, pos);
+                interrupt = true;
+            } else if (lexer.matchIf("+=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);
+                interrupt = true;
+            } else if (lexer.matchIf("-=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, pos), value, pos), pos);
+                interrupt = true;
+            } else if (lexer.matchIf("*=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, pos), value, pos), pos);
+                interrupt = true;
+            } else if (lexer.matchIf("/=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, pos), value, pos), pos);
+                interrupt = true;
+            } else if (lexer.matchIf("%=", "operator")) {
+                const value = this.parseExpression(lexer);
+                node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, pos), value, pos), pos);
+                interrupt = true;
+            } else {
+                node = new NodeDeref(node, index, pos);
+            }
+        } else if (lexer.matchIf("[", "interpunction")) {
             const pos = lexer.getPos();
             const index = this.parseExpression(lexer);
             if (lexer.matchIf(["]", "="], ["interpunction", "operator"])) {
@@ -793,12 +827,12 @@ export class Parser {
     }
 
     derefOrCallOrInvoke(lexer, node) {
-        while (lexer.peekn(1, "!>", "operator") || lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "(", "interpunction")) {
+        while (lexer.peekn(1, "!>", "operator") || lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "(", "interpunction") || lexer.peekn(1, "->", "operator")) {
             if (lexer.peekn(1, "!>", "operator")) {
                 node = this._invoke(lexer, node);
             } else if (lexer.peekn(1, "(", "interpunction")) {
                 node = this._call(lexer, node);
-            } else if (lexer.peekn(1, "[", "interpunction")) {
+            } else if (lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "->", "operator")) {
                 let result = this._deref(lexer, node);
                 node = result[0];
                 if (result[1]) break;
@@ -808,7 +842,7 @@ export class Parser {
     }
 
     derefOrInvoke(lexer, node) {
-        while (lexer.peekn(1, "!>", "operator") || lexer.peekn(1, "[", "interpunction")) {
+        while (lexer.peekn(1, "!>", "operator") || lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "->", "operator")) {
             if (lexer.peekn(1, "!>", "operator")) {
                 node = this._invoke(lexer, node);
             } else if (lexer.peekn(1, "[", "interpunction")) {

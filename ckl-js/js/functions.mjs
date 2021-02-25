@@ -535,7 +535,7 @@ export class FuncContains extends ValueFunc {
                 ": contains(NULL, 'abc') ==> FALSE\r\n" +
                 ": contains([1, 2, 3], 2) ==> TRUE\r\n" + 
                 ": <<1, 2, 3>> !> contains(3) ==> TRUE\r\n" +
-                ": <<<'a' => 1, 'b' => 2>>> !> contains('b') ==> TRUE\r\n";
+                ": <<<a => 1, b => 2>>> !> contains('b') ==> TRUE\r\n";
     }
 
     getArgNames() {
@@ -2222,7 +2222,7 @@ export class FuncRemove extends ValueFunc {
                 "\r\n" +
                 ": remove([1, 2, 3, 4], 3) ==> [1, 2, 4]\r\n" +
                 ": remove(<<1, 2, 3, 4>>, 3) ==> <<1, 2, 4>>\r\n" +
-                ": remove(<<< 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n";
+                ": remove(<<<a => 1, b => 2, c => 3, d => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n";
     }
 
     getArgNames() {
