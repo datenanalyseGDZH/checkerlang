@@ -77,7 +77,7 @@ namespace CheckerLang
                     return new ValueInt(long.Parse(token));
                 }
                 return new ValueDecimal(decimal.Parse(token));
-            } catch (Exception e) {
+            } catch (Exception) {
                 return null;
             }
         }

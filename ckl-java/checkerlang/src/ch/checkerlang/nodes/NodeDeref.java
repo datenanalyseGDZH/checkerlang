@@ -50,7 +50,7 @@ public class NodeDeref implements Node {
             int i = (int) idx.asInt().getValue();
             if (i < 0) i = i + s.length();
             if (i < 0 || i >= s.length())
-                throw new ControlErrorException("Index out of bounds " + s + "[" + i + "]", pos);
+                throw new ControlErrorException("Index out of bounds " + i, pos);
             return new ValueString(s.substring(i, i + 1));
         }
         if (value.isList()) {
@@ -58,13 +58,13 @@ public class NodeDeref implements Node {
             int i = (int) idx.asInt().getValue();
             if (i < 0) i = i + list.size();
             if (i < 0 || i >= list.size())
-                throw new ControlErrorException("Index out of bounds" + value + "[" + i + "]", pos);
+                throw new ControlErrorException("Index out of bounds " + i, pos);
             return list.get(i);
         }
         if (value.isMap()) {
             Map<Value, Value> map = value.asMap().getValue();
             if (!map.containsKey(idx))
-                throw new ControlErrorException("Map does not contain key " + value + "[" + idx + "]", pos);
+                throw new ControlErrorException("Map does not contain key " + idx, pos);
             return map.get(idx);
         }
         throw new ControlErrorException("Cannot dereference value " + value, pos);

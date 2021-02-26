@@ -357,18 +357,18 @@ export class NodeDeref {
             const s = value.value;
             const i = Number(idx.value);
             if (i < 0) i = i + s.length;
-            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + s + "[" + i + "]", this.pos);
+            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             return new ValueString(s.charAt(i));
         }
         if (value instanceof ValueList) {
             const list = value.value;
             const i = Number(idx.value);
             if (i < 0) i = i + list.length;
-            if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + value + "[" + i + "]", this.pos);
+            if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             return list[i];
         }
         if (value instanceof ValueMap) {
-            if (!value.hasItem(idx)) throw new RuntimeError("Map does not contain key " + value + "[" + idx + "]", this.pos);
+            if (!value.hasItem(idx)) throw new RuntimeError("Map does not contain key " + idx, this.pos);
             return value.getItem(idx);
         }
         throw new RuntimeError("Cannot dereference value " + value, this.pos);
@@ -516,7 +516,7 @@ export class NodeFor {
             const values = list.value.sortedEntries();
             let result = ValueBoolean.TRUE;
             for (const [key, value] of values) {
-                environment.put(this.identifier, key);
+                environment.put(this.identifier, value);
                 result = this.block.evaluate(environment);
                 environment.remove(this.identifier);
                 if (result instanceof ValueControlBreak) {

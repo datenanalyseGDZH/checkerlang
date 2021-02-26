@@ -40,7 +40,12 @@ namespace CheckerLang
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
-            var obj = args.GetAsString("obj");
+            ValueString obj;
+            if (args.HasArg("obj")) {
+                obj = args.GetAsString("obj");
+            } else {
+                obj = new ValueString("");
+            }
             var output = args.GetOutput("out", environment.Get("stdout", pos).AsOutput());
             output.WriteLine(obj.GetValue());
             return ValueNull.NULL;
