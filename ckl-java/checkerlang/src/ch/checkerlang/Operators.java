@@ -46,6 +46,7 @@ public class Operators {
         operators.add("/=");
         operators.add("%=");
         operators.add("!>");
+        operators.add("->");
     }
 
     public static boolean isOperator(String s) {

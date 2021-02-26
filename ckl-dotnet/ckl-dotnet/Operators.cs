@@ -44,7 +44,8 @@ namespace CheckerLang
             "/=",
             "%=",
             "=",
-            "!>"
+            "!>",
+            "->"
         };
 
         public static bool IsOperator(string s)

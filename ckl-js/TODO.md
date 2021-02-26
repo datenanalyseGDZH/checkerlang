@@ -20,3 +20,6 @@
 # language
 
 * maybe rename isEquals() to equals(), seems to be the canonical name for the equality function
+* add module system
+* categorize functions into modules
+* provide legacy module that corresponds to the features of ckl 2

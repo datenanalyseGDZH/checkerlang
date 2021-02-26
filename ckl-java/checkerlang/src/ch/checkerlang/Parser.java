@@ -21,6 +21,7 @@
 package ch.checkerlang;
 
 import ch.checkerlang.nodes.*;
+import ch.checkerlang.values.ValueString;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -683,6 +684,9 @@ public class Parser {
             NodeMap map = new NodeMap(token.pos);
             while (!lexer.peek(">>>", TokenType.Interpunction)) {
                 Node key = parseIfExpr(lexer);
+                if (key instanceof NodeIdentifier) {
+                    key = new NodeLiteralString(((NodeIdentifier) key).getValue(), key.getSourcePos());
+                }
                 lexer.match("=>", TokenType.Interpunction);
                 Node value = parseIfExpr(lexer);
                 map.addKeyValue(key, value);
@@ -772,7 +776,38 @@ public class Parser {
 
     private DerefResult _deref(Lexer lexer, Node node) {
         DerefResult result = new DerefResult();
-        if (lexer.matchIf("[", TokenType.Interpunction)) {
+        if (lexer.matchIf("->", TokenType.Operator)) {
+            SourcePos pos = lexer.getPos();
+            String identifier = lexer.matchIdentifier();
+            Node index = new NodeLiteralString(identifier, pos);
+            if (lexer.matchIf("=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, value, pos);
+                result.interrupt = true;
+            } else if (lexer.matchIf("+=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);
+                result.interrupt = true;
+            } else if (lexer.matchIf( "-=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, pos), value, pos), pos);
+                result.interrupt = true;
+            } else if (lexer.matchIf("*=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, pos), value, pos), pos);
+                result.interrupt = true;
+            } else if (lexer.matchIf("/=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, pos), value, pos), pos);
+                result.interrupt = true;
+            } else if (lexer.matchIf("%=", TokenType.Operator)) {
+                Node value = this.parseExpression(lexer);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, pos), value, pos), pos);
+                result.interrupt = true;
+            } else {
+                result.node = new NodeDeref(node, index, pos);
+            }
+        } else if (lexer.matchIf("[", TokenType.Interpunction)) {
             SourcePos pos = lexer.getPos();
             Node index = this.parseExpression(lexer);
             if (lexer.matchIf("]", TokenType.Interpunction, "=", TokenType.Operator)) {
@@ -808,12 +843,12 @@ public class Parser {
     }
 
     public Node derefOrCallOrInvoke(Lexer lexer, Node node) {
-        while (lexer.peekn(1, "!>", TokenType.Operator) || lexer.peekn(1, "[", TokenType.Interpunction) || lexer.peekn(1, "(", TokenType.Interpunction)) {
+        while (lexer.peekn(1, "!>", TokenType.Operator) || lexer.peekn(1, "[", TokenType.Interpunction) || lexer.peekn(1, "(", TokenType.Interpunction) || lexer.peekn(1, "->", TokenType.Operator)) {
             if (lexer.peekn(1, "!>", TokenType.Operator)) {
                 node = this._invoke(lexer, node);
             } else if (lexer.peekn(1, "(", TokenType.Interpunction)) {
                 node = this._call(lexer, node);
-            } else if (lexer.peekn(1, "[", TokenType.Interpunction)) {
+            } else if (lexer.peekn(1, "[", TokenType.Interpunction) || lexer.peekn(1, "->", TokenType.Operator)) {
                 DerefResult result = this._deref(lexer, node);
                 node = result.node;
                 if (result.interrupt) break;
@@ -823,10 +858,10 @@ public class Parser {
     }
 
     public Node derefOrInvoke(Lexer lexer, Node node) {
-        while (lexer.peekn(1, "!>", TokenType.Operator) || lexer.peekn(1, "[", TokenType.Interpunction)) {
+        while (lexer.peekn(1, "!>", TokenType.Operator) || lexer.peekn(1, "[", TokenType.Interpunction) || lexer.peekn(1, "->", TokenType.Operator)) {
             if (lexer.peekn(1, "!>", TokenType.Operator)) {
                 node = this._invoke(lexer, node);
-            } else if (lexer.peekn(1, "[", TokenType.Interpunction)) {
+            } else if (lexer.peekn(1, "[", TokenType.Interpunction) || lexer.peekn(1, "->", TokenType.Operator)) {
                 DerefResult result = this._deref(lexer, node);
                 node = result.node;
                 if (result.interrupt) break;

@@ -735,6 +735,18 @@ namespace Tests
             Verify("'3-2-1'", "[1, 2, 3] !> reverse() !> join(sep = '-')");
         }
         
+        [Test]
+        public void TestDerefProperty() 
+        {
+            Verify("2", "def a = <<<'x' => 1, 'y' => 2>>>; a->y");
+        }
+
+        [Test]
+        public void TestMapLiteralImplicitString() 
+        {
+            Verify("<<<'x' => 1, 'y' => 2>>>", "<<<x => 1, y => 2>>>");
+        }
+       
         private void Verify(string expected, string script)
         {
             var env = new Environment();

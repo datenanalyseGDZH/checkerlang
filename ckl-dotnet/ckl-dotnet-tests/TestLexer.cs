@@ -155,6 +155,12 @@ namespace Tests
         }
 
         [Test]
+        public void TestDerefProperty()
+        {
+            Assert.AreEqual("[a, ->, b, ->, c, ->, d] @ 0", new Lexer(new StringReader("a->b ->c -> d"), "test").ToString());
+        }
+
+        [Test]
         public void TestSourcePos()
         {
             var lexer = new Lexer(new StringReader("1 / 2\r\nx == 3"), "{test}");

@@ -546,73 +546,83 @@ public class TestInterpreter {
     }
     
     @Test
-    public void TestDefDestructure1() {
+    public void testDefDestructure1() {
         verify("[1, 2]", "def [a, b] = [1, 2]; [a, b]");
     }
 
     @Test
-    public void TestDefDestructure2() {
+    public void testDefDestructure2() {
            verify("1", "def [a] = [1, 2]; a");
     }
         
     @Test
-    public void TestDefDestructure3() {
+    public void testDefDestructure3() {
         verify("3", "def [a, b, c] = <<1, 2, 3>>; c");
     }
         
     @Test
-    public void TestDefDestructure4() {
+    public void testDefDestructure4() {
         verify("NULL", "def [a, b, c] = [1, 2]");
     }
         
     @Test
-    public void TestAssignDestructure1() {
+    public void testAssignDestructure1() {
         verify("[1, 2]", "def a = 1; def b = 1; [a, b] = [1, 2]; [a, b]");
     }
         
     @Test
-    public void TestAssignDestructure2() {
+    public void testAssignDestructure2() {
         verify("2", "def a = 1; [a] = [2, 3]; a");
     }
         
     @Test
-    public void TestSwapUsingDestructure() {
+    public void testSwapUsingDestructure() {
         verify("[2, 1]", "def a = 1; def b = 2; [a, b] = [b, a]; [a, b]");
     }
 
     @Test
-    public void TestAll() {
+    public void testAll() {
         verify("TRUE", "all([2, 4, 6], fn(x) x % 2 == 0)");
     }
 
     @Test
-    public void TestMethods1() {
+    public void testMethods1() {
         verify("TRUE", "'abcdef'!>starts_with('abc')");
     }
 
     @Test
-    public void TestMethods2() {
+    public void testMethods2() {
         verify("'xy'", "' xy '!>trim()");
     }
 
     @Test
-    public void TestMethods3() {
+    public void testMethods3() {
         verify("[3, 2, 1]", "[1, 2, 3]!>reverse()");
     }
 
     @Test
-    public void TestMethods4() {
+    public void testMethods4() {
         verify("TRUE", "[2, 4, 6] !> all(fn(x) x % 2 == 0)");
     }
 
     @Test
-    public void TestMethods5() {
+    public void testMethods5() {
         verify("12", "12 !> max(2)");
     }
 
     @Test
-    public void TestMethods6() {
+    public void testMethods6() {
         verify("'3-2-1'", "[1, 2, 3] !> reverse() !> join(sep = '-')");
+    }
+
+    @Test
+    public void testDerefProperty() {
+        verify("2", "def a = <<<'x' => 1, 'y' => 2>>>; a->y");
+    }
+
+    @Test
+    public void testMapLiteralImplicitString() {
+        verify("<<<'x' => 1, 'y' => 2>>>", "<<<x => 1, y => 2>>>");
     }
 
     private void verify(String expected, String script) {

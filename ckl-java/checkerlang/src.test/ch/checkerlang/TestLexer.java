@@ -103,6 +103,11 @@ public class TestLexer {
     }
 
     @Test
+    public void testDerefProperty() throws IOException {
+        Assert.assertEquals("[a, ->, b, ->, c, ->, d] @ 0", new Lexer(new StringReader("a->b ->c -> d"), "test").toString());
+    }
+
+    @Test
     public void TestSourcePos() throws IOException {
         Lexer lexer = new Lexer(new StringReader("1 / 2\r\nx == 3"), "test");
         Token token = lexer.next();

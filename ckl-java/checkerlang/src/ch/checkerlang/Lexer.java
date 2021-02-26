@@ -465,6 +465,10 @@ public class Lexer {
                         tokens.add(new Token(token.toString(), TokenType.Operator, new SourcePos(filename, line, column)));
                         token = new StringBuilder();
                         state = 0;
+                    } else if (token.toString().equals("-") && ch == '>') {
+                        tokens.add(new Token("->", TokenType.Operator, new SourcePos(filename, line, column)));
+                        token = new StringBuilder();
+                        state = 0;
                     } else {
                         tokens.add(new Token(token.toString(), TokenType.Operator, new SourcePos(filename, line, column)));
                         token = new StringBuilder();
