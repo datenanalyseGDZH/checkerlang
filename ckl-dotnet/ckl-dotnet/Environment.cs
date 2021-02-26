@@ -213,6 +213,7 @@ namespace CheckerLang
             Add(result, new FuncNow());
             Add(result, new FuncPairs());
             Add(result, new FuncParse());
+            Add(result, new FuncParseJson());
             Add(result, new FuncParseDate());
             Add(result, new FuncPattern());
             Add(result, new FuncPow());

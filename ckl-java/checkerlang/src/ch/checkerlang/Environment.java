@@ -118,6 +118,7 @@ public class Environment {
         add(result, new FuncNotEquals());
         add(result, new FuncParse());
         add(result, new FuncParseDate());
+        add(result, new FuncParseJson());
         add(result, new FuncPattern());
         add(result, new FuncPow());
         add(result, new FuncPrint());
