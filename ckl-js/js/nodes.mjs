@@ -355,14 +355,14 @@ export class NodeDeref {
         const value = this.expression.evaluate(environment);
         if (value instanceof ValueString) {
             const s = value.value;
-            const i = Number(idx.value);
+            let i = Number(idx.value);
             if (i < 0) i = i + s.length;
             if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             return new ValueString(s.charAt(i));
         }
         if (value instanceof ValueList) {
             const list = value.value;
-            const i = Number(idx.value);
+            let i = Number(idx.value);
             if (i < 0) i = i + list.length;
             if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             return list[i];
