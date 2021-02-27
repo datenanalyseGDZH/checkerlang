@@ -1,0 +1,68 @@
+# advent of code day 2
+# https://adventofcode.com/2019/day/2
+
+# Part 1
+
+def parse_program(data) split(data, ",") !> map_list(int);
+def make_machine(data) <<<program => parse_program(data), ip => 0, halted => FALSE>>>;
+
+def step(machine) do
+    def prog = machine->program;
+    def opcode = prog[machine->ip];
+    if opcode == 99 then do
+        machine->halted = TRUE;
+    end if opcode == 1 then do
+        def a = prog[prog[machine->ip + 1]];
+        def b = prog[prog[machine->ip + 2]];
+        prog[prog[machine->ip + 3]] = a + b;
+        machine->ip += 4;
+    end if opcode == 2 then do
+        def a = prog[prog[machine->ip + 1]];
+        def b = prog[prog[machine->ip + 2]];
+        prog[prog[machine->ip + 3]] = a * b;
+        machine->ip += 4;
+    end;
+    machine;
+end;
+
+def execute(machine) do
+    while not machine->halted do machine = step(machine); end;
+end;
+
+def set_data(machine, idx, value) do
+    machine->program[idx] = value;
+    machine;
+end;
+
+def get_data(machine, idx) machine->program[idx];
+
+read_file("aoc2019-day2-input.txt") !>
+make_machine() !>
+set_data(1, 12) !>
+set_data(2, 2) !>
+execute() !>
+get_data(0) !>
+sprintf(fmt="part1: {0}") !>
+println();
+
+
+# Part 2
+
+def find_noun_and_verb_for(input, value) do
+    for noun in range(100) do
+        for verb in range(100) do
+            def result = input !>
+                         make_machine() !>
+                         set_data(1, noun) !>
+                         set_data(2, verb) !>
+                         execute() !>
+                         get_data(0);
+            if result == value then return noun * 100 + verb;
+        end;
+    end;
+end;
+
+read_file("aoc2019-day2-input.txt") !>
+find_noun_and_verb_for(19690720) !>
+sprintf(fmt="part2: {0}") !>
+println();

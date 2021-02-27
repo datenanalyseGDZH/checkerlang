@@ -1,0 +1,66 @@
+# advent of code day 3
+# https://adventofcode.com/2019/day/3
+
+# Part 1
+
+def get_wire_data(wire) do
+    def result = [];
+    def x = 0;
+    def y = 0;
+    for point in wire do
+        def dir = point[0];
+        def len = int(point !> substr(1));
+        def dx = 0;
+        def dy = 0;
+        if dir == "R" then dx = 1
+        if dir == "L" then dx = -1
+        if dir == "U" then dy = 1
+        if dir == "D" then dy = -1;
+        for i in range(len) do
+            x += dx;
+            y += dy;
+            result !> append(x + "," + y);
+        end;
+    end;
+    return result;
+end;
+
+def intersections(wire1, wire2) do
+    def a = set(get_wire_data(wire1));
+    def b = set(get_wire_data(wire2));
+    [item for item in a if item in b];
+end;
+
+def nearest(points) do
+    points !>
+    map_list(fn(item) do def [a, b] = split(item, ","); abs(int(a)) + abs(int(b)) end) !>
+    min();
+end;
+
+def wires = read_file("aoc2019-day3-input.txt") !> lines() !> map_list(fn(line) line !> split(","));
+def crossings = intersections(wires[0], wires[1]);
+
+nearest(crossings) !>
+sprintf(fmt="part1: {0}") !>
+println();
+
+
+# Part 2
+
+def get_timing_data(wire) do
+    def wire_data = get_wire_data(wire);
+    zip_map(wire_data, interval(length(wire_data)));
+end;
+
+def timing1 = get_timing_data(wires[0]);
+def timing2 = get_timing_data(wires[1]);
+
+def nearest_timing(points) do
+    points !>
+    map_list(fn(item) timing1[item] + timing2[item]) !>
+    min();
+end;
+
+nearest_timing(crossings) !>
+sprintf(fmt="part2: {0}") !>
+println()
