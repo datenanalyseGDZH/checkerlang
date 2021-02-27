@@ -161,6 +161,7 @@ pre { font-family: Courier New; font-height: 12pt; }
 <li><a href='#sorted'>sorted</a></li>
 <li><a href='#split'>split</a></li>
 <li><a href='#split2'>split2</a></li>
+<li><a href='#sprintf'>sprintf</a></li>
 <li><a href='#sqrt'>sqrt</a></li>
 <li><a href='#starts_with'>starts_with</a></li>
 <li><a href='#str_contains'>str_contains</a></li>
@@ -2064,6 +2065,26 @@ This results in a list of list of strings.
 <div class='examples_title'>Examples:</div>
 <div class='example'> split2('a:b:c|d:e:f', escape_pattern('|'), escape_pattern(':')) ==&gt; [['a', 'b', 'c'], ['d', 'e', 'f']]</div>
 <div class='example'> split2('', '\|', ':') ==&gt; []</div>
+</pre><p>
+</div></p>
+<h2 id='sprintf'>sprintf</h2>
+<pre>
+sprintf(fmt, args...)
+</pre><p>
+Formats a string format using the provided args. Each
+value can be referred to in the fmt string using the
+{0} syntax, where 0 means the first argument passed.
+</pre><p>
+This uses internally the s function. See there for
+an explanation of available formatting suffixes.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'> sprintf('{0} {1}', 1, 2) ==&gt; '1 2'</div>
+<div class='example'> sprintf('{0#5} {1#5}', 1, 2) ==&gt; '    1     2'</div>
+<div class='example'> sprintf('{0#-5} {1#-5}', 1, 2) ==&gt; '1     2    '</div>
+<div class='example'> sprintf('{0#05} {1#05}', 1, 2) ==&gt; '00001 00002'</div>
+<div class='example'> sprintf('{0#.4}', PI) ==&gt; '3.1416'</div>
 </pre><p>
 </div></p>
 <h2 id='sqrt'>sqrt</h2>
