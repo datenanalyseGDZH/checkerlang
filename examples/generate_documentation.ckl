@@ -33,8 +33,8 @@ println(".toc li { margin: 0; padding: 0; }", out);
 println("a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-weight: bold;  }", out);
 println(".examples_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
 println(".examples { padding: 0.5em 1em 1em 1 em; }", out);
-println(".example { font-family: Courier New; font-height: 12pt; }", out);
-println("pre { font-family: Courier New; font-height: 12pt; }", out);
+println(".example { font-family: Courier New; font-height: 12pt; white-space: pre; }", out);
+println("pre { font-family: Courier New; font-height: 12pt; white-space: pre; }", out);
 println("</style>", out);
 println("<body>", out);
 println("<h1>CheckerLang function reference " + checkerlang_version + "</h1>", out);
@@ -66,7 +66,7 @@ for symbol in ls() do
                 println("<div class='examples_title'>Examples:</div>", out);
                 in_examples = TRUE;
             end;
-            println("<div class='example'>" + esc(substr(line, 1)) + "</div>", out);
+            println("<div class='example'>" + esc(substr(line, 1) !> trim()) + "</div>", out);
         end else do
             if line == "" then do println("</pre><p>", out); in_header = FALSE; end
             else println(esc(line), out);
