@@ -32,11 +32,14 @@ import java.util.List;
 public class FuncMap extends FuncBase {
     public FuncMap() {
         super("map");
-        info = "map(obj = NULL)\r\n" +
-                "\r\n" +
-                "Converts the obj to a map, if possible.\r\n" +
-                "\r\n" +
-                ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n";
+        this.info = "map(obj)\r\n" +
+                    "map()\r\n" +
+                    "\r\n" +
+                    "Converts the obj to a map, if possible. If obj is omitted,\r\n" +
+                    "an empty map is returned.\r\n" +
+                    "\r\n" +
+                    ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n" +
+                    ": map() ==> <<<>>>\r\n";
     }
 
     public List<String> getArgNames() {

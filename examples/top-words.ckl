@@ -16,10 +16,10 @@ def normalize_word(w)
 
 read_file(args[0]) !>
 words() !>
-map_list(func = normalize_word) !>
+map_list(normalize_word) !>
 sorted() !>
 grouped() !>
-map_list(func = fn(ws) [ws[0], length(ws)]) !>
+map_list(fn(ws) [ws[0], length(ws)]) !>
 sorted(key = fn(item) -item[1]) !>
-top_n(10) !>
+first_n(10) !>
 for_each(fn(item) println(item[0] + ": " + item[1]));

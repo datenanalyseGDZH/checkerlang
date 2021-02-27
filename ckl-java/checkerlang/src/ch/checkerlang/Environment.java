@@ -161,10 +161,10 @@ public class Environment {
             add(result, new FuncClose());
         }
         result.put("NULL", ValueNull.NULL);
-        result.put("PI", new ValueDecimal(Math.PI).withInfo("The mathematical constant pi."));
-        result.put("E", new ValueDecimal(Math.E).withInfo("The mathematical constant e."));
-        result.put("MAXINT", new ValueInt(Long.MAX_VALUE).withInfo("The maximal int value"));
-        result.put("MININT", new ValueInt(Long.MIN_VALUE).withInfo("The minimal int value"));
+        result.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant pi."));
+        result.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant e."));
+        result.put("MAXINT", new ValueInt(Long.MAX_VALUE).withInfo("MAXINT\n\nThe maximal int value"));
+        result.put("MININT", new ValueInt(Long.MIN_VALUE).withInfo("MININT\n\nThe minimal int value"));
         return result;
     }
 

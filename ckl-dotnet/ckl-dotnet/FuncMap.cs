@@ -27,10 +27,13 @@ namespace CheckerLang
         public FuncMap() : base("map")
         {
             info = "map(obj)\r\n" +
+                   "map()\r\n" +
                    "\r\n" +
-                   "Converts the obj to a map, if possible.\r\n" +
+                   "Converts the obj to a map, if possible. If obj is omitted,\r\n" +
+                   "an empty map is returned.\r\n" +
                    "\r\n" +
-                   ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n";
+                   ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n" +
+                   ": map() ==> <<<>>>\r\n";
         }
         
         public override List<string> GetArgNames()

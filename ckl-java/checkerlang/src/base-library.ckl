@@ -20,7 +20,7 @@
 
 # this is the base library of the checkerlang language
 
-def checkerlang_version = "3.3.0";
+def checkerlang_version = "3.3.1";
 def checkerlang_platform = "java";
 
 "
@@ -167,31 +167,65 @@ def const(val) fn(a) val;
 
 "
 min(a, b, key = identity) 
+min(a, key = identity)
 
-Returns the minimum of the values a, b. The optional key parameter takes a
-function with one parameter, which is used to get the value from a and b
-that is used for the comparison. Default key is the identity function.
+Returns the minimum of the values a, b.
+
+Returns the mininmum value of the list a.
+
+The optional key parameter takes a function with one parameter, which
+is used to get the value from a and b that is used for the comparison.
+Default key is the identity function.
 
 : min(1, 2) ==> 1
 : min([1, 'z'], [2, 'a'], key = fn(x) x[1]) ==> [2, 'a']
+: min([1, 3, 2, 4, 2]) ==> 1
 "
-def min(a, b, key = identity) do
+def min(a, b = NULL, key = identity) do
+  if is_list(a) and is_null(b) then do
+    def m = a[0];
+    def k = key(m);
+    for item in a do
+      if key(item) < m then do
+        k = key(item);
+        m = item;
+      end;
+    end;
+    return m;
+  end;
   if key(a) < key(b) then a
   else b;
 end;
 
 
 "
-max(a, b, key = identity) 
+max(a, b, key = identity)
+max(a, key = identity)
 
-Returns the maximum of the values a, b. The optional key parameter takes a
-function with one parameter, which is used to get the value from a and b
-that is used for the comparison. Default key is the identity function.
+Returns the maximum of the values a, b.
+
+Returns the maximum value of the list a.
+
+The optional key parameter takes a function with one parameter, which
+is used to get the value from a and b that is used for the comparison.
+Default key is the identity function.
 
 : max(1, 2) ==> 2
 : max([1, 'z'], [2, 'a'], key = fn(x) x[1]) ==> [1, 'z']
+: max([1, 3, 2, 4, 2]) ==> 4
 "
-def max(a, b, key = identity) do
+def max(a, b = NULL, key = identity) do
+  if is_list(a) and is_null(b)then do
+    def m = a[0];
+    def k = key(m);
+    for item in a do
+      if key(item) > m then do
+        k = key(item);
+        m = item;
+      end;
+    end;
+    return m;
+  end;
   if key(a) > key(b) then a
   else b;
 end;
@@ -241,6 +275,45 @@ def first(lst) do
   if is_null(lst) then NULL
   if not is_list(lst) then error(string(lst) + " is not a list")
   else lst[0];
+end;
+
+
+"
+first_n(lst, n)
+
+Returns the first n elements of the list.
+
+: range(100) !> first_n(5) ==> [0, 1, 2, 3, 4]
+"
+def first_n(lst, n) do
+  lst !> sublist(0, n)
+end;
+
+
+"
+last(lst)
+
+Returns the last element of a list.
+
+: last([1, 2, 3]) ==> 3
+: last(NULL) ==> NULL
+"
+def last(lst) do
+  if is_null(lst) then NULL
+  if not is_list(lst) then error(string(lst) + " is not a list")
+  else lst[-1];
+end;
+
+
+"
+last_n(lst, n)
+
+Returns the last n elements of the list.
+
+: range(100) !> last_n(5) ==> [95, 96, 97, 98, 99]
+"
+def last_n(lst, n) do
+  lst !> sublist(-n)
 end;
 
 
@@ -379,20 +452,21 @@ end;
 
 
 "
-reduce(list, func)
+reduce(list, f)
 
-Reduces a list by successively applying the binary function func to
+Reduces a list by successively applying the binary function f to
 partial results and list elements.
 
 : reduce([1, 2, 3, 4], add) ==> 10
 "
-def reduce(list, func) do
+def reduce(list, f) do
+  if is_null(list) then return NULL
   if length(list) == 0 then error("Cannot reduce empty list")
   if length(list) == 1 then return list[0]
   else do
     def result = list[0];
     for element in sublist(list, 1) do
-      result = func(result, element)
+      result = f(result, element)
     end;
     result;
   end;
@@ -447,7 +521,7 @@ end;
 
 
 "
-grep(lst, pat)
+grep(lst, pat, key = identity)
 
 Returns the sublist of list lst, that contains only entries,
 that match the regular expression pattern pat.
@@ -457,13 +531,12 @@ are added to the pattern, so that the pattern matches partially.
 
 : grep(['one', 'two', 'three'], //e//) ==> ['one', 'three']
 : grep(['one', 'two', 'three'], //^one$//) ==> ['one']
+: grep(['1:2', '12:2', '123:3'], //2//, key = fn(x) split(x, ':')[1]) ==> ['1:2', '12:2']
 "
-def grep(lst, pat) do
+def grep(lst, pat, key = identity) do
   def pat_ = string(pat);
-  if not str_contains(pat_, '^') and not str_contains(pat_, '$') then do
-    pat_ = '^.*' + pat_ + '.*$';
-  end; 
-  return [element for element in lst if str_matches(element, pattern(pat_))]
+  if not str_contains(pat_, '^') and not str_contains(pat_, '$') then pat_ = '^.*' + pat_ + '.*$';
+  return [element for element in lst if str_matches(key(element), pattern(pat_))]
 end;
 
 
@@ -571,17 +644,19 @@ end;
 
 
 "
-join(sep, lst)
+join(lst, sep = ' ')
 
 Returns a string containing all elements of the list lst
 separated by the string sep.
 
+: join([1, 2, 3], '|') ==> '1|2|3'
+: join(['one', 'world'], '--') ==> 'one--world'
+: join([], '|') ==> ''
+: join([1], '|') ==> '1'
 : join('|', [1, 2, 3]) ==> '1|2|3'
-: join('--', ['one', 'world']) ==> 'one--world'
-: join('|', []) ==> ''
-: join('|', [1]) ==> '1'
 "
-def join(sep, lst) do
+def join(lst, sep) do
+    if type(lst) == "string" then [lst, sep] = [sep, lst];
     def result = "";
     for element in lst do
         result = result + sep + string(element);
@@ -618,17 +693,19 @@ end;
 
 
 "
-map_list(func, lst)
+map_list(lst, f)
 
 Returns a list where each element is the corresponding
 element of lst with func applied. Thus, the elements of
 the list are mapped using the function func to new values.
 
-: map_list(fn(x) 2 * x, [1, 2, 3]) ==> [2, 4, 6]
-: map_list(fn(x) '*' + x + '*', ['one', 'two', 'three']) ==> ['*one*', '*two*', '*three*']
+: map_list([1, 2, 3], fn(x) 2 * x) ==> [2, 4, 6]
+: ['one', 'two', 'three'] !> map_list(fn(x) '*' + x + '*') ==> ['*one*', '*two*', '*three*']
+: map_list(identity, [1, 2, 3]) ==> [1, 2, 3]
 "
-def map_list(func, lst) do
-    return [func(element) for element in lst];
+def map_list(lst, f) do
+    if type(lst) == 'func' then [f, lst] = [lst, f];
+    return [f(element) for element in lst];
 end;
 
 
@@ -749,10 +826,10 @@ If the map m contains the key k, then the corresponding
 value is returned. Otherwise, the default_value is
 returned.
 
-: map_get(map([['a', 1], ['b', 2]]), 'a') ==> 1
-: map_get(map([['a', 1], ['b', 2]]), 'b') ==> 2
-: map_get(map([['a', 1], ['b', 2]]), 'c') ==> NULL
-: map_get(map([['a', 1], ['b', 2]]), 'c', default_value = 9) ==> 9
+: map_get(<<<a => 1, b => 2>>>, 'a') ==> 1
+: map_get(<<<a => 1, b => 2>>>, 'b') ==> 2
+: map_get(<<<a => 1, b => 2>>>, 'c') ==> NULL
+: map_get(<<<a => 1, b => 2>>>, 'c', default_value = 9) ==> 9
 "
 def map_get(m, k, default_value=NULL) do
     if k in m then m[k] else default_value;
@@ -771,11 +848,11 @@ If more than one pattern matches the key k, then it is
 undefined, which pattern is selected for retrieving its
 value.
 
-: map_get_pattern(map([[//[ab]//, 1], [//[cd]//, 2]]), 'a') ==> 1
-: map_get_pattern(map([[//[ab]//, 1], [//[cd]//, 2]]), 'b') ==> 1
-: map_get_pattern(map([[//[ab]//, 1], [//[cd]//, 2]]), 'c') ==> 2
-: map_get_pattern(map([[//[ab]//, 1], [//[cd]//, 2]]), 'd') ==> 2
-: map_get_pattern(map([[//[ab]//, 1], [//[cd]//, 2]]), 'e') ==> NULL
+: map_get_pattern(<<<//[ab]// => 1, //[cd]// => 2>>>, 'a') ==> 1
+: map_get_pattern(<<<//[ab]// => 1, //[cd]// => 2>>>, 'b') ==> 1
+: map_get_pattern(<<<//[ab]// => 1, //[cd]// => 2>>>, 'c') ==> 2
+: map_get_pattern(<<<//[ab]// => 1, //[cd]// => 2>>>, 'd') ==> 2
+: map_get_pattern(<<<//[ab]// => 1, //[cd]// => 2>>>, 'e') ==> NULL
 "
 def map_get_pattern(m, k, default_value=NULL) do
     for pattern in set(m) if str_matches(k, pattern) then return m[pattern];
@@ -808,7 +885,7 @@ Typically, you would use this in a for loop, e.g.
   end;
 
 : enumerate(['a', 'b', 'c']) ==> [[0, 'a'], [1, 'b'], [2, 'c']]
-: enumerate(map([['a', 5], ['b', 6], ['c', 7]])) ==> [['a', 5], ['b', 6], ['c', 7]]
+: enumerate(<<<a => 5, b => 6, c => 7>>>) ==> [['a', 5], ['b', 6], ['c', 7]]
 "
 def enumerate(obj) do
     if is_list(obj) then [[i, obj[i]] for i in range(length(obj))]
@@ -990,30 +1067,6 @@ def read_file(filename, encoding = 'utf-8') do
   finally
       close(infile);
   end;
-end;
-
-
-"
-top_n(lst, n)
-
-Returns the top n elements of the list.
-
-: range(100) !> top_n(5) ==> [0, 1, 2, 3, 4]
-"
-def top_n(lst, n) do
-  lst !> sublist(0, n)
-end;
-
-
-"
-bottom_n(lst, n)
-
-Returns the bottom n elements of the list.
-
-: range(100) !> bottom_n(5) ==> [95, 96, 97, 98, 99]
-"
-def bottom_n(lst, n) do
-  lst !> sublist(length(lst) - n)
 end;
 
 

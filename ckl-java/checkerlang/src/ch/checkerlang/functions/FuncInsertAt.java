@@ -41,6 +41,8 @@ public class FuncInsertAt extends FuncBase {
                 ": insert_at([1, 2, 3], 0, 9) ==> [9, 1, 2, 3]\r\n" +
                 ": insert_at([1, 2, 3], 2, 9) ==> [1, 2, 9, 3]\r\n" +
                 ": insert_at([1, 2, 3], 3, 9) ==> [1, 2, 3, 9]\r\n" +
+                ": insert_at([1, 2, 3], -1, 9) ==> [1, 2, 3, 9]\r\n" +
+                ": insert_at([1, 2, 3], -2, 9) ==> [1, 2, 9, 3]\r\n" +
                 ": insert_at([1, 2, 3], 4, 9) ==> [1, 2, 3]\r\n";
     }
 
@@ -50,17 +52,17 @@ public class FuncInsertAt extends FuncBase {
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
         Value lst = args.get("lst");
+
+        if (!lst.isList()) throw new ControlErrorException("Cannot insert into obj of type " + lst.type(), pos);
+
         int index = (int) args.getInt("index").getValue();
+        if (index < 0) index = lst.asList().getValue().size() + index + 1;
         Value value = args.get("value");
 
-        if (lst.isList()) {
-            List<Value> list = lst.asList().getValue();
-            if (index < 0 || index > list.size()) return lst;
-            if (index == list.size()) list.add(value);
-            else list.add(index, value);
-            return lst;
-        }
-
-        throw new ControlErrorException("Cannot insert into " + lst, pos);
+        List<Value> list = lst.asList().getValue();
+        if (index < 0 || index > list.size()) return lst;
+        if (index == list.size()) list.add(value);
+        else list.add(index, value);
+        return lst;
     }
 }

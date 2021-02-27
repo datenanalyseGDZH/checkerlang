@@ -160,10 +160,10 @@ export class Environment {
         Environment.add(result, new FuncZip());
         Environment.add(result, new FuncZipMap());
         result.put("NULL", ValueNull.NULL);
-        result.put("PI", new ValueDecimal(Math.PI).withInfo("The mathematical constant pi."));
-        result.put("E", new ValueDecimal(Math.E).withInfo("The mathematical constant e."));
-        result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("The maximal int value"));
-        result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("The minimal int value"));
+        result.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant pi."));
+        result.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant e."));
+        result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
+        result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
         result.put("checkerlang_version", new ValueString(checkerlang_version));
         result.put("checkerlang_platform", new ValueString(checkerlang_platform));
         return result;
@@ -1174,6 +1174,8 @@ export class FuncInsertAt extends ValueFunc {
                 ": insert_at([1, 2, 3], 0, 9) ==> [9, 1, 2, 3]\r\n" +
                 ": insert_at([1, 2, 3], 2, 9) ==> [1, 2, 9, 3]\r\n" +
                 ": insert_at([1, 2, 3], 3, 9) ==> [1, 2, 3, 9]\r\n" +
+                ": insert_at([1, 2, 3], -1, 9) ==> [1, 2, 3, 9]\r\n" +
+                ": insert_at([1, 2, 3], -2, 9) ==> [1, 2, 9, 3]\r\n" +
                 ": insert_at([1, 2, 3], 4, 9) ==> [1, 2, 3]\r\n";
     }
 
@@ -1183,14 +1185,14 @@ export class FuncInsertAt extends ValueFunc {
 
     execute(args, environment, pos) {
         const lst = args.get("lst");
-        const index = args.getInt("index");
+
+        if (!lst.isList()) throw new RuntimeError("Cannot delete from obj of type " + lst.type(), pos);
+
+        let index = args.getInt("index");
+        if (index.value < 0) index = new ValueInt(lst.value.length + index.value + 1);
         const value = args.get("value");
 
-        if (lst.isList()) {
-            return lst.insertAt(index, value);
-        }
-
-        throw new RuntimeError("Cannot delete from " + lst, pos);
+        return lst.insertAt(index, value);
     }
 }
 
@@ -1525,11 +1527,14 @@ export class FuncLs extends ValueFunc {
 export class FuncMap extends ValueFunc {
     constructor() {
         super("map");
-        this.info = "map(obj = NULL)\r\n" +
-                "\r\n" +
-                "Converts the obj to a map, if possible.\r\n" +
-                "\r\n" +
-                ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n";
+        this.info = "map(obj)\r\n" +
+                    "map()\r\n" +
+                    "\r\n" +
+                    "Converts the obj to a map, if possible. If obj is omitted,\r\n" +
+                    "an empty map is returned.\r\n" +
+                    "\r\n" +
+                    ": map([[1, 2], [3, 4]]) ==> <<<1 => 2, 3 => 4>>>\r\n" +
+                    ": map() ==> <<<>>>\r\n";
     }
 
     getArgNames() {
@@ -2238,7 +2243,7 @@ export class FuncRemove extends ValueFunc {
             return lst;
         }
 
-        throw new RuntimeError("Cannot remove from " + lst, pos);
+        throw new RuntimeError("Cannot remove from " + lst.type(), pos);
     }
 }
 
@@ -2332,6 +2337,12 @@ export class FuncS extends ValueFunc {
             const idx2 = str.indexOf('}', idx1 + 1);
             if (idx2 == -1) return new ValueString(str);
             const variable = str.substring(idx1 + 1, idx2);
+            // TODO handle suffixes that direct formatting
+            // TODO abc>3 => format to length 3 with leading spaces ( 12)
+            // TODO abc>-3 => format to length 3 with trailing spaces (12 )
+            // TODO abc>03 => format to length 3 with leading zeroes (012)
+            // TODO abc>.3 => format to three fractional digits (12.345)
+            // TODO abc>06.2 => format to width 6 and include two fractional digits (012.34)
             const value = environment.get(variable, pos).asString().value;
             str = str.substring(0, idx1) + value + str.substring(idx2 + 1);
             start = idx1 + value.length;

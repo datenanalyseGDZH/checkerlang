@@ -193,6 +193,7 @@ namespace CheckerLang
             Add(result, new FuncIfNull());
             Add(result, new FuncIfNullOrEmpty());
             Add(result, new FuncInfo());
+            Add(result, new FuncInsertAt());
             Add(result, new FuncInt());
             Add(result, new FuncIsEmpty());
             Add(result, new FuncIsNotEmpty());
@@ -226,6 +227,7 @@ namespace CheckerLang
             Add(result, new FuncRead());
             Add(result, new FuncReadall());
             Add(result, new FuncReadln());
+            Add(result, new FuncRemove());
             Add(result, new FuncReplace());
             Add(result, new FuncRound());
             Add(result, new FuncS());
@@ -257,12 +259,12 @@ namespace CheckerLang
                 Add(result, new FuncClose());
             }
             result.Put("NULL", ValueNull.NULL);
-            result.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("The mathematical constant pi."));
-            result.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("The mathematical constant e."));
-            result.Put("MAXINT", new ValueInt(long.MaxValue).WithInfo("The maximal int value"));
-            result.Put("MININT", new ValueInt(long.MinValue).WithInfo("The minimal int value"));
-            result.Put("MAXDECIMAL", new ValueDecimal(decimal.MaxValue).WithInfo("The maximal decimal value"));
-            result.Put("MINDECIMAL", new ValueDecimal(decimal.MinValue).WithInfo("The minimal decimal value"));
+            result.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("PI\n\nThe mathematical constant pi."));
+            result.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("E\n\nThe mathematical constant e."));
+            result.Put("MAXINT", new ValueInt(long.MaxValue).WithInfo("MAXINT\n\nThe maximal int value"));
+            result.Put("MININT", new ValueInt(long.MinValue).WithInfo("MININT\n\nThe minimal int value"));
+            result.Put("MAXDECIMAL", new ValueDecimal(decimal.MaxValue).WithInfo("MAXDECIMAL\n\nThe maximal decimal value"));
+            result.Put("MINDECIMAL", new ValueDecimal(decimal.MinValue).WithInfo("MINDECIMAL\n\nThe minimal decimal value"));
             var v = Assembly.GetAssembly(typeof(Environment)).GetName().Version;
             var version = new ValueString(v.Major + "." + v.Minor + "." + v.Build);
             result.Put("checkerlang_version", version);

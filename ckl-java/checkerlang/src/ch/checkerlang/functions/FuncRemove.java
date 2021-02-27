@@ -73,6 +73,6 @@ public class FuncRemove extends FuncBase {
             return lst;
         }
 
-        throw new ControlErrorException("Cannot remove from " + lst, pos);
+        throw new ControlErrorException("Cannot remove from " + lst.type(), pos);
     }
 }
