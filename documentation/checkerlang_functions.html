@@ -1954,10 +1954,31 @@ Returns a string, where all placeholders are replaced with their
 appropriate values. Placeholder have the form '{var}' and result
 in the value of the variable var inserted at this location.
 </pre><p>
+The placeholder can also be expressions and their result will
+be inserted instead of the placeholder.
+</pre><p>
+There are formatting suffixes to the placeholder, which allow
+some control over the formatting. They formatting spec starts after
+a # character and consists of align/fill, width and precision fields.
+For example #06.2 will format the decimal to a width of six characters
+and uses two digits after the decimal point. If the number is less than
+six characters wide, then it is prefixed with zeroes until the width
+is reached, e.g. '001.23'. Please refer to the examples below.
+</pre><p>
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'> def name = 'damian'; s('hello {name}') ==&gt; 'hello damian'</div>
 <div class='example'> def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==&gt; '{bar}baz'</div>
+<div class='example'> def a = 'abc'; s('"{a#-8}"') ==&gt; '"abc     "'</div>
+<div class='example'> def a = 'abc'; s('"{a#8}"') ==&gt; '"     abc"'</div>
+<div class='example'> def a = 'abc'; s('a = {a#5}') ==&gt; 'a =   abc'</div>
+<div class='example'> def a = 'abc'; s('a = {a#-5}') ==&gt; 'a = abc  '</div>
+<div class='example'> def n = 12; s('n = {n#5}') ==&gt; 'n =    12'</div>
+<div class='example'> def n = 12; s('n = {n#-5}') ==&gt; 'n = 12   '</div>
+<div class='example'> def n = 12; s('n = {n#05}') ==&gt; 'n = 00012'</div>
+<div class='example'> def n = 1.2345678; s('n = {n#.2}') ==&gt; 'n = 1.23'</div>
+<div class='example'> def n = 1.2345678; s('n = {n#06.2}') ==&gt; 'n = 001.23'</div>
+<div class='example'> s('2x3 = {2*3}') ==&gt; '2x3 = 6'</div>
 <div class='example'> s('{PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
 </pre><p>
 </div></p>

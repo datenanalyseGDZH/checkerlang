@@ -2317,17 +2317,29 @@ export class FuncS extends ValueFunc {
                 "appropriate values. Placeholder have the form '{var}' and result\r\n" +
                 "in the value of the variable var inserted at this location.\r\n" +
                 "\r\n" +
+                "The placeholder can also be expressions and their result will\r\n" +
+                "be inserted instead of the placeholder.\r\n" +
+                "\r\n" +
+                "There are formatting suffixes to the placeholder, which allow\r\n" +
+                "some control over the formatting. They formatting spec starts after\r\n" +
+                "a # character and consists of align/fill, width and precision fields.\r\n" +
+                "For example #06.2 will format the decimal to a width of six characters\r\n" +
+                "and uses two digits after the decimal point. If the number is less than\r\n" +
+                "six characters wide, then it is prefixed with zeroes until the width\r\n" +
+                "is reached, e.g. '001.23'. Please refer to the examples below.\r\n" +
+                "\r\n" +
                 ": def name = 'damian'; s('hello {name}') ==> 'hello damian'\r\n" +
                 ": def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==> '{bar}baz'\r\n" +
-                ": def a = 'abc'; s('\"{a>-8}\"') ==> '\"abc     \"'\r\n" +
-                ": def a = 'abc'; s('\"{a>8}\"') ==> '\"     abc\"'\r\n" +
-                ": def a = 'abc'; s('a = {a>5}') ==> 'a =   abc'\r\n" +
-                ": def a = 'abc'; s('a = {a>-5}') ==> 'a = abc  '\r\n" +
-                ": def n = 12; s('n = {n>5}') ==> 'n =    12'\r\n" +
-                ": def n = 12; s('n = {n>-5}') ==> 'n = 12   '\r\n" +
-                ": def n = 12; s('n = {n>05}') ==> 'n = 00012'\r\n" +
-                ": def n = 1.2345678; s('n = {n>.2}') ==> 'n = 1.23'\r\n" +
-                ": def n = 1.2345678; s('n = {n>06.2}') ==> 'n = 001.23'\r\n" +
+                ": def a = 'abc'; s('\"{a#-8}\"') ==> '\"abc     \"'\r\n" +
+                ": def a = 'abc'; s('\"{a#8}\"') ==> '\"     abc\"'\r\n" +
+                ": def a = 'abc'; s('a = {a#5}') ==> 'a =   abc'\r\n" +
+                ": def a = 'abc'; s('a = {a#-5}') ==> 'a = abc  '\r\n" +
+                ": def n = 12; s('n = {n#5}') ==> 'n =    12'\r\n" +
+                ": def n = 12; s('n = {n#-5}') ==> 'n = 12   '\r\n" +
+                ": def n = 12; s('n = {n#05}') ==> 'n = 00012'\r\n" +
+                ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
+                ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
+                ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
                 ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -2350,7 +2362,7 @@ export class FuncS extends ValueFunc {
             let zeroes = false;
             let leading = true;
             let digits = -1;
-            const idx3 = variable.indexOf('>');
+            const idx3 = variable.indexOf('#');
             if (idx3 != -1) {
                 let spec = variable.substring(idx3 + 1);
                 variable = variable.substring(0, idx3);
@@ -2372,7 +2384,8 @@ export class FuncS extends ValueFunc {
                     width = Number(spec.substring(0, idx4));
                 }
             }
-            let value = environment.get(variable, pos).asString().value;
+            const node = Parser.parseScript(variable, pos.filename);
+            let value = node.evaluate(environment).asString().value;
             if (digits !== -1) value = Number(value).toFixed(digits);
             while (value.length < width) {
                 if (leading) value = ' ' + value;
