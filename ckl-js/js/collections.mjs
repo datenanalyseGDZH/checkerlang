@@ -39,7 +39,7 @@ function valuesCompare(valuea, valueb) {
 }
 
 function hashTableSize(itemCount) {
-    const prime_sizes = [17, 31, 61, 127, 251, 503, 1009, 2011, 4099, 8191, 16363, 33049, 68147];
+    const prime_sizes = [17, 31, 61, 127, 251, 503, 1009, 2011, 4099, 8191, 16363, 33049, 68147, 100057, 200297, 402403, 801709];
     let min_size = itemCount * 1.3;
     for (const size of prime_sizes) {
         if (min_size < size) return size;

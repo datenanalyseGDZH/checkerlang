@@ -400,14 +400,14 @@ export class NodeDerefAssign {
             const s = container.value;
             const i = Number(idx.value);
             if (i < 0) i = i + s.length;
-            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + s + "[" + i + "]", this.pos);
+            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             return new ValueString(s.substring(0, i) + value.value + s.substring(i + 1));
         }
         if (container instanceof ValueList) {
             const list = container.value;
             const i = Number(idx.value);
-            if (i < 0) i = i + s.length;
-            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + this.value + "[" + i + "]", this.pos);
+            if (i < 0) i = i + list.length;
+            if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
             list[i] = value;
             return container;
         }
@@ -551,7 +551,7 @@ export class NodeFor {
             }
             return result;
         }
-        throw new RuntimeError("Cannot iterate over " + list, this.pos);
+        throw new RuntimeError("Cannot iterate over " + list.type(), this.pos);
     }
 
     toString() {
@@ -580,7 +580,7 @@ export class NodeFuncall {
 
     evaluate(environment) {
         const fn = this.func.evaluate(environment);
-        if (!fn.isFunc()) throw new RuntimeError(fn + " is not a function", this.pos);
+        if (!fn.isFunc()) throw new RuntimeError(fn.type() + " is not a function", this.pos);
 
         const values = [];
         const names = [];
@@ -879,7 +879,7 @@ export class NodeListComprehension {
             if (this.conditionExpr != null) {
                 const condition = this.conditionExpr.evaluate(localEnv);
                 if (!(condition instanceof ValueBoolean)) {
-                    throw new RuntimeError("Condition must be boolean but got '" + condition + "'", this.pos);
+                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
                 }
                 if (condition.value) {
                     result.addItem(value);
