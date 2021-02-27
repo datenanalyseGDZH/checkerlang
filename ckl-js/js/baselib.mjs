@@ -1120,4 +1120,28 @@ def for_each(lst, func) do
   return NULL;
 end;
 
+
+"
+sprintf(fmt, args...)
+
+Formats a string format using the provided args. Each
+value can be referred to in the fmt string using the
+{0} syntax, where 0 means the first argument passed.
+
+This uses internally the s function. See there for
+an explanation of available formatting suffixes.
+
+: sprintf('{0} {1}', 1, 2) ==> '1 2'
+: sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'
+: sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '
+: sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'
+: sprintf('{0#.4}', PI) ==> '3.1416'
+"
+def sprintf(fmt, args...) do
+    for entry in enumerate(args...) do
+        fmt = fmt !> replace('{' + entry[0] + '}', '{x' + entry[1] + '}') !> replace('{' + entry[0] + '#', '{x' + entry[1] + '#');
+    end;
+    return s(fmt !> replace('{x', '{'));
+end;
+
 `;
