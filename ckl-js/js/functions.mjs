@@ -2319,6 +2319,15 @@ export class FuncS extends ValueFunc {
                 "\r\n" +
                 ": def name = 'damian'; s('hello {name}') ==> 'hello damian'\r\n" +
                 ": def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==> '{bar}baz'\r\n" +
+                ": def a = 'abc'; s('\"{a>-8}\"') ==> '\"abc     \"'\r\n" +
+                ": def a = 'abc'; s('\"{a>8}\"') ==> '\"     abc\"'\r\n" +
+                ": def a = 'abc'; s('a = {a>5}') ==> 'a =   abc'\r\n" +
+                ": def a = 'abc'; s('a = {a>-5}') ==> 'a = abc  '\r\n" +
+                ": def n = 12; s('n = {n>5}') ==> 'n =    12'\r\n" +
+                ": def n = 12; s('n = {n>-5}') ==> 'n = 12   '\r\n" +
+                ": def n = 12; s('n = {n>05}') ==> 'n = 00012'\r\n" +
+                ": def n = 1.2345678; s('n = {n>.2}') ==> 'n = 1.23'\r\n" +
+                ": def n = 1.2345678; s('n = {n>06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -2336,14 +2345,40 @@ export class FuncS extends ValueFunc {
             if (idx1 == -1) return new ValueString(str);
             const idx2 = str.indexOf('}', idx1 + 1);
             if (idx2 == -1) return new ValueString(str);
-            const variable = str.substring(idx1 + 1, idx2);
-            // TODO handle suffixes that direct formatting
-            // TODO abc>3 => format to length 3 with leading spaces ( 12)
-            // TODO abc>-3 => format to length 3 with trailing spaces (12 )
-            // TODO abc>03 => format to length 3 with leading zeroes (012)
-            // TODO abc>.3 => format to three fractional digits (12.345)
-            // TODO abc>06.2 => format to width 6 and include two fractional digits (012.34)
-            const value = environment.get(variable, pos).asString().value;
+            let variable = str.substring(idx1 + 1, idx2);
+            let width = 0;
+            let zeroes = false;
+            let leading = true;
+            let digits = -1;
+            const idx3 = variable.indexOf('>');
+            if (idx3 != -1) {
+                let spec = variable.substring(idx3 + 1);
+                variable = variable.substring(0, idx3);
+                if (spec.startsWith('-')) {
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                if (spec.startsWith('0')) {
+                    zeroes = true;
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                const idx4 = spec.indexOf('.');
+                if (idx4 == -1) {
+                    digits = -1;
+                    width = Number(spec);
+                } else {
+                    digits = Number(spec.substring(idx4 + 1));
+                    width = Number(spec.substring(0, idx4));
+                }
+            }
+            let value = environment.get(variable, pos).asString().value;
+            if (digits !== -1) value = Number(value).toFixed(digits);
+            while (value.length < width) {
+                if (leading) value = ' ' + value;
+                else if (zeroes) value = '0' + value;
+                else value = value + ' ';
+            }
             str = str.substring(0, idx1) + value + str.substring(idx2 + 1);
             start = idx1 + value.length;
         }

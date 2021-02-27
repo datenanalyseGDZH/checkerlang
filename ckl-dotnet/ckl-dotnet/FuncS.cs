@@ -18,6 +18,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -35,6 +37,13 @@ namespace CheckerLang
                    "\r\n" +
                    ": def name = 'damian'; s('hello {name}') ==> 'hello damian'\r\n" +
                    ": def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==> '{bar}baz'\r\n" +
+                   ": def a = 'abc'; s('a = {a>5}') ==> 'a =   abc'\r\n" +
+                   ": def a = 'abc'; s('a = {a>-5}') ==> 'a = abc  '\r\n" +
+                   ": def n = 12; s('n = {n>5}') ==> 'n =    12'\r\n" +
+                   ": def n = 12; s('n = {n>-5}') ==> 'n = 12   '\r\n" +
+                   ": def n = 12; s('n = {n>05}') ==> 'n = 00012'\r\n" +
+                   ": def n = 1.2345678; s('n = {n>.2}') ==> 'n = 1.23'\r\n" +
+                   ": def n = 1.2345678; s('n = {n>06.2}') ==> 'n = 001.23'\r\n" +
                    ": s('{PI} is cool') ==> '3.14159265358979 is cool'\r\n";
         }
         
@@ -55,7 +64,39 @@ namespace CheckerLang
                 var idx2 = str.IndexOf('}', idx1 + 1);
                 if (idx2 == -1) return new ValueString(str);
                 var variable = str.Substring(idx1 + 1, idx2 - idx1 - 1);
+                var width = 0;
+                var zeroes = false;
+                var leading = true;
+                var digits = -1;
+                int idx3 = variable.IndexOf('>');
+                if (idx3 != -1) {
+                    var spec = variable.Substring(idx3 + 1);
+                    variable = variable.Substring(0, idx3);
+                    if (spec.StartsWith("-")) {
+                        leading = false;
+                        spec = spec.Substring(1);
+                    }
+                    if (spec.StartsWith("0")) {
+                        zeroes = true;
+                        leading = false;
+                        spec = spec.Substring(1);
+                    }
+                    int idx4 = spec.IndexOf('.');
+                    if (idx4 == -1) {
+                        digits = -1;
+                        width = int.Parse(spec);
+                    } else {
+                        digits = int.Parse(spec.Substring(idx4 + 1));
+                        width = idx4 == 0 ? 0 : int.Parse(spec.Substring(0, idx4));
+                    }
+                }
                 var value = environment.Get(variable, pos).AsString().GetValue();
+                if (digits != -1) value = string.Format("{0:f" + digits + "}", decimal.Parse(value));
+                while (value.Length < width) {
+                    if (leading) value = ' ' + value;
+                    else if (zeroes) value = '0' + value;
+                    else value = value + ' ';
+                }
                 str = str.Substring(0, idx1) + value + str.Substring(idx2 + 1);
                 start = idx1 + value.Length;
             }

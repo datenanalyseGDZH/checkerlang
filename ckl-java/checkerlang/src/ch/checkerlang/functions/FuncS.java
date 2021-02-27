@@ -41,6 +41,13 @@ public class FuncS extends FuncBase {
                 "\r\n" +
                 ": def name = 'damian'; s('hello {name}') ==> 'hello damian'\r\n" +
                 ": def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==> '{bar}baz'\r\n" +
+                ": def a = 'abc'; s('a = {a>5}') ==> 'a =   abc'\r\n" +
+                ": def a = 'abc'; s('a = {a>-5}') ==> 'a = abc  '\r\n" +
+                ": def n = 12; s('n = {n>5}') ==> 'n =    12'\r\n" +
+                ": def n = 12; s('n = {n>-5}') ==> 'n = 12   '\r\n" +
+                ": def n = 12; s('n = {n>05}') ==> 'n = 00012'\r\n" +
+                ": def n = 1.2345678; s('n = {n>.2}') ==> 'n = 1.23'\r\n" +
+                ": def n = 1.2345678; s('n = {n>06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -59,7 +66,39 @@ public class FuncS extends FuncBase {
             int idx2 = str.indexOf('}', idx1 + 1);
             if (idx2 == -1) return new ValueString(str);
             String var = str.substring(idx1 + 1, idx2);
+            int width = 0;
+            boolean zeroes = false;
+            boolean leading = true;
+            int digits = -1;
+            int idx3 = var.indexOf('>');
+            if (idx3 != -1) {
+                String spec = var.substring(idx3 + 1);
+                var = var.substring(0, idx3);
+                if (spec.startsWith("-")) {
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                if (spec.startsWith("0")) {
+                    zeroes = true;
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                int idx4 = spec.indexOf('.');
+                if (idx4 == -1) {
+                    digits = -1;
+                    width = Integer.parseInt(spec);
+                } else {
+                    digits = Integer.parseInt(spec.substring(idx4 + 1));
+                    width = idx4 == 0 ? 0 : Integer.parseInt(spec.substring(0, idx4));
+                }
+            }
             String value = environment.get(var, pos).asString().getValue();
+            if (digits != -1) value = String.format("%." + digits + "f", Double.parseDouble(value));
+            while (value.length() < width) {
+                if (leading) value = ' ' + value;
+                else if (zeroes) value = '0' + value;
+                else value = value + ' ';
+            }
             str = str.substring(0, idx1) + value + str.substring(idx2 + 1);
             start = idx1 + value.length();
         }
