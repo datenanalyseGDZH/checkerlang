@@ -877,16 +877,20 @@ export class ValueList extends Value {
     }
 
     deleteAt(index) {
-        if (index < 0 || index >= this.value.length) return ValueNull.NULL;
-        const result = this.value[index];
-        this.value.splice(index, 1);
+        let idx = index;
+        if (idx < 0) idx = this.value.length + idx;
+        if (idx >= this.value.length) return ValueNull.NULL;
+        const result = this.value[idx];
+        this.value.splice(idx, 1);
         return result;
     }
 
     insertAt(index, value) {
-        if (index < 0 || index > this.value.length) return this;
-        if (index === this.value.length) this.value.push(value);
-        else this.value.splice(index, 0, value);
+        let idx = index;
+        if (idx < 0) idx = this.value.length + idx;
+        if (idx > this.value.length) return this;
+        if (idx === this.value.length) this.value.push(value);
+        else this.value.splice(idx, 0, value);
         return this;
     }
 

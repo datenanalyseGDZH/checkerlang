@@ -325,7 +325,7 @@ export class FuncAdd extends ValueFunc {
             return new ValueString(a.asString().value + b.asString().value);
         }
 
-        throw new RuntimeError("Cannot add " + a + " and " + b, pos);
+        throw new RuntimeError("Cannot add " + a.type() + " and " + b.type(), pos);
     }
 }
 
@@ -359,7 +359,7 @@ export class FuncAppend extends ValueFunc {
             return lst;
         }
 
-        throw new RuntimeError("Cannot append to " + lst, pos);
+        throw new RuntimeError("Cannot append to " + lst.type(), pos);
     }
 }
 
@@ -489,7 +489,7 @@ export class FuncClose extends ValueFunc {
             }
             return ValueNull.NULL;
         }
-        throw new RuntimeError("Cannot close " + conn, pos);
+        throw new RuntimeError("Cannot close " + conn.type(), pos);
     }
 }
 
@@ -631,6 +631,7 @@ export class FuncDeleteAt extends ValueFunc {
                 "NULL, if no element was removed\r\n" +
                 "\r\n" +
                 ": delete_at(['a', 'b', 'c', 'd'], 2) ==> 'c'\r\n" +
+                ": delete_at(['a', 'b', 'c', 'd'], -3) ==> 'b'\r\n" +
                 ": def lst = ['a', 'b', 'c', 'd']; delete_at(lst, 2); lst ==> ['a', 'b', 'd']\r\n" +
                 ": delete_at(['a', 'b', 'c', 'd'], 4) ==> NULL\r\n";
     }
@@ -641,13 +642,13 @@ export class FuncDeleteAt extends ValueFunc {
 
     execute(args, environment, pos) {
         const lst = args.get("lst");
-        const index = args.getInt("index");
+        const index = args.getInt("index").value;
 
         if (lst.isList()) {
             return lst.deleteAt(index);
         }
 
-        throw new RuntimeError("Cannot delete from " + lst, pos);
+        throw new RuntimeError("Cannot delete from " + lst.type(), pos);
     }
 }
 
@@ -698,7 +699,7 @@ export class FuncDiv extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value / divisor);
         }
 
-        throw new RuntimeError("Cannot divide " + a + " by " + b, pos);
+        throw new RuntimeError("Cannot divide " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -801,7 +802,7 @@ export class FuncEval extends ValueFunc {
             const node = Parser.parseScript(s, pos.filename);
             return node.evaluate(environment);
         } catch (e) {
-            throw new RuntimeError("Cannot evaluate " + s, pos);
+            throw new RuntimeError("Cannot evaluate expression", pos);
         }
     }
 }
@@ -1186,10 +1187,10 @@ export class FuncInsertAt extends ValueFunc {
     execute(args, environment, pos) {
         const lst = args.get("lst");
 
-        if (!lst.isList()) throw new RuntimeError("Cannot delete from obj of type " + lst.type(), pos);
+        if (!lst.isList()) throw new RuntimeError("Cannot insert into " + lst.type(), pos);
 
-        let index = args.getInt("index");
-        if (index.value < 0) index = new ValueInt(lst.value.length + index.value + 1);
+        let index = args.getInt("index").value;
+        if (index < 0) index = lst.value.length + index + 1;
         const value = args.get("value");
 
         return lst.insertAt(index, value);
@@ -1395,7 +1396,7 @@ export class FuncLength extends ValueFunc {
         if (arg.isList()) return new ValueInt(arg.value.length);
         if (arg.isSet()) return new ValueInt(arg.value.size);
         if (arg.isMap()) return new ValueInt(arg.value.size);
-        throw new RuntimeError("Cannot determine length of " + arg, pos);
+        throw new RuntimeError("Cannot determine length of " + arg.type(), pos);
     }
 }
 
@@ -1598,7 +1599,7 @@ export class FuncMod extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value % b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot calculate modulus of " + a + " by " + b, pos);
+        throw new RuntimeError("Cannot calculate modulus of " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -1653,7 +1654,7 @@ export class FuncMul extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value * b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot multiply " + a + " by " + b, pos);
+        throw new RuntimeError("Cannot multiply " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -2744,7 +2745,7 @@ export class FuncSub extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value - b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot subtract " + b + " from " + a, pos);
+        throw new RuntimeError("Cannot subtract " + b.type() + " from " + a.type(), pos);
     }
 }
 
@@ -2865,7 +2866,7 @@ export class FuncSum extends ValueFunc {
                 result += value.value;
                 decimalrequired = true;
             } else {
-                throw new RuntimeError("Cannot sum " + value, pos);
+                throw new RuntimeError("Cannot sum " + value.type(), pos);
             }
         }
 
@@ -3011,7 +3012,7 @@ export class FuncZip extends ValueFunc {
             return result;
         }
 
-        throw new RuntimeError("Cannot zip " + a + " and " + b, pos);
+        throw new RuntimeError("Cannot zip " + a.type() + " and " + b.type(), pos);
     }
 }
 
@@ -3049,6 +3050,6 @@ export class FuncZipMap extends ValueFunc {
             return result;
         }
 
-        throw new RuntimeError("Cannot zip_map " + a + " and " + b, pos);
+        throw new RuntimeError("Cannot zip_map " + a.type() + " and " + b.type(), pos);
     }
 }

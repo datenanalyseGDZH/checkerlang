@@ -40,6 +40,7 @@ public class FuncDeleteAt extends FuncBase {
                 "NULL, if no element was removed\r\n" +
                 "\r\n" +
                 ": delete_at(['a', 'b', 'c', 'd'], 2) ==> 'c'\r\n" +
+                ": delete_at(['a', 'b', 'c', 'd'], -3) ==> 'b'\r\n" +
                 ": def lst = ['a', 'b', 'c', 'd']; delete_at(lst, 2); lst ==> ['a', 'b', 'd']\r\n" +
                 ": delete_at(['a', 'b', 'c', 'd'], 4) ==> NULL\r\n";
     }
@@ -54,10 +55,11 @@ public class FuncDeleteAt extends FuncBase {
 
         if (lst.isList()) {
             List<Value> list = lst.asList().getValue();
-            if (index < 0 || index >= list.size()) return ValueNull.NULL;
+            if (index < 0) index = list.size() + index;
+            if (index >= list.size()) return ValueNull.NULL;
             return list.remove(index);
         }
 
-        throw new ControlErrorException("Cannot delete from " + lst, pos);
+        throw new ControlErrorException("Cannot delete from " + lst.type(), pos);
     }
 }

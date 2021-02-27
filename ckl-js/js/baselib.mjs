@@ -229,7 +229,7 @@ Returns the absolute value of n.
 "
 def abs(n) do
   if is_null(n) then NULL
-  if not is_numeric(n) then error(string(n) + " is not numerical")
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
   if n < 0 then - n
   else n;
 end;
@@ -244,7 +244,7 @@ Returns the signum of n
 "
 def sign(n) do
   if is_null(n) then NULL
-  if not is_numeric(n) then error(string(n) + " is not numerical")
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
   if n < 0 then -1
   if n > 0 then 1
   else 0;
@@ -261,7 +261,7 @@ Returns the first element of a list.
 "
 def first(lst) do
   if is_null(lst) then NULL
-  if not is_list(lst) then error(string(lst) + " is not a list")
+  if not is_list(lst) then error("argument is not a list (" + type(lst) + ")")
   else lst[0];
 end;
 
@@ -288,7 +288,7 @@ Returns the last element of a list.
 "
 def last(lst) do
   if is_null(lst) then NULL
-  if not is_list(lst) then error(string(lst) + " is not a list")
+  if not is_list(lst) then error("argument is not a list (" + type(lst) + ")")
   else lst[-1];
 end;
 
@@ -443,7 +443,7 @@ Returns a reversed copy of a string or a list.
 def reverse(obj) do
   if is_string(obj) then reverse_string(obj)
   if is_list(obj) then reverse_list(obj)
-  else error("cannot reverse " + string(obj))
+  else error("cannot reverse " + type(obj))
 end;
 
 
@@ -514,7 +514,7 @@ The original string or list remain untouched.
 def substitute(obj, idx, value) do
   if is_string(obj) then substr(obj, 0, idx) + value + substr(obj, idx + 1)
   if is_list(obj) then sublist(obj, 0, idx) + value + sublist(obj, idx + 1)
-  else error('Cannot substitute in ' + string(obj))
+  else error('Cannot substitute in ' + type(obj))
 end;
 
 

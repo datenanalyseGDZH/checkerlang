@@ -177,6 +177,7 @@ namespace CheckerLang
             Add(result, new FuncCos());
             Add(result, new FuncDate());
             Add(result, new FuncDecimal());
+            Add(result, new FuncDeleteAt());
             Add(result, new FuncDiv());
             Add(result, new FuncDiv0());
             Add(result, new FuncEndsWith(), "str_ends_with");
