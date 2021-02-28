@@ -139,6 +139,11 @@ public class TestParser {
                 parse("[a, b] = [1, 2]"));
     }
 
+    @Test
+    public void TestPipeline()
+    {
+        Assert.assertEquals("(println (sprintf 0, 'part2: {0}'))", parse("0 !> sprintf(fmt=\"part2: {0}\") !> println()"));
+    }
 
     private String parse(String s) {
         try {

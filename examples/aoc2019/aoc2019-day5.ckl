@@ -1,0 +1,114 @@
+# advent of code day 5
+# https://adventofcode.com/2019/day/5
+
+def trace = FALSE;
+
+def parse_program(data) split(data, ",") !> map_list(int);
+def make_machine(data) <<<program => parse_program(data), ip => 0, halted => FALSE, input => [], output => []>>>;
+
+def mode_pos = 0;
+def mode_imm = 1;
+
+def parse_opcode(opcode) do
+    def s = string(opcode);
+    while length(s) < 5 do s = "0" + s; end;
+    [s !> substr(3, 5) !> int(),
+     s !> substr(2, 3) !> int(),
+     s !> substr(1, 2) !> int(),
+     s !> substr(0, 1) !> int()];
+end;
+
+def param_resolve(machine, param, mode) do
+    if mode == mode_pos then machine->program[machine->program[machine->ip + param]]
+    if mode == mode_imm then machine->program[machine->ip + param]
+    else error("unknown param mode " + mode);
+end;
+
+def step(machine) do
+    def prog = machine->program;
+    def [opcode, mode1, mode2, mode3] = parse_opcode(prog[machine->ip]);
+    if opcode == 99 then do
+        machine->halted = TRUE;
+    end if opcode == 1 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        if trace then println("add " + a + " + " + b + " store in " + prog[machine->ip + 3]);
+        prog[prog[machine->ip + 3]] = a + b;
+        machine->ip += 4;
+    end if opcode == 2 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        if trace then println("mul " + a + " * " + b + " store in " + prog[machine->ip + 3]);
+        prog[prog[machine->ip + 3]] = a * b;
+        machine->ip += 4;
+    end if opcode == 3 then do
+        def value = first(machine->input);
+        machine->input = rest(machine->input);
+        prog[prog[machine->ip + 1]] = value;
+        if trace then println("inp " + value + " store in " + prog[machine->ip + 1]);
+        machine->ip += 2;
+    end if opcode == 4 then do
+        def value = param_resolve(machine, 1, mode1);
+        machine->output !> append(value);
+        if trace then println("out " + value);
+        machine->ip += 2;
+    end if opcode == 5 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        if a != 0 then machine->ip = b
+        else machine->ip += 3;
+        if trace then println("jump-if-true " + a + " to " + b);
+    end if opcode == 6 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        if a == 0 then machine->ip = b
+        else machine->ip += 3;
+        if trace then println("jump-if-false " + a + " to " + b);
+    end if opcode == 7 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        prog[prog[machine->ip + 3]] = (if a < b then 1 else 0);
+        if trace then println("less " + a + " " + b + " store in " + prog[machine->ip + 3]);
+        machine->ip += 4;
+    end if opcode == 8 then do
+        def a = param_resolve(machine, 1, mode1);
+        def b = param_resolve(machine, 2, mode2);
+        prog[prog[machine->ip + 3]] = (if a == b then 1 else 0);
+        if trace then println("equals " + a + " " + b + " store in " + prog[machine->ip + 3]);
+        machine->ip += 4;
+    end;
+    machine;
+end;
+
+def execute(machine) do
+    while not machine->halted do machine = step(machine); end;
+end;
+
+def set_input(machine, values) do
+    machine->input = values;
+    machine;
+end;
+
+def get_output(machine, idx) machine->output[-1 - idx];
+
+
+# Part 1
+
+read_file("aoc2019-day5-input.txt") !>
+make_machine() !>
+set_input([1]) !>
+execute() !>
+get_output(0) !>
+sprintf(fmt="part1: {0}") !>
+println();
+
+
+# Part 2
+
+read_file("aoc2019-day5-input.txt") !>
+make_machine() !>
+set_input([5]) !>
+execute() !>
+get_output(0) !>
+sprintf(fmt="part2: {0}") !>
+println();

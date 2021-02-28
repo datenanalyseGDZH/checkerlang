@@ -746,6 +746,21 @@ namespace Tests
         {
             Verify("<<<'x' => 1, 'y' => 2>>>", "<<<x => 1, y => 2>>>");
         }
+
+        [Test]
+        public void testListComprehensionSimple() {
+            Verify("[0, 2, 4, 6, 8]", "[x * 2 for x in range(5)]");
+        }
+
+        [Test]
+        public void testListComprehensionWithCondition() {
+            Verify("[2, 6]", "[x * 2 for x in range(5) if x % 2 == 1]");
+        }
+
+        [Test]
+        public void testListComprehensionString() {
+            Verify("[1, 2, 3]", "[int(ch) for ch in '123']");
+        }
        
         private void Verify(string expected, string script)
         {

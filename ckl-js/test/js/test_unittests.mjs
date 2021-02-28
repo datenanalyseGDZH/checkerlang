@@ -134,6 +134,7 @@ parser_test("SpreadIdentifier", "f(a, ...b, c)", "(f a, ...b, c)");
 parser_test("SpreadList", "f(a, ...[1, 2], c)", "(f a, ...[1, 2], c)");
 parser_test("DefDestructure", "def [a, b] = [1, 2]", "(def [a,b] = [1, 2])");
 parser_test("AssignDestructure", "[a, b] = [1, 2]", "([a,b] = [1, 2])");
+parser_test("Pipeline", "0 !> sprintf(fmt=\"part2: {0}\") !> println()", "(println (sprintf 0, 'part2: {0}'))");
 
 
 function interpreter_test(description, code, expected) {

@@ -1056,7 +1056,7 @@ namespace CheckerLang
         }
 
         public Node Invoke(Lexer lexer, Node node) {
-            if (lexer.Peekn(1, "!>", TokenType.Operator)) 
+            while (lexer.Peekn(1, "!>", TokenType.Operator)) 
             {
                 node = this._invoke(lexer, node);
             }

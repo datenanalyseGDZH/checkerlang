@@ -179,6 +179,12 @@ namespace Tests
         {
             Assert.AreEqual("([a, b] = [1, 2])", Parse("[a, b] = [1, 2]"));
         }
+
+        [Test]
+        public void TestPipeline()
+        {
+            Assert.AreEqual("(println (sprintf 0, 'part2: {0}'))", Parse("0 !> sprintf(fmt=\"part2: {0}\") !> println()"));
+        }
         
         private static string Parse(string s)
         {

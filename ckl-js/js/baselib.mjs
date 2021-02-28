@@ -1132,6 +1132,7 @@ This uses internally the s function. See there for
 an explanation of available formatting suffixes.
 
 : sprintf('{0} {1}', 1, 2) ==> '1 2'
+: sprintf('{0} {1}', 'a', 'b') ==> 'a b'
 : sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'
 : sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '
 : sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'
@@ -1139,6 +1140,7 @@ an explanation of available formatting suffixes.
 "
 def sprintf(fmt, args...) do
     for entry in enumerate(args...) do
+        if is_string(entry[1]) then entry[1] = "'" + entry[1] + "'";
         fmt = fmt !> replace('{' + entry[0] + '}', '{x' + entry[1] + '}') !> replace('{' + entry[0] + '#', '{x' + entry[1] + '#');
     end;
     return s(fmt !> replace('{x', '{'));

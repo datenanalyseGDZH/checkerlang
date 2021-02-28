@@ -855,7 +855,7 @@ export class Parser {
     }
 
     invoke(lexer, node) {
-        if (lexer.peekn(1, "!>", "operator")) {
+        while (lexer.peekn(1, "!>", "operator")) {
             node = this._invoke(lexer, node);
         }
         return node;

@@ -1,0 +1,45 @@
+# advent of code day 4
+# https://adventofcode.com/2019/day/4
+
+# Part 1
+
+def is_valid_number_step1(n) do
+    def lastch = NULL;
+    def found_repetition = FALSE;
+    for ch in string(n) do
+        if lastch is not NULL and ch < lastch then return FALSE;
+        if ch == lastch then found_repetition = TRUE;
+        lastch = ch;
+    end;
+    return found_repetition;
+end;
+
+interval(240298, 784956) !>
+filter(is_valid_number_step1) !>
+length() !>
+sprintf(fmt="part1: {0}") !>
+println();
+
+
+# Part 2
+
+def is_valid_number_step2(n) do
+    def lastch = NULL;
+    def found_repetition = FALSE;
+    def rep_length = 1;
+    for ch in string(n) do
+        if lastch is not NULL and ch < lastch then return FALSE
+        if ch == lastch then rep_length += 1
+        if ch != lastch and rep_length == 2 then do found_repetition = TRUE; rep_length = 1; end
+        if ch != lastch then rep_length = 1;
+        lastch = ch;
+    end;
+    if rep_length == 2 then found_repetition = TRUE;
+    return found_repetition;
+end;
+
+interval(240298, 784956) !>
+filter(is_valid_number_step2) !>
+length() !>
+sprintf(fmt="part2: {0}") !>
+println();

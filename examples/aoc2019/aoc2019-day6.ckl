@@ -1,0 +1,69 @@
+# advent of code day 5
+# https://adventofcode.com/2019/day/5
+
+# Part 1
+
+def read_orbits() do
+    def result = map();
+    read_file("aoc2019-day6-input.txt") !>
+    lines() !>
+    map_list(fn(line) line !> split("\\)")) !>
+    for_each(fn(item) do 
+        if item[0] not in result then result[item[0]] = []; 
+        result[item[0]] !> append(item[1]); 
+    end);
+    return result;
+end;
+
+def orbits = read_orbits();
+
+def count_orbits(current = 'COM', level = 0) do
+    def children = orbits[current];
+    def result = length(children) + level * length(children);
+    for child in children do
+        if not child in orbits then continue;
+        result += count_orbits(child, level + 1);
+    end;
+    return result;
+end;
+
+count_orbits() !>
+sprintf(fmt="part1: {0}") !>
+println();
+
+# Part 2
+
+def read_orbits_bidirectional() do
+    def result = map();
+    read_file("aoc2019-day6-input.txt") !>
+    lines() !>
+    map_list(fn(line) line !> split("\\)")) !>
+    for_each(fn(item) do 
+        if item[0] not in result then result[item[0]] = []; 
+        result[item[0]] !> append(item[1]); 
+        if item[1] not in result then result[item[1]] = []; 
+        result[item[1]] !> append(item[0]); 
+    end);
+    return result;
+end;
+
+def orbits = read_orbits_bidirectional();
+
+def front = ['YOU'];
+def visited = [];
+def length = 0;
+while "SAN" not in front do
+    def newfront = [];
+    for planet in front do
+        if planet not in orbits then continue;
+        for nextplanet in orbits[planet] do
+            if nextplanet in visited then continue;
+            newfront !> append(nextplanet);
+        end;
+    end;
+    visited !> append_all(front);
+    front = newfront;
+    length += 1;
+end;
+
+println("part2: " + (length - 2));

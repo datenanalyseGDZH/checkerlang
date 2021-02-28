@@ -871,7 +871,7 @@ public class Parser {
     }
 
     public Node invoke(Lexer lexer, Node node) {
-        if (lexer.peekn(1, "!>", TokenType.Operator)) {
+        while (lexer.peekn(1, "!>", TokenType.Operator)) {
             node = this._invoke(lexer, node);
         }
         return node;

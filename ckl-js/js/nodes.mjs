@@ -873,6 +873,7 @@ export class NodeListComprehension {
         if (list.isList()) values = list.value;
         else if (list.isSet()) values = list.value.sortedValues();
         else if (list.isMap()) values = list.value.sortedEntries();
+        else if (list.isString()) values = list.value.split("");
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const value = this.valueExpr.evaluate(localEnv);

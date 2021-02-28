@@ -50,6 +50,14 @@ namespace CheckerLang
             var result = new ValueList();
             var localEnv = environment.NewEnv();
             var list = listExpr.Evaluate(environment);
+            if (list.IsString()) {
+                var s = list.AsString().GetValue();
+                var slist = new ValueList();
+                for (var i = 0; i < s.Length; i++) {
+                    slist.AddItem(new ValueString(s.Substring(i, 1)));
+                }
+                list = slist;
+            }
             foreach (var listValue in list.AsList().GetValue())
             {
                 localEnv.Put(identifier, listValue);
@@ -59,7 +67,7 @@ namespace CheckerLang
                     var condition = conditionExpr.Evaluate(localEnv);
                     if (!condition.IsBoolean())
                     {
-                        throw new ControlErrorException("Condition must be boolean but got '" + condition + "'", pos);
+                        throw new ControlErrorException("Condition must be boolean but got " + condition.Type(), pos);
                     }
                     if (condition.AsBoolean().GetValue())
                     {

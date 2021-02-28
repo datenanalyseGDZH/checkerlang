@@ -358,6 +358,11 @@ public class TestInterpreter {
     }
 
     @Test
+    public void testListComprehensionString() {
+        verify("[1, 2, 3]", "[int(ch) for ch in '123']");
+    }
+
+    @Test
     public void testFuncRange() {
         verify("[]", "range()");
         verify("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", "range(10)");
