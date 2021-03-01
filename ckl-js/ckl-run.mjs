@@ -59,10 +59,14 @@ try {
         process.stdout.write("\n");
     }
 } catch (e) {
-    let errortext = e.msg + (e.pos !== undefined ? " " + e.pos.toString() : "");
-    if ("stacktrace" in e) {
-        errortext += "\n\nStacktrace:\n" + e.stacktrace.join("\n")
+    if (e.msg !== undefined) {
+        let errortext = e.msg + (e.pos !== undefined ? " " + e.pos.toString() : "");
+        if ("stacktrace" in e) {
+            errortext += "\n\nStacktrace:\n" + e.stacktrace.join("\n")
+        }
+        process.stdout.write(errortext);
+        process.stdout.write("\n");
+    } else {
+        throw e;
     }
-    process.stdout.write(errortext);
-    process.stdout.write("\n");
 }

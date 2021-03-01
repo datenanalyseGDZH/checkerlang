@@ -375,7 +375,7 @@ export class NodeDeref {
     }
 
     toString() {
-        return "(" + expression + "[" + index + "])";
+        return "(" + this.expression + "[" + this.index + "])";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
