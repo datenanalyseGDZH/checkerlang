@@ -1148,6 +1148,17 @@ end;
 
 
 "
+printf(fmt, args...)
+
+Formats and prints a string format using the provided args.
+The string is printed to standard output.
+
+This is basically the combination of print and sprintf.
+"
+def printf(fmt, args...) print(sprintf(fmt, ...args...));
+
+
+"
 permutations(lst)
 
 Returns a list containing all permutations of the input list.
