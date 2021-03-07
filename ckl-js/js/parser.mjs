@@ -719,7 +719,13 @@ export class Parser {
 
     _invoke(lexer, node) {
         if (lexer.matchIf("!>", "operator")) {
-            const fn = new NodeIdentifier(lexer.matchIdentifier());
+            let fn = null;
+            if (lexer.matchIf(["(", "fn"], ["interpunction", "keyword"])) {
+                fn = this.parseFn(lexer, lexer.getPos());
+                lexer.match(")", "interpunction");
+            } else {
+                fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
+            }
             const call = new NodeFuncall(fn, lexer.getPos());
             call.addArg(null, node);
             lexer.match("(", "interpunction");

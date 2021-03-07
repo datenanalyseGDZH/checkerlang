@@ -630,6 +630,9 @@ public class TestInterpreter {
         verify("<<<'x' => 1, 'y' => 2>>>", "<<<x => 1, y => 2>>>");
     }
 
+    @Test
+    public void testPipelineLambda() { verify("3", "[1, 2, 3] !> (fn(lst) lst[2])()"); }
+
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {

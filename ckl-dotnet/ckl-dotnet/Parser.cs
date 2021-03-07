@@ -864,8 +864,14 @@ namespace CheckerLang
         {
             if (lexer.MatchIf("!>", TokenType.Operator)) 
             {
-                NodeIdentifier fn = new NodeIdentifier(lexer.MatchIdentifier(), lexer.GetPos());
-                NodeFuncall call = new NodeFuncall(fn, lexer.GetPos());
+                Node fn;
+                if (lexer.MatchIf("(", TokenType.Interpunction, "fn", TokenType.Keyword)) {
+                    fn = ParseFn(lexer, lexer.GetPos());
+                    lexer.Match(")", TokenType.Interpunction);
+                } else {
+                    fn = new NodeIdentifier(lexer.MatchIdentifier(), lexer.GetPos());
+                }
+                var call = new NodeFuncall(fn, lexer.GetPos());
                 call.AddArg(null, node);
                 lexer.Match("(", TokenType.Interpunction);
                 while (!lexer.Peekn(1, ")", TokenType.Interpunction)) 

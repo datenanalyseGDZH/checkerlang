@@ -183,15 +183,16 @@ Default key is the identity function.
 "
 def min(a, b = NULL, key = identity) do
   if is_list(a) and is_null(b) then do
-    def m = a[0];
-    def k = key(m);
+    def min_item = a[0];
+    def min_val = key(min_item);
     for item in a do
-      if key(item) < m then do
-        k = key(item);
-        m = item;
+      def val = key(item);
+      if val < min_val then do
+        min_val = val;
+        min_item = item;
       end;
     end;
-    return m;
+    return min_item;
   end;
   if key(a) < key(b) then a
   else b;
@@ -216,15 +217,16 @@ Default key is the identity function.
 "
 def max(a, b = NULL, key = identity) do
   if is_list(a) and is_null(b)then do
-    def m = a[0];
-    def k = key(m);
+    def max_item = a[0];
+    def max_val = key(max_item);
     for item in a do
-      if key(item) > m then do
-        k = key(item);
-        m = item;
+      def val = key(item);
+      if val > max_val then do
+        max_val = val;
+        max_item = item;
       end;
     end;
-    return m;
+    return max_item;
   end;
   if key(a) > key(b) then a
   else b;
@@ -1184,4 +1186,54 @@ def permutations(lst) do
     end;
     perms(lst, length(lst));
     result;
+end;
+
+
+"
+count(obj, elem)
+
+Returns the number of times, elem is contained in obj.
+Obj can be a string, list or map. If it is a map,
+then the values of the map, not the keys are checked.
+
+: count([1, 2, 2, 2, 3, 4], 2) ==> 3
+: count(<<<1 => 1, 1 => 2, 2 => 2, 3 => 3>>>, 2) ==> 2
+: count('122234', '2') ==> 3
+"
+def count(obj, elem) do
+    def result = 0;
+    for e in obj do
+        if e == elem then result += 1;
+    end;
+    return result;
+end;
+
+
+"
+chunks(obj, chunk_size)
+
+Splits the obj into a list where each item is of size chunk_size,
+except perhaps the last, which may be smaller. Obj can be a string
+or a list.
+
+: range(9) !> chunks(3) ==> [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+: range(10) !> chunks(3) ==> [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
+: 'abcdefghi' !> chunks(3) ==> ['abc', 'def', 'ghi']
+"
+def chunks(obj, chunk_size) do
+    def result = [];
+    if (is_list(obj)) then do
+      while length(obj) > chunk_size do
+        result !> append(obj !> sublist(0, chunk_size));
+        obj = obj !> sublist(chunk_size);
+      end;
+      result !> append(obj);
+    end if is_string(obj) then do
+      while length(obj) > chunk_size do
+          result !> append(obj !> substr(0, chunk_size));
+          obj = obj !> substr(chunk_size);
+      end;
+      result !> append(obj);
+    end else error("cannot split obj of type " + type(obj));
+    return result;
 end;

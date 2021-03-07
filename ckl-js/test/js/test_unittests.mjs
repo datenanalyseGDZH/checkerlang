@@ -353,6 +353,7 @@ interpreter_test("TestDoFinally1", "def a = 1; def b = 1; do a += 1; finally b +
 interpreter_test("TestDoFinally2", "def a = 1; def f(x) a = x + 1; def b = 1; do f(3); finally b += 2; end; [a, b]", "[4, 3]");
 interpreter_test("DerefProperty", "def a = <<<'x' => 1, 'y' => 2>>>; a->y", "2");
 interpreter_test("MapLiteralImplicitString", "<<<x => 1, y => 2>>>", "<<<'x' => 1, 'y' => 2>>>");
+interpreter_test("PipelineLambda", "[1, 2, 3] !> (fn(lst) lst[2])()", "3");
 
 
 function collectvars_test(description, code, expected) {

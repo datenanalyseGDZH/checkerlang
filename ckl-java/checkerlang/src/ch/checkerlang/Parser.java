@@ -730,7 +730,13 @@ public class Parser {
 
     private Node _invoke(Lexer lexer, Node node) {
         if (lexer.matchIf("!>", TokenType.Operator)) {
-            NodeIdentifier fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
+            Node fn;
+            if (lexer.matchIf("(", TokenType.Interpunction, "fn", TokenType.Keyword)) {
+                fn = parseFn(lexer, lexer.getPos());
+                lexer.match(")", TokenType.Interpunction);
+            } else {
+                fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
+            }
             NodeFuncall call = new NodeFuncall(fn, lexer.getPos());
             call.addArg(null, node);
             lexer.match("(", TokenType.Interpunction);

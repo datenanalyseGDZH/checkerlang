@@ -761,6 +761,12 @@ namespace Tests
         public void testListComprehensionString() {
             Verify("[1, 2, 3]", "[int(ch) for ch in '123']");
         }
+
+        [Test]
+        public void testPipelineLambda()
+        {
+            Verify("3", "[1, 2, 3] !> (fn(lst) lst[2])()");
+        }
        
         private void Verify(string expected, string script)
         {
