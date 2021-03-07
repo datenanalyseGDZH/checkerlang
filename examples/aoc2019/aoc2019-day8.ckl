@@ -1,0 +1,38 @@
+# advent of code day 8
+# https://adventofcode.com/2019/day/8
+
+
+def rows = 6;
+def cols = 25;
+
+# Part 1
+
+read_file("aoc2019-day8-input.txt") !>
+chunks(rows * cols) !>
+min(key = fn(layer) count(layer, '0')) !>
+(fn(layer) count(layer, '1') * count(layer, '2'))() !>
+printf(fmt = "part1: {0}\n");
+
+# Part 2
+
+def merge_layers(layer_a, layer_b) do
+    def result = [];
+    for i in range(length(layer_a)) do
+        def pixel_a = layer_a[i];
+        def pixel_b = layer_b[i];
+        if pixel_a in ['0', '1'] then result !> append(pixel_a)
+        else result !> append(pixel_b);
+    end;
+    result !> join("");
+end;
+
+def print_image(image) do
+    image = image !> replace('0', ' ') !> replace('1', '#') !> replace('2', ' ');
+    for chunk in chunks(image, cols) println(chunk);
+end;
+
+println("part2:");
+read_file("aoc2019-day8-input.txt") !>
+chunks(rows * cols) !>
+reduce(merge_layers) !>
+print_image();
