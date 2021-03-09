@@ -24,6 +24,8 @@
 def out = file_output("documentation/checkerlang_functions.html");
 
 println("<html>", out);
+println("<head>", out);
+println("<title>CKL " + checkerlang_version + "-" + checkerlang_platform + " function ref</title>", out);
 println("<style>", out);
 println("h1 { font-family: Arial Black; font-height: 18pt; }", out);
 println("h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; }", out);
@@ -36,8 +38,10 @@ println(".examples { padding: 0.5em 1em 1em 1 em; }", out);
 println(".example { font-family: Courier New; font-height: 12pt; white-space: pre; }", out);
 println("pre { font-family: Courier New; font-height: 12pt; white-space: pre; }", out);
 println("</style>", out);
+println("<link rel=\"shortcut icon\" type=\"image/png\" href=\"../img/ckl.png\">", out);
+println("</head>", out);
 println("<body>", out);
-println("<h1>CheckerLang function reference " + checkerlang_version + "</h1>", out);
+println("<h1>CKL " + checkerlang_version + "-" + checkerlang_platform + " function ref</h1>", out);
 
 println("<h2>Table of contents</h2>", out);
 println("<ul class='toc'>", out);
