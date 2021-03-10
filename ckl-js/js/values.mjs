@@ -628,7 +628,7 @@ export class ValueDecimal extends Value {
     }
 
     compareTo(other) {
-        if (!other.isNumerical()) return cmp(this.asString().toString(), other.toString());
+        if (!other.isNumerical()) return cmp(this.toString(), other.toString());
         return this.value - other.value;
     }
 
@@ -810,7 +810,7 @@ export class ValueInt extends Value {
     }
 
     compareTo(other) {
-        if (!other.isNumerical()) return cmp(this.asString().toString(), other.toString());
+        if (!other.isNumerical()) return cmp(this.toString(), other.toString());
         if (other instanceof ValueDecimal) return this.asDecimal().compareTo(other);
         return this.value - other.value;
     }
@@ -1345,8 +1345,7 @@ export class ValueString extends Value {
     }
 
     compareTo(other) {
-        if (!other.isString()) return cmp(this.toString(), other.toString());
-        return cmp(this.value, other.value);
+        return cmp(this.toString(), other.toString());
     }
 
     type() {

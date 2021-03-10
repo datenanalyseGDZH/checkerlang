@@ -40,7 +40,7 @@ public class ValueInt extends Value {
     }
 
     public int compareTo(Value value) {
-        if (!value.isNumerical()) return asString().toString().compareTo(value.toString());
+        if (!value.isNumerical()) return toString().compareTo(value.toString());
         if (value.isDecimal()) return asDecimal().compareTo(value);
         return Long.compare(this.value, value.asInt().value);
     }

@@ -39,7 +39,7 @@ public class ValueDecimal extends Value {
     }
 
     public int compareTo(Value value) {
-        if (!value.isNumerical()) return asString().toString().compareTo(value.toString());
+        if (!value.isNumerical()) return toString().compareTo(value.toString());
         return Double.compare(this.value, value.asDecimal().value);
     }
 

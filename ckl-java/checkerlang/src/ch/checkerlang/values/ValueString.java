@@ -41,8 +41,7 @@ public class ValueString extends Value {
     }
 
     public int compareTo(Value value) {
-        if (!value.isString()) return toString().compareTo(value.toString());
-        return this.value.compareTo(value.asString().value);
+        return toString().compareTo(value.toString());
     }
 
     public String type() {

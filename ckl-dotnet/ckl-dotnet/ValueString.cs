@@ -45,8 +45,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsString()) return ToString().CompareTo(value.ToString());
-            return this.value.CompareTo(value.AsString().value);
+            return ToString().CompareTo(value.ToString());
         }
 
         public override string Type()
