@@ -1345,10 +1345,7 @@ export class ValueString extends Value {
     }
 
     compareTo(other) {
-        if (!other.isString()) {
-            if (other.isNumerical()) return cmp(this.value, other.toString());
-            return cmp(this.toString(), other.toString());
-        }
+        if (!other.isString()) return cmp(this.toString(), other.toString());
         return cmp(this.value, other.value);
     }
 

@@ -447,7 +447,7 @@ run_test("HashSet1", () => new HashSet()
     .add(new ValueInt(12))
     .add(new ValueString("abc"))
     .add(new ValueInt(12))
-    .toString(), "HashSet([12, 'abc'])");
+    .toString(), "HashSet(['abc', 12])");
 run_test("HashSet2", () => {
     const s = new HashSet();
     for (let i = 0; i < 33; i++) {
