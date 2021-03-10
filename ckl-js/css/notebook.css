@@ -38,7 +38,7 @@ textarea.input {
 .output { 
     color: #aaa;
     font-family: "JetBrains Mono", monospace; 
-    white-space: pre;
+    white-space: pre-wrap;
     margin: 0.2em 0;
 }
 

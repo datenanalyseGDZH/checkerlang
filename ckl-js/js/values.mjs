@@ -621,7 +621,7 @@ export class ValueDecimal extends Value {
     }
 
     compareTo(other) {
-        if (!other.isNumerical()) return this.toString().localeCompare(other.toString());
+        if (!other.isNumerical()) return this.asString().compareTo(other.asString());
         return this.value - other.value;
     }
 
@@ -803,7 +803,7 @@ export class ValueInt extends Value {
     }
 
     compareTo(other) {
-        if (!other.isNumerical()) return this.toString().localeCompare(other.toString());
+        if (!other.isNumerical()) return this.asString().compareTo(other.asString());
         if (other instanceof ValueDecimal) return this.asDecimal().compareTo(other);
         return this.value - other.value;
     }
@@ -1338,7 +1338,7 @@ export class ValueString extends Value {
     }
 
     compareTo(other) {
-        if (!(other instanceof ValueString)) return this.toString().localeCompare(other.toString());
+        if (!other.isString()) other = other.asString();
         if (this.value < other.value) return -1;
         if (this.value > other.value) return 1;
         return 0;

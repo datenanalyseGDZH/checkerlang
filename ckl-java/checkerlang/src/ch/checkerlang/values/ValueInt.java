@@ -40,9 +40,9 @@ public class ValueInt extends Value {
     }
 
     public int compareTo(Value value) {
-        if (!value.isNumerical()) return toString().compareTo(value.toString());
+        if (!value.isNumerical()) return asString().compareTo(value.asString());
         if (value.isDecimal()) return asDecimal().compareTo(value);
-        return Long.valueOf(this.value).compareTo(value.asInt().value);
+        return Long.compare(this.value, value.asInt().value);
     }
 
     public int hashCode() {
