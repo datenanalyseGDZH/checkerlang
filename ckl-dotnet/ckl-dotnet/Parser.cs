@@ -189,7 +189,7 @@ namespace CheckerLang
             if (lexer.Peek("if", TokenType.Keyword))
             {
                 var result = new NodeIf(lexer.GetPos());
-                while (lexer.MatchIf("if", TokenType.Keyword))
+                while (lexer.MatchIf("if", TokenType.Keyword) || lexer.MatchIf("elif", TokenType.Keyword))
                 {
                     var condition = ParseOrExpr(lexer);
                     lexer.Match("then", TokenType.Keyword);

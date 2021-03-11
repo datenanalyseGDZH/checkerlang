@@ -28,6 +28,7 @@ namespace CheckerLang
         {
             "if",
             "then",
+            "elif",
             "else",
             "and",
             "or",

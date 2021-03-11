@@ -161,6 +161,13 @@ namespace Tests
         }
 
         [Test]
+        public void TestIfThenElifElseKeywords()
+        {
+            Assert.AreEqual("[if, a, then, b, elif, c, then, d, else, e] @ 0", 
+                new Lexer(new StringReader("if a then b elif c then d else e"), "test").ToString());
+        }
+
+        [Test]
         public void TestSourcePos()
         {
             var lexer = new Lexer(new StringReader("1 / 2\r\nx == 3"), "{test}");

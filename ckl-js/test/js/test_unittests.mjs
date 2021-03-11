@@ -102,6 +102,7 @@ lexer_test("SpreadOperatorFuncall", "f(a, ...b, c)", "[f (identifier), ( (interp
 lexer_test("InvokeOperator", "a!>b", "[a (identifier), !> (operator), b (identifier)] @ 0");
 lexer_test("StringLiteralWithNewline", "'one\\ntwo'", "[one\\ntwo (string)] @ 0");
 lexer_test("DerefProperty", "a->b ->c -> d", "[a (identifier), -> (operator), b (identifier), -> (operator), c (identifier), -> (operator), d (identifier)] @ 0");
+lexer_test("IfThenElifElseKeywords", "if a then b elif c then d else e", "[if (keyword), a (identifier), then (keyword), b (identifier), elif (keyword), c (identifier), then (keyword), d (identifier), else (keyword), e (identifier)] @ 0");
 
 function parser_test(description, code, expected) {
     run_test("Parser:" + description, function() { return Parser.parseScript(code, "{test}").toString(); }, expected);
@@ -127,6 +128,7 @@ parser_test_exception("TooManyTokens", "1 + 1 1");
 parser_test_exception("NotEnoughTokens", "1 + ");
 parser_test_exception("MissingThen", "if 1 < 2 else FALSE");
 parser_test("IfThenOrExpr", "if a == 1 then b in c or d == 9999", "(if (equals a, 1): ((b in c) or (equals d, 9999)) else: TRUE)");
+parser_test("IfThenElif", "if a == 1 then b elif c == 1 or d == 2 then b in c or d == 9999", "(if (equals a, 1): b if ((equals c, 1) or (equals d, 2)): ((b in c) or (equals d, 9999)) else: TRUE)");
 parser_test_exception("MissingClosingParens", "2 * (3 + 4( - 3");
 parser_test("Lambda", "fn(a, b=3) string(a) * b(2, 3)", "(lambda a, b=3, (mul (string a), (b 2, 3)))");
 parser_test("While", "while x > 0 do x = x - 1; end", "(while (greater x, 0) do (x = (sub x, 1)))");
@@ -354,6 +356,7 @@ interpreter_test("TestDoFinally2", "def a = 1; def f(x) a = x + 1; def b = 1; do
 interpreter_test("DerefProperty", "def a = <<<'x' => 1, 'y' => 2>>>; a->y", "2");
 interpreter_test("MapLiteralImplicitString", "<<<x => 1, y => 2>>>", "<<<'x' => 1, 'y' => 2>>>");
 interpreter_test("PipelineLambda", "[1, 2, 3] !> (fn(lst) lst[2])()", "3");
+interpreter_test("IfThenElifThenElse", "if 1 == 2 then 3 elif 1 == 3 then 4 elif 1 == 1 then 5 else 6", "5");
 
 
 function collectvars_test(description, code, expected) {

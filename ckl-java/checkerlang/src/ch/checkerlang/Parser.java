@@ -182,7 +182,7 @@ public class Parser {
     private Node parseIfExpr(Lexer lexer) {
         if (lexer.peek("if", TokenType.Keyword)) {
             NodeIf result = new NodeIf(lexer.getPos());
-            while (lexer.matchIf("if", TokenType.Keyword)) {
+            while (lexer.matchIf("if", TokenType.Keyword) || lexer.matchIf("elif", TokenType.Keyword)) {
                 Node condition = parseOrExpr(lexer);
                 lexer.match("then", TokenType.Keyword);
                 if (lexer.peek("do", TokenType.Keyword)) {

@@ -767,7 +767,13 @@ namespace Tests
         {
             Verify("3", "[1, 2, 3] !> (fn(lst) lst[2])()");
         }
-       
+
+        [Test]
+        public void TestIfThenElifThenElse()
+        {
+            Verify("5", "if 1 == 2 then 3 elif 1 == 3 then 4 elif 1 == 1 then 5 else 6");
+        }
+        
         private void Verify(string expected, string script)
         {
             var env = new Environment();

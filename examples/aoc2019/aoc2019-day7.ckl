@@ -20,7 +20,7 @@ end;
 
 def param_resolve(machine, param, mode) do
     if mode == mode_pos then machine->program[machine->program[machine->ip + param]]
-    if mode == mode_imm then machine->program[machine->ip + param]
+    elif mode == mode_imm then machine->program[machine->ip + param]
     else error("unknown param mode " + mode);
 end;
 
@@ -29,48 +29,48 @@ def step(machine) do
     def [opcode, mode1, mode2, mode3] = parse_opcode(prog[machine->ip]);
     if opcode == 99 then do
         machine->halted = TRUE;
-    end if opcode == 1 then do
+    end elif opcode == 1 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if trace then println("add " + a + " + " + b + " store in " + prog[machine->ip + 3]);
         prog[prog[machine->ip + 3]] = a + b;
         machine->ip += 4;
-    end if opcode == 2 then do
+    end elif opcode == 2 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if trace then println("mul " + a + " * " + b + " store in " + prog[machine->ip + 3]);
         prog[prog[machine->ip + 3]] = a * b;
         machine->ip += 4;
-    end if opcode == 3 then do
+    end elif opcode == 3 then do
         def value = first(machine->input);
         machine->input = rest(machine->input);
         prog[prog[machine->ip + 1]] = value;
         if trace then println("inp " + value + " store in " + prog[machine->ip + 1]);
         machine->ip += 2;
-    end if opcode == 4 then do
+    end elif opcode == 4 then do
         def value = param_resolve(machine, 1, mode1);
         machine->output !> append(value);
         if trace then println("out " + value);
         machine->ip += 2;
-    end if opcode == 5 then do
+    end elif opcode == 5 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if a != 0 then machine->ip = b
         else machine->ip += 3;
         if trace then println("jump-if-true " + a + " to " + b);
-    end if opcode == 6 then do
+    end elif opcode == 6 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if a == 0 then machine->ip = b
         else machine->ip += 3;
         if trace then println("jump-if-false " + a + " to " + b);
-    end if opcode == 7 then do
+    end elif opcode == 7 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         prog[prog[machine->ip + 3]] = (if a < b then 1 else 0);
         if trace then println("less " + a + " " + b + " store in " + prog[machine->ip + 3]);
         machine->ip += 4;
-    end if opcode == 8 then do
+    end elif opcode == 8 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         prog[prog[machine->ip + 3]] = (if a == b then 1 else 0);
@@ -146,7 +146,6 @@ for setting in permutations(interval(5, 9)) do
     amp1 !> add_input(0);
     while not amp5->halted do
         amp1 = wait_for_output(amp1);
-        [a[1], b[1]] = c;
         amp2 !> add_input(amp1 !> get_output(0));
         amp2 = wait_for_output(amp2);
         amp3 !> add_input(amp2 !> get_output(0));

@@ -96,6 +96,12 @@ public class TestParser {
                 parse("if a == 1 then b in c or d == 9999"));
     }
 
+    @Test
+    public void testIfThenElif() {
+        Assert.assertEquals("(if (equals a, 1): b if ((equals c, 1) or (equals d, 2)): ((b in c) or (equals d, 9999)) else: TRUE)",
+                parse("if a == 1 then b elif c == 1 or d == 2 then b in c or d == 9999"));
+    }
+
     @Test(expected = SyntaxError.class)
     public void testMissingClosingParens() {
         parse("2 * (3 + 4( - 3");
@@ -133,14 +139,14 @@ public class TestParser {
     }
 
     @Test
-    public void TestAssignDestructure()
+    public void testAssignDestructure()
     {
         Assert.assertEquals("([a, b] = [1, 2])",
                 parse("[a, b] = [1, 2]"));
     }
 
     @Test
-    public void TestPipeline()
+    public void testPipeline()
     {
         Assert.assertEquals("(println (sprintf 0, 'part2: {0}'))", parse("0 !> sprintf(fmt=\"part2: {0}\") !> println()"));
     }

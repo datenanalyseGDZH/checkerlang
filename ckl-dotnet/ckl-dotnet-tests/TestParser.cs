@@ -130,13 +130,20 @@ namespace Tests
         }
 
         [Test]
-         public void TestIfThenOrExpr()
-         {
-             Assert.AreEqual("(if (equals a, 1): ((b in c) or (equals d, 9999)) else: TRUE)", 
-                 Parse("if a == 1 then b in c or d == 9999"));
-         }
- 
-         [Test]
+        public void TestIfThenOrExpr()
+        {
+         Assert.AreEqual("(if (equals a, 1): ((b in c) or (equals d, 9999)) else: TRUE)", 
+             Parse("if a == 1 then b in c or d == 9999"));
+        }
+
+        [Test]
+        public void TestIfThenElif()
+        {
+         Assert.AreEqual("(if (equals a, 1): b if ((equals c, 1) or (equals d, 2)): ((b in c) or (equals d, 9999)) else: TRUE)", 
+             Parse("if a == 1 then b elif c == 1 or d == 2 then b in c or d == 9999"));
+        }
+
+        [Test]
         public void TestMissingClosingParens()
         {
             Assert.Throws<SyntaxError>(() => Parse("2 * (3 + 4( - 3"));

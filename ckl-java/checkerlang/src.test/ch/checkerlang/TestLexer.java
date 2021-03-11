@@ -108,6 +108,12 @@ public class TestLexer {
     }
 
     @Test
+    public void testIfThenElifElseKeywords() throws IOException {
+        Assert.assertEquals("[if, a, then, b, elif, c, then, d, else, e] @ 0",
+                new Lexer(new StringReader("if a then b elif c then d else e"), "test").toString());
+    }
+
+    @Test
     public void TestSourcePos() throws IOException {
         Lexer lexer = new Lexer(new StringReader("1 / 2\r\nx == 3"), "test");
         Token token = lexer.next();

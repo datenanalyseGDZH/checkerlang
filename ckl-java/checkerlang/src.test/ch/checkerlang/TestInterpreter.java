@@ -633,6 +633,11 @@ public class TestInterpreter {
     @Test
     public void testPipelineLambda() { verify("3", "[1, 2, 3] !> (fn(lst) lst[2])()"); }
 
+    @Test
+    public void testIfThenElifThenElse() {
+        verify("5", "if 1 == 2 then 3 elif 1 == 3 then 4 elif 1 == 1 then 5 else 6");
+    }
+
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {

@@ -204,7 +204,7 @@ export class Parser {
     parseIfExpr(lexer) {
         if (lexer.peekn(1, "if", "keyword")) {
             const result = new NodeIf(lexer.getPos());
-            while (lexer.matchIf("if", "keyword")) {
+            while (lexer.matchIf("if", "keyword") || lexer.matchIf("elif", "keyword")) {
                 const condition = this.parseOrExpr(lexer);
                 lexer.match("then", "keyword");
                 if (lexer.peekn(1, "do", "keyword")) {

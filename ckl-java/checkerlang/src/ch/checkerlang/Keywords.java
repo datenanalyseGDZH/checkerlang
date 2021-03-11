@@ -29,6 +29,7 @@ public class Keywords {
     static {
         keywords.add("if");
         keywords.add("then");
+        keywords.add("elif");
         keywords.add("else");
         keywords.add("and");
         keywords.add("or");
