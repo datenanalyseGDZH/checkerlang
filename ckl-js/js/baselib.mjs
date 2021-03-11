@@ -1242,5 +1242,19 @@ def chunks(obj, chunk_size) do
 end;
 
 
+"
+is_null_or_empty(obj)
+
+Returns TRUE, if obj is either NULL or an empty string.
+
+: is_null_or_empty(NULL) ==> TRUE
+: is_null_or_empty('') ==> TRUE
+: is_null_or_empty('1') ==> FALSE
+: is_null_or_empty(1) ==> FALSE
+: is_null_or_empty(FALSE) ==> FALSE
+"
+def is_null_or_empty(obj) do
+    is_null(obj) or obj == "";
+end;
 
 `;
