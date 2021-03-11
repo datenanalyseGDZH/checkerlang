@@ -261,6 +261,9 @@ interpreter_test("ListComprehensionString", "[int(ch) for ch in '123']", "[1, 2,
 interpreter_test("SetComprehensionSimple", "<<x * 2 for x in range(5)>>", "<<0, 2, 4, 6, 8>>");
 interpreter_test("SetComprehensionWithCondition", "<<x * 2 for x in range(5) if x % 2 == 1>>", "<<2, 6>>");
 interpreter_test("SetComprehensionString", "<<int(ch) for ch in '12312'>>", "<<1, 2, 3>>");
+interpreter_test("MapComprehensionSimple", "<<<a => 2 * a for a in range(5)>>>", "<<<0 => 0, 1 => 2, 2 => 4, 3 => 6, 4 => 8>>>");
+interpreter_test("MapComprehensionSimple2", "<<<'x' + a => 2 * a for a in range(5)>>>", "<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>");
+interpreter_test("MapComprehensionWithCondition", "<<<a => 2 * a for a in range(5) if 2 * a < 6>>>", "<<<0 => 0, 1 => 2, 2 => 4>>>");
 interpreter_test("FuncRange", "range()", "[]");
 interpreter_test("FuncRange", "range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]");
 interpreter_test("FuncRange", "range(5, 10)", "[5, 6, 7, 8, 9]");

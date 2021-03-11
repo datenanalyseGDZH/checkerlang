@@ -50,6 +50,7 @@ import {
     NodeListComprehension,
     NodeLiteral,
     NodeMap,
+    NodeMapComprehension,
     NodeNot,
     NodeNull,
     NodeOr,
@@ -691,21 +692,43 @@ export class Parser {
         if (lexer.matchIf(">>>", "interpunction")) {
             return this.derefOrInvoke(lexer, new NodeMap(token.pos));
         } else {
-            const map = new NodeMap(token.pos);
-            while (!lexer.peekn(1, ">>>", "interpunction")) {
-                let key = this.parseIfExpr(lexer);
+            let key = this.parseIfExpr(lexer);
+            lexer.match("=>", "interpunction");
+            let value = this.parseIfExpr(lexer);
+            if (lexer.matchIf("for", "keyword")) {
+                const identifier = lexer.matchIdentifier();
+                lexer.match("in", "keyword");
+                const listExpr = this.parseOrExpr(lexer);
+                const comprehension = new NodeMapComprehension(key, value, identifier, listExpr, token.pos);
+                if (lexer.matchIf("if", "keyword")) {
+                    comprehension.setCondition(this.parseOrExpr(lexer));
+                }
+                lexer.match(">>>", "interpunction");
+                return this.derefOrInvoke(lexer, comprehension);
+            } else {
+                const map = new NodeMap(token.pos);
                 if (key instanceof NodeIdentifier) {
                     key = new NodeLiteral(new ValueString(key.value), key.pos);
                 }
-                lexer.match("=>", "interpunction");
-                const value = this.parseIfExpr(lexer);
                 map.addKeyValue(key, value);
                 if (!lexer.peekn(1, ">>>", "interpunction")) {
                     lexer.match(",", "interpunction");
                 }
+                while (!lexer.peekn(1, ">>>", "interpunction")) {
+                    key = this.parseIfExpr(lexer);
+                    if (key instanceof NodeIdentifier) {
+                        key = new NodeLiteral(new ValueString(key.value), key.pos);
+                    }
+                    lexer.match("=>", "interpunction");
+                    value = this.parseIfExpr(lexer);
+                    map.addKeyValue(key, value);
+                    if (!lexer.peekn(1, ">>>", "interpunction")) {
+                        lexer.match(",", "interpunction");
+                    }
+                }
+                lexer.match(">>>", "interpunction");
+                return this.derefOrInvoke(lexer, map);
             }
-            lexer.match(">>>", "interpunction");
-            return this.derefOrInvoke(lexer, map);
         }
     }
 

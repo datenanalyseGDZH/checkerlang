@@ -963,6 +963,62 @@ export class NodeMap {
     }
 }
 
+export class NodeMapComprehension {
+    constructor(keyExpr, valueExpr, identifier, listExpr, pos) {
+        this.keyExpr = keyExpr;
+        this.valueExpr = valueExpr;
+        this.identifier = identifier;
+        this.listExpr = listExpr;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueMap();
+        const localEnv = environment.newEnv();
+        const list = this.listExpr.evaluate(environment);
+        let values = null;
+        if (list.isList()) values = list.value;
+        else if (list.isSet()) values = list.value.sortedValues();
+        else if (list.isMap()) values = list.value.sortedEntries();
+        else if (list.isString()) values = list.value.split("");
+        for (const listValue of values) {
+            localEnv.put(this.identifier, listValue);
+            const key = this.keyExpr.evaluate(localEnv);
+            const value = this.valueExpr.evaluate(localEnv);
+            if (this.conditionExpr != null) {
+                const condition = this.conditionExpr.evaluate(localEnv);
+                if (!(condition instanceof ValueBoolean)) {
+                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
+                }
+                if (condition.value) {
+                    result.addItem(key, value);
+                }
+            } else {
+                result.addItem(key, value);
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "<<<" + this.keyExpr + " => " + this.valueExpr + " for " + this.identifier + " in " + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>>";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier);
+        this.keyExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars)
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
 export class NodeNot {
     constructor(expression, pos) {
         this.expression = expression;

@@ -378,6 +378,21 @@ public class TestInterpreter {
     }
 
     @Test
+    public void testMapComprehensionSimple() {
+        verify("<<<0 => 0, 1 => 2, 2 => 4, 3 => 6, 4 => 8>>>", "<<<a => 2 * a for a in range(5)>>>");
+    }
+
+    @Test
+    public void testMapComprehensionSimple2() {
+        verify("<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>", "<<<'x' + a => 2 * a for a in range(5)>>>");
+    }
+
+    @Test
+    public void testMapComprehensionWithCondition() {
+        verify("<<<0 => 0, 1 => 2, 2 => 4>>>", "<<<a => 2 * a for a in range(5) if 2 * a < 6>>>");
+    }
+
+    @Test
     public void testFuncRange() {
         verify("[]", "range()");
         verify("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", "range(10)");

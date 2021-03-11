@@ -817,16 +817,39 @@ namespace CheckerLang
             {
                 return DerefOrInvoke(lexer, new NodeMap(token.pos));
             }
-            
+            var key = ParseIfExpr(lexer);
+            lexer.Match("=>", TokenType.Interpunction);
+            var value = ParseIfExpr(lexer);
+            if (lexer.MatchIf("for", TokenType.Keyword))
+            {
+                var identifier = lexer.MatchIdentifier();
+                lexer.Match("in", TokenType.Keyword);
+                var listExpr = ParseOrExpr(lexer);
+                var comprehension = new NodeMapComprehension(key, value, identifier, listExpr, token.pos);
+                if (lexer.MatchIf("if", TokenType.Keyword)) {
+                    comprehension.SetCondition(ParseOrExpr(lexer));
+                }
+
+                lexer.Match(">>>", TokenType.Interpunction);
+                return DerefOrInvoke(lexer, comprehension);
+            }
             var map = new NodeMap(token.pos);
+            if (key is NodeIdentifier) {
+                key = new NodeLiteralString(((NodeIdentifier) key).GetValue(), key.GetSourcePos());
+            }
+            map.AddKeyValue(key, value);
+            if (!lexer.Peek(">>>", TokenType.Interpunction))
+            {
+                lexer.Match(",", TokenType.Interpunction);
+            }
             while (!lexer.Peek(">>>", TokenType.Interpunction))
             {
-                var key = ParseIfExpr(lexer);
+                key = ParseIfExpr(lexer);
                 if (key is NodeIdentifier) {
                     key = new NodeLiteralString(((NodeIdentifier) key).GetValue(), key.GetSourcePos());
                 }
                 lexer.Match("=>", TokenType.Interpunction);
-                var value = ParseIfExpr(lexer);
+                value = ParseIfExpr(lexer);
                 map.AddKeyValue(key, value);
                 if (!lexer.Peek(">>>", TokenType.Interpunction))
                 {

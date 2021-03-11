@@ -440,6 +440,21 @@ namespace Tests
         }
 
         [Test]
+        public void TestMapComprehensionSimple() {
+            Verify("<<<0 => 0, 1 => 2, 2 => 4, 3 => 6, 4 => 8>>>", "<<<a => 2 * a for a in range(5)>>>");
+        }
+
+        [Test]
+        public void TestMapComprehensionSimple2() {
+            Verify("<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>", "<<<'x' + a => 2 * a for a in range(5)>>>");
+        }
+
+        [Test]
+        public void TestMapComprehensionWithCondition() {
+            Verify("<<<0 => 0, 1 => 2, 2 => 4>>>", "<<<a => 2 * a for a in range(5) if 2 * a < 6>>>");
+        }
+
+        [Test]
         public void TestFuncRange()
         {
             Verify("[]", "range()");
