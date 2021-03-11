@@ -783,17 +783,30 @@ namespace CheckerLang
                 return DerefOrInvoke(lexer, new NodeSet(token.pos));
             }
             
+            var expr = ParseIfExpr(lexer);
+            if (lexer.MatchIf("for", TokenType.Keyword)) {
+                var identifier = lexer.MatchIdentifier();
+                lexer.Match("in", TokenType.Keyword);
+                var listExpr = ParseOrExpr(lexer);
+                var comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                if (lexer.MatchIf("if", TokenType.Keyword)) {
+                    comprehension.SetCondition(ParseOrExpr(lexer));
+                }
+
+                lexer.Match(">>", TokenType.Interpunction);
+                return DerefOrInvoke(lexer, comprehension);
+            }
             var set = new NodeSet(token.pos);
-            while (!lexer.Peek(">>", TokenType.Interpunction))
-            {
+            set.AddItem(expr);
+            if (!lexer.Peek(">>", TokenType.Interpunction)) {
+                lexer.Match(",", TokenType.Interpunction);
+            }
+            while (!lexer.Peek(">>", TokenType.Interpunction)) {
                 set.AddItem(ParseIfExpr(lexer));
-                var x = lexer.Peek();
-                if (!lexer.Peek(">>", TokenType.Interpunction))
-                {
+                if (!lexer.Peek(">>", TokenType.Interpunction)) {
                     lexer.Match(",", TokenType.Interpunction);
                 }
             }
-
             lexer.Match(">>", TokenType.Interpunction);
             return DerefOrInvoke(lexer, set);
         }

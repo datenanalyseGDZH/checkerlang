@@ -358,8 +358,23 @@ public class TestInterpreter {
     }
 
     @Test
+    public void testSetComprehensionSimple() {
+        verify("<<0, 2, 4, 6, 8>>", "<<x * 2 for x in range(5)>>");
+    }
+
+    @Test
+    public void testSetComprehensionWithCondition() {
+        verify("<<2, 6>>", "<<x * 2 for x in range(5) if x % 2 == 1>>");
+    }
+
+    @Test
     public void testListComprehensionString() {
         verify("[1, 2, 3]", "[int(ch) for ch in '123']");
+    }
+
+    @Test
+    public void testSetComprehensionString() {
+        verify("<<1, 2, 3>>", "<<int(ch) for ch in '12312'>>");
     }
 
     @Test

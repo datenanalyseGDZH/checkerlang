@@ -55,6 +55,7 @@ import {
     NodeOr,
     NodeReturn,
     NodeSet,
+    NodeSetComprehension,
     NodeSpread,
     NodeWhile
 } from "./nodes.mjs";
@@ -657,15 +658,32 @@ export class Parser {
         if (lexer.matchIf(">>", "interpunction")) {
             return this.derefOrInvoke(lexer, new NodeSet(token.pos));
         } else {
-            const set = new NodeSet(token.pos);
-            while (!lexer.peekn(1, ">>", "interpunction")) {
-                set.addItem(this.parseIfExpr(lexer));
+            const expr = this.parseIfExpr(lexer);
+            if (lexer.matchIf("for", "keyword")) {
+                const identifier = lexer.matchIdentifier();
+                lexer.match("in", "keyword");
+                const listExpr = this.parseOrExpr(lexer);
+                const comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                if (lexer.matchIf("if", "keyword")) {
+                    comprehension.setCondition(this.parseOrExpr(lexer));
+                }
+                lexer.match(">>", "interpunction");
+                return this.derefOrInvoke(lexer, comprehension);
+            } else {
+                const set = new NodeSet(token.pos);
+                set.addItem(expr);
                 if (!lexer.peekn(1, ">>", "interpunction")) {
                     lexer.match(",", "interpunction");
                 }
+                while (!lexer.peekn(1, ">>", "interpunction")) {
+                    set.addItem(this.parseIfExpr(lexer));
+                    if (!lexer.peekn(1, ">>", "interpunction")) {
+                        lexer.match(",", "interpunction");
+                    }
+                }
+                lexer.match(">>", "interpunction");
+                return this.derefOrInvoke(lexer, set);
             }
-            lexer.match(">>", "interpunction");
-            return this.derefOrInvoke(lexer, set);
         }
     }
 

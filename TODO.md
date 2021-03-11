@@ -24,6 +24,5 @@
 * categorize functions into modules
 * provide legacy module that corresponds to the features of ckl 2
 * parse_json should support fileinput values and read only as much as is needed.
-* set comprehension
 * map comprehension
 * destructuring assign should support more than just identifiers, also a->b, a[b], a(b)[c], a(b)->c and so on

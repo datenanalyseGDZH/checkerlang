@@ -1096,6 +1096,59 @@ export class NodeSet {
     }
 }
 
+export class NodeSetComprehension {
+    constructor(valueExpr, identifier, listExpr, pos) {
+        this.valueExpr = valueExpr;
+        this.identifier = identifier;
+        this.listExpr = listExpr;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueSet();
+        const localEnv = environment.newEnv();
+        const list = this.listExpr.evaluate(environment);
+        let values = null;
+        if (list.isList()) values = list.value;
+        else if (list.isSet()) values = list.value.sortedValues();
+        else if (list.isMap()) values = list.value.sortedEntries();
+        else if (list.isString()) values = list.value.split("");
+        for (const listValue of values) {
+            localEnv.put(this.identifier, listValue);
+            const value = this.valueExpr.evaluate(localEnv);
+            if (this.conditionExpr != null) {
+                const condition = this.conditionExpr.evaluate(localEnv);
+                if (!(condition instanceof ValueBoolean)) {
+                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
+                }
+                if (condition.value) {
+                    result.addItem(value);
+                }
+            } else {
+                result.addItem(value);
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "<<" + this.valueExpr + " for " + this.identifier + " in " + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier);
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
 export class NodeSpread {
     constructor(expression, pos) {
         this.expression = expression;

@@ -665,15 +665,32 @@ public class Parser {
         if (lexer.matchIf(">>", TokenType.Interpunction)) {
             return derefOrInvoke(lexer, new NodeSet(token.pos));
         } else {
-            NodeSet set = new NodeSet(token.pos);
-            while (!lexer.peek(">>", TokenType.Interpunction)) {
-                set.addItem(parseIfExpr(lexer));
+            Node expr = parseIfExpr(lexer);
+            if (lexer.matchIf("for", TokenType.Keyword)) {
+                String identifier = lexer.matchIdentifier();
+                lexer.match("in", TokenType.Keyword);
+                Node listExpr = parseOrExpr(lexer);
+                NodeSetComprehension comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                if (lexer.matchIf("if", TokenType.Keyword)) {
+                    comprehension.setCondition(this.parseOrExpr(lexer));
+                }
+                lexer.match(">>", TokenType.Interpunction);
+                return this.derefOrInvoke(lexer, comprehension);
+            } else {
+                NodeSet set = new NodeSet(token.pos);
+                set.addItem(expr);
                 if (!lexer.peek(">>", TokenType.Interpunction)) {
                     lexer.match(",", TokenType.Interpunction);
                 }
+                while (!lexer.peek(">>", TokenType.Interpunction)) {
+                    set.addItem(parseIfExpr(lexer));
+                    if (!lexer.peek(">>", TokenType.Interpunction)) {
+                        lexer.match(",", TokenType.Interpunction);
+                    }
+                }
+                lexer.match(">>", TokenType.Interpunction);
+                return derefOrInvoke(lexer, set);
             }
-            lexer.match(">>", TokenType.Interpunction);
-            return derefOrInvoke(lexer, set);
         }
     }
 
