@@ -182,15 +182,26 @@ export class Parser {
 
         if (lexer.matchIf("for", "keyword")) {
             const pos = lexer.getPos();
-            const token = lexer.next();
-            if (token.type !== "identifier") throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
-            const identifier = token.value;
+            const identifiers = [];
+            if (lexer.matchIf("[", "interpunction")) {
+                while (!lexer.peekn(1, "]", "interpunction")) {
+                    const token = lexer.next();
+                    if (token.type !== "identifier") throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                    identifiers.push(token.value);
+                    if (!lexer.peekn(1, "]", "interpunction")) lexer.match(",", "interpunction");
+                }
+                lexer.match("]", "interpunction");
+            } else {
+                const token = lexer.next();
+                if (token.type !== "identifier") throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                identifiers.push(token.value);
+            }
             lexer.match("in", "keyword");
             const expression = this.parseExpression(lexer);
             if (lexer.peekn(1, "do", "keyword")) {
-                return new NodeFor(identifier, expression, this.parseBlock(lexer), pos);
+                return new NodeFor(identifiers, expression, this.parseBlock(lexer), pos);
             }
-            return new NodeFor(identifier, expression, this.parseExpression(lexer), pos);
+            return new NodeFor(identifiers, expression, this.parseExpression(lexer), pos);
         }
 
         if (lexer.matchIf("while", "keyword")) {

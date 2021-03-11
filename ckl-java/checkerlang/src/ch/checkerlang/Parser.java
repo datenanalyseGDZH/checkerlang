@@ -157,16 +157,27 @@ public class Parser {
 
         if (lexer.matchIf("for", TokenType.Keyword)) {
             SourcePos pos = lexer.getPos();
-            Token token = lexer.next();
-            if (token.type != TokenType.Identifier)
-                throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
-            String identifier = token.value;
+            List<String> identifiers = new ArrayList<>();
+            if (lexer.matchIf("[", TokenType.Interpunction)) {
+                while (!lexer.peekn(1, "]", TokenType.Interpunction)) {
+                    Token token = lexer.next();
+                    if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                    identifiers.add(token.value);
+                    if (!lexer.peekn(1, "]", TokenType.Interpunction)) lexer.match(",", TokenType.Interpunction);
+                }
+                lexer.match("]", TokenType.Interpunction);
+            } else {
+                Token token = lexer.next();
+                if (token.type != TokenType.Identifier)
+                    throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                identifiers.add(token.value);
+            }
             lexer.match("in", TokenType.Keyword);
             Node expression = parseExpression(lexer);
             if (lexer.peek("do", TokenType.Keyword)) {
-                return new NodeFor(identifier, expression, parseBlock(lexer), pos);
+                return new NodeFor(identifiers, expression, parseBlock(lexer), pos);
             }
-            return new NodeFor(identifier, expression, parseExpression(lexer), pos);
+            return new NodeFor(identifiers, expression, parseExpression(lexer), pos);
         }
 
         if (lexer.matchIf("while", TokenType.Keyword)) {

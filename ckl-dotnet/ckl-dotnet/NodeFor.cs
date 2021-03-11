@@ -19,21 +19,22 @@
     SOFTWARE.
 */
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace CheckerLang
 {
     public class NodeFor : Node
     {
-        private string identifier;
+        private List<string> identifiers = new List<string>();
         private Node expression;
         private Node block;
 
         private SourcePos pos;
 
-        public NodeFor(string identifier, Node expression, Node block, SourcePos pos)
+        public NodeFor(List<string> identifiers, Node expression, Node block, SourcePos pos)
         {
-            this.identifier = identifier;
+            this.identifiers.AddRange(identifiers);
             this.expression = expression;
             this.block = block;
             this.pos = pos;
@@ -42,15 +43,46 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             var list = expression.Evaluate(environment);
+            if (list.IsInput()) 
+            {
+                var input = list.AsInput();
+                var lst = new ValueList();
+                string line = null;
+                try 
+                {
+                    line = input.ReadLine();
+                    while (line != null) 
+                    {
+                        lst.AddItem(new ValueString(line));
+                        line = input.ReadLine();
+                    }
+                } 
+                catch (IOException) 
+                {
+                    throw new ControlErrorException("Cannot read from input", pos);
+                }
+                list = lst;
+            }
             if (list.IsList() || list.IsSet() || list.IsMap())
             {
                 var values = list.AsList().GetValue();
+                var localEnv = environment.NewEnv();
                 Value result = ValueBoolean.TRUE;
                 foreach (var value in values)
                 {
-                    environment.Put(identifier, value);
-                    result = block.Evaluate(environment);
-                    environment.Remove(identifier);
+                    if (identifiers.Count == 1) 
+                    {
+                        localEnv.Put(identifiers[0], value);
+                    } 
+                    else 
+                    {
+                        var vals = value.AsList().GetValue();
+                        for (int i = 0; i < identifiers.Count; i++) 
+                        {
+                            localEnv.Put(identifiers[i], vals[i]);
+                        }
+                    }
+                    result = block.Evaluate(localEnv);
                     if (result.IsBreak())
                     {
                         result = ValueBoolean.TRUE;
@@ -73,13 +105,12 @@ namespace CheckerLang
             if (list.IsString())
             {
                 var str = list.AsString().GetValue();
+                var localEnv = environment.NewEnv();
                 Value result = ValueBoolean.TRUE;
                 foreach (var value in str)
                 {
-                    if (environment.IsDefined(identifier)) throw new ControlErrorException("Symbol " + identifier + " already defined", pos);
-                    environment.Put(identifier, new ValueString(value.ToString()));
-                    result = block.Evaluate(environment);
-                    environment.Remove(identifier);
+                    localEnv.Put(identifiers[0], new ValueString(value.ToString()));
+                    result = block.Evaluate(localEnv);
                     if (result.IsBreak())
                     {
                         result = ValueBoolean.TRUE;
@@ -104,7 +135,7 @@ namespace CheckerLang
 
         public override string ToString() {
             var result = new StringBuilder();
-            result.Append("(for ").Append(identifier).Append(" in ").Append(expression).Append(" do ").Append(block).Append(")");
+            result.Append("(for ").Append(identifiers.Count == 1 ? identifiers[0] : identifiers.ToString()).Append(" in ").Append(expression).Append(" do ").Append(block).Append(")");
             return result.ToString();
         }
         
@@ -112,7 +143,10 @@ namespace CheckerLang
         {
             expression.CollectVars(freeVars, boundVars, additionalBoundVars);
             var boundVarsLocal = new HashSet<string>(boundVars);
-            boundVarsLocal.Add(identifier);
+            foreach (var identifier in identifiers)
+            {
+                boundVarsLocal.Add(identifier);
+            }
             block.CollectVars(freeVars, boundVarsLocal, additionalBoundVars);
         }
         

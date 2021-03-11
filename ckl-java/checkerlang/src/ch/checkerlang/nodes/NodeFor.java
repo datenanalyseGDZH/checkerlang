@@ -26,20 +26,17 @@ import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.*;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class NodeFor implements Node {
-    private String identifier;
+    private List<String> identifiers = new ArrayList<>();
     private Node expression;
     private Node block;
 
     private SourcePos pos;
 
-    public NodeFor(String identifier, Node expression, Node block, SourcePos pos) {
-        this.identifier = identifier;
+    public NodeFor(List<String> identifiers, Node expression, Node block, SourcePos pos) {
+        this.identifiers.addAll(identifiers);
         this.expression = expression;
         this.block = block;
         this.pos = pos;
@@ -65,10 +62,17 @@ public class NodeFor implements Node {
         if (list.isList() || list.isSet() || list.isMap()) {
             List<Value> values = list.asList().getValue();
             Value result = ValueBoolean.TRUE;
+            Environment localEnv = environment.newEnv();
             for (Value value : values) {
-                environment.put(identifier, value);
-                result = block.evaluate(environment);
-                environment.remove(identifier);
+                if (identifiers.size() == 1) {
+                    localEnv.put(identifiers.get(0), value);
+                } else {
+                    List<Value> vals = value.asList().getValue();
+                    for (int i = 0; i < identifiers.size(); i++) {
+                        localEnv.put(identifiers.get(i), vals.get(i));
+                    }
+                }
+                result = block.evaluate(localEnv);
                 if (result.isBreak()) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -84,12 +88,10 @@ public class NodeFor implements Node {
         if (list.isString()) {
             String str = list.asString().getValue();
             Value result = ValueBoolean.TRUE;
+            Environment localEnv = environment.newEnv();
             for (int i = 0; i < str.length(); i++) {
-                if (environment.isDefined(identifier))
-                    throw new ControlErrorException("Symbol " + identifier + " already defined", pos);
-                environment.put(identifier, new ValueString(str.substring(i, i + 1)));
-                result = block.evaluate(environment);
-                environment.remove(identifier);
+                localEnv.put(identifiers.get(0), new ValueString(str.substring(i, i + 1)));
+                result = block.evaluate(localEnv);
                 if (result.isBreak()) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -106,13 +108,13 @@ public class NodeFor implements Node {
     }
 
     public String toString() {
-        return "(for " + identifier + " in " + expression + " do " + block + ")";
+        return "(for " + (identifiers.size() == 1 ? identifiers.get(0) : identifiers) + " in " + expression + " do " + block + ")";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
         expression.collectVars(freeVars, boundVars, additionalBoundVars);
         Set<String> boundVarsLocal = new HashSet<>(boundVars);
-        boundVarsLocal.add(identifier);
+        boundVarsLocal.addAll(identifiers);
         block.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
     }
 

@@ -364,6 +364,10 @@ interpreter_test("DerefProperty", "def a = <<<'x' => 1, 'y' => 2>>>; a->y", "2")
 interpreter_test("MapLiteralImplicitString", "<<<x => 1, y => 2>>>", "<<<'x' => 1, 'y' => 2>>>");
 interpreter_test("PipelineLambda", "[1, 2, 3] !> (fn(lst) lst[2])()", "3");
 interpreter_test("IfThenElifThenElse", "if 1 == 2 then 3 elif 1 == 3 then 4 elif 1 == 1 then 5 else 6", "5");
+interpreter_test("ForDestructuringListList", "def a = 0; for [x, y, z] in [[1, 2, 3], [4, 5, 6]] do a += x + y + z; end; a;", "21");
+interpreter_test("ForDestructuringListSet", "def a = 0; for [x, y, z] in [<<1, 2, 3>>, <<4, 5, 6>>] do a += x + y + z; end; a;", "21");
+interpreter_test("ForDestructuringSetList", "def a = 0; for [x, y, z] in <<[1, 2, 3], [4, 5, 6]>> do a += x + y + z; end; a;", "21");
+interpreter_test("ForDestructuringSetSet", "def a = 0; for [x, y, z] in << <<1, 2, 3>>, <<4, 5, 6>> >> do a += x + y + z; end; a;", "21");
 
 
 function collectvars_test(description, code, expected) {

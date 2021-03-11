@@ -161,16 +161,31 @@ namespace CheckerLang
             if (lexer.MatchIf("for", TokenType.Keyword))
             {
                 var pos = lexer.GetPos();
-                var token = lexer.Next();
-                if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
-                var identifier = token.value;
+                var identifiers = new List<string>();
+                if (lexer.MatchIf("[", TokenType.Interpunction)) {
+                    while (!lexer.Peekn(1, "]", TokenType.Interpunction)) {
+                        Token token = lexer.Next();
+                        if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                        identifiers.Add(token.value);
+                        if (!lexer.Peekn(1, "]", TokenType.Interpunction)) lexer.Match(",", TokenType.Interpunction);
+                    }
+                    lexer.Match("]", TokenType.Interpunction);
+                }
+                else
+                {
+                    var token = lexer.Next();
+                    if (token.type != TokenType.Identifier)
+                        throw new SyntaxError("Expected identifier in for loop but got '" + token + "'", token.pos);
+                    identifiers.Add(token.value);
+                }
+
                 lexer.Match("in", TokenType.Keyword);
                 var expression = ParseExpression(lexer);
                 if (lexer.Peek("do", TokenType.Keyword))
                 {
-                    return new NodeFor(identifier, expression, ParseBlock(lexer), pos);
+                    return new NodeFor(identifiers, expression, ParseBlock(lexer), pos);
                 }
-                return new NodeFor(identifier, expression, ParseExpression(lexer), pos);
+                return new NodeFor(identifiers, expression, ParseExpression(lexer), pos);
             }
 
             if (lexer.MatchIf("while", TokenType.Keyword))
