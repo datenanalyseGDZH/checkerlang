@@ -97,7 +97,6 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#is_not_empty'>is_not_empty</a></li>
 <li><a href='#is_not_null'>is_not_null</a></li>
 <li><a href='#is_null'>is_null</a></li>
-<li><a href='#is_null_or_empty'>is_null_or_empty</a></li>
 <li><a href='#is_numeric'>is_numeric</a></li>
 <li><a href='#is_numerical'>is_numerical</a></li>
 <li><a href='#is_odd'>is_odd</a></li>
@@ -1071,11 +1070,13 @@ is_empty(obj)
 Returns TRUE, if the obj is empty.
 Lists, sets and maps are empty, if they do not contain elements.
 Strings are empty, if the contain no characters. NULL is always empty.
-Other objects are converted to a string and if the result is empty, TRUE is returned.
 </pre><p>
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
+<div class='example'>is_empty(NULL) ==&gt; TRUE</div>
+<div class='example'>is_empty(1) ==&gt; FALSE</div>
 <div class='example'>is_empty([]) ==&gt; TRUE</div>
+<div class='example'>is_empty(&lt;&lt;&gt;&gt;) ==&gt; TRUE</div>
 <div class='example'>is_empty(set([1, 2])) ==&gt; FALSE</div>
 <div class='example'>is_empty('') ==&gt; TRUE</div>
 </pre><p>
@@ -1187,21 +1188,6 @@ Returns TRUE, if the obj is NULL.
 <div class='example'>is_null('') ==&gt; FALSE</div>
 <div class='example'>is_null(1) ==&gt; FALSE</div>
 <div class='example'>is_null(NULL) ==&gt; TRUE</div>
-</pre><p>
-</div></p>
-<h2 id='is_null_or_empty'>is_null_or_empty</h2>
-<pre>
-is_null_or_empty(obj)
-</pre><p>
-Returns TRUE, if obj is either NULL or an empty string.
-</pre><p>
-<div class='examples'>
-<div class='examples_title'>Examples:</div>
-<div class='example'>is_null_or_empty(NULL) ==&gt; TRUE</div>
-<div class='example'>is_null_or_empty('') ==&gt; TRUE</div>
-<div class='example'>is_null_or_empty('1') ==&gt; FALSE</div>
-<div class='example'>is_null_or_empty(1) ==&gt; FALSE</div>
-<div class='example'>is_null_or_empty(FALSE) ==&gt; FALSE</div>
 </pre><p>
 </div></p>
 <h2 id='is_numeric'>is_numeric</h2>

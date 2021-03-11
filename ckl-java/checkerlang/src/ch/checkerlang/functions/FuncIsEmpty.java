@@ -37,9 +37,11 @@ public class FuncIsEmpty extends FuncBase {
                 "Returns TRUE, if the obj is empty.\r\n" +
                 "Lists, sets and maps are empty, if they do not contain elements.\r\n" +
                 "Strings are empty, if the contain no characters. NULL is always empty.\r\n" +
-                "Other objects are converted to a string and if the result is empty, TRUE is returned.\r\n" +
                 "\r\n" +
+                ": is_empty(NULL) ==> TRUE\r\n" +
+                ": is_empty(1) ==> FALSE\r\n" +
                 ": is_empty([]) ==> TRUE\r\n" +
+                ": is_empty(<<>>) ==> TRUE\r\n" +
                 ": is_empty(set([1, 2])) ==> FALSE\r\n" +
                 ": is_empty('') ==> TRUE\r\n";
     }

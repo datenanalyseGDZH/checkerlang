@@ -32,7 +32,10 @@ namespace CheckerLang
                    "Lists, sets and maps are empty, if they do not contain elements.\r\n" +
                    "Strings are empty, if the contain no characters. NULL is always empty.\r\n" +
                    "\r\n" +
+                   ": is_empty(NULL) ==> TRUE\r\n" +
+                   ": is_empty(1) ==> FALSE\r\n" +
                    ": is_empty([]) ==> TRUE\r\n" +
+                   ": is_empty(<<>>) ==> TRUE\r\n" +
                    ": is_empty(set([1, 2])) ==> FALSE\r\n" +
                    ": is_empty('') ==> TRUE\r\n";
         }
