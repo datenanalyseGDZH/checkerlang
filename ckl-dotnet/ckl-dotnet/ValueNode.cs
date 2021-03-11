@@ -44,7 +44,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            return string.Compare(ToString(), value.ToString(), StringComparison.Ordinal);
+            return string.CompareOrdinal(ToString(), value.ToString());
         }
 
         public override int HashCode()

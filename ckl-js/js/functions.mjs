@@ -498,9 +498,18 @@ export class FuncCompare extends ValueFunc {
         super("compare");
         this.info = "compare(a, b)\r\n" +
                 "\r\n" +
-                "Returns -1 if a is less than b, 0 if a is equal to b, and 1 if a is greater than b.\r\n" +
+                "Returns an int less than 0 if a is less than b,\r\n" +
+                "0 if a is equal to b, and an int greater than 0\r\n" +
+                "if a is greater than b.\r\n" +
                 "\r\n" +
-                ": compare(1, 2) ==> -1\r\n";
+                ": compare(1, 2) < 0 ==> TRUE\r\n" +
+                ": compare(3, 1) > 0 ==> TRUE\r\n" +
+                ": compare(1, 1) == 0 ==> TRUE\r\n" +
+                ": compare('1', 2) < 0 ==> TRUE\r\n" +
+                ": compare('2', 1) < 0 ==> TRUE\r\n" +
+                ": compare(100, '100') > 0 ==> TRUE\r\n" +
+                ": compare(NULL, 1) > 0 ==> TRUE\r\n" +
+                ": compare(NULL, NULL) == 0 ==> TRUE\r\n";
     }
 
     getArgNames() {
@@ -510,10 +519,6 @@ export class FuncCompare extends ValueFunc {
     execute(args, environment, pos) {
         const a = args.get("a");
         const b = args.get("b");
-
-        if (a.isNull() && b.isNull()) {
-            return ValueNull.NULL;
-        }
 
         return new ValueInt(a.compareTo(b));
     }

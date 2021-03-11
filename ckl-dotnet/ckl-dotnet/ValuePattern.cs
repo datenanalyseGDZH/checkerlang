@@ -59,8 +59,8 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsPattern()) return ToString().CompareTo(value.ToString());
-            return this.value.CompareTo(value.AsPattern().value);
+            if (!value.IsPattern()) return string.CompareOrdinal(ToString(), value.ToString());
+            return string.CompareOrdinal(this.value, value.AsPattern().value);
         }
 
         public override int HashCode()

@@ -60,7 +60,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsBoolean()) return ToString().CompareTo(value.ToString());
+            if (!value.IsBoolean()) return string.CompareOrdinal(ToString(), value.ToString());
             return this.value.CompareTo(value.AsBoolean().value);
         }
 

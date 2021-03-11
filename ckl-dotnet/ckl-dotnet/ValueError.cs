@@ -41,7 +41,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsError()) return ToString().CompareTo(value.ToString());
+            if (!value.IsError()) return string.CompareOrdinal(ToString(), value.ToString());
             return this.value.CompareTo(value.AsError().value);
         }
 

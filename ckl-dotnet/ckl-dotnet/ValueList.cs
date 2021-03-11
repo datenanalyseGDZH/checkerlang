@@ -80,7 +80,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsList()) return ToString().CompareTo(value.ToString());
+            if (!value.IsList()) return string.CompareOrdinal(ToString(), value.ToString());
             var lst = value.AsList().GetValue();
             for (var i = 0; i < Math.Min(GetValue().Count, lst.Count); i++)
             {

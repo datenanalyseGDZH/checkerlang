@@ -45,7 +45,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsDate()) return ToString().CompareTo(value.ToString());
+            if (!value.IsDate()) return string.CompareOrdinal(ToString(), value.ToString());
             return this.value.CompareTo(value.AsDate().value);
         }
 

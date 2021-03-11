@@ -35,9 +35,18 @@ public class FuncCompare extends FuncBase {
         super("compare");
         info = "compare(a, b)\r\n" +
                 "\r\n" +
-                "Returns -1 if a is less than b, 0 if a is equal to b, and 1 if a is greater than b.\r\n" +
+                "Returns an int less than 0 if a is less than b,\r\n" +
+                "0 if a is equal to b, and an int greater than 0\r\n" +
+                "if a is greater than b.\r\n" +
                 "\r\n" +
-                ": compare(1, 2) ==> -1\r\n";
+                ": compare(1, 2) < 0 ==> TRUE\r\n" +
+                ": compare(3, 1) > 0 ==> TRUE\r\n" +
+                ": compare(1, 1) == 0 ==> TRUE\r\n" +
+                ": compare('1', 2) < 0 ==> TRUE\r\n" +
+                ": compare('2', 1) < 0 ==> TRUE\r\n" +
+                ": compare(100, '100') > 0 ==> TRUE\r\n" +
+                ": compare(NULL, 1) > 0 ==> TRUE\r\n" +
+                ": compare(NULL, NULL) == 0 ==> TRUE\r\n";
     }
 
     public List<String> getArgNames() {
@@ -47,23 +56,6 @@ public class FuncCompare extends FuncBase {
     public Value execute(Args args, Environment environment, SourcePos pos) {
         Value a = args.get("a");
         Value b = args.get("b");
-
-        if (a.isNull() && b.isNull()) {
-            return ValueNull.NULL;
-        }
-
-        if (a.isInt() && b.isInt()) {
-            return new ValueInt(Long.compare(a.asInt().getValue(), b.asInt().getValue()));
-        }
-
-        if (a.isNumerical() && b.isNumerical()) {
-            return new ValueInt(Double.compare(a.asDecimal().getValue(), b.asDecimal().getValue()));
-        }
-
-        if (a.isDate() && b.isDate()) {
-            return new ValueInt(a.asDate().getValue().compareTo(b.asDate().getValue()));
-        }
-
-        return new ValueInt(a.asString().getValue().compareTo(b.asString().getValue()));
+        return new ValueInt(a.compareTo(b));
     }
 }
