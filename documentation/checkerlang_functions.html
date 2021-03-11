@@ -404,11 +404,20 @@ Closes the input or output connection and releases system resources.
 <pre>
 compare(a, b)
 </pre><p>
-Returns -1 if a is less than b, 0 if a is equal to b, and 1 if a is greater than b.
+Returns an int less than 0 if a is less than b,
+0 if a is equal to b, and an int greater than 0
+if a is greater than b.
 </pre><p>
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
-<div class='example'>compare(1, 2) ==&gt; -1</div>
+<div class='example'>compare(1, 2) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(3, 1) &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(1, 1) == 0 ==&gt; TRUE</div>
+<div class='example'>compare('1', 2) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare('2', 1) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(100, '100') &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(NULL, 1) &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(NULL, NULL) == 0 ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='const'>const</h2>
