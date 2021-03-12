@@ -25,6 +25,7 @@ import { ValueNull } from "./js/values.mjs";
 import { FuncFileInput, FuncFileOutput, FuncRun } from "./js/functions.mjs";
 
 import * as fs from "fs";
+import * as readline from "readline";
 import { ValueList } from "./js/values.mjs";
 
 const interpreter = new Interpreter(false);
@@ -62,9 +63,14 @@ function interpretStatement(statement) {
     }
 }
 
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 process.stdout.write("> ");
 let buffer = "";
-process.stdin.on("data", function(data) {
+rl.on("line", function(data) {
     if (data.toString('utf8').trim() === '') {
         interpretStatement(buffer);
         buffer = "";
