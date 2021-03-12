@@ -25,3 +25,6 @@
 * provide legacy module that corresponds to the features of ckl 2
 * parse_json should support fileinput values and read only as much as is needed.
 * destructuring assign should support more than just identifiers, also a->b, a[b], a(b)[c], a(b)->c and so on
+* optimize for loop in java/dotnet so that sets and maps are not first converted to lists and only then traversed
+* unfortunately, iterating over a map traverses the values, not the keys. This cannot be changed due to backwards compatibility, but maybe a more efficient way than for x in set(m) could be devised.
+* spreading works in funcalls and lists. What about sets and maps? Can we implement this?
