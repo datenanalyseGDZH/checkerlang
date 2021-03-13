@@ -368,6 +368,9 @@ interpreter_test("ForDestructuringListList", "def a = 0; for [x, y, z] in [[1, 2
 interpreter_test("ForDestructuringListSet", "def a = 0; for [x, y, z] in [<<1, 2, 3>>, <<4, 5, 6>>] do a += x + y + z; end; a;", "21");
 interpreter_test("ForDestructuringSetList", "def a = 0; for [x, y, z] in <<[1, 2, 3], [4, 5, 6]>> do a += x + y + z; end; a;", "21");
 interpreter_test("ForDestructuringSetSet", "def a = 0; for [x, y, z] in << <<1, 2, 3>>, <<4, 5, 6>> >> do a += x + y + z; end; a;", "21");
+interpreter_test("MapEquality1", "<<<a => 1, b => 2>>> == <<<b => 2, a => 1>>>", "TRUE");
+interpreter_test("MapEquality2", "<<<a => 1, b => 1>>> == <<<b => 2, a => 1>>>", "FALSE");
+interpreter_test("MapEquality3", "<<<a => 1, c => 2>>> == <<<b => 2, a => 1>>>", "FALSE");
 
 
 function collectvars_test(description, code, expected) {

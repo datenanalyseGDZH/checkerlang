@@ -1009,7 +1009,7 @@ export class ValueMap extends Value {
     isEquals(other) {
         if (!(other instanceof ValueMap)) return false;
         if (this.value.size != other.value.size) return false;
-        for (const [key, val] of this.value) {
+        for (const [key, val] of this.value.entries()) {
             if (!other.value.has(key)) {
                 return false;
             }
