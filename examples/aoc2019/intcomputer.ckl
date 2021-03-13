@@ -130,3 +130,11 @@ def add_input(machine, value) do
 end;
 
 def get_output(machine, idx) machine->output[-1 - idx];
+
+def wait_for_output(machine, num_output = 1) do
+    def output_size = length(machine->output);
+    while not machine->halted and length(machine->output) < output_size + num_output do
+        machine = step(machine);
+    end;
+    machine;
+end;

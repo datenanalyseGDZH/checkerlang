@@ -1,0 +1,86 @@
+# advent of code day 11
+# https://adventofcode.com/2019/day/11
+
+run("intcomputer.ckl");
+
+# Part 1
+
+def black = 0;
+def white = 1;
+
+def turn_left = 0;
+def turn_right = 1;
+
+def dir_up = 0;
+def dir_left = 1;
+def dir_down = 2;
+def dir_right = 3;
+
+def cells = <<<>>>;
+
+def x = 0;
+def y = 0;
+def dir = dir_up;
+
+def run_paint_job(machine) do
+    while not machine->halted do
+        machine !> wait_for_output(2);
+        
+        def color = machine !> get_output(1);
+        def turn = machine !> get_output(0);
+        
+        cells[x + "," + y] = color;
+        
+        if turn == turn_left then dir = (dir + 1) % 4
+        elif turn == turn_right then dir = (dir - 1 + 4) % 4
+        else error("unknown turn " + turn);
+        
+        if dir == dir_up then y += 1
+        elif dir == dir_left then x -= 1
+        elif dir == dir_down then y -= 1
+        elif dir == dir_right then x += 1;
+        
+        machine !> add_input(cells !> map_get(x + "," + y, default_value = 0));
+    end;
+end;
+
+def machine = make_machine(read_file("aoc2019-day11-input.txt"));
+machine !> add_input(0);
+run_paint_job(machine);
+
+println("part1: " + length(cells));
+
+
+# Part 2
+
+cells = <<<>>>;
+machine = make_machine(read_file("aoc2019-day11-input.txt"));
+machine !> add_input(1);
+run_paint_job(machine);
+
+def get_rect(cells) do
+    def x1 = 0;
+    def y1 = 0;
+    def x2 = 0;
+    def y2 = 0;
+    for cell in set(cells) do
+        def [x, y] = [int(s) for s in split(cell, ",")];
+        if x < x1 then x1 = x;
+        if x > x2 then x2 = x;
+        if y < y1 then y1 = y;
+        if y > y2 then y2 = y;
+    end;
+    [x1, y1, x2, y2];
+end;
+
+println("part2:");
+def [x1, y1, x2, y2] = get_rect(cells);
+for y in interval(y1, y2) do
+    for x in reverse(interval(x1, x2)) do
+        def color = cells !> map_get(x + "," + y, default_value = -1);
+        if color == 1 then print("#") 
+        elif color == 0 then print(" ")
+        else print(" ");
+    end;
+    println();
+end;
