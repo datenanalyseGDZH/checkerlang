@@ -1,0 +1,109 @@
+# advent of code day 12
+# https://adventofcode.com/2019/day/12
+
+# Part 1
+
+def convert_to_xyz(spec) do
+    spec !> 
+    substr(1, -1) !> 
+    split(",") !>
+    map_list(fn(coord) do
+        def parts = split(trim(coord), "=");
+        [parts[0], int(parts[1])]
+    end) !>
+    map();
+end;
+
+def init_xyz() <<<x => 0, y => 0, z => 0>>>;
+
+def positions = read_file("aoc2019-day12-input.txt") !>
+                lines() !>
+                map_list(convert_to_xyz);
+                
+def velocities = [init_xyz(), init_xyz(), init_xyz(), init_xyz()];
+
+def apply_gravity(positions, velocities) do
+    for a in range(4) do
+        for b in range(4) do
+            if a == b then continue;
+            
+            if positions[a]->x < positions[b]->x then velocities[a]->x += 1
+            if positions[a]->x > positions[b]->x then velocities[a]->x -= 1;
+            
+            if positions[a]->y < positions[b]->y then velocities[a]->y += 1
+            if positions[a]->y > positions[b]->y then velocities[a]->y -= 1;
+            
+            if positions[a]->z < positions[b]->z then velocities[a]->z += 1
+            if positions[a]->z > positions[b]->z then velocities[a]->z -= 1;
+        end;
+    end;
+end;
+
+def apply_velocity(positions, velocities) do
+    for a in range(4) do
+        positions[a]->x += velocities[a]->x;
+        positions[a]->y += velocities[a]->y;
+        positions[a]->z += velocities[a]->z;
+    end;
+end;
+
+for time in interval(1, 1000) do
+    apply_gravity(positions, velocities);
+    apply_velocity(positions, velocities);
+end;
+
+def total_energy_for_moon(i) do
+    def energy(xyz) abs(xyz->x) + abs(xyz->y) + abs(xyz->z);
+    energy(positions[i]) * energy(velocities[i]);
+end;
+
+def total_energy() sum([total_energy_for_moon(i) for i in range(4)]);
+
+println("part1: " + total_energy());
+
+
+# Part 2
+
+positions = read_file("aoc2019-day12-input.txt") !>
+            lines() !>
+            map_list(convert_to_xyz);
+                
+velocities = [init_xyz(), init_xyz(), init_xyz(), init_xyz()];
+
+def i = 0;
+def statesx = <<>>;
+def statesy = <<>>;
+def statesz = <<>>;
+
+statesx !> append(string([positions[i]->x + "," + velocities[i]->x for i in range(4)]));
+statesy !> append(string([positions[i]->y + "," + velocities[i]->y for i in range(4)]));
+statesz !> append(string([positions[i]->z + "," + velocities[i]->z for i in range(4)]));
+
+def finished = <<<>>>;
+
+while TRUE do
+    apply_gravity(positions, velocities);
+    apply_velocity(positions, velocities);
+    
+    i += 1;
+    
+    def next_statex = string([positions[i]->x + "," + velocities[i]->x for i in range(4)]);
+    if next_statex in statesx and not "x" in finished then finished["x"] = i;
+
+    def next_statey = string([positions[i]->y + "," + velocities[i]->y for i in range(4)]);
+    if next_statey in statesy and not "y" in finished then finished["y"] = i;
+
+    def next_statez = string([positions[i]->z + "," + velocities[i]->z for i in range(4)]);
+    if next_statez in statesz and not "z" in finished then finished["z"] = i;
+    
+    if length(finished) == 3 then break;
+end;
+
+def gcd(a, b) do
+    if b == 0 then a
+    else gcd(b, a % b)
+end;
+
+def lcm(a, b) a * b / gcd(a, b);
+
+println("part2: " + string(reduce(list(finished), lcm)));
