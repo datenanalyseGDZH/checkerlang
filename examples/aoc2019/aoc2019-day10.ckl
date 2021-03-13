@@ -1,20 +1,6 @@
 # advent of code day 10
 # https://adventofcode.com/2019/day/10
 
-def asteroid_locations(input) do
-    input !>
-    lines() !>
-    enumerate() !>
-    map_list(fn(item) do
-        def row = item[0];
-        item[1] !> split("") !> enumerate() !> filter(fn(item) item[1] == '#') !> map_list(fn(col) do
-            <<<y => row, x => col[0]>>>
-        end);
-    end) !>
-    flatten() !>
-    filter(fn(item) item != []);
-end;
-
 # Part 1
 
 def asteroids = read_file("aoc2019-day10-input.txt") !>
@@ -42,18 +28,6 @@ max([asteroids_visible_at(a->x, a->y) for a in asteroids]) !>
 printf(fmt = "part1: {0}\n");
 
 # Part 2
-
-def asteroids = read_file("aoc2019-day10-input.txt") !>
-                lines() !>
-                enumerate() !>
-                map_list(fn(item) do
-                    def row = item[0];
-                    item[1] !> split("") !> enumerate() !> filter(fn(item) item[1] == '#') !> map_list(fn(col) do
-                        <<<y => row, x => col[0]>>>
-                    end);
-                end) !>
-                flatten() !>
-                filter(fn(item) item != []);
 
 def [x, y] = max([[a->x, a->y, asteroids_visible_at(a->x, a->y)] for a in asteroids], key = fn(item) item[2]);
 
