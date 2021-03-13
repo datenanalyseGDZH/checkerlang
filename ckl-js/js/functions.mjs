@@ -75,6 +75,7 @@ export class Environment {
         Environment.add(result, new FuncAppend());
         Environment.add(result, new FuncAsin());
         Environment.add(result, new FuncAtan());
+        Environment.add(result, new FuncAtan2());
         Environment.add(result, new FuncBody());
         Environment.add(result, new FuncBoolean());
         Environment.add(result, new FuncCeiling());
@@ -400,6 +401,27 @@ export class FuncAtan extends ValueFunc {
     execute(args, environment, pos) {
         if (args.isNull("x")) return ValueNull.NULL;
         return new ValueDecimal(Math.atan(args.getNumerical("x").value));
+    }
+}
+
+export class FuncAtan2 extends ValueFunc {
+    constructor() {
+        super("atan2");
+        this.info = "atan2(y, x)\r\n" +
+                "\r\n" +
+                "Returns the arcus tangens of y / x.\r\n" +
+                "\r\n" +
+                ": atan2(0, 1) ==> 0.0\r\n";
+    }
+
+    getArgNames() {
+        return ["y", "x"];
+    }
+
+    execute(args, environment, pos) {
+        if (args.isNull("y")) return ValueNull.NULL;
+        if (args.isNull("x")) return ValueNull.NULL;
+        return new ValueDecimal(Math.atan2(args.getNumerical("y").value, args.getNumerical("x").value));
     }
 }
 

@@ -73,6 +73,7 @@ public class Environment {
         add(result, new FuncAppend());
         add(result, new FuncAsin());
         add(result, new FuncAtan());
+        add(result, new FuncAtan2());
         add(result, new FuncBody());
         add(result, new FuncBoolean());
         add(result, new FuncCeiling());

@@ -1183,3 +1183,22 @@ def chunks(obj, chunk_size) do
     return result;
 end;
 
+
+"
+flatten(lst)
+
+Flattens a list, by replacing child lists with their contents.
+This does only work at the top level and does not recurse.
+
+: flatten([[1, 2], 3, 4, [5, 6]]) ==> [1, 2, 3, 4, 5, 6]
+: flatten([1, 2, 3]) ==> [1, 2, 3]
+: flatten([1, [2], [3, 4], [5, [6, 7]]]) ==> [1, 2, 3, 4, 5, [6, 7]]
+"
+def flatten(lst) do
+    def result = [];
+    for item in lst do
+        if is_list(item) then result !> append_all(item)
+        else result !> append(item);
+    end;
+    result;
+end;

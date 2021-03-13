@@ -169,6 +169,7 @@ namespace CheckerLang
             Add(result, new FuncAppend());
             Add(result, new FuncAsin());
             Add(result, new FuncAtan());
+            Add(result, new FuncAtan2());
             Add(result, new FuncBody());
             Add(result, new FuncBoolean());
             Add(result, new FuncCeiling());
