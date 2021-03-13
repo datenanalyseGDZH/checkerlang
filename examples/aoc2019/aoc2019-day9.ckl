@@ -1,0 +1,22 @@
+# advent of code day 9
+# https://adventofcode.com/2019/day/9
+
+run("intcomputer.ckl");
+
+# Part 1
+
+read_file("aoc2019-day9-input.txt") !>
+make_machine() !>
+set_input([1]) !>
+execute() !>
+get_output(0) !>
+printf(fmt = "part1: {0}\n");
+
+# Part 2
+
+read_file("aoc2019-day9-input.txt") !>
+make_machine() !>
+set_input([2]) !>
+execute() !>
+get_output(0) !>
+printf(fmt = "part2: {0}\n");

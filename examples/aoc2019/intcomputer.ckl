@@ -1,0 +1,132 @@
+# The fully functional intcomputer as it is used
+# in the advent of code 2019 problems. This is
+# the state of the intcomputer after day 9.
+
+def trace = FALSE;
+
+def ensure_min_length(lst, min_length, default_value = 0) do 
+    for i in range(min_length - length(lst)) do 
+        lst !> append(default_value); 
+    end;
+    lst; 
+end;
+
+def parse_program(data) split(data, ",") !> map_list(int);
+def make_machine(data) <<<program => parse_program(data), rel_base => 0, ip => 0, halted => FALSE, input => [], output => []>>>;
+
+def mode_pos = 0;
+def mode_imm = 1;
+def mode_rel = 2;
+
+def parse_opcode(opcode) do
+    def s = string(opcode);
+    while length(s) < 5 do s = "0" + s; end;
+    [s !> substr(3, 5) !> int(),
+     s !> substr(2, 3) !> int(),
+     s !> substr(1, 2) !> int(),
+     s !> substr(0, 1) !> int()];
+end;
+
+def param_resolve_src(machine, param, mode) do
+    def loc = -1;
+    if mode == mode_pos then loc = machine->program[machine->ip + param]
+    if mode == mode_rel then loc = machine->rel_base + machine->program[machine->ip + param]
+    elif mode == mode_imm then loc = machine->ip + param
+    else error("unknown param mode " + mode);
+    ensure_min_length(machine->program, loc + 1);
+    machine->program[loc];
+end;
+
+def param_resolve_dest(machine, param, mode) do
+    if mode == mode_pos then machine->program[machine->ip + param]
+    if mode == mode_rel then machine->rel_base + machine->program[machine->ip + param]
+    elif mode == mode_imm then error("cannot use param mode imm for dest")
+    else error("unknown param mode " + mode);
+end;
+
+def step(machine) do
+    def prog = machine->program;
+    def [opcode, mode1, mode2, mode3] = parse_opcode(prog[machine->ip]);
+    if opcode == 99 then do
+        machine->halted = TRUE;
+    end elif opcode == 1 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        def c = param_resolve_dest(machine, 3, mode3);
+        if trace then println("add " + a + " + " + b + " store in " + c);
+        ensure_min_length(machine->program, c + 1);
+        prog[c] = a + b;
+        machine->ip += 4;
+    end elif opcode == 2 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        def c = param_resolve_dest(machine, 3, mode3);
+        if trace then println("mul " + a + " * " + b + " store in " + c);
+        ensure_min_length(machine->program, c + 1);
+        prog[c] = a * b;
+        machine->ip += 4;
+    end elif opcode == 3 then do
+        def value = first(machine->input);
+        machine->input = rest(machine->input);
+        def a = param_resolve_dest(machine, 1, mode1);
+        ensure_min_length(machine->program, a + 1);
+        prog[a] = value;
+        if trace then println("inp " + value + " store in " + a);
+        machine->ip += 2;
+    end elif opcode == 4 then do
+        def value = param_resolve_src(machine, 1, mode1);
+        machine->output !> append(value);
+        if trace then println("out " + value);
+        machine->ip += 2;
+    end elif opcode == 5 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        if a != 0 then machine->ip = b
+        else machine->ip += 3;
+        if trace then println("jump-if-true " + a + " to " + b);
+    end elif opcode == 6 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        if a == 0 then machine->ip = b
+        else machine->ip += 3;
+        if trace then println("jump-if-false " + a + " to " + b);
+    end elif opcode == 7 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        def c = param_resolve_dest(machine, 3, mode3);
+        ensure_min_length(machine->program, c + 1);
+        prog[c] = (if a < b then 1 else 0);
+        if trace then println("less " + a + " " + b + " store in " + c);
+        machine->ip += 4;
+    end elif opcode == 8 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        def b = param_resolve_src(machine, 2, mode2);
+        def c = param_resolve_dest(machine, 3, mode3);
+        ensure_min_length(machine->program, c + 1);
+        prog[c] = (if a == b then 1 else 0);
+        if trace then println("equals " + a + " " + b + " store in " + c);
+        machine->ip += 4;
+    end elif opcode == 9 then do
+        def a = param_resolve_src(machine, 1, mode1);
+        machine->rel_base += a;
+        if trace then println("adjust rel_base by " + a + " to become " + machine->rel_base);
+        machine->ip += 2;
+    end;
+    machine;
+end;
+
+def execute(machine) do
+    while not machine->halted do machine = step(machine); end;
+end;
+
+def set_input(machine, values) do
+    machine->input = values;
+    machine;
+end;
+
+def add_input(machine, value) do
+    machine->input !> append(value);
+    machine;
+end;
+
+def get_output(machine, idx) machine->output[-1 - idx];
