@@ -33,6 +33,7 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#apply'>apply</a></li>
 <li><a href='#asin'>asin</a></li>
 <li><a href='#atan'>atan</a></li>
+<li><a href='#atan2'>atan2</a></li>
 <li><a href='#body'>body</a></li>
 <li><a href='#boolean'>boolean</a></li>
 <li><a href='#ceiling'>ceiling</a></li>
@@ -68,6 +69,7 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#find'>find</a></li>
 <li><a href='#first'>first</a></li>
 <li><a href='#first_n'>first_n</a></li>
+<li><a href='#flatten'>flatten</a></li>
 <li><a href='#floor'>floor</a></li>
 <li><a href='#for_each'>for_each</a></li>
 <li><a href='#format_date'>format_date</a></li>
@@ -343,6 +345,17 @@ Returns the arcus tangens of x.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>atan(0) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
+<h2 id='atan2'>atan2</h2>
+<pre>
+atan2(y, x)
+</pre><p>
+Returns the arcus tangens of y / x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>atan2(0, 1) ==&gt; 0.0</div>
 </pre><p>
 </div></p>
 <h2 id='body'>body</h2>
@@ -820,6 +833,20 @@ Returns the first n elements of the list.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>range(100) !&gt; first_n(5) ==&gt; [0, 1, 2, 3, 4]</div>
+</pre><p>
+</div></p>
+<h2 id='flatten'>flatten</h2>
+<pre>
+flatten(lst)
+</pre><p>
+Flattens a list, by replacing child lists with their contents.
+This does only work at the top level and does not recurse.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>flatten([[1, 2], 3, 4, [5, 6]]) ==&gt; [1, 2, 3, 4, 5, 6]</div>
+<div class='example'>flatten([1, 2, 3]) ==&gt; [1, 2, 3]</div>
+<div class='example'>flatten([1, [2], [3, 4], [5, [6, 7]]]) ==&gt; [1, 2, 3, 4, 5, [6, 7]]</div>
 </pre><p>
 </div></p>
 <h2 id='floor'>floor</h2>
