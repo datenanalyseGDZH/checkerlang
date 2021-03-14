@@ -1164,11 +1164,11 @@ export class NodeRequire {
             moduleEnv = modules.get(moduleidentifier);
         } else {
             moduleEnv = environment.getBase().newEnv();
+            modules.set(moduleidentifier, moduleEnv);
             const loader = moduleEnv.getModuleLoader();
             const modulesrc = loader(modulefile);
             const node = Parser.parseScript(modulesrc, modulefile);
             node.evaluate(moduleEnv);
-            modules.set(moduleidentifier, moduleEnv);
         }
 
         // bind module or contents of module
@@ -1179,9 +1179,12 @@ export class NodeRequire {
             }
         } else {
             const obj = new ValueObject();
+            obj.isModule = true;
             for (const name of moduleEnv.getLocalSymbols()) {
                 if (name.startsWith("_")) continue; // skip private module symbols
-                obj.addItem(name, moduleEnv.get(name));
+                const val = moduleEnv.get(name);
+                if (val.isObject() && val.isModule) continue; // do not re-export modules!
+                obj.addItem(name, val);
             }
             environment.put(modulename, obj);
         }

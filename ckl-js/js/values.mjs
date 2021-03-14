@@ -1163,6 +1163,7 @@ export class ValueObject extends Value {
     constructor() {
         super();
         this.value = new Map();
+        this.isModule = false;
     }
 
     addItem(key, value) {
