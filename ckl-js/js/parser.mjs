@@ -71,7 +71,7 @@ export class Parser {
 
     parse(lexer) {
         if (!lexer.hasNext()) return new NodeNull(new SourcePos(lexer.name, 1, 1));
-        let result = this.parseBareBlock(lexer);
+        let result = this.parseBareBlock(lexer, true);
         if (lexer.hasNext()) throw new SyntaxError("Expected end of input but got '" + lexer.next() + "'", lexer.getPos());
         if (result instanceof NodeReturn) {
             result = result.expression;
@@ -87,13 +87,13 @@ export class Parser {
         return result;
     }
 
-    parseBareBlock(lexer) {
-        const block = new NodeBlock(lexer.getPosNext());
+    parseBareBlock(lexer, toplevel = false) {
+        const block = new NodeBlock(lexer.getPosNext(), toplevel);
         let expression;
         if (lexer.peekn(1, "do", "keyword")) {
             expression = this.parseBlock(lexer);
         } else {
-            expression = this.parseExpression(lexer);
+            expression = this.parseExpression(lexer, toplevel);
         }
         if (!lexer.hasNext()) {
             return expression;
@@ -104,7 +104,7 @@ export class Parser {
             if (lexer.peekn(1, "do", "keyword")) {
                 expression = this.parseBlock(lexer);
             } else {
-                expression = this.parseExpression(lexer);
+                expression = this.parseExpression(lexer, toplevel);
             }
             block.add(expression);
         }
@@ -146,13 +146,14 @@ export class Parser {
         return block;
     }
 
-    parseExpression(lexer) {
+    parseExpression(lexer, toplevel = false) {
         let comment = "";
         if (!lexer.hasNext()) throw new SyntaxError("Unexpected end of input", lexer.getPos());
         if (lexer.peek().type === "string" && lexer.peekn(2, "def", "keyword")) {
             comment = lexer.next().value;
         }
         if (lexer.matchIf("require", "keyword")) {
+            if (!toplevel) throw new SyntaxError("Require statement must be top-level", lexer.getPos());
             const pos = lexer.getPos();
             const token = lexer.next();
             if (token.type !== "identifier" && token.type !== "string") throw new SyntaxError("Expected module specifier, but got " + token, token.pos);
@@ -534,7 +535,7 @@ export class Parser {
 
         let token = lexer.next();
         if (token.value === "(" && token.type == "interpunction") {
-            result = this.parseBareBlock(lexer);
+            result = this.parseBareBlock(lexer, false);
             lexer.match(")", "interpunction");
             return this.derefOrCallOrInvoke(lexer, result);
         }

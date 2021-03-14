@@ -136,10 +136,11 @@ export class NodeAssignDestructuring {
 }
 
 export class NodeBlock {
-    constructor(pos) {
+    constructor(pos, toplevel = false) {
         this.expressions = [];
         this.finallyexprs = [];
         this.pos = pos;
+        this.toplevel = toplevel;
     }
 
     add(expression) {
@@ -158,6 +159,7 @@ export class NodeBlock {
         let result = ValueBoolean.TRUE;
         try {
             for (let expression of this.expressions) {
+                if (expression instanceof NodeRequire) continue;
                 result = expression.evaluate(environment);
                 if (result.isReturn()) break;
                 if (result.isBreak()) break;
@@ -171,6 +173,11 @@ export class NodeBlock {
         }
         for (let expression of this.finallyexprs) {
             expression.evaluate(environment);
+        }
+        for (let expression of this.expressions) {
+            if (expression instanceof NodeRequire) {
+                expression.evaluate(environment);                
+            }
         }
         return result;
     }
