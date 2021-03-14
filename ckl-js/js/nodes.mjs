@@ -20,7 +20,8 @@
 */
 
 import { RuntimeError } from "./errors.mjs";
-import { FuncLambda } from "./functions.mjs";
+import { Environment, FuncLambda } from "./functions.mjs";
+import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
 
 import { 
@@ -32,6 +33,7 @@ import {
     ValueList,
     ValueMap,
     ValueNull,
+    ValueObject,
     ValueSet,
     ValueString 
 } from "./values.mjs";
@@ -371,6 +373,11 @@ export class NodeDeref {
             if (!value.hasItem(idx)) throw new RuntimeError("Map does not contain key " + idx, this.pos);
             return value.getItem(idx);
         }
+        if (value instanceof ValueObject) {
+            const member = idx.asString().value;
+            if (!value.hasItem(member)) throw new RuntimeError("Object does not contain member " + member, this.pos);
+            return value.getItem(member);
+        }
         throw new RuntimeError("Cannot dereference value " + value, this.pos);
     }
 
@@ -414,6 +421,11 @@ export class NodeDerefAssign {
         if (container instanceof ValueMap) {
             const map = container.value;
             map.set(idx, value);
+            return container;
+        }
+        if (container instanceof ValueObject) {
+            const member = idx.asString().value;
+            container.value.set(member, value);
             return container;
         }
         throw new RuntimeError("Cannot deref-assign " + this.value, this.pos);
@@ -1122,6 +1134,66 @@ export class NodeOr {
         for (const expression of this.expressions) {
             expression.collectVars(freeVars, boundVars, additionalBoundVars);
         }
+    }
+}
+
+export class NodeRequire {
+    constructor(modulespec, name, unqualified, pos) {
+        this.modulespec = modulespec;
+        this.name = name;
+        this.unqualified = unqualified;
+        this.pos = pos;
+    }
+
+    evaluate(environment) {
+        const modules = environment.getModules();
+        // resolve module file, identifier and name
+        let modulefile = this.modulespec;
+        if (!modulefile.endsWith(".ckl")) modulefile += ".ckl";
+        let moduleidentifier = null;
+        let modulename = this.name;
+        const parts = this.modulespec.split("/");
+        let name = parts[parts.length - 1];
+        if (name.endsWith(".ckl")) name = name.substr(0, name.length - 4);
+        moduleidentifier = name;
+        if (modulename == null) modulename = name;
+        
+        // lookup or read module
+        let moduleEnv = null;
+        if (modules.has(moduleidentifier)) {
+            moduleEnv = modules.get(moduleidentifier);
+        } else {
+            moduleEnv = environment.getBase().newEnv();
+            const loader = moduleEnv.getModuleLoader();
+            const modulesrc = loader(modulefile);
+            const node = Parser.parseScript(modulesrc, modulefile);
+            node.evaluate(moduleEnv);
+            modules.set(moduleidentifier, moduleEnv);
+        }
+
+        // bind module or contents of module
+        if (this.unqualified) {
+            for (const name of moduleEnv.getLocalSymbols()) {
+                if (name.startsWith("_")) continue; // skip private module symbols
+                environment.put(name, moduleEnv.get(name));
+            }
+        } else {
+            const obj = new ValueObject();
+            for (const name of moduleEnv.getLocalSymbols()) {
+                if (name.startsWith("_")) continue; // skip private module symbols
+                obj.addItem(name, moduleEnv.get(name));
+            }
+            environment.put(modulename, obj);
+        }
+        return ValueNull.NULL;
+    }
+
+    toString() {
+        return "(require " + this.modulespec + (this.name != null ? " as " + this.name : "") + (this.unqualified ? " unqualified" : "") + ")";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        // empty
     }
 }
 

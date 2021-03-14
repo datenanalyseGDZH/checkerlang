@@ -120,6 +120,7 @@ function loadState() {
 }
 
 const interpreter = new Interpreter(false);
+// TODO add module loader that works in browser environment! Maybe piggyback on js-modules? Or do it in baselib.mjs?
 
 const keypress = function(event) {
     if (event.ctrlKey && event.code === "Enter") {

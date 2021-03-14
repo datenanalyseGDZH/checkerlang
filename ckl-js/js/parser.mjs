@@ -33,12 +33,14 @@ import {
 import {
     NodeAnd,
     NodeAssign,
+    NodeAssignDestructuring,
     NodeBlock,
     NodeBreak,
     NodeContinue,
     NodeDef,
     NodeDeref,
     NodeDerefAssign,
+    NodeDefDestructuring,
     NodeError,
     NodeFor,
     NodeFuncall,
@@ -54,14 +56,13 @@ import {
     NodeNot,
     NodeNull,
     NodeOr,
+    NodeRequire,
     NodeReturn,
     NodeSet,
     NodeSetComprehension,
     NodeSpread,
     NodeWhile
 } from "./nodes.mjs";
-import { NodeDefDestructuring } from "./nodes.mjs";
-import { NodeAssignDestructuring } from "./nodes.mjs";
 
 export class Parser {
     static parseScript(script, filename) {
@@ -151,6 +152,21 @@ export class Parser {
         if (lexer.peek().type === "string" && lexer.peekn(2, "def", "keyword")) {
             comment = lexer.next().value;
         }
+        if (lexer.matchIf("require", "keyword")) {
+            const pos = lexer.getPos();
+            const token = lexer.next();
+            if (token.type !== "identifier" && token.type !== "string") throw new SyntaxError("Expected module specifier, but got " + token, token.pos);
+            const modulespec = token.value;
+            let unqualified = false;
+            let name = null;
+            if (lexer.matchIf("unqualified", "identifier")) {
+                unqualified = true;
+            } else if (lexer.matchIf("as", "keyword")) {
+                name = lexer.matchIdentifier();
+            }
+            return new NodeRequire(modulespec, name, unqualified, pos);
+        }
+
         if (lexer.matchIf("def", "keyword")) {
             const pos = lexer.getPos();
             if (lexer.matchIf("[", "interpunction")) {

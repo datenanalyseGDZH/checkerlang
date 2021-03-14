@@ -371,6 +371,11 @@ interpreter_test("ForDestructuringSetSet", "def a = 0; for [x, y, z] in << <<1, 
 interpreter_test("MapEquality1", "<<<a => 1, b => 2>>> == <<<b => 2, a => 1>>>", "TRUE");
 interpreter_test("MapEquality2", "<<<a => 1, b => 1>>> == <<<b => 2, a => 1>>>", "FALSE");
 interpreter_test("MapEquality3", "<<<a => 1, c => 2>>> == <<<b => 2, a => 1>>>", "FALSE");
+interpreter_test("MapAsInt", "int(<<<a => 12>>>)", "1");
+interpreter_test("MapAsBool1", "boolean(<<<a => 12>>>)", "TRUE");
+interpreter_test("MapAsBool2", "boolean(<<<>>>)", "FALSE");
+interpreter_test("ObjectBasics1", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o->a", "12");
+interpreter_test("ObjectBasics2", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o", "<!a=12, b=<#lambda>!>");
 
 
 function collectvars_test(description, code, expected) {

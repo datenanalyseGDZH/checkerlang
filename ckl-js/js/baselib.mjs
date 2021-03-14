@@ -104,6 +104,17 @@ def is_map(obj) type(obj) == 'map';
 
 
 "
+is_object(obj) 
+
+Returns TRUE if the object is of type object.
+
+: is_object(object()) ==> TRUE
+: is_object(map()) ==> FALSE
+"
+def is_object(obj) type(obj) == 'object';
+
+
+"
 is_func(obj) 
 
 Returns TRUE if the object is of type func.

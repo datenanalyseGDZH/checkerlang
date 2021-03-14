@@ -46,6 +46,7 @@ import {
     ValueMap,
     ValueNode,
     ValueNull,
+    ValueObject,
     ValueOutput,
     ValuePattern,
     ValueSet,
@@ -56,6 +57,10 @@ export class Environment {
     constructor(parent = null) {
         this.map = new Map();
         this.parent = parent;
+        if (this.parent == null) {
+            this.modules = new Map();
+            this.moduleloader = null;
+        }
     }
 
     static getNullEnvironment() {
@@ -121,6 +126,7 @@ export class Environment {
         Environment.add(result, new FuncMod());
         Environment.add(result, new FuncMul());
         Environment.add(result, new FuncNotEquals());
+        Environment.add(result, new FuncObject());
         Environment.add(result, new FuncParse());
         Environment.add(result, new FuncParseDate());
         Environment.add(result, new FuncParseJson());
@@ -180,11 +186,39 @@ export class Environment {
         return this;
     }
 
+    getBase() {
+        let current = this;
+        while (current.parent !== null && current.parent.parent !== null) current = current.parent;
+        return current;
+    }
+
     getSymbols() {
         let result = [...this.map.keys()];
-        if (this.parent != null) result = result.concat(this.parent.getSymbols());
+        if (this.parent !== null) result = result.concat(this.parent.getSymbols());
         result.sort();
         return result;
+    }
+
+    getLocalSymbols() {
+        return this.map.keys();
+    }
+
+    getModules() {
+        let current = this;
+        while (current.parent !== null) current = current.parent;
+        return current.modules;
+    }
+
+    getModuleLoader() {
+        let current = this;
+        while (current.parent !== null) current = current.parent;
+        return current.moduleloader;
+    }
+
+    setModuleLoader(moduleloader) {
+        let current = this;
+        while (current.parent !== null) current = current.parent;
+        current.moduleloader = moduleloader;
     }
 
     put(name, value) {
@@ -193,7 +227,7 @@ export class Environment {
 
     set(name, value) {
         if (this.map.has(name)) this.map.set(name, value);
-        else if (this.parent != null) this.parent.set(name, value);
+        else if (this.parent !== null) this.parent.set(name, value);
         else throw new RuntimeError(name + " is not defined");
     }
 
@@ -207,14 +241,14 @@ export class Environment {
 
     isDefined(symbol) {
         if (this.map.has(symbol)) return true;
-        if (this.parent != null) return this.parent.isDefined(symbol);
+        if (this.parent !== null) return this.parent.isDefined(symbol);
         return false;
     }
 
     get(symbol, pos) {
         if (this.map.has(symbol)) {
             const value = this.map.get(symbol);
-            if (value == null) return ValueNull.NULL;
+            if (value === null) return ValueNull.NULL;
             if (value instanceof Value) {
                 return value;
             } else if (value instanceof Number) {
@@ -1425,6 +1459,7 @@ export class FuncLength extends ValueFunc {
         if (arg.isList()) return new ValueInt(arg.value.length);
         if (arg.isSet()) return new ValueInt(arg.value.size);
         if (arg.isMap()) return new ValueInt(arg.value.size);
+        if (arg.isObject()) return new ValueInt(arg.value.size);
         throw new RuntimeError("Cannot determine length of " + arg.type(), pos);
     }
 }
@@ -1710,6 +1745,25 @@ export class FuncNotEquals extends ValueFunc {
         const a = args.get("a");
         const b = args.get("b");
         return ValueBoolean.from(!a.isEquals(b));
+    }
+}
+
+export class FuncObject extends ValueFunc {
+    constructor() {
+        super("object");
+        this.info = "object()\r\n" +
+                    "\r\n" +
+                    "Creates an empty object value.\r\n" +
+                    "\r\n" +
+                    ": object() ==> <!!>\r\n";
+    }
+
+    getArgNames() {
+        return [];
+    }
+
+    execute(args, environment, pos) {
+        return new ValueObject();
     }
 }
 

@@ -292,6 +292,10 @@ export class Value {
         throw new RuntimeError("Cannot convert to Node");
     }
 
+    asObject() {
+        throw new RuntimeError("Cannot convert to Object");
+    }
+
     asBreak() {
         throw new RuntimeError("Cannot convert to break");
     }
@@ -337,6 +341,10 @@ export class Value {
     }
 
     isMap() {
+        return false;
+    }
+
+    isObject() {
         return false;
     }
 
@@ -1033,11 +1041,11 @@ export class ValueMap extends Value {
     }
 
     asInt() {
-        return new ValueInt(this.value.length);
+        return new ValueInt(this.value.size);
     }
 
     asBoolean() {
-        return ValueBoolean.from(this.value.length > 0);
+        return ValueBoolean.from(this.value.size > 0);
     }
 
     asList() {
@@ -1148,6 +1156,105 @@ export class ValueNull extends Value {
 
     toString() {
         return "NULL";
+    }
+}
+
+export class ValueObject extends Value {
+    constructor() {
+        super();
+        this.value = new Map();
+    }
+
+    addItem(key, value) {
+        this.value.set(key, value);
+        return this;
+    }
+
+    hasItem(key) {
+        return this.value.has(key);
+    }
+
+    getItem(key) {
+        return this.value.get(key);
+    }
+
+    removeItem(key) {
+        this.value.remove(key);
+    }
+
+    isEquals(other) {
+        if (!(other instanceof ValueObject)) return false;
+        if (this.value.size != other.value.size) return false;
+        for (const [key, val] of this.value.entries()) {
+            if (!other.value.has(key)) {
+                return false;
+            }
+            if (!val.isEquals(other.value.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    compareTo(other) {
+        return this.toString().localeCompare(other.toString());
+    }
+
+    type() {
+        return "object";
+    }
+
+    asString() {
+        return new ValueString(this.toString());
+    }
+
+    asInt() {
+        return new ValueInt(this.value.size);
+    }
+
+    asBoolean() {
+        return ValueBoolean.from(this.value.size > 0);
+    }
+
+    asList() {
+        const result = new ValueList();
+        for (const val of this.value.values()) {
+            result.addItem(val);
+        }
+        return result;
+    }
+
+    asSet() {
+        const result = new ValueSet();
+        for (const key of this.value.keys()) {
+            result.addItem(key);
+        }
+        return result;
+    }
+
+    asMap() {
+        const result = new ValueMap();
+        for (const [key, val] of this.value) {
+            result.addItem(key, val);
+        }
+        return result;
+    }
+
+    asObject() {
+        return this;
+    }
+
+    isObject() {
+        return true;
+    }
+
+    toString() {
+        let result = "<!";
+        for (const key of this.value.keys()) {
+            result = result.concat(key.toString(), "=", this.value.get(key).toString(), ", ");
+        }
+        if (result.length > "<!".length) result = result.substr(0, result.length - 2);
+        return result.concat("!>");
     }
 }
 
