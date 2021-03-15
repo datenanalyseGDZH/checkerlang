@@ -21,27 +21,22 @@
 
 import { Interpreter } from "./js/interpreter.mjs";
 import { FuncFileInput, FuncFileOutput, FuncRun } from "./js/functions.mjs";
+import { ValueList, ValueString, ValueNull } from "./js/values.mjs";
+import { NodeRequire } from "./js/nodes.mjs";
+import { moduleloader } from "./js/moduleloader.mjs";
 
-import * as fs from "fs";
-import { ValueList } from "./js/values.mjs";
-import { ValueString } from "./js/values.mjs";
 import { exit } from "process";
-import { ValueNull } from "./js/values.mjs";
+import * as fs from "fs";
 
 const interpreter = new Interpreter(false);
 
 interpreter.fs = fs;
-
-const moduleloader = function(modulefile) {
-    // TODO handle system location versus relative path (relative to what??)
-    return fs.readFileSync(modulefile, {encoding: 'utf8', flag: 'r'});
-};
 interpreter.baseEnvironment.setModuleLoader(moduleloader);
-
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.baseEnvironment.parent.put("file_input", new FuncFileInput(fs));
 interpreter.baseEnvironment.parent.put("file_output", new FuncFileOutput(fs));
 interpreter.baseEnvironment.parent.put("run", new FuncRun(interpreter, fs));
+NodeRequire.fs = fs;
 
 if (process.argv.length <= 2) exit(0);
 

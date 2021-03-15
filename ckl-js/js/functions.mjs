@@ -22,7 +22,8 @@
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
-import { baselib } from "./baselib.mjs";
+import { moduleloader } from "./moduleloader.mjs";
+import { modulebase } from "./module_base.mjs";
 import { checkerlang_version, checkerlang_platform } from "./interpreter.mjs"
 
 import { 
@@ -70,106 +71,95 @@ export class Environment {
 
     static getBaseEnvironment(secure = true) {
         const result = Environment.getRootEnvironment(secure).newEnv();
-        Parser.parseScript(baselib, "{res}base-library.txt").evaluate(result);
+        result.setModuleLoader(moduleloader);
+        Parser.parseScript(modulebase, ":base").evaluate(result);
         return result;
     }
 
     static getRootEnvironment(secure = true) {
         const result = Environment.getNullEnvironment();
-        Environment.add(result, new FuncAcos());
-        Environment.add(result, new FuncAdd());
-        Environment.add(result, new FuncAppend());
-        Environment.add(result, new FuncAsin());
-        Environment.add(result, new FuncAtan());
-        Environment.add(result, new FuncAtan2());
-        Environment.add(result, new FuncBody());
-        Environment.add(result, new FuncBoolean());
-        Environment.add(result, new FuncCeiling());
-        Environment.add(result, new FuncClose());
-        Environment.add(result, new FuncCompare());
-        Environment.add(result, new FuncContains(), "str_contains");
-        Environment.add(result, new FuncCos());
-        Environment.add(result, new FuncDate());
-        Environment.add(result, new FuncDecimal());
-        Environment.add(result, new FuncDeleteAt());
-        Environment.add(result, new FuncDiv());
-        Environment.add(result, new FuncEndsWith(), "str_ends_with");
-        Environment.add(result, new FuncEquals());
-        Environment.add(result, new FuncEscapePattern());
-        Environment.add(result, new FuncEval());
-        Environment.add(result, new FuncExp());
-        Environment.add(result, new FuncFind(), "str_find");
-        Environment.add(result, new FuncFloor());
-        Environment.add(result, new FuncFormatDate());
-        Environment.add(result, new FuncGetOutputString());
-        Environment.add(result, new FuncGreater());
-        Environment.add(result, new FuncGreaterEquals());
-        Environment.add(result, new FuncIdentity());
-        Environment.add(result, new FuncIfEmpty());
-        Environment.add(result, new FuncIfNull());
-        Environment.add(result, new FuncIfNullOrEmpty());
-        Environment.add(result, new FuncInfo());
-        Environment.add(result, new FuncInsertAt());
-        Environment.add(result, new FuncInt());
-        Environment.add(result, new FuncIsEmpty());
-        Environment.add(result, new FuncIsNotEmpty());
-        Environment.add(result, new FuncIsNotNull());
-        Environment.add(result, new FuncIsNull());
-        Environment.add(result, new FuncLength());
-        Environment.add(result, new FuncLess());
-        Environment.add(result, new FuncLessEquals());
-        Environment.add(result, new FuncList());
-        Environment.add(result, new FuncLog());
-        Environment.add(result, new FuncLower());
-        Environment.add(result, new FuncLs());
-        Environment.add(result, new FuncMap());
-        Environment.add(result, new FuncMatches(), "str_matches");
-        Environment.add(result, new FuncMod());
-        Environment.add(result, new FuncMul());
-        Environment.add(result, new FuncNotEquals());
-        Environment.add(result, new FuncObject());
-        Environment.add(result, new FuncParse());
-        Environment.add(result, new FuncParseDate());
-        Environment.add(result, new FuncParseJson());
-        Environment.add(result, new FuncPattern());
-        Environment.add(result, new FuncPow());
-        Environment.add(result, new FuncPrint());
-        Environment.add(result, new FuncPrintln());
-        Environment.add(result, new FuncProcessLines());
-        Environment.add(result, new FuncPut());
-        Environment.add(result, new FuncRandom());
-        Environment.add(result, new FuncRange());
-        Environment.add(result, new FuncRead());
-        Environment.add(result, new FuncReadall());
-        Environment.add(result, new FuncReadln());
-        Environment.add(result, new FuncRemove());
-        Environment.add(result, new FuncRound());
-        Environment.add(result, new FuncS());
-        Environment.add(result, new FuncSet());
-        Environment.add(result, new FuncSetSeed());
-        Environment.add(result, new FuncSin());
-        Environment.add(result, new FuncSorted());
-        Environment.add(result, new FuncSplit());
-        Environment.add(result, new FuncSplit2());
-        Environment.add(result, new FuncSqrt());
-        Environment.add(result, new FuncStrInput());
-        Environment.add(result, new FuncStartsWith(), "str_starts_with");
-        Environment.add(result, new FuncStrOutput());
-        Environment.add(result, new FuncString());
-        Environment.add(result, new FuncSub());
-        Environment.add(result, new FuncSublist());
-        Environment.add(result, new FuncSubstr());
-        Environment.add(result, new FuncSum());
-        Environment.add(result, new FuncTan());
-        Environment.add(result, new FuncTimestamp());
-        Environment.add(result, new FuncTrim(), "str_trim");
-        Environment.add(result, new FuncType());
-        Environment.add(result, new FuncUpper());
-        Environment.add(result, new FuncZip());
-        Environment.add(result, new FuncZipMap());
+        bind_native(result, "add");
+        bind_native(result, "append");
+        bind_native(result, "bind_native");
+        bind_native(result, "body");
+        bind_native(result, "boolean");
+        bind_native(result, "ceiling");
+        bind_native(result, "close");
+        bind_native(result, "compare");
+        bind_native(result, "contains", "str_contains");
+        bind_native(result, "date");
+        bind_native(result, "decimal");
+        bind_native(result, "delete_at");
+        bind_native(result, "div");
+        bind_native(result, "ends_with", "str_ends_with");
+        bind_native(result, "equals");
+        bind_native(result, "escape_pattern");
+        bind_native(result, "eval");
+        bind_native(result, "find", "str_find");
+        bind_native(result, "floor");
+        bind_native(result, "format_date");
+        bind_native(result, "get_output_string");
+        bind_native(result, "greater");
+        bind_native(result, "greater_equals");
+        bind_native(result, "identity");
+        bind_native(result, "if_empty");
+        bind_native(result, "if_null");
+        bind_native(result, "if_null_or_empty");
+        bind_native(result, "info");
+        bind_native(result, "insert_at");
+        bind_native(result, "int");
+        bind_native(result, "is_empty");
+        bind_native(result, "is_not_empty");
+        bind_native(result, "is_not_null");
+        bind_native(result, "is_null");
+        bind_native(result, "length");
+        bind_native(result, "less");
+        bind_native(result, "less_equals");
+        bind_native(result, "list");
+        bind_native(result, "lower");
+        bind_native(result, "ls");
+        bind_native(result, "map");
+        bind_native(result, "matches", "str_matches");
+        bind_native(result, "mod");
+        bind_native(result, "mul");
+        bind_native(result, "not_equals");
+        bind_native(result, "object");
+        bind_native(result, "parse");
+        bind_native(result, "parse_date");
+        bind_native(result, "parse_json");
+        bind_native(result, "pattern");
+        bind_native(result, "print");
+        bind_native(result, "println");
+        bind_native(result, "process_lines");
+        bind_native(result, "put");
+        bind_native(result, "random");
+        bind_native(result, "range");
+        bind_native(result, "read");
+        bind_native(result, "read_all");
+        bind_native(result, "readln");
+        bind_native(result, "remove");
+        bind_native(result, "round");
+        bind_native(result, "s");
+        bind_native(result, "set");
+        bind_native(result, "set_seed");
+        bind_native(result, "sorted");
+        bind_native(result, "split");
+        bind_native(result, "split2");
+        bind_native(result, "str_input");
+        bind_native(result, "starts_with", "str_starts_with");
+        bind_native(result, "str_output");
+        bind_native(result, "string");
+        bind_native(result, "sub");
+        bind_native(result, "sublist");
+        bind_native(result, "substr");
+        bind_native(result, "sum");
+        bind_native(result, "timestamp");
+        bind_native(result, "trim", "str_trim");
+        bind_native(result, "type");
+        bind_native(result, "upper");
+        bind_native(result, "zip");
+        bind_native(result, "zip_map");
         result.put("NULL", ValueNull.NULL);
-        result.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant pi."));
-        result.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant e."));
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
         result.put("checkerlang_version", new ValueString(checkerlang_version));
@@ -178,7 +168,7 @@ export class Environment {
     }
 
     static add(env, func, alias) {
-        if (alias !== undefined) env.put(alias, func);
+        if (alias !== undefined && alias !== null) env.put(alias, func);
         env.put(func.name, func);
     }
 
@@ -281,6 +271,106 @@ export class Environment {
         }
         if (this.parent !== null) return this.parent.get(symbol, pos);
         throw new RuntimeError("Symbol '" + symbol + "' not defined", pos);
+    }
+}
+
+const bind_native = function(environment, native, alias = null) {
+    switch (native) {
+        case "acos": Environment.add(environment, new FuncAcos(), alias); break;
+        case "add": Environment.add(environment, new FuncAdd(), alias); break;
+        case "append": Environment.add(environment, new FuncAppend(), alias); break;
+        case "asin": Environment.add(environment, new FuncAsin(), alias); break;
+        case "atan": Environment.add(environment, new FuncAtan(), alias); break;
+        case "atan2": Environment.add(environment, new FuncAtan2(), alias); break;
+        case "bind_native": Environment.add(environment, new FuncBindNative(), alias); break;
+        case "body": Environment.add(environment, new FuncBody(), alias); break;
+        case "boolean": Environment.add(environment, new FuncBoolean(), alias); break;
+        case "ceiling": Environment.add(environment, new FuncCeiling(), alias); break;
+        case "close": Environment.add(environment, new FuncClose(), alias); break;
+        case "compare": Environment.add(environment, new FuncCompare(), alias); break;
+        case "contains": Environment.add(environment, new FuncContains(), alias); break;
+        case "cos": Environment.add(environment, new FuncCos(), alias); break;
+        case "date": Environment.add(environment, new FuncDate(), alias); break;
+        case "decimal": Environment.add(environment, new FuncDecimal(), alias); break;
+        case "delete_at": Environment.add(environment, new FuncDeleteAt(), alias); break;
+        case "div": Environment.add(environment, new FuncDiv(), alias); break;
+        case "ends_with": Environment.add(environment, new FuncEndsWith(), alias); break;
+        case "equals": Environment.add(environment, new FuncEquals(), alias); break;
+        case "escape_pattern": Environment.add(environment, new FuncEscapePattern(), alias); break;
+        case "eval": Environment.add(environment, new FuncEval(), alias); break;
+        case "exp": Environment.add(environment, new FuncExp(), alias); break;
+        case "find": Environment.add(environment, new FuncFind(), alias); break;
+        case "floor": Environment.add(environment, new FuncFloor(), alias); break;
+        case "format_date": Environment.add(environment, new FuncFormatDate(), alias); break;
+        case "get_output_string": Environment.add(environment, new FuncGetOutputString(), alias); break;
+        case "greater": Environment.add(environment, new FuncGreater(), alias); break;
+        case "greater_equals": Environment.add(environment, new FuncGreaterEquals(), alias); break;
+        case "identity": Environment.add(environment, new FuncIdentity(), alias); break;
+        case "if_empty": Environment.add(environment, new FuncIfEmpty(), alias); break;
+        case "if_null": Environment.add(environment, new FuncIfNull(), alias); break;
+        case "if_null_or_empty": Environment.add(environment, new FuncIfNullOrEmpty(), alias); break;
+        case "info": Environment.add(environment, new FuncInfo(), alias); break;
+        case "insert_at": Environment.add(environment, new FuncInsertAt(), alias); break;
+        case "int": Environment.add(environment, new FuncInt(), alias); break;
+        case "is_empty": Environment.add(environment, new FuncIsEmpty(), alias); break;
+        case "is_not_empty": Environment.add(environment, new FuncIsNotEmpty(), alias); break;
+        case "is_not_null": Environment.add(environment, new FuncIsNotNull(), alias); break;
+        case "is_null": Environment.add(environment, new FuncIsNull(), alias); break;
+        case "length": Environment.add(environment, new FuncLength(), alias); break;
+        case "less": Environment.add(environment, new FuncLess(), alias); break;
+        case "less_equals": Environment.add(environment, new FuncLessEquals(), alias); break;
+        case "list": Environment.add(environment, new FuncList(), alias); break;
+        case "log": Environment.add(environment, new FuncLog(), alias); break;
+        case "lower": Environment.add(environment, new FuncLower(), alias); break;
+        case "ls": Environment.add(environment, new FuncLs(), alias); break;
+        case "map": Environment.add(environment, new FuncMap(), alias); break;
+        case "matches": Environment.add(environment, new FuncMatches(), alias); break;
+        case "mod": Environment.add(environment, new FuncMod(), alias); break;
+        case "mul": Environment.add(environment, new FuncMul(), alias); break;
+        case "not_equals": Environment.add(environment, new FuncNotEquals(), alias); break;
+        case "object": Environment.add(environment, new FuncObject(), alias); break;
+        case "parse": Environment.add(environment, new FuncParse(), alias); break;
+        case "parse_date": Environment.add(environment, new FuncParseDate(), alias); break;
+        case "parse_json": Environment.add(environment, new FuncParseJson(), alias); break;
+        case "pattern": Environment.add(environment, new FuncPattern(), alias); break;
+        case "pow": Environment.add(environment, new FuncPow(), alias); break;
+        case "print": Environment.add(environment, new FuncPrint(), alias); break;
+        case "println": Environment.add(environment, new FuncPrintln(), alias); break;
+        case "process_lines": Environment.add(environment, new FuncProcessLines(), alias); break;
+        case "put": Environment.add(environment, new FuncPut(), alias); break;
+        case "random": Environment.add(environment, new FuncRandom(), alias); break;
+        case "range": Environment.add(environment, new FuncRange(), alias); break;
+        case "read": Environment.add(environment, new FuncRead(), alias); break;
+        case "read_all": Environment.add(environment, new FuncReadall(), alias); break;
+        case "readln": Environment.add(environment, new FuncReadln(), alias); break;
+        case "remove": Environment.add(environment, new FuncRemove(), alias); break;
+        case "round": Environment.add(environment, new FuncRound(), alias); break;
+        case "s": Environment.add(environment, new FuncS(), alias); break;
+        case "set": Environment.add(environment, new FuncSet(), alias); break;
+        case "set_seed": Environment.add(environment, new FuncSetSeed(), alias); break;
+        case "sin": Environment.add(environment, new FuncSin(), alias); break;
+        case "sorted": Environment.add(environment, new FuncSorted(), alias); break;
+        case "split": Environment.add(environment, new FuncSplit(), alias); break;
+        case "split2": Environment.add(environment, new FuncSplit2(), alias); break;
+        case "sqrt": Environment.add(environment, new FuncSqrt(), alias); break;
+        case "str_input": Environment.add(environment, new FuncStrInput(), alias); break;
+        case "starts_with": Environment.add(environment, new FuncStartsWith(), alias); break;
+        case "str_output": Environment.add(environment, new FuncStrOutput(), alias); break;
+        case "string": Environment.add(environment, new FuncString(), alias); break;
+        case "sub": Environment.add(environment, new FuncSub(), alias); break;
+        case "sublist": Environment.add(environment, new FuncSublist(), alias); break;
+        case "substr": Environment.add(environment, new FuncSubstr(), alias); break;
+        case "sum": Environment.add(environment, new FuncSum(), alias); break;
+        case "tan": Environment.add(environment, new FuncTan(), alias); break;
+        case "timestamp": Environment.add(environment, new FuncTimestamp(), alias); break;
+        case "trim": Environment.add(environment, new FuncTrim(), alias); break;
+        case "type": Environment.add(environment, new FuncType(), alias); break;
+        case "upper": Environment.add(environment, new FuncUpper(), alias); break;
+        case "zip": Environment.add(environment, new FuncZip(), alias); break;
+        case "zip_map": Environment.add(environment, new FuncZipMap(), alias); break;
+        case "E": environment.put("E", new ValueDecimal(Math.E)); break;
+        case "PI": environment.put("PI", new ValueDecimal(Math.PI)); break;
+        default: throw new RuntimeError("Unknown native " + native, this.pos);
     }
 }
 
@@ -470,6 +560,25 @@ export class FuncAtan2 extends ValueFunc {
         if (args.isNull("y")) return ValueNull.NULL;
         if (args.isNull("x")) return ValueNull.NULL;
         return new ValueDecimal(Math.atan2(args.getNumerical("y").value, args.getNumerical("x").value));
+    }
+}
+
+export class FuncBindNative extends ValueFunc {
+    constructor() {
+        super("bind_native");
+        this.info = "bind_native(native)\r\n" +
+                "\r\n" +
+                "Binds a native function in the current environment.\r\n";
+    }
+
+    getArgNames() {
+        return ["native"];
+    }
+
+    execute(args, environment, pos) {
+        const native = args.getString("native").value;
+        bind_native(environment, native);
+        return ValueNull.NULL;
     }
 }
 

@@ -1,4 +1,4 @@
-export const baselib = `
+export const modulebase = `
 # Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,7 +19,7 @@ export const baselib = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# this is the base library of the checkerlang language
+require math unqualified; # for backwards compatibility
 
 "
 is_list(obj) 
@@ -969,34 +969,6 @@ def filter(lst, predicate, key = identity) do
     if predicate(val) then result !> append(element);
   end;
   return result;
-end;
-
-
-"
-is_even(n)
-
-Returns TRUE if the number is even.
-
-: is_even(2) ==> TRUE
-: is_even(3) ==> FALSE
-"
-def is_even(n) do
-  if not is_numeric(n) then return FALSE;
-  return n % 2 == 0;
-end;
-
-
-"
-is_odd(n)
-
-Returns TRUE if the number is odd.
-
-: is_odd(2) ==> FALSE
-: is_odd(3) ==> TRUE
-"
-def is_odd(n) do
-  if not is_numeric(n) then return FALSE;
-  return n % 2 == 1;
 end;
 
 

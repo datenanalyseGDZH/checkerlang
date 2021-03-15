@@ -1152,6 +1152,8 @@ export class NodeRequire {
         this.pos = pos;
     }
 
+    static fs = null;
+
     evaluate(environment) {
         const modules = environment.getModules();
         // resolve module file, identifier and name
@@ -1173,7 +1175,7 @@ export class NodeRequire {
         } else {
             moduleEnv = environment.getBase().newEnv();
             const loader = moduleEnv.getModuleLoader();
-            const modulesrc = loader(modulefile);
+            const modulesrc = loader(modulefile, this.pos, NodeRequire.fs);
             const node = Parser.parseScript(modulesrc, modulefile);
             node.evaluate(moduleEnv);
             modules.set(moduleidentifier, moduleEnv);
