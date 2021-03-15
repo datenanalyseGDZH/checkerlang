@@ -56,7 +56,9 @@ export class NodeAnd {
 
     evaluate(environment) {
         for (let expression of this.expressions) {
-            if (expression.evaluate(environment).asBoolean().isFalse()) {
+            const value = expression.evaluate(environment);
+            if (!value.isBoolean()) throw RuntimeError("Expected boolean but got " + value.type(), this.pos);
+            if (!value.value) {
                 return ValueBoolean.FALSE;
             }
         }
@@ -728,7 +730,7 @@ export class NodeIf {
     evaluate(environment) {
         for (let i = 0; i < this.conditions.length; i++) {
             const value = this.conditions[i].evaluate(environment);
-            if (!(value instanceof ValueBoolean)) throw new RuntimeError("Expected boolean condition value but got " + value, this.pos);
+            if (!(value instanceof ValueBoolean)) throw new RuntimeError("Expected boolean condition value but got " + value.type(), this.pos);
             if (value.isTrue()) {
                 return this.expressions[i].evaluate(environment);
             }
@@ -1065,7 +1067,9 @@ export class NodeNot {
     }
 
     evaluate(environment) {
-        return this.expression.evaluate(environment).asBoolean().isTrue() ? ValueBoolean.FALSE : ValueBoolean.TRUE;
+        const value = this.expression.evaluate(environment);
+        if (!value.isBoolean()) throw new RuntimeError("Expected boolean but got " + value.type(), this.pos);
+        return value.value ? ValueBoolean.FALSE : ValueBoolean.TRUE;
     }
 
     toString() {
@@ -1115,7 +1119,9 @@ export class NodeOr {
 
     evaluate(environment) {
         for (const expression of this.expressions) {
-            if (expression.evaluate(environment).asBoolean().isTrue()) {
+            const value = expression.evaluate(environment);
+            if (!value.isBoolean()) throw RuntimeError("Expected boolean but got " + value.type(), this.pos);
+            if (value.value) {
                 return ValueBoolean.TRUE;
             }
         }
@@ -1337,8 +1343,9 @@ export class NodeWhile {
 
     evaluate(environment) {
         let condition = this.expression.evaluate(environment);
+        if (!condition.isBoolean()) throw new RuntimeError("Expected boolean condition but got " + condition.type(), this.pos);
         let result = ValueBoolean.TRUE;
-        while (condition.asBoolean() == ValueBoolean.TRUE) {
+        while (condition.value) {
             result = this.block.evaluate(environment);
             if (result instanceof ValueControlBreak) {
                 result = ValueBoolean.TRUE;
@@ -1350,6 +1357,7 @@ export class NodeWhile {
                 break;
             }
             condition = this.expression.evaluate(environment);
+            if (!condition.isBoolean()) throw new RuntimeError("Expected boolean condition but got " + condition.type(), this.pos);
         }
         return result;
     }
