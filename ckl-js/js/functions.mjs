@@ -60,6 +60,7 @@ export class Environment {
         if (this.parent == null) {
             this.modules = new Map();
             this.moduleloader = null;
+            this.modulestack = [];
         }
     }
 
@@ -219,6 +220,19 @@ export class Environment {
         let current = this;
         while (current.parent !== null) current = current.parent;
         current.moduleloader = moduleloader;
+    }
+
+    pushModuleStack(moduleidentifier, pos) {
+        let current = this;
+        while (current.parent !== null) current = current.parent;
+        if (current.modulestack.includes(moduleidentifier)) throw new RuntimeError("Found circular module dependency (" + moduleidentifier + ")", pos);
+        current.modulestack.push(moduleidentifier);
+    }
+
+    popModuleStack() {
+        let current = this;
+        while (current.parent !== null) current = current.parent;
+        current.modulestack.pop();
     }
 
     put(name, value) {

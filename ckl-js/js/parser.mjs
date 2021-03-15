@@ -153,7 +153,6 @@ export class Parser {
             comment = lexer.next().value;
         }
         if (lexer.matchIf("require", "keyword")) {
-            if (!toplevel) throw new SyntaxError("Require statement must be top-level", lexer.getPos());
             const pos = lexer.getPos();
             const token = lexer.next();
             if (token.type !== "identifier" && token.type !== "string") throw new SyntaxError("Expected module specifier, but got " + token, token.pos);

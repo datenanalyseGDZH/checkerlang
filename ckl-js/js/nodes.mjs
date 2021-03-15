@@ -159,7 +159,6 @@ export class NodeBlock {
         let result = ValueBoolean.TRUE;
         try {
             for (let expression of this.expressions) {
-                if (expression instanceof NodeRequire) continue;
                 result = expression.evaluate(environment);
                 if (result.isReturn()) break;
                 if (result.isBreak()) break;
@@ -173,11 +172,6 @@ export class NodeBlock {
         }
         for (let expression of this.finallyexprs) {
             expression.evaluate(environment);
-        }
-        for (let expression of this.expressions) {
-            if (expression instanceof NodeRequire) {
-                expression.evaluate(environment);                
-            }
         }
         return result;
     }
@@ -1164,6 +1158,7 @@ export class NodeRequire {
         if (name.endsWith(".ckl")) name = name.substr(0, name.length - 4);
         moduleidentifier = name;
         if (modulename == null) modulename = name;
+        environment.pushModuleStack(moduleidentifier, this.pos);
         
         // lookup or read module
         let moduleEnv = null;
@@ -1171,12 +1166,13 @@ export class NodeRequire {
             moduleEnv = modules.get(moduleidentifier);
         } else {
             moduleEnv = environment.getBase().newEnv();
-            modules.set(moduleidentifier, moduleEnv);
             const loader = moduleEnv.getModuleLoader();
             const modulesrc = loader(modulefile);
             const node = Parser.parseScript(modulesrc, modulefile);
             node.evaluate(moduleEnv);
+            modules.set(moduleidentifier, moduleEnv);
         }
+        environment.popModuleStack();
 
         // bind module or contents of module
         if (this.unqualified) {
