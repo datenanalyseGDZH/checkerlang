@@ -51,6 +51,7 @@ public class FuncLength extends FuncBase {
         if (arg.isList()) return new ValueInt(arg.asList().getValue().size());
         if (arg.isSet()) return new ValueInt(arg.asSet().getValue().size());
         if (arg.isMap()) return new ValueInt(arg.asMap().getValue().size());
+        if (arg.isObject()) return new ValueInt(arg.asObject().value.size());
         throw new ControlErrorException("Cannot determine length of " + arg, pos);
     }
 }

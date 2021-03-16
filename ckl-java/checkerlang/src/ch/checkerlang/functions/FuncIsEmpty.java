@@ -78,6 +78,10 @@ public class FuncIsEmpty extends FuncBase {
             return ValueBoolean.from(obj.asMap().getValue().size() == 0);
         }
 
+        if (obj.isObject()) {
+            return ValueBoolean.from(obj.asObject().value.size() == 0);
+        }
+
         return ValueBoolean.FALSE;
     }
 }

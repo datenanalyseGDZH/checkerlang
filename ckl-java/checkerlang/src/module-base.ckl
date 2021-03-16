@@ -20,7 +20,7 @@
 
 # this is the base library of the checkerlang language
 
-def checkerlang_version = "3.3.3";
+def checkerlang_version = "3.4.0";
 def checkerlang_platform = "java";
 
 "
@@ -103,6 +103,16 @@ Returns TRUE if the object is of type map.
 : is_map(map([['a', 1], ['b', 2]])) ==> TRUE
 "
 def is_map(obj) type(obj) == 'map';
+
+
+"
+is_object(obj)
+
+Returns TRUE if the object is of type object.
+
+: is_object(object()) ==> TRUE
+"
+def is_object(obj) type(obj) == 'object';
 
 
 "
@@ -891,7 +901,8 @@ Typically, you would use this in a for loop, e.g.
 "
 def enumerate(obj) do
     if is_list(obj) then [[i, obj[i]] for i in range(length(obj))]
-    if is_map(obj) then [[key, obj[key]] for key in set(obj)]
+    elif is_map(obj) then [[key, obj[key]] for key in set(obj)]
+    elif is_object(obj) then [[member, obj[member]] for member in obj]
     else error("can only enumerate list, set and map objects")
 end;
 

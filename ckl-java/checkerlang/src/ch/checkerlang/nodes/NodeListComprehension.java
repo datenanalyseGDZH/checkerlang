@@ -62,19 +62,37 @@ public class NodeListComprehension implements Node {
             }
             list = slist;
         }
-        for (Value listValue : list.asList().getValue()) {
-            localEnv.put(identifier, listValue);
-            Value value = valueExpr.evaluate(localEnv);
-            if (conditionExpr != null) {
-                Value condition = conditionExpr.evaluate(localEnv);
-                if (!condition.isBoolean()) {
-                    throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
-                }
-                if (condition.asBoolean().getValue()) {
+        if (list.isObject()) {
+            for (String member : list.asObject().value.keySet()) {
+                localEnv.put(identifier, new ValueString(member));
+                Value value = valueExpr.evaluate(localEnv);
+                if (conditionExpr != null) {
+                    Value condition = conditionExpr.evaluate(localEnv);
+                    if (!condition.isBoolean()) {
+                        throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
+                    }
+                    if (condition.asBoolean().getValue()) {
+                        result.addItem(value);
+                    }
+                } else {
                     result.addItem(value);
                 }
-            } else {
-                result.addItem(value);
+            }
+        } else {
+            for (Value listValue : list.asList().getValue()) {
+                localEnv.put(identifier, listValue);
+                Value value = valueExpr.evaluate(localEnv);
+                if (conditionExpr != null) {
+                    Value condition = conditionExpr.evaluate(localEnv);
+                    if (!condition.isBoolean()) {
+                        throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
+                    }
+                    if (condition.asBoolean().getValue()) {
+                        result.addItem(value);
+                    }
+                } else {
+                    result.addItem(value);
+                }
             }
         }
         return result;

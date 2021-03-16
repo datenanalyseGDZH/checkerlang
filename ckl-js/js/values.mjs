@@ -1228,7 +1228,7 @@ export class ValueObject extends Value {
     asSet() {
         const result = new ValueSet();
         for (const key of this.value.keys()) {
-            result.addItem(key);
+            result.addItem(new ValueString(key));
         }
         return result;
     }
@@ -1236,7 +1236,7 @@ export class ValueObject extends Value {
     asMap() {
         const result = new ValueMap();
         for (const [key, val] of this.value) {
-            result.addItem(key, val);
+            result.addItem(new ValueString(key), val);
         }
         return result;
     }
@@ -1247,6 +1247,14 @@ export class ValueObject extends Value {
 
     isObject() {
         return true;
+    }
+
+    keys() {
+        const result = [];
+        for (const member of this.value.keys()) {
+            result.push(new ValueString(member));
+        }
+        return result;
     }
 
     toString() {
@@ -1434,7 +1442,7 @@ export class ValueSet extends Value {
     toString() {
         let result = "<<";
         for (const item of this.getSortedItems()) {
-            result = result.concat(item.asString().value, ", ");
+            result = result.concat(item.toString(), ", ");
         }
         if (result.length > "<<".length) result = result.substr(0, result.length - 2);
         return result.concat(">>");

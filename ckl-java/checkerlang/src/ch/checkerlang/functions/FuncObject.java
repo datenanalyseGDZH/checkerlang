@@ -18,45 +18,33 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-package ch.checkerlang.nodes;
+package ch.checkerlang.functions;
 
-import ch.checkerlang.ControlErrorException;
+import ch.checkerlang.Args;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueBoolean;
+import ch.checkerlang.values.ValueObject;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public class NodeNot implements Node {
-    private Node expression;
-
-    private SourcePos pos;
-
-    public NodeNot(Node expression, SourcePos pos) {
-        this.expression = expression;
-        this.pos = pos;
+public class FuncObject extends FuncBase {
+    public FuncObject() {
+        super("object");
+        info = "object()\r\n" +
+                "\r\n" +
+                "Creates an empty object value.\r\n" +
+                "\r\n" +
+                ": object() ==> <!!>\r\n";
     }
 
-    public Value evaluate(Environment environment) {
-        Value value = expression.evaluate(environment);
-        if (!value.isBoolean()) throw new ControlErrorException("Expected boolean but got " + value.type(), pos);
-        return value.asBoolean().isTrue() ? ValueBoolean.FALSE : ValueBoolean.TRUE;
+    public List<String> getArgNames() {
+        return Collections.emptyList();
     }
 
-    public String toString() {
-        return "(not " + expression + ")";
-    }
-
-    public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
-        expression.collectVars(freeVars, boundVars, additionalBoundVars);
-    }
-
-    public SourcePos getSourcePos() {
-        return pos;
-    }
-
-    public boolean isLiteral() {
-        return false;
+    public Value execute(Args args, Environment environment, SourcePos pos) {
+        return new ValueObject();
     }
 }

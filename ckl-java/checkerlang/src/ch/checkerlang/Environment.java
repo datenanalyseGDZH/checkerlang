@@ -35,8 +35,13 @@ public class Environment {
     private Map<String, Object> map = new HashMap<>();
     private Environment parent;
 
+    public Map<String, Environment> modules = null;
+    public List<String> modulestack = null;
+
     public Environment() {
         parent = null;
+        modules = new HashMap<>();
+        modulestack = new ArrayList<>();
     }
 
     public Environment(Environment parent) {
@@ -54,7 +59,7 @@ public class Environment {
     public static Environment getBaseEnvironment(boolean secure) {
         Environment result = getRootEnvironment(secure).newEnv();
         try {
-            Node basenode = Parser.parse(new InputStreamReader(Value.class.getResourceAsStream("/base-library.ckl"), StandardCharsets.UTF_8), "{res}base-library.ckl");
+            Node basenode = Parser.parse(new InputStreamReader(Value.class.getResourceAsStream("/module-base.ckl"), StandardCharsets.UTF_8), "{res}module-base.ckl");
             basenode.evaluate(result);
         } catch (IOException e) {
             // ignore
@@ -117,6 +122,7 @@ public class Environment {
         add(result, new FuncMod());
         add(result, new FuncMul());
         add(result, new FuncNotEquals());
+        add(result, new FuncObject());
         add(result, new FuncParse());
         add(result, new FuncParseDate());
         add(result, new FuncParseJson());
@@ -187,14 +193,6 @@ public class Environment {
         return parent;
     }
 
-    public List<String> getSymbols() {
-        List<String> result = new ArrayList<>();
-        result.addAll(map.keySet());
-        if (parent != null) result.addAll(parent.getSymbols());
-        Collections.sort(result);
-        return result;
-    }
-
     public void put(String name, Object value) {
         map.put(name, value);
     }
@@ -252,4 +250,42 @@ public class Environment {
         if (parent != null) return parent.get(symbol, pos);
         throw new ControlErrorException(new ValueString("Symbol '" + symbol + "' not defined"), pos, new Stacktrace());
     }
+
+    public Environment getBase() {
+        Environment current = this;
+        while (current.parent != null && current.parent.parent != null) current = current.parent;
+        return current;
+    }
+
+    public List<String> getSymbols() {
+        List<String> result = new ArrayList<>();
+        result.addAll(map.keySet());
+        if (parent != null) result.addAll(parent.getSymbols());
+        Collections.sort(result);
+        return result;
+    }
+
+    public List<String> getLocalSymbols() {
+        return new ArrayList<>(map.keySet());
+    }
+
+    public Map<String, Environment> getModules() {
+        Environment current = this;
+        while (current.parent != null) current = current.parent;
+        return current.modules;
+    }
+
+    public void pushModuleStack(String moduleidentifier, SourcePos pos) {
+        Environment current = this;
+        while (current.parent != null) current = current.parent;
+        if (current.modulestack.contains(moduleidentifier)) throw new ControlErrorException("Found circular module dependency (" + moduleidentifier + ")", pos);
+        current.modulestack.add(moduleidentifier);
+    }
+
+    public void popModuleStack() {
+        Environment current = this;
+        while (current.parent != null) current = current.parent;
+        current.modulestack.remove(current.modulestack.size() - 1);
+    }
+
 }

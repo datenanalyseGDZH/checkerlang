@@ -902,7 +902,8 @@ Typically, you would use this in a for loop, e.g.
 "
 def enumerate(obj) do
     if is_list(obj) then [[i, obj[i]] for i in range(length(obj))]
-    if is_map(obj) then [[key, obj[key]] for key in set(obj)]
+    elif is_map(obj) then [[key, obj[key]] for key in set(obj)]
+    elif is_object(obj) then [[member, obj[member]] for member in obj]
     else error("can only enumerate list, set and map objects")
 end;
 

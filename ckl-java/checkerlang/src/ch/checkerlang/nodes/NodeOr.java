@@ -20,6 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
@@ -56,7 +57,9 @@ public class NodeOr implements Node {
 
     public Value evaluate(Environment environment) {
         for (Node expression : expressions) {
-            if (expression.evaluate(environment).asBoolean().isTrue()) {
+            Value value = expression.evaluate(environment);
+            if (!value.isBoolean()) throw new ControlErrorException("Expected boolean but got " + value.type(), pos);
+            if (value.asBoolean().isTrue()) {
                 return ValueBoolean.TRUE;
             }
         }

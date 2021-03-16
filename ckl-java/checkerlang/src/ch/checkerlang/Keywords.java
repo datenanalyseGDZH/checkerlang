@@ -47,6 +47,8 @@ public class Keywords {
         keywords.add("continue");
         keywords.add("return");
         keywords.add("error");
+        keywords.add("require");
+        keywords.add("as");
     }
 
     public static boolean isKeyword(String s) {

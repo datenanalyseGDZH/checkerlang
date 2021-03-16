@@ -1429,6 +1429,7 @@ export class FuncIsEmpty extends ValueFunc {
         if (obj.isList()) return ValueBoolean.from(obj.value.length === 0);
         if (obj.isSet()) return ValueBoolean.from(obj.value.size === 0);
         if (obj.isMap()) return ValueBoolean.from(obj.value.size === 0);
+        if (obj.isObject()) return ValueBoolean.from(obj.value.size === 0);
         return ValueBoolean.FALSE;
     }
 }
@@ -1459,6 +1460,7 @@ export class FuncIsNotEmpty extends ValueFunc {
         if (obj.isList()) return ValueBoolean.from(obj.value.length > 0);
         if (obj.isSet()) return ValueBoolean.from(obj.value.size > 0);
         if (obj.isMap()) return ValueBoolean.from(obj.value.size > 0);
+        if (obj.isObject()) return ValueBoolean.from(obj.value.size > 0);
         return ValueBoolean.TRUE;
     }
 }

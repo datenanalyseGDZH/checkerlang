@@ -70,6 +70,12 @@ public class NodeDerefAssign implements Node {
             map.put(idx, value);
             return container;
         }
+        if (container.isObject()) {
+            Map<String, Value> map = container.asObject().value;
+            String member = idx.asString().getValue();
+            map.put(member, value);
+            return container;
+        }
         throw new ControlErrorException("Cannot deref-assign " + this.value, pos);
     }
 

@@ -54,7 +54,7 @@ public class NodeIf implements Node {
         for (int i = 0; i < conditions.size(); i++) {
             Value value = conditions.get(i).evaluate(environment);
             if (!value.isBoolean())
-                throw new ControlErrorException("expected boolean condition value but got " + value, pos);
+                throw new ControlErrorException("expected boolean condition but got " + value.type(), pos);
             if (value.asBoolean().isTrue()) {
                 return expressions.get(i).evaluate(environment);
             }

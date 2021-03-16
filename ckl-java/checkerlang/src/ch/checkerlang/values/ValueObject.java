@@ -20,47 +20,41 @@
 */
 package ch.checkerlang.values;
 
-import java.util.Collection;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ValueSet extends Value {
-    private TreeSet<Value> value = new TreeSet<>();
+public class ValueObject extends Value {
+    public Map<String, Value> value = new HashMap<>();
+    public boolean isModule = false;
 
-    public ValueSet() {
-        // empty
-    }
-
-    public ValueSet(TreeSet<Value> value) {
-        for (Value item : value) {
-            this.value.add(item);
-        }
-    }
-
-    public ValueSet(ValueSet value) {
-        this.value.addAll(value.getValue());
-    }
-
-    public ValueSet addItem(Value item) {
-        value.add(item);
+    public ValueObject addItem(String key, Value value) {
+        this.value.put(key, value);
         return this;
     }
 
-    public ValueSet addItems(Collection<Value> items) {
-        this.value.addAll(items);
-        return this;
+    public boolean hasItem(String key) {
+        return this.value.containsKey(key);
     }
 
-    public TreeSet<Value> getValue() {
-        return value;
+    public Value getItem(String key) {
+        return this.value.get(key);
     }
 
+    public void removeItem(String key) {
+        this.value.remove(key);
+    }
 
     public boolean isEquals(Value value) {
-        if (!value.isSet()) return false;
-        TreeSet<Value> other = value.asSet().getValue();
+        if (!value.isObject()) return false;
+        Map<String, Value> other = value.asObject().value;
         if (this.value.size() != other.size()) return false;
-        for (Value item : this.value) {
-            if (!other.contains(item)) return false;
+        for (String key : this.value.keySet()) {
+            if (!other.containsKey(key)) {
+                return false;
+            }
+            if (!this.value.get(key).isEquals(other.get(key))) {
+                return false;
+            }
         }
         return true;
     }
@@ -69,12 +63,12 @@ public class ValueSet extends Value {
         return toString().compareTo(value.toString());
     }
 
-    public String type() {
-        return "set";
-    }
-
     public int hashCode() {
         return value.hashCode();
+    }
+
+    public String type() {
+        return "object";
     }
 
     public ValueString asString() {
@@ -91,28 +85,44 @@ public class ValueSet extends Value {
 
     public ValueList asList() {
         ValueList result = new ValueList();
-        for (Value item : value) {
+        for (Value item : value.values()) {
             result.addItem(item);
         }
         return result;
     }
 
     public ValueSet asSet() {
+        ValueSet result = new ValueSet();
+        for (String key : value.keySet()) {
+            result.addItem(new ValueString(key));
+        }
+        return result;
+    }
+
+    public ValueMap asMap() {
+        ValueMap result = new ValueMap();
+        for (Map.Entry<String, Value> entry : value.entrySet()) {
+            result.addItem(new ValueString(entry.getKey()), entry.getValue());
+        }
+        return result;
+    }
+
+    public ValueObject asObject() {
         return this;
     }
 
-    public boolean isSet() {
+    public boolean isObject() {
         return true;
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<<");
-        for (Value item : value) {
-            builder.append(item.toString()).append(", ");
+        builder.append("<!");
+        for (String item : value.keySet()) {
+            builder.append(item).append("=").append(value.get(item)).append(", ");
         }
-        if (builder.length() > "<<".length()) builder.setLength(builder.length() - 2);
-        builder.append(">>");
+        if (builder.length() > "<!".length()) builder.setLength(builder.length() - 2);
+        builder.append("!>");
         return builder.toString();
     }
 

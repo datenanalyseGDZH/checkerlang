@@ -20,6 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
@@ -43,6 +44,7 @@ public class NodeWhile implements Node {
 
     public Value evaluate(Environment environment) {
         Value condition = expression.evaluate(environment);
+        if (!condition.isBoolean()) throw new ControlErrorException("Expected boolean condition but got " + condition.type(), pos);
         Value result = ValueBoolean.TRUE;
         while (condition.asBoolean() == ValueBoolean.TRUE) {
             result = block.evaluate(environment);
@@ -56,6 +58,7 @@ public class NodeWhile implements Node {
                 break;
             }
             condition = expression.evaluate(environment);
+            if (!condition.isBoolean()) throw new ControlErrorException("Expected boolean condition but got " + condition.type(), pos);
         }
         return result;
     }

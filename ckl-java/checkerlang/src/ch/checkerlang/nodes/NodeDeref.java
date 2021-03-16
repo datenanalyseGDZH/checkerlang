@@ -67,6 +67,13 @@ public class NodeDeref implements Node {
                 throw new ControlErrorException("Map does not contain key " + idx, pos);
             return map.get(idx);
         }
+        if (value.isObject()) {
+            Map<String, Value> map = value.asObject().value;
+            String member = idx.asString().getValue();
+            if (!map.containsKey(member))
+                throw new ControlErrorException("Object does not contain member " + member, pos);
+            return map.get(member);
+        }
         throw new ControlErrorException("Cannot dereference value " + value, pos);
     }
 

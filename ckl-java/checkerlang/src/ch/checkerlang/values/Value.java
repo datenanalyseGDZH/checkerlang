@@ -93,6 +93,10 @@ public abstract class Value implements Comparable<Value> {
         throw new ControlErrorException("Cannot convert to Node");
     }
 
+    public ValueObject asObject() {
+        throw new ControlErrorException("Cannot convert to Object");
+    }
+
     public ValueControlBreak asBreak() {
         throw new ControlErrorException("Cannot convert to break");
     }
@@ -162,6 +166,10 @@ public abstract class Value implements Comparable<Value> {
     }
 
     public boolean isNode() {
+        return false;
+    }
+
+    public boolean isObject() {
         return false;
     }
 

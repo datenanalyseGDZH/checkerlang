@@ -124,6 +124,22 @@ public class Parser {
         if (lexer.peek().type == TokenType.String && lexer.peekn(2, "def")) {
             comment = lexer.next().value;
         }
+        if (lexer.matchIf("require", TokenType.Keyword)) {
+            SourcePos pos = lexer.getPos();
+            Token token = lexer.next();
+            if (token.type != TokenType.Identifier && token.type != TokenType.String)
+                throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
+            String modulespec = token.value;
+            boolean unqualified = false;
+            String name = null;
+            if (lexer.matchIf("unqualified", TokenType.Identifier)) {
+                unqualified = true;
+            } else if (lexer.matchIf("as", TokenType.Keyword)) {
+                name = lexer.matchIdentifier();
+            }
+            return new NodeRequire(modulespec, name, unqualified, pos);
+        }
+
         if (lexer.matchIf("def", TokenType.Keyword)) {
             SourcePos pos = lexer.getPos();
             Token token;
