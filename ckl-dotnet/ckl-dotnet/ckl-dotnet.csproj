@@ -18,6 +18,8 @@
     <EmbeddedResource Include="module-core.ckl" />
     <EmbeddedResource Include="module-io.ckl" />
     <EmbeddedResource Include="module-math.ckl" />
+    <EmbeddedResource Include="module-random.ckl" />
+    <EmbeddedResource Include="module-sys.ckl" />
   </ItemGroup>
 
   <ItemGroup>

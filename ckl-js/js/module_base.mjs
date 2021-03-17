@@ -19,12 +19,11 @@ export const modulebase = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-def checkerlang_version = "3.4.0";
-def checkerlang_platform = "js";
-
+require sys unqualified;
 require core unqualified;
+require math unqualified;
+require random unqualified;
 require io unqualified;
-require math unqualified; # for backwards compatibility
 
 "
 is_list(obj) 

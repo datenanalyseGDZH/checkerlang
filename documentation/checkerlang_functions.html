@@ -38,6 +38,8 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#body'>body</a></li>
 <li><a href='#boolean'>boolean</a></li>
 <li><a href='#ceiling'>ceiling</a></li>
+<li><a href='#choice'>choice</a></li>
+<li><a href='#choices'>choices</a></li>
 <li><a href='#chunks'>chunks</a></li>
 <li><a href='#close'>close</a></li>
 <li><a href='#compare'>compare</a></li>
@@ -198,6 +200,7 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#trim'>trim</a></li>
 <li><a href='#type'>type</a></li>
 <li><a href='#unique'>unique</a></li>
+<li><a href='#unique_choices'>unique_choices</a></li>
 <li><a href='#unlines'>unlines</a></li>
 <li><a href='#unwords'>unwords</a></li>
 <li><a href='#upper'>upper</a></li>
@@ -404,6 +407,24 @@ Returns the integral decimal value that is equal to or next higher than x.
 <div class='example'>ceiling(1.3) ==&gt; 2.0</div>
 </pre><p>
 </div></p>
+<h2 id='choice'>choice</h2>
+<pre>
+choice(lst)
+</pre><p>
+Returns a random element from the list or set lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>choice([1, 1, 1, 1]) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='choices'>choices</h2>
+<pre>
+choices(lst, n)
+</pre><p>
+Returns a list with n random elements from the list or set lst.
+</pre><p>
+</p>
 <h2 id='chunks'>chunks</h2>
 <pre>
 chunks(obj, chunk_size)
@@ -2538,6 +2559,19 @@ duplicate is retained.
 <div class='examples_title'>Examples:</div>
 <div class='example'>unique([1, 4, 2, 3, 3, 4, 5]) ==&gt; [1, 4, 2, 3, 5]</div>
 <div class='example'>['a1', 'b2', 'c2', 'd3'] !&gt; unique(key = fn(x) x[1]) ==&gt; ['a1', 'b2', 'd3']</div>
+</pre><p>
+</div></p>
+<h2 id='unique_choices'>unique_choices</h2>
+<pre>
+unique_choices(lst, n)
+</pre><p>
+Returns a set with n random elements from the list or set lst,
+without repetitions.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>unique_choices([1, 2, 3], 3) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
+<div class='example'>unique_choices([1, 1, 1, 2, 2, 3], 3) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
 </pre><p>
 </div></p>
 <h2 id='unlines'>unlines</h2>

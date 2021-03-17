@@ -288,7 +288,7 @@ interpreter_test("FuncFindListWithKey", "find([[1, 'a'], [2, 'b'], [3, 'c']], 4,
 interpreter_test("FuncSet", "set([1, 2, 3, 3, 4, 5])", "<<1, 2, 3, 4, 5>>");
 interpreter_test("FuncMap", "map([[1, 'a'], [2, 'b'], [3, 'c'], [3, 'd'], [4, 'e'], [5, 'f']])", "<<<1 => 'a', 2 => 'b', 3 => 'd', 4 => 'e', 5 => 'f'>>>");
 interpreter_test("FuncSubstitute", "substitute('abcdef', 3, 'x')", "'abcxef'");
-interpreter_test("FuncRandom", "set_seed(1); random(10)", "2");
+interpreter_test("FuncRandom", "require random; random->set_seed(1); random->random(10)", "2");
 interpreter_test("FuncSqrt", "sqrt(4)", "2.0");
 interpreter_test("BlockFuncOrdering", "def a = fn(y) do def b = fn(x) 2 * c(x); def c = fn(x) 3 + x; b(y); end; a(12)", "30");
 interpreter_test("BlockFuncOrderingGlobal", "def b = fn(x) 2 * c(x); def c = fn(x) 3 + x; b(12)", "30");

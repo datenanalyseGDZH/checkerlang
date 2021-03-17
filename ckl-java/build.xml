@@ -54,6 +54,8 @@
         <copy file="src/module-core.ckl" todir="build"/>
         <copy file="src/module-io.ckl" todir="build"/>
         <copy file="src/module-math.ckl" todir="build"/>
+        <copy file="src/module-random.ckl" todir="build"/>
+        <copy file="src/module-sys.ckl" todir="build"/>
 	    <jar basedir="build" destfile="../dist/ckl-java-repl.jar">
             <manifest>
                 <attribute name="Main-Class" value="ch.checkerlang.REPL"/>
