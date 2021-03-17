@@ -55,9 +55,9 @@ namespace CheckerLang
             baseEnvironment.Remove("stdout");
             baseEnvironment.Remove("stdin");
             baseEnvironment.Remove("run");
-            baseEnvironment.GetParent().Remove("file_input");
-            baseEnvironment.GetParent().Remove("file_output");
-            baseEnvironment.GetParent().Remove("close");
+            baseEnvironment.Remove("file_input");
+            baseEnvironment.Remove("file_output");
+            baseEnvironment.Remove("close");
         }
 
         public void SetStandardOutput(TextWriter stdout)

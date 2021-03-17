@@ -69,6 +69,7 @@ bind_native("put");
 bind_native("random");
 bind_native("range");
 bind_native("remove");
+bind_native("replace");
 bind_native("round");
 bind_native("s");
 bind_native("set");

@@ -32,9 +32,6 @@ public class REPL {
         Interpreter interpreter = new Interpreter(false);
         interpreter.setStandardInput(stdin);
         interpreter.setStandardOutput(stdout);
-        if (new File("base-library.txt").exists()) {
-            interpreter.loadFile("base-library.txt");
-        }
         stdout.print("> ");
         stdout.flush();
         String line = stdin.readLine();

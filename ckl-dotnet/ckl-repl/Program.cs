@@ -31,10 +31,6 @@ namespace repl
             var interpreter = new Interpreter(false);
             interpreter.SetStandardInput(Console.In);
             interpreter.SetStandardOutput(Console.Out);
-            if (File.Exists("base-library.txt"))
-            {
-                interpreter.LoadFile("base-library.txt");
-            }
             Console.Write("> ");
             var line = Console.ReadLine();
             if (line != null && line == "secure")

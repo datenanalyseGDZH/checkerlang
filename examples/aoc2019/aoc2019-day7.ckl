@@ -156,7 +156,7 @@ for setting in permutations(interval(5, 9)) do
         amp5 = wait_for_output(amp5);
         amp1 !> add_input(amp5 !> get_output(0));
     end;
-    value = amp5 !> get_output(0);
+    def value = amp5 !> get_output(0);
     maxvalue = max(maxvalue, value); 
 end;
 println("part2: " + maxvalue);

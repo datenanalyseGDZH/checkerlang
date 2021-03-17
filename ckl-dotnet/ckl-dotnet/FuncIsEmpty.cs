@@ -79,6 +79,8 @@ namespace CheckerLang
                 return ValueBoolean.From(obj.AsMap().GetValue().Count == 0);
             }
 
+            if (obj.IsObject()) return ValueBoolean.From(obj.AsObject().value.Count == 0);
+            
             return ValueBoolean.FALSE;
         }
     }

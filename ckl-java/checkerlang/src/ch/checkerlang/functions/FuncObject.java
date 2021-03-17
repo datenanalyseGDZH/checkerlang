@@ -37,14 +37,17 @@ public class FuncObject extends FuncBase {
                 "\r\n" +
                 "Creates an empty object value.\r\n" +
                 "\r\n" +
-                ": object() ==> <!!>\r\n";
+                ": object() ==> <!!>\r\n" +
+                ": object(<<<a => 1>>>) ==> <!a=1!>\r\n" +
+                ": object([['a', 1]]) ==> <!a=1!>\r\n";
     }
 
     public List<String> getArgNames() {
-        return Collections.emptyList();
+        return Arrays.asList("obj");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
-        return new ValueObject();
+        if (!args.hasArg("obj")) return new ValueObject();
+        return args.getAsObject("obj");
     }
 }

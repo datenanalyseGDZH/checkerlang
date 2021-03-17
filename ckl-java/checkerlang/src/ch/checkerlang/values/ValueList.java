@@ -118,6 +118,14 @@ public class ValueList extends Value {
         return result;
     }
 
+    public ValueObject asObject() {
+        ValueObject result = new ValueObject();
+        for (Value item : value) {
+            result.addItem(item.asList().getValue().get(0).asString().getValue(), item.asList().getValue().get(1));
+        }
+        return result;
+    }
+
     public boolean isList() {
         return true;
     }

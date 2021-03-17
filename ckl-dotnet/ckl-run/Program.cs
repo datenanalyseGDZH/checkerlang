@@ -29,35 +29,31 @@ namespace run
     {
         static void Main(string[] args)
         {
-            var interpreter = new Interpreter(false);
-            interpreter.SetStandardInput(Console.In);
-            interpreter.SetStandardOutput(Console.Out);
-            if (File.Exists("base-library.txt"))
-            {
-                interpreter.LoadFile("base-library.txt");
-            }
-            
-            // TODO handle options places before the scriptname, e.g. -i for include path!
-            if (args.Length > 0) {
-                interpreter.GetEnvironment().Put("scriptname", new ValueString(args[0]));
-                var arglist = new ValueList();
-                for (var i = 1; i < args.Length; i++) {
-                    arglist.AddItem(new ValueString(args[i]));
-                }
-                interpreter.GetEnvironment().Put("args", arglist);
-                var input = new StreamReader(args[0], Encoding.UTF8);
-                try {
+            try {
+                var interpreter = new Interpreter(false);
+                interpreter.SetStandardInput(Console.In);
+                interpreter.SetStandardOutput(Console.Out);
+                
+                // TODO handle options places before the scriptname, e.g. -i for include path!
+                if (args.Length > 0) {
+                    interpreter.GetEnvironment().Put("scriptname", new ValueString(args[0]));
+                    var arglist = new ValueList();
+                    for (var i = 1; i < args.Length; i++) {
+                        arglist.AddItem(new ValueString(args[i]));
+                    }
+                    interpreter.GetEnvironment().Put("args", arglist);
+                    var input = new StreamReader(args[0], Encoding.UTF8);
                     var value = interpreter.Interpret(input, args[0]);
                     if (value.IsReturn()) value = value.AsReturn().value;
                     if (value != ValueNull.NULL) Console.Out.WriteLine(value);
-                } catch (ControlErrorException e) {
-                    Console.Out.WriteLine("ERR: " + e.GetErrorValue().AsString().GetValue() + " (Line " + e.GetPos() + ")");
-                    Console.Out.WriteLine(e.GetStacktrace().ToString());
-                } catch (SyntaxError e) {
-                    Console.Out.WriteLine(e.Message + (e.GetPos() != null ? " (Line " + e.GetPos() + ")" : ""));
-                } catch (Exception e) {
-                    Console.Out.WriteLine(e.Message);
                 }
+            } catch (ControlErrorException e) {
+                Console.Out.WriteLine("ERR: " + e.GetErrorValue().AsString().GetValue() + " (Line " + e.GetPos() + ")");
+                Console.Out.WriteLine(e.GetStacktrace().ToString());
+            } catch (SyntaxError e) {
+                Console.Out.WriteLine(e.Message + (e.GetPos() != null ? " (Line " + e.GetPos() + ")" : ""));
+            } catch (Exception e) {
+                Console.Out.WriteLine(e.Message);
             }
         }
     }

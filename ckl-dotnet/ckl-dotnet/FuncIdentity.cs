@@ -18,41 +18,31 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+using System;
 using System.Collections.Generic;
 
 namespace CheckerLang
 {
-    public class Keywords
+    public class FuncIdentity : FuncBase
     {
-        private static HashSet<string> keywords = new HashSet<string>
+        public FuncIdentity() : base("identity")
         {
-            "if",
-            "then",
-            "elif",
-            "else",
-            "and",
-            "or",
-            "not",
-            "is",
-            "in",
-            "def",
-            "fn",
-            "for",
-            "while",
-            "do",
-            "end",
-            "finally",
-            "break",
-            "continue",
-            "return",
-            "error",
-            "require",
-            "as"
-        };
+            this.info = "identity(obj)\r\n" +
+                        "\r\n" +
+                        "Returns obj.\r\n" +
+                        "\r\n" +
+                        ": identity(1) ==> 1\r\n" +
+                        ": identity('a') ==> 'a'\r\n";
+        }
 
-        public static bool IsKeyword(string s)
+        public override List<string> GetArgNames()
         {
-            return keywords.Contains(s);
+            return new List<string> {"obj"};
+        }
+        
+        public override Value Execute(Args args, Environment environment, SourcePos pos)
+        {
+            return args.Get("obj");
         }
     }
 }

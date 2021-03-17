@@ -802,6 +802,9 @@ public class Parser {
                 lexer.match(")", TokenType.Interpunction);
             } else {
                 fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
+                while (lexer.matchIf("->", TokenType.Operator)) {
+                    fn = new NodeDeref(fn, new NodeLiteralString(lexer.matchIdentifier(), lexer.getPos()), lexer.getPos());
+                }
             }
             NodeFuncall call = new NodeFuncall(fn, lexer.getPos());
             call.addArg(null, node);

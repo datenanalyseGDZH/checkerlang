@@ -32,6 +32,10 @@ namespace CheckerLang
         
         public NodeAssignDestructuring(List<string> identifiers, Node expression, SourcePos pos)
         {
+            foreach (var identifier in identifiers)
+            {
+                if (identifier.StartsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, pos);
+            }
             this.identifiers.AddRange(identifiers);
             this.expression = expression;
             this.pos = pos;

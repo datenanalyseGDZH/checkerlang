@@ -279,6 +279,16 @@ namespace CheckerLang
             }
         }
 
+        public ValueObject GetAsObject(string name) {
+            var value = Get(name);
+            try {
+                return value.AsObject();
+            } catch (ControlErrorException e) {
+                e.pos = pos;
+                throw e;
+            }
+        }
+
         public ValueMap GetAsMap(string name) {
             var value = Get(name);
             try {

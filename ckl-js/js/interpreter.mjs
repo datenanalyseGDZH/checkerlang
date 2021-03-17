@@ -274,6 +274,16 @@ export class Args {
         }
     }
 
+    getAsObject(name) {
+        const value = this.get(name);
+        try {
+            return value.asObject();
+        } catch (e) {
+            e.pos = this.pos;
+            throw e;
+        }
+    }
+
     getAsMap(name) {
         const value = this.get(name);
         try {

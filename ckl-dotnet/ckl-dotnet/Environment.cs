@@ -34,9 +34,14 @@ namespace CheckerLang
         private Dictionary<string, object> map = new Dictionary<string, object>();
         private Environment parent;
 
+        public Dictionary<string, Environment> modules = null;
+        public List<string> modulestack = null;
+
         public Environment()
         {
             parent = null;
+            modules = new Dictionary<string, Environment>();
+            modulestack = new List<string>();
         }
 
         public Environment(Environment parent)
@@ -55,6 +60,13 @@ namespace CheckerLang
             return parent;
         }
 
+        public Environment GetBase() 
+        {
+            var current = this;
+            while (current.parent != null) current = current.parent;
+            return current;
+        }
+
         public IEnumerable<string> GetSymbols()
         {
             var result = new List<string>();
@@ -64,6 +76,29 @@ namespace CheckerLang
             return result;
         }
         
+        public List<string> GetLocalSymbols() {
+            return new List<string>(map.Keys);
+        }
+
+        public Dictionary<string, Environment> GetModules() {
+            var current = this;
+            while (current.parent != null) current = current.parent;
+            return current.modules;
+        }
+
+        public void PushModuleStack(string moduleidentifier, SourcePos pos) {
+            var current = this;
+            while (current.parent != null) current = current.parent;
+            if (current.modulestack.Contains(moduleidentifier)) throw new ControlErrorException("Found circular module dependency (" + moduleidentifier + ")", pos);
+            current.modulestack.Add(moduleidentifier);
+        }
+
+        public void PopModuleStack() {
+            var current = this;
+            while (current.parent != null) current = current.parent;
+            current.modulestack.RemoveAt(current.modulestack.Count - 1);
+        }
+
         public void Put(string name, object value) 
         {
             map[name] = value;
@@ -154,123 +189,17 @@ namespace CheckerLang
         
         public static Environment GetBaseEnvironment(bool secure = true)
         {
-            var result = GetRootEnvironment(secure).NewEnv();
-            var assembly = typeof(Environment).Assembly;
-            var basenode = Parser.Parse(new StreamReader(assembly.GetManifestResourceStream("checkerlang.base-library.ckl")), "{res}/base-library.ckl");
-            basenode.Evaluate(result);
-            return result;
-        }
-        
-        public static Environment GetRootEnvironment(bool secure = true)
-        {
             var result = GetNullEnvironment();
-            Add(result, new FuncAcos());
-            Add(result, new FuncAdd());
-            Add(result, new FuncAppend());
-            Add(result, new FuncAsin());
-            Add(result, new FuncAtan());
-            Add(result, new FuncAtan2());
-            Add(result, new FuncBody());
-            Add(result, new FuncBoolean());
-            Add(result, new FuncCeiling());
-            Add(result, new FuncCompare());
-            Add(result, new FuncContains(), "str_contains");
-            Add(result, new FuncCos());
-            Add(result, new FuncDate());
-            Add(result, new FuncDecimal());
-            Add(result, new FuncDeleteAt());
-            Add(result, new FuncDiv());
-            Add(result, new FuncDiv0());
-            Add(result, new FuncEndsWith(), "str_ends_with");
-            Add(result, new FuncEquals());
-            Add(result, new FuncEscapePattern());
-            Add(result, new FuncEval());
-            Add(result, new FuncExp());
-            Add(result, new FuncFind(), "str_find");
-            Add(result, new FuncFloor());
-            Add(result, new FuncFormatDate());
-            Add(result, new FuncGreater());
-            Add(result, new FuncGreaterEquals());
-            Add(result, new FuncIfEmpty());
-            Add(result, new FuncIfNull());
-            Add(result, new FuncIfNullOrEmpty());
-            Add(result, new FuncInfo());
-            Add(result, new FuncInsertAt());
-            Add(result, new FuncInt());
-            Add(result, new FuncIsEmpty());
-            Add(result, new FuncIsNotEmpty());
-            Add(result, new FuncIsNotNull());
-            Add(result, new FuncIsNull());
-            Add(result, new FuncLength());
-            Add(result, new FuncLess());
-            Add(result, new FuncLessEquals());
-            Add(result, new FuncList());
-            Add(result, new FuncLog());
-            Add(result, new FuncLower());
-            Add(result, new FuncLs());
-            Add(result, new FuncMap());
-            Add(result, new FuncMatches(), "str_matches");
-            Add(result, new FuncMod());
-            Add(result, new FuncMul());
-            Add(result, new FuncNotEquals());
-            Add(result, new FuncNow());
-            Add(result, new FuncPairs());
-            Add(result, new FuncParse());
-            Add(result, new FuncParseJson());
-            Add(result, new FuncParseDate());
-            Add(result, new FuncPattern());
-            Add(result, new FuncPow());
-            Add(result, new FuncPrint());
-            Add(result, new FuncPrintln());
-            Add(result, new FuncProcessLines());
-            Add(result, new FuncPut());
-            Add(result, new FuncRandom());
-            Add(result, new FuncRange());
-            Add(result, new FuncRead());
-            Add(result, new FuncReadall());
-            Add(result, new FuncReadln());
-            Add(result, new FuncRemove());
-            Add(result, new FuncReplace());
-            Add(result, new FuncRound());
-            Add(result, new FuncS());
-            Add(result, new FuncSet());
-            Add(result, new FuncSetSeed());
-            Add(result, new FuncSin());
-            Add(result, new FuncSorted());
-            Add(result, new FuncSplit());
-            Add(result, new FuncSplit2());
-            Add(result, new FuncSqrt());
-            Add(result, new FuncStartsWith(), "str_starts_with");
-            Add(result, new FuncStrInput());
-            Add(result, new FuncString());
-            Add(result, new FuncSub());
-            Add(result, new FuncSublist());
-            Add(result, new FuncSubstr());
-            Add(result, new FuncSum());
-            Add(result, new FuncTan());
-            Add(result, new FuncTimestamp());
-            Add(result, new FuncTrim(), "str_trim");
-            Add(result, new FuncType());
-            Add(result, new FuncUpper());
-            Add(result, new FuncZip());
-            Add(result, new FuncZipMap());
-            if (!secure)
-            {
-                Add(result, new FuncFileInput());
-                Add(result, new FuncFileOutput());
-                Add(result, new FuncClose());
-            }
+            result.Put("checkerlang_secure_mode", ValueBoolean.From(secure));
+            Add(result, new FuncBindNative());
             result.Put("NULL", ValueNull.NULL);
-            result.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("PI\n\nThe mathematical constant pi."));
-            result.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("E\n\nThe mathematical constant e."));
             result.Put("MAXINT", new ValueInt(long.MaxValue).WithInfo("MAXINT\n\nThe maximal int value"));
             result.Put("MININT", new ValueInt(long.MinValue).WithInfo("MININT\n\nThe minimal int value"));
             result.Put("MAXDECIMAL", new ValueDecimal(decimal.MaxValue).WithInfo("MAXDECIMAL\n\nThe maximal decimal value"));
             result.Put("MINDECIMAL", new ValueDecimal(decimal.MinValue).WithInfo("MINDECIMAL\n\nThe minimal decimal value"));
-            var v = Assembly.GetAssembly(typeof(Environment)).GetName().Version;
-            var version = new ValueString(v.Major + "." + v.Minor + "." + v.Build);
-            result.Put("checkerlang_version", version);
-            result.Put("checkerlang_platform", new ValueString("dotnet"));
+            var assembly = typeof(Environment).Assembly;
+            var basenode = Parser.Parse(new StreamReader(assembly.GetManifestResourceStream("checkerlang.module-base.ckl")), "{res}/module-base.ckl");
+            basenode.Evaluate(result);
             return result;
         }
 

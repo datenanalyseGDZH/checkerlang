@@ -1477,7 +1477,8 @@ export class FuncLength extends ValueFunc {
                 ": length('123') ==> 3\r\n" +
                 ": length([1, 2, 3]) ==> 3\r\n" +
                 ": length(<<1, 2, 3>>) ==> 3\r\n" +
-                ": length(<<<'a' => 1, 'b' => 2, 'c' => 3>>>) ==> 3\r\n";
+                ": <<<'a' => 1, 'b' => 2, 'c' =>3>>> !> length() ==> 3\r\n" +
+                ": length(object()) ==> 0\r\n";
     }
 
     getArgNames() {
@@ -1792,18 +1793,22 @@ export class FuncObject extends ValueFunc {
     constructor() {
         super("object");
         this.info = "object()\r\n" +
+                    "object(obj)\r\n" +
                     "\r\n" +
-                    "Creates an empty object value.\r\n" +
+                    "Creates an empty object value or converts a list of pairs or a map to an object.\r\n" +
                     "\r\n" +
-                    ": object() ==> <!!>\r\n";
+                    ": object() ==> <!!>\r\n" +
+                    ": object(<<<a => 1>>>) ==> <!a=1!>\r\n" +
+                    ": object([['a', 1]]) ==> <!a=1!>\r\n";
     }
 
     getArgNames() {
-        return [];
+        return ["obj"];
     }
 
     execute(args, environment, pos) {
-        return new ValueObject();
+        if (!args.hasArg("obj")) return new ValueObject();
+        return args.getAsObject("obj");
     }
 }
 

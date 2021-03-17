@@ -18,60 +18,33 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-using System;
+
 using System.Collections.Generic;
 using System.Text;
 
 namespace CheckerLang
 {
-    public class ValueList : Value
+    public class ValueObject : Value
     {
-        private List<Value> value = new List<Value>();
+        public Dictionary<string, Value> value = new Dictionary<string, Value>();
+        public bool isModule = false;
 
-        public ValueList()
+        public ValueObject AddItem(string key, Value value)
         {
-            // empty
-        }
-
-        public ValueList(List<Value> value)
-        {
-            this.value.AddRange(value);
-        }
-
-        public ValueList(ValueList value)
-        {
-            this.value.AddRange(value.value);
-        }
-
-        public ValueList AddItems(IEnumerable<Value> items)
-        {
-            foreach (var item in items)
-            {
-                value.Add(item);
-            }
+            this.value[key] = value;
             return this;
         }
-
-        public ValueList AddItem(Value item)
-        {
-            value.Add(item);
-            return this;
-        }
-
-        public List<Value> GetValue()
-        {
-            return value;
-        }
-
 
         public override bool IsEquals(Value value)
         {
-            if (!value.IsList()) return false;
-            if (this.value.Count != value.AsList().GetValue().Count) return false;
-            for (var i = 0; i < this.value.Count; i++)
-            {
-                if (!this.value[i].IsEquals(value.AsList().GetValue()[i]))
-                {
+            if (!value.IsObject()) return false;
+            Dictionary<string, Value> other = value.AsObject().value;
+            if (this.value.Count != other.Count) return false;
+            foreach (string key in this.value.Keys) {
+                if (!other.ContainsKey(key)) {
+                    return false;
+                }
+                if (!this.value[key].IsEquals(other[key])) {
                     return false;
                 }
             }
@@ -80,17 +53,7 @@ namespace CheckerLang
 
         public override int CompareTo(Value value)
         {
-            if (!value.IsList()) return string.CompareOrdinal(ToString(), value.ToString());
-            var lst = value.AsList().GetValue();
-            for (var i = 0; i < Math.Min(GetValue().Count, lst.Count); i++)
-            {
-                var cmp = GetValue()[i].CompareTo(lst[i]);
-                if (cmp != 0) return cmp;
-            }
-
-            if (GetValue().Count < lst.Count) return -1;
-            if (GetValue().Count > lst.Count) return 1;
-            return 0;
+            return string.CompareOrdinal(ToString(), value.ToString());
         }
 
         public override int HashCode()
@@ -100,7 +63,7 @@ namespace CheckerLang
 
         public override string Type()
         {
-            return "list";
+            return "object";
         }
 
         public override ValueString AsString()
@@ -120,15 +83,20 @@ namespace CheckerLang
 
         public override ValueList AsList()
         {
-            return this;
+            var result = new ValueList();
+            foreach (var item in value.Values)
+            {
+                result.AddItem(item);
+            }
+            return result;
         }
 
         public override ValueSet AsSet()
         {
             var result = new ValueSet();
-            foreach (var item in value)
+            foreach (var key in value.Keys)
             {
-                result.AddItem(item);
+                result.AddItem(new ValueString(key));
             }
             return result;
         }
@@ -136,37 +104,31 @@ namespace CheckerLang
         public override ValueMap AsMap()
         {
             var result = new ValueMap();
-            foreach (var item in value)
-            {
-                result.AddItem(item.AsList().GetValue()[0], item.AsList().GetValue()[1]);
+            foreach (var entry in value) {
+                result.AddItem(new ValueString(entry.Key), entry.Value);
             }
             return result;
         }
 
         public override ValueObject AsObject()
         {
-            var result = new ValueObject();
-            foreach (var item in value)
-            {
-                result.AddItem(item.AsList().GetValue()[0].AsString().GetValue(), item.AsList().GetValue()[1]);
-            }
-            return result;
+            return this;
         }
 
-        public override bool IsList()
+        public override bool IsObject()
         {
             return true;
         }
-        
+
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("[");
-            foreach (var item in value) {
-                builder.Append(item).Append(", ");
+            builder.Append("<!");
+            foreach (var item in value.Keys) {
+                builder.Append(item).Append("=").Append(value[item]).Append(", ");
             }
-            if (builder.Length > 1) builder.Remove(builder.Length - ", ".Length, ", ".Length);
-            builder.Append("]");
+            if (builder.Length > "<!".Length) builder.Remove(builder.Length - ", ".Length, ", ".Length);
+            builder.Append("!>");
             return builder.ToString();
         }
 

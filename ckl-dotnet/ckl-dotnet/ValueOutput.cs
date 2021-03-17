@@ -81,5 +81,10 @@ namespace CheckerLang
             return "<!output-stream>";
         }
 
+        public string GetStringOutput() 
+        {
+            // This does only really work for string output objects...
+            return output.ToString();
+        }
     }
 }

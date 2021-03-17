@@ -60,6 +60,13 @@ namespace CheckerLang
                 if (!map.ContainsKey(idx)) throw new ControlErrorException("Map does not contain key " + idx, pos);
                 return map[idx];
             }
+            if (value.IsObject())
+            {
+                var map = value.AsObject().value;
+                var member = idx.AsString().GetValue();
+                if (!map.ContainsKey(member)) throw new ControlErrorException("Object does not contain member " + member, pos);
+                return map[member];
+            }
             throw new ControlErrorException("Cannot dereference value " + value, pos);
         }
 

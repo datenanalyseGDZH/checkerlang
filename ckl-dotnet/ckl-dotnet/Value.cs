@@ -77,6 +77,11 @@ namespace CheckerLang
             throw new ControlErrorException("Cannot convert to map");
         }
 
+        public virtual ValueObject AsObject()
+        {
+            throw new ControlErrorException("Cannot convert to object");
+        }
+
         public virtual ValueFunc AsFunc()
         {
             throw new ControlErrorException("Cannot convert to func");
@@ -163,6 +168,11 @@ namespace CheckerLang
         }
 
         public virtual bool IsMap()
+        {
+            return false;
+        }
+
+        public virtual bool IsObject()
         {
             return false;
         }

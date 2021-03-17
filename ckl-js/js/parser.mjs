@@ -793,6 +793,9 @@ export class Parser {
                 lexer.match(")", "interpunction");
             } else {
                 fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
+                while (lexer.matchIf("->", "operator")) {
+                    fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.matchIdentifier()), lexer.getPos()), lexer.getPos());
+                }
             }
             const call = new NodeFuncall(fn, lexer.getPos());
             call.addArg(null, node);
@@ -919,7 +922,7 @@ export class Parser {
         while (lexer.peekn(1, "!>", "operator") || lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "->", "operator")) {
             if (lexer.peekn(1, "!>", "operator")) {
                 node = this._invoke(lexer, node);
-            } else if (lexer.peekn(1, "[", "interpunction")) {
+            } else if (lexer.peekn(1, "[", "interpunction") || lexer.peekn(1, "->", "operator")) {
                 let result = this._deref(lexer, node);
                 node = result[0];
                 if (result[1]) break;

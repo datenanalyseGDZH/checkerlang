@@ -562,24 +562,6 @@ end;
 
 
 "
-replace(s, a, b, start = 0)
-
-Replaces all occurences of a in the string s with b.
-The optional parameter start specifies the start index.
-
-: replace('abc', 'b', 'x') ==> 'axc'
-: replace('abc', 'b', 'xy') ==> 'axyc'
-: replace('abcdef', 'bcd', 'xy') ==> 'axyef'
-: replace('abcabcabc', 'abc', 'xy', start = 3) ==> 'abcxyxy'
-"
-def replace(s, a, b, start = 0) do
-  def pos = str_find(s, a, start = start);
-  if pos == -1 then return s;
-  return replace(substr(s, 0, pos) + b + substr(s, pos + length(a)), a, b, start = pos + length(b));
-end;
-
-
-"
 label_data(labels, data)
 
 Creates a map that labels the data with the

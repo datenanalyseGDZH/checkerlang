@@ -33,9 +33,9 @@ const interpreter = new Interpreter(false);
 interpreter.fs = fs;
 interpreter.baseEnvironment.setModuleLoader(moduleloader);
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
-interpreter.baseEnvironment.parent.put("file_input", new FuncFileInput(fs));
-interpreter.baseEnvironment.parent.put("file_output", new FuncFileOutput(fs));
-interpreter.baseEnvironment.parent.put("run", new FuncRun(interpreter, fs));
+interpreter.baseEnvironment.put("file_input", new FuncFileInput(fs));
+interpreter.baseEnvironment.put("file_output", new FuncFileOutput(fs));
+interpreter.baseEnvironment.put("run", new FuncRun(interpreter, fs));
 NodeRequire.fs = fs;
 
 if (process.argv.length <= 2) exit(0);

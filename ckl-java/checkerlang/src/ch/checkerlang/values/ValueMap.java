@@ -98,6 +98,14 @@ public class ValueMap extends Value {
         return result;
     }
 
+    public ValueObject asObject() {
+        ValueObject result = new ValueObject();
+        for (Value key : value.keySet()) {
+            result.addItem(key.asString().getValue(), value.get(key));
+        }
+        return result;
+    }
+
     public ValueMap asMap() {
         return this;
     }

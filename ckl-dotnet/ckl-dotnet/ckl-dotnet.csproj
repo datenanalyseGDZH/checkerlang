@@ -5,16 +5,19 @@
     <RuntimeFrameworkVersion>2.1.25</RuntimeFrameworkVersion>
     <ApplicationIcon />
     <Win32Resource />
-    <AssemblyVersion>3.3.3.0</AssemblyVersion>
-    <FileVersion>3.3.3</FileVersion>
-    <Version>3.3.3</Version>
+    <AssemblyVersion>3.4.0.0</AssemblyVersion>
+    <FileVersion>3.4.0</FileVersion>
+    <Version>3.4.0</Version>
     <Company>Damian Brunold / Gesundheitsdirektion Zürich</Company>
     <Product>ckl-dotnet</Product>
     <RootNamespace>checkerlang</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="base-library.ckl" />
+    <EmbeddedResource Include="module-base.ckl" />
+    <EmbeddedResource Include="module-core.ckl" />
+    <EmbeddedResource Include="module-io.ckl" />
+    <EmbeddedResource Include="module-math.ckl" />
   </ItemGroup>
 
   <ItemGroup>

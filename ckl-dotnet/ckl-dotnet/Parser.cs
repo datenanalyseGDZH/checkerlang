@@ -123,6 +123,25 @@ namespace CheckerLang
             {
                 comment = lexer.Next().value;
             }
+            if (lexer.MatchIf("require", TokenType.Keyword)) 
+            {
+                var pos = lexer.GetPos();
+                var token = lexer.Next();
+                if (token.type != TokenType.Identifier && token.type != TokenType.String)
+                    throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
+                var modulespec = token.value;
+                var unqualified = false;
+                string name = null;
+                if (lexer.MatchIf("unqualified", TokenType.Identifier)) 
+                {
+                    unqualified = true;
+                } 
+                else if (lexer.MatchIf("as", TokenType.Keyword)) 
+                {
+                    name = lexer.MatchIdentifier();
+                }
+                return new NodeRequire(modulespec, name, unqualified, pos);
+            }
             if (lexer.MatchIf("def", TokenType.Keyword))
             {
                 var pos = lexer.GetPos();
@@ -921,6 +940,9 @@ namespace CheckerLang
                     lexer.Match(")", TokenType.Interpunction);
                 } else {
                     fn = new NodeIdentifier(lexer.MatchIdentifier(), lexer.GetPos());
+                    while (lexer.MatchIf("->", TokenType.Operator)) {
+                        fn = new NodeDeref(fn, new NodeLiteralString(lexer.MatchIdentifier(), lexer.GetPos()), lexer.GetPos());
+                    }
                 }
                 var call = new NodeFuncall(fn, lexer.GetPos());
                 call.AddArg(null, node);

@@ -121,6 +121,16 @@ namespace CheckerLang
             return result;
         }
 
+        public override ValueObject AsObject()
+        {
+            var result = new ValueObject();
+            foreach (var key in value.Keys)
+            {
+                result.AddItem(key.AsString().GetValue(), value[key]);
+            }
+            return result;
+        }
+
         public override ValueMap AsMap()
         {
             return this;

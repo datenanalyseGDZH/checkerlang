@@ -315,6 +315,16 @@ public class Args {
         }
     }
 
+    public ValueObject getAsObject(String name) {
+        Value value = get(name);
+        try {
+            return value.asObject();
+        } catch (ControlErrorException e) {
+            e.pos = pos;
+            throw e;
+        }
+    }
+
     public ValueMap getAsMap(String name) {
         Value value = get(name);
         try {

@@ -53,7 +53,7 @@ namespace CheckerLang
             for (var i = 0; i < conditions.Count; i++)
             {
                 var value = conditions[i].Evaluate(environment);
-                if (!value.IsBoolean()) throw new ControlErrorException("expected boolean condition value but got " + value, pos);
+                if (!value.IsBoolean()) throw new ControlErrorException("Expected boolean condition but got " + value.Type(), pos);
                 if (value.AsBoolean().IsTrue()) {
                     return expressions[i].Evaluate(environment);
                 }

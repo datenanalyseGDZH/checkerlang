@@ -19,40 +19,31 @@
     SOFTWARE.
 */
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace CheckerLang
 {
-    public class Keywords
+    public class FuncStrOutput : FuncBase
     {
-        private static HashSet<string> keywords = new HashSet<string>
+        public FuncStrOutput() : base("str_output")
         {
-            "if",
-            "then",
-            "elif",
-            "else",
-            "and",
-            "or",
-            "not",
-            "is",
-            "in",
-            "def",
-            "fn",
-            "for",
-            "while",
-            "do",
-            "end",
-            "finally",
-            "break",
-            "continue",
-            "return",
-            "error",
-            "require",
-            "as"
-        };
-
-        public static bool IsKeyword(string s)
+            info = "str_output()\r\n" +
+                   "\r\n" +
+                   "Returns an output object. Things written to this output object can be retrieved using the function get_output_string.\r\n" +
+                   "\r\n" +
+                   ": do def o = str_output(); print('abc', out = o); get_output_string(o); end ==> 'abc'\r\n";
+        }
+        
+        public override List<string> GetArgNames()
         {
-            return keywords.Contains(s);
+            return new List<string>();
+        }
+        
+        public override Value Execute(Args args, Environment environment, SourcePos pos)
+        {
+            return new ValueOutput(new StringWriter());
         }
     }
+    
 }

@@ -22,37 +22,28 @@ using System.Collections.Generic;
 
 namespace CheckerLang
 {
-    public class Keywords
+    public class FuncObject : FuncBase
     {
-        private static HashSet<string> keywords = new HashSet<string>
+        public FuncObject() : base("object")
         {
-            "if",
-            "then",
-            "elif",
-            "else",
-            "and",
-            "or",
-            "not",
-            "is",
-            "in",
-            "def",
-            "fn",
-            "for",
-            "while",
-            "do",
-            "end",
-            "finally",
-            "break",
-            "continue",
-            "return",
-            "error",
-            "require",
-            "as"
-        };
-
-        public static bool IsKeyword(string s)
+            info = "object()\r\n" +
+                   "\r\n" +
+                   "Creates an empty object value.\r\n" +
+                   "\r\n" +
+                   ": object() ==> <!!>\r\n" +
+                   ": object(<<<a => 1>>>) ==> <!a=1!>\r\n" +
+                   ": object([['a', 1]]) ==> <!a=1!>\r\n";
+        }
+        
+        public override List<string> GetArgNames()
         {
-            return keywords.Contains(s);
+            return new List<string> {"obj"};
+        }
+        
+        public override Value Execute(Args args, Environment environment, SourcePos pos)
+        {
+            if (!args.HasArg("obj")) return new ValueObject();
+            return args.GetAsObject("obj");
         }
     }
 }

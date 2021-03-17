@@ -27,21 +27,33 @@ namespace CheckerLang
         public FuncLs() : base("ls")
         {
             info = "ls()\r\n" +
+                   "ls(module)\r\n" +
                    "\r\n" +
-                   "Returns a list of all defines symbols (functions and constants).\r\n";
+                   "Returns a list of all defines symbols (functions and constants)\r\n" +
+                   "in the current environment or in the specified module.\r\n";
         }
         
         public override List<string> GetArgNames()
         {
-            return new List<string>();
+            return new List<string>{"module"};
         }
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
             var result = new ValueList();
-            foreach (var symbol in environment.GetSymbols())
+            if (!args.HasArg("module"))
             {
-                result.AddItem(new ValueString(symbol));
+                foreach (var symbol in environment.GetSymbols())
+                {
+                    result.AddItem(new ValueString(symbol));
+                }
+            }
+            else
+            {
+                foreach (var symbol in args.Get("module").AsObject().value.Keys)
+                {
+                    result.AddItem(new ValueString(symbol));
+                }
             }
             return result;
         }

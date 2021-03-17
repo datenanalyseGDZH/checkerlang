@@ -31,6 +31,7 @@ namespace CheckerLang
         
         public NodeAssign(string identifier, Node expression, SourcePos pos)
         {
+            if (identifier.StartsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, pos);
             this.identifier = identifier;
             this.expression = expression;
             this.pos = pos;

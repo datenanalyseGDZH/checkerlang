@@ -32,34 +32,32 @@ public class Run {
     public static void main(String[] args) throws Exception {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter stdout = new PrintWriter(new OutputStreamWriter(System.out));
-        Interpreter interpreter = new Interpreter(false);
-        interpreter.setStandardInput(stdin);
-        interpreter.setStandardOutput(stdout);
-        if (new File("base-library.txt").exists()) {
-            interpreter.loadFile("base-library.txt");
-        }
-        // TODO handle options places before the scriptname, e.g. -i for include path!
-        if (args.length > 0) {
-            interpreter.getEnvironment().put("scriptname", new ValueString(args[0]));
-            ValueList arglist = new ValueList();
-            for (int i = 1; i < args.length; i++) {
-                arglist.addItem(new ValueString(args[i]));
-            }
-            interpreter.getEnvironment().put("args", arglist);
-            try (Reader input = new InputStreamReader(new FileInputStream(args[0]), StandardCharsets.UTF_8)) {
-                try {
+        try {
+            Interpreter interpreter = new Interpreter(false);
+            interpreter.setStandardInput(stdin);
+            interpreter.setStandardOutput(stdout);
+            // TODO handle options placed before the scriptname, e.g. -i for include path!
+            if (args.length > 0) {
+                interpreter.getEnvironment().put("scriptname", new ValueString(args[0]));
+                ValueList arglist = new ValueList();
+                for (int i = 1; i < args.length; i++) {
+                    arglist.addItem(new ValueString(args[i]));
+                }
+                interpreter.getEnvironment().put("args", arglist);
+                try (Reader input = new InputStreamReader(new FileInputStream(args[0]), StandardCharsets.UTF_8)) {
                     Value value = interpreter.interpret(input, args[0]);
                     if (value.isReturn()) value = value.asReturn().value;
                     if (value != ValueNull.NULL) stdout.println(value);
-                } catch (ControlErrorException e) {
-                    stdout.println("ERR: " + e.getErrorValue().asString().getValue() + " (Line " + e.getPos() + ")");
-                    stdout.println(e.getStacktrace().toString());
-                } catch (SyntaxError e) {
-                    stdout.println(e.getMessage() + (e.getPos() != null ? " (Line " + e.getPos() + ")" : ""));
-                } catch (Exception e) {
-                    stdout.println(e.getMessage());
                 }
             }
+            stdout.flush();
+        } catch (ControlErrorException e) {
+            stdout.println("ERR: " + e.getErrorValue().asString().getValue() + " (Line " + e.getPos() + ")");
+            stdout.println(e.getStacktrace().toString());
+        } catch (SyntaxError e) {
+            stdout.println(e.getMessage() + (e.getPos() != null ? " (Line " + e.getPos() + ")" : ""));
+        } catch (Exception e) {
+            stdout.println(e.getMessage());
         }
     }
 }

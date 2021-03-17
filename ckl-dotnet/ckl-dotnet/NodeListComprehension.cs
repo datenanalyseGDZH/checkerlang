@@ -50,35 +50,67 @@ namespace CheckerLang
             var result = new ValueList();
             var localEnv = environment.NewEnv();
             var list = listExpr.Evaluate(environment);
-            if (list.IsString()) {
+            if (list.IsString()) 
+            {
                 var s = list.AsString().GetValue();
                 var slist = new ValueList();
-                for (var i = 0; i < s.Length; i++) {
+                for (var i = 0; i < s.Length; i++) 
+                {
                     slist.AddItem(new ValueString(s.Substring(i, 1)));
                 }
                 list = slist;
             }
-            foreach (var listValue in list.AsList().GetValue())
+            if (list.IsObject()) 
             {
-                localEnv.Put(identifier, listValue);
-                var value = valueExpr.Evaluate(localEnv);
-                if (conditionExpr != null)
+                foreach (var member in list.AsObject().value.Keys) 
                 {
-                    var condition = conditionExpr.Evaluate(localEnv);
-                    if (!condition.IsBoolean())
+                    localEnv.Put(identifier, new ValueString(member));
+                    var value = valueExpr.Evaluate(localEnv);
+                    if (conditionExpr != null) 
                     {
-                        throw new ControlErrorException("Condition must be boolean but got " + condition.Type(), pos);
-                    }
-                    if (condition.AsBoolean().GetValue())
+                        var condition = conditionExpr.Evaluate(localEnv);
+                        if (!condition.IsBoolean()) 
+                        {
+                            throw new ControlErrorException("Condition must be boolean but got " + condition.Type(), pos);
+                        }
+                        if (condition.AsBoolean().GetValue()) 
+                        {
+                            result.AddItem(value);
+                        }
+                    } 
+                    else 
                     {
                         result.AddItem(value);
                     }
                 }
-                else
+            }
+            else
+            {
+                foreach (var listValue in list.AsList().GetValue())
                 {
-                    result.AddItem(value);
+                    localEnv.Put(identifier, listValue);
+                    var value = valueExpr.Evaluate(localEnv);
+                    if (conditionExpr != null)
+                    {
+                        var condition = conditionExpr.Evaluate(localEnv);
+                        if (!condition.IsBoolean())
+                        {
+                            throw new ControlErrorException("Condition must be boolean but got " + condition.Type(),
+                                pos);
+                        }
+
+                        if (condition.AsBoolean().GetValue())
+                        {
+                            result.AddItem(value);
+                        }
+                    }
+                    else
+                    {
+                        result.AddItem(value);
+                    }
                 }
             }
+
             return result;
         }
 

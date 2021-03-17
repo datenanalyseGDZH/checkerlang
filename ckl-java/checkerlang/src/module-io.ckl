@@ -29,7 +29,7 @@ bind_native("readln");
 bind_native("str_input");
 bind_native("str_output");
 
-if (checkerlang_secure_mode) then do
+if (not checkerlang_secure_mode) then do
     bind_native("file_input");
     bind_native("file_output");
 end;

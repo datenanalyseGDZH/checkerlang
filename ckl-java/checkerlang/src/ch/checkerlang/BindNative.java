@@ -76,6 +76,7 @@ public class BindNative {
             case "read_all": bindNative(env, new FuncReadall(), nativeAlias); break;
             case "readln": bindNative(env, new FuncReadln(), nativeAlias); break;
             case "remove": bindNative(env, new FuncRemove(), nativeAlias); break;
+            case "replace": bindNative(env, new FuncReplace(), nativeAlias); break;
             case "round": bindNative(env, new FuncRound(), nativeAlias); break;
             case "s": bindNative(env, new FuncS(), nativeAlias); break;
             case "set": bindNative(env, new FuncSet(), nativeAlias); break;

@@ -57,7 +57,9 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             foreach (var expression in expressions) {
-                if (expression.Evaluate(environment).AsBoolean().IsTrue())
+                var value = expression.Evaluate(environment);
+                if (!value.IsBoolean()) throw new ControlErrorException("Expected boolean but got " + value.Type(), pos);
+                if (value.AsBoolean().IsTrue())
                 {
                     return ValueBoolean.TRUE;
                 }

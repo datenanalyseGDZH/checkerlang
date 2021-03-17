@@ -966,6 +966,14 @@ export class ValueList extends Value {
         return result;
     }
 
+    asObject() {
+        const result = new ValueObject();
+        for (const entry of this.value) {
+            result.addItem(entry.value[0].asString().value, entry.value[1]);
+        }
+        return result;
+    }
+
     isList() {
         return true;
     }
@@ -1060,6 +1068,14 @@ export class ValueMap extends Value {
         const result = new ValueSet();
         for (const key of this.value.keys()) {
             result.addItem(key);
+        }
+        return result;
+    }
+
+    asObject() {
+        const result = new ValueObject();
+        for (const key of this.value.keys()) {
+            result.addItem(key.asString().value, this.value.get(key));
         }
         return result;
     }
@@ -1260,7 +1276,7 @@ export class ValueObject extends Value {
     toString() {
         let result = "<!";
         for (const key of this.value.keys()) {
-            result = result.concat(key.toString(), "=", this.value.get(key).toString(), ", ");
+            result = result.concat(key, "=", this.value.get(key).toString(), ", ");
         }
         if (result.length > "<!".length) result = result.substr(0, result.length - 2);
         return result.concat("!>");

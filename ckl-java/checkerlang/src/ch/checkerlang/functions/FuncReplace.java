@@ -21,40 +21,44 @@
 package ch.checkerlang.functions;
 
 import ch.checkerlang.Args;
-import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
-import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueInt;
+import ch.checkerlang.values.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FuncLength extends FuncBase {
-    public FuncLength() {
-        super("length");
-        info = "length(obj)\r\n" +
+public class FuncReplace extends FuncBase {
+    public FuncReplace() {
+        super("replace");
+        info = "replace(s, a, b, start = 0)\r\n" +
                 "\r\n" +
-                "Returns the length of obj. This only works for strings, lists, sets and maps.\r\n" +
+                "Replaces all occurences of a in the string s with b.\r\n" +
+                "The optional parameter start specifies the start index.\r\n" +
                 "\r\n" +
-                ": length('123') ==> 3\r\n" +
-                ": length([1, 2, 3]) ==> 3\r\n" +
-                ": length(<<1, 2, 3>>) ==> 3\r\n" +
-                ": <<<'a' => 1, 'b' => 2, 'c' =>3>>> !> length() ==> 3\r\n" +
-                ": length(object()) ==> 0\r\n";
+                ": replace('abc', 'b', 'x') ==> 'axc'\r\n" +
+                ": replace('abcbcbca', 'b', 'x') ==> 'axcxcxca'\r\n" +
+                ": replace('abc', 'b', 'xy') ==> 'axyc'\r\n" +
+                ": replace('abcdef', 'bcd', 'xy') ==> 'axyef'\r\n" +
+                ": replace('abcabcabc', 'abc', 'xy', start = 3) ==> 'abcxyxy'\r\n";
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("obj");
+        return Arrays.asList("s", "a", "b", "start");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
-        Value arg = args.get("obj");
-        if (arg.isString()) return new ValueInt(arg.asString().getValue().length());
-        if (arg.isList()) return new ValueInt(arg.asList().getValue().size());
-        if (arg.isSet()) return new ValueInt(arg.asSet().getValue().size());
-        if (arg.isMap()) return new ValueInt(arg.asMap().getValue().size());
-        if (arg.isObject()) return new ValueInt(arg.asObject().value.size());
-        throw new ControlErrorException("Cannot determine length of " + arg, pos);
+        if (args.isNull("s")) return ValueNull.NULL;
+        String s = args.getString("s").getValue();
+        String a = args.getString("a").getValue();
+        String b = args.getString("b").getValue();
+        int start = (int) args.getInt("start", 0L).getValue();
+        if (start >= s.length()) return args.getString("s");
+        if (start == 0) {
+            return new ValueString(s.replace(a, b));
+        }
+        String prefix = s.substring(0, (int) start);
+        return new ValueString(prefix + s.substring((int) start).replace(a, b));
     }
 }

@@ -64,6 +64,13 @@ namespace CheckerLang
                 map[idx] = value;
                 return container;
             }
+            if (container.IsObject())
+            {
+                var map = container.AsObject().value;
+                var member = idx.AsString().GetValue();
+                map[member] = value;
+                return container;
+            }
             throw new ControlErrorException("Cannot dereference value " + container, pos);
         }
 

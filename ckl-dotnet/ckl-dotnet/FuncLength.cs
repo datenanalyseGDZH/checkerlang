@@ -33,7 +33,8 @@ namespace CheckerLang
                    ": length('123') ==> 3\r\n" +
                    ": length([1, 2, 3]) ==> 3\r\n" +
                    ": length(<<1, 2, 3>>) ==> 3\r\n" +
-                   ": <<<'a' => 1, 'b' => 2, 'c' =>3>>> !> length() ==> 3\r\n";
+                   ": <<<'a' => 1, 'b' => 2, 'c' =>3>>> !> length() ==> 3\r\n" +
+                   ": length(object()) ==> 0\r\n";
         }
         
         public override List<string> GetArgNames()
@@ -48,6 +49,7 @@ namespace CheckerLang
             if (arg.IsList()) return new ValueInt(arg.AsList().GetValue().Count);
             if (arg.IsSet()) return new ValueInt(arg.AsSet().GetValue().Count);
             if (arg.IsMap()) return new ValueInt(arg.AsMap().GetValue().Count);
+            if (arg.IsObject()) return new ValueInt(arg.AsObject().value.Count);
             throw new ControlErrorException("Cannot determine length of " + arg, pos);
         }
     }

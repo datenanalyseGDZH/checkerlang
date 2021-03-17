@@ -19,40 +19,34 @@
     SOFTWARE.
 */
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace CheckerLang
 {
-    public class Keywords
+    public class FuncBindNative : FuncBase
     {
-        private static HashSet<string> keywords = new HashSet<string>
+        public FuncBindNative() : base("bind_native")
         {
-            "if",
-            "then",
-            "elif",
-            "else",
-            "and",
-            "or",
-            "not",
-            "is",
-            "in",
-            "def",
-            "fn",
-            "for",
-            "while",
-            "do",
-            "end",
-            "finally",
-            "break",
-            "continue",
-            "return",
-            "error",
-            "require",
-            "as"
-        };
-
-        public static bool IsKeyword(string s)
+            info = "bind_native(native)\r\n" +
+                   "bind_native(native, alias)\r\n" +
+                   "\r\n" +
+                   "Binds a native function in the current environment.\r\n";
+        }
+        
+        public override List<string> GetArgNames()
         {
-            return keywords.Contains(s);
+            return new List<string>{"native", "alias"};
+        }
+        
+        public override Value Execute(Args args, Environment environment, SourcePos pos)
+        {
+            var nativeName = args.GetString("native").GetValue();
+            string alias = null;
+            if (args.HasArg("alias")) alias = args.GetString("alias").GetValue();
+            BindNative.Bind(environment, nativeName, alias, pos);
+            return ValueNull.NULL;
         }
     }
+    
 }
