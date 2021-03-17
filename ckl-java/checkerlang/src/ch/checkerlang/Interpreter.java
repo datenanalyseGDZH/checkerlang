@@ -56,21 +56,13 @@ public class Interpreter {
         return environment;
     }
 
-    public void pushEnvironment() {
-        environment = environment.newEnv();
-    }
-
-    public void popEnvironment() {
-        environment = environment.getParent();
-    }
-
     public void makeSecure() {
         baseEnvironment.remove("stdout");
         baseEnvironment.remove("stdin");
         baseEnvironment.remove("run");
-        baseEnvironment.getParent().remove("file_input");
-        baseEnvironment.getParent().remove("file_output");
-        baseEnvironment.getParent().remove("close");
+        baseEnvironment.remove("file_input");
+        baseEnvironment.remove("file_output");
+        baseEnvironment.remove("close");
     }
 
     public void setStandardOutput(Writer stdout) {

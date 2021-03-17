@@ -84,6 +84,7 @@ export class NodeAnd {
 
 export class NodeAssign {
     constructor(identifier, expression, pos) {
+        if (identifier.startsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, this.pos);
         this.identifier = identifier;
         this.expression = expression;
         this.pos = pos;
@@ -106,6 +107,9 @@ export class NodeAssign {
 
 export class NodeAssignDestructuring {
     constructor(identifiers, expression, pos) {
+        for (const identifier of identifiers) {
+            if (identifier.startsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, this.pos);
+        }
         this.identifiers = identifiers;
         this.expression = expression;
         this.pos = pos;
@@ -1177,7 +1181,7 @@ export class NodeRequire {
             moduleEnv = environment.getBase().newEnv();
             const loader = moduleEnv.getModuleLoader();
             const modulesrc = loader(modulefile, this.pos, NodeRequire.fs);
-            const node = Parser.parseScript(modulesrc, modulefile);
+            const node = Parser.parseScript(modulesrc, "mod:" + modulefile.substr(0, modulefile.length - 4));
             node.evaluate(moduleEnv);
             modules.set(moduleidentifier, moduleEnv);
         }

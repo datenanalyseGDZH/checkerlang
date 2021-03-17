@@ -23,6 +23,7 @@ package ch.checkerlang.nodes;
 import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
+import ch.checkerlang.SyntaxError;
 import ch.checkerlang.values.Value;
 
 import java.util.Collection;
@@ -34,6 +35,7 @@ public class NodeAssign implements Node {
     private SourcePos pos;
 
     public NodeAssign(String identifier, Node expression, SourcePos pos) {
+        if (identifier.startsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, pos);
         this.identifier = identifier;
         this.expression = expression;
         this.pos = pos;

@@ -23,6 +23,7 @@ package ch.checkerlang.nodes;
 import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
+import ch.checkerlang.SyntaxError;
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueNull;
 
@@ -37,6 +38,9 @@ public class NodeAssignDestructuring implements Node {
     private SourcePos pos;
 
     public NodeAssignDestructuring(List<String> identifiers, Node expression, SourcePos pos) {
+        for (String identifier : identifiers) {
+            if (identifier.startsWith("checkerlang_")) throw new SyntaxError("Cannot assign to system variable " + identifier, pos);
+        }
         this.identifiers.addAll(identifiers);
         this.expression = expression;
         this.pos = pos;

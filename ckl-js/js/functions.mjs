@@ -24,7 +24,6 @@ import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
 import { moduleloader } from "./moduleloader.mjs";
 import { modulebase } from "./module_base.mjs";
-import { checkerlang_version, checkerlang_platform } from "./interpreter.mjs"
 
 import { 
     convertDateToOADate, 
@@ -70,20 +69,13 @@ export class Environment {
     }
 
     static getBaseEnvironment(secure = true) {
-        const result = Environment.getRootEnvironment(secure).newEnv();
-        result.setModuleLoader(moduleloader);
-        Parser.parseScript(modulebase, ":base").evaluate(result);
-        return result;
-    }
-
-    static getRootEnvironment(secure = true) {
         const result = Environment.getNullEnvironment();
         bind_native(result, "bind_native");
         result.put("NULL", ValueNull.NULL);
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
-        result.put("checkerlang_version", new ValueString(checkerlang_version));
-        result.put("checkerlang_platform", new ValueString(checkerlang_platform));
+        result.setModuleLoader(moduleloader);
+        Parser.parseScript(modulebase, ":base").evaluate(result);
         return result;
     }
 
@@ -99,7 +91,7 @@ export class Environment {
 
     getBase() {
         let current = this;
-        while (current.parent !== null && current.parent.parent !== null) current = current.parent;
+        while (current.parent !== null) current = current.parent;
         return current;
     }
 
@@ -115,34 +107,25 @@ export class Environment {
     }
 
     getModules() {
-        let current = this;
-        while (current.parent !== null) current = current.parent;
-        return current.modules;
+        return this.getBase().modules;
     }
 
     getModuleLoader() {
-        let current = this;
-        while (current.parent !== null) current = current.parent;
-        return current.moduleloader;
+        return this.getBase().moduleloader;
     }
 
     setModuleLoader(moduleloader) {
-        let current = this;
-        while (current.parent !== null) current = current.parent;
-        current.moduleloader = moduleloader;
+        this.getBase().moduleloader = moduleloader;
     }
 
     pushModuleStack(moduleidentifier, pos) {
-        let current = this;
-        while (current.parent !== null) current = current.parent;
-        if (current.modulestack.includes(moduleidentifier)) throw new RuntimeError("Found circular module dependency (" + moduleidentifier + ")", pos);
-        current.modulestack.push(moduleidentifier);
+        let base = this.getBase();
+        if (base.modulestack.includes(moduleidentifier)) throw new RuntimeError("Found circular module dependency (" + moduleidentifier + ")", pos);
+        base.modulestack.push(moduleidentifier);
     }
 
     popModuleStack() {
-        let current = this;
-        while (current.parent !== null) current = current.parent;
-        current.modulestack.pop();
+        this.getBase().modulestack.pop();
     }
 
     put(name, value) {

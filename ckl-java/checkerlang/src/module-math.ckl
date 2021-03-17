@@ -18,20 +18,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#bind_native("E");
-#bind_native("PI");
+bind_native("E");
+bind_native("PI");
 
-#bind_native("acos");
-#bind_native("asin");
-#bind_native("atan");
-#bind_native("atan2");
-#bind_native("cos");
-#bind_native("exp");
-#bind_native("log");
-#bind_native("pow");
-#bind_native("sin");
-#bind_native("sqrt");
-#bind_native("tan");
+bind_native("acos");
+bind_native("asin");
+bind_native("atan");
+bind_native("atan2");
+bind_native("cos");
+bind_native("exp");
+bind_native("log");
+bind_native("pow");
+bind_native("sin");
+bind_native("sqrt");
+bind_native("tan");
 
 "
 is_even(n)

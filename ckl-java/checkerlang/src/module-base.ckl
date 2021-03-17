@@ -18,10 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# this is the base library of the checkerlang language
-
 def checkerlang_version = "3.4.0";
 def checkerlang_platform = "java";
+
+require core unqualified;
+require math unqualified;
+require io unqualified;
 
 "
 is_list(obj) 
@@ -152,16 +154,6 @@ def non_empty(a, b) do
   if a == '' then b
   else a
 end;
-
-
-"
-identity(a) 
-
-Identity function. It returns the input value as return value.
-
-: identity(1) ==> 1
-"
-def identity(a) a;
 
 
 "

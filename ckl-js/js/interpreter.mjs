@@ -36,10 +36,6 @@ import {
 } from "./values.mjs";
 
 
-export const checkerlang_version = "3.4.0";
-export const checkerlang_platform = "js";
-
-
 export class Args {
     constructor(pos) {
         this.argNames = [];
@@ -320,21 +316,13 @@ export class Interpreter {
         }
     }
 
-    pushEnvironment() {
-        this.environment = this.environment.newEnv();
-    }
-
-    popEnvironment() {
-        this.environment = this.environment.getParent();
-    }
-
     makeSecure() {
         this.baseEnvironment.remove("stdout");
         this.baseEnvironment.remove("stdin");
         this.baseEnvironment.remove("run");
-        this.baseEnvironment.getParent().remove("file_input");
-        this.baseEnvironment.getParent().remove("file_output");
-        this.baseEnvironment.getParent().remove("close");
+        this.baseEnvironment.remove("file_input");
+        this.baseEnvironment.remove("file_output");
+        this.baseEnvironment.remove("close");
     }
 
     setStandardOutput(stdout) {

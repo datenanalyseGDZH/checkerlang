@@ -21,41 +21,34 @@
 package ch.checkerlang.functions;
 
 import ch.checkerlang.Args;
+import ch.checkerlang.BindNative;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueList;
-import ch.checkerlang.values.ValueString;
+import ch.checkerlang.values.ValueDecimal;
+import ch.checkerlang.values.ValueNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class FuncLs extends FuncBase {
-    public FuncLs() {
-        super("ls");
-        info = "ls()\r\n" +
-               "ls(module)\r\n" +
-               "\r\n" +
-               "Returns a list of all defines symbols (functions and constants)\r\n" +
-               "in the current environment or the specified module.\r\n";
+public class FuncBindNative extends FuncBase {
+    public FuncBindNative() {
+        super("bind_native");
+        this.info = "bind_native(native)\r\n" +
+                "bind_native(native, alias)\r\n" +
+                "\r\n" +
+                "Binds a native function in the current environment.\r\n";
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("module");
+        return Arrays.asList("native", "alias");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
-        ValueList result = new ValueList();
-        if (args.hasArg("module")) {
-            for (String symbol : args.get("module").asObject().value.keySet()) {
-                result.addItem(new ValueString(symbol));
-            }
-        } else {
-            for (String symbol : environment.getSymbols()) {
-                result.addItem(new ValueString(symbol));
-            }
-        }
-        return result;
+        String nativeName = args.getString("native").getValue();
+        String alias = null;
+        if (args.hasArg("alias")) alias = args.getString("alias").getValue();
+        BindNative.bind(environment, nativeName, alias, pos);
+        return ValueNull.NULL;
     }
 }
