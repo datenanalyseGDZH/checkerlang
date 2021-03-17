@@ -43,15 +43,17 @@ end;
 
 
 "
-unique_choices(lst, n)
+sample(lst, n)
 
 Returns a set with n random elements from the list or set lst,
-without repetitions.
+without repetitions. Also works with a string.
 
-: unique_choices([1, 2, 3], 3) ==> <<1, 2, 3>>
-: unique_choices([1, 1, 1, 2, 2, 3], 3) ==> <<1, 2, 3>>
+: sample([1, 2, 3], 3) ==> <<1, 2, 3>>
+: sample([1, 1, 1, 2, 2, 3], 3) ==> <<1, 2, 3>>
+: sample('abc', 3) ==> <<'a', 'b', 'c'>>
 "
-def unique_choices(lst, n) do
+def sample(lst, n) do
+  if is_string(lst) then lst = split(lst, "");
   if length(set(lst)) < n then error "List must contain at least " + n + " unique elements";
   def result = <<>>;
   def lst_ = list(lst);
