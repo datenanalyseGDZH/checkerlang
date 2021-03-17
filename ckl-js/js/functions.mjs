@@ -271,8 +271,8 @@ const bind_native = function(environment, native, alias = null) {
         case "upper": Environment.add(environment, new FuncUpper(), alias); break;
         case "zip": Environment.add(environment, new FuncZip(), alias); break;
         case "zip_map": Environment.add(environment, new FuncZipMap(), alias); break;
-        case "E": environment.put("E", new ValueDecimal(Math.E)); break;
-        case "PI": environment.put("PI", new ValueDecimal(Math.PI)); break;
+        case "E": environment.put("E", new ValueDecimal(Math.E).withInfo("The mathematical constant E (Eulers number)")); break;
+        case "PI": environment.put("PI", new ValueDecimal(Math.PI).withInfo("The mathematical constant PI")); break;
         default: throw new RuntimeError("Unknown native " + native, this.pos);
     }
 }
