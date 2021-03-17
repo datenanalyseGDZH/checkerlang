@@ -19,6 +19,8 @@ export const modulebase = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require core unqualified;
+require io unqualified;
 require math unqualified; # for backwards compatibility
 
 "
@@ -491,26 +493,6 @@ Returns the product of a list of numbers.
 : prod(range(1, 10)) ==> 362880
 "
 def prod(list) reduce(list, mul);
-
-
-"
-log2(x)
-
-Returns the logarithm of x to base 2.
-
-: int(log2(1024)) ==> 10
-"
-def log2(x) round(log(x) / log(2), 12);
-
-
-"
-log10(x)
-
-Returns the logarithm of x to base 10.
-
-: int(log10(1000)) ==> 3
-"
-def log10(x) round(log(x) / log(10), 12);
 
 
 "
@@ -1041,22 +1023,6 @@ end;
 
 
 "
-read_file(filename, encoding = 'utf-8')
-
-Opens a file, reads the contents as a single
-string, closes the file and returns the string.
-"
-def read_file(filename, encoding = 'utf-8') do
-  def infile = file_input(filename, encoding);
-  do
-      read_all(infile);
-  finally
-      close(infile);
-  end;
-end;
-
-
-"
 grouped(lst, cmp = compare, key = identity)
 
 Creates a list of groups, where all equal adjacent elements
@@ -1131,17 +1097,6 @@ def sprintf(fmt, args...) do
     end;
     return s(fmt !> replace('{x', '{'));
 end;
-
-
-"
-printf(fmt, args...)
-
-Formats and prints a string format using the provided args.
-The string is printed to standard output.
-
-This is basically the combination of print and sprintf.
-"
-def printf(fmt, args...) print(sprintf(fmt, ...args...));
 
 
 "

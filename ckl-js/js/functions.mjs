@@ -78,87 +78,7 @@ export class Environment {
 
     static getRootEnvironment(secure = true) {
         const result = Environment.getNullEnvironment();
-        bind_native(result, "add");
-        bind_native(result, "append");
         bind_native(result, "bind_native");
-        bind_native(result, "body");
-        bind_native(result, "boolean");
-        bind_native(result, "ceiling");
-        bind_native(result, "close");
-        bind_native(result, "compare");
-        bind_native(result, "contains", "str_contains");
-        bind_native(result, "date");
-        bind_native(result, "decimal");
-        bind_native(result, "delete_at");
-        bind_native(result, "div");
-        bind_native(result, "ends_with", "str_ends_with");
-        bind_native(result, "equals");
-        bind_native(result, "escape_pattern");
-        bind_native(result, "eval");
-        bind_native(result, "find", "str_find");
-        bind_native(result, "floor");
-        bind_native(result, "format_date");
-        bind_native(result, "get_output_string");
-        bind_native(result, "greater");
-        bind_native(result, "greater_equals");
-        bind_native(result, "identity");
-        bind_native(result, "if_empty");
-        bind_native(result, "if_null");
-        bind_native(result, "if_null_or_empty");
-        bind_native(result, "info");
-        bind_native(result, "insert_at");
-        bind_native(result, "int");
-        bind_native(result, "is_empty");
-        bind_native(result, "is_not_empty");
-        bind_native(result, "is_not_null");
-        bind_native(result, "is_null");
-        bind_native(result, "length");
-        bind_native(result, "less");
-        bind_native(result, "less_equals");
-        bind_native(result, "list");
-        bind_native(result, "lower");
-        bind_native(result, "ls");
-        bind_native(result, "map");
-        bind_native(result, "matches", "str_matches");
-        bind_native(result, "mod");
-        bind_native(result, "mul");
-        bind_native(result, "not_equals");
-        bind_native(result, "object");
-        bind_native(result, "parse");
-        bind_native(result, "parse_date");
-        bind_native(result, "parse_json");
-        bind_native(result, "pattern");
-        bind_native(result, "print");
-        bind_native(result, "println");
-        bind_native(result, "process_lines");
-        bind_native(result, "put");
-        bind_native(result, "random");
-        bind_native(result, "range");
-        bind_native(result, "read");
-        bind_native(result, "read_all");
-        bind_native(result, "readln");
-        bind_native(result, "remove");
-        bind_native(result, "round");
-        bind_native(result, "s");
-        bind_native(result, "set");
-        bind_native(result, "set_seed");
-        bind_native(result, "sorted");
-        bind_native(result, "split");
-        bind_native(result, "split2");
-        bind_native(result, "str_input");
-        bind_native(result, "starts_with", "str_starts_with");
-        bind_native(result, "str_output");
-        bind_native(result, "string");
-        bind_native(result, "sub");
-        bind_native(result, "sublist");
-        bind_native(result, "substr");
-        bind_native(result, "sum");
-        bind_native(result, "timestamp");
-        bind_native(result, "trim", "str_trim");
-        bind_native(result, "type");
-        bind_native(result, "upper");
-        bind_native(result, "zip");
-        bind_native(result, "zip_map");
         result.put("NULL", ValueNull.NULL);
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
@@ -567,17 +487,20 @@ export class FuncBindNative extends ValueFunc {
     constructor() {
         super("bind_native");
         this.info = "bind_native(native)\r\n" +
-                "\r\n" +
-                "Binds a native function in the current environment.\r\n";
+                    "bind_native(native, alias)\r\n" +
+                    "\r\n" +
+                    "Binds a native function in the current environment.\r\n";
     }
 
     getArgNames() {
-        return ["native"];
+        return ["native", "alias"];
     }
 
     execute(args, environment, pos) {
         const native = args.getString("native").value;
-        bind_native(environment, native);
+        let alias = null;
+        if (args.hasArg("alias")) alias = args.getString("alias").value;
+        bind_native(environment, native, alias);
         return ValueNull.NULL;
     }
 }
@@ -1697,18 +1620,27 @@ export class FuncLs extends ValueFunc {
     constructor() {
         super("ls");
         this.info = "ls()\r\n" +
-                "\r\n" +
-                "Returns a list of all defines symbols (functions and constants).\r\n";
+                    "ls(module)\r\n" +
+                    "\r\n" +
+                    "Returns a list of all defines symbols (functions and constants) in\r\n" +
+                    "the current environment or in the specified module.";
     }
 
     getArgNames() {
-        return [];
+        return ["module"];
     }
 
     execute(args, environment, pos) {
         const result = new ValueList();
-        for (const symbol of environment.getSymbols()) {
-            result.addItem(new ValueString(symbol));
+        if (args.hasArg("module")) {
+            const module = args.get("module").asObject().value;
+            for (const symbol of module.keys()) {
+                result.addItem(new ValueString(symbol));
+            }
+        } else {
+            for (const symbol of environment.getSymbols()) {
+                result.addItem(new ValueString(symbol));
+            }
         }
         return result;
     }
