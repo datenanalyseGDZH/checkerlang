@@ -63,9 +63,11 @@ namespace CheckerLang
                 }
                 list = lst;
             }
-            if (list.IsList() || list.IsSet() || list.IsMap())
+            if (list.IsList() || list.IsSet() || list.IsMap() || list.IsObject())
             {
-                var values = list.AsList().GetValue();
+                List<Value> values;
+                if (list.IsObject()) values = new List<Value>(list.AsObject().value.Values);
+                else values = list.AsList().GetValue();
                 var localEnv = environment.NewEnv();
                 Value result = ValueBoolean.TRUE;
                 foreach (var value in values)

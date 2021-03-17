@@ -53,6 +53,10 @@ namespace CheckerLang
             {
                 return ValueBoolean.From(container.AsMap().GetValue().ContainsKey(value));
             }
+            else if (container.IsObject())
+            {
+                return ValueBoolean.From(container.AsObject().value.ContainsKey(value.AsString().GetValue()));
+            }
             else if (container.IsString())
             {
                 return ValueBoolean.From(container.AsString().GetValue().Contains(value.AsString().GetValue()));

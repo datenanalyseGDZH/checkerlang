@@ -20,9 +20,9 @@
 
 require sys unqualified;
 require core unqualified;
-require math;
-require random;
-require io;
+require math unqualified;
+require random unqualified;
+require io unqualified;
 
 "
 is_list(obj) 

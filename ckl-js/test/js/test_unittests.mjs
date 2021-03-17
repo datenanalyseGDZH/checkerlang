@@ -289,7 +289,7 @@ interpreter_test("FuncSet", "set([1, 2, 3, 3, 4, 5])", "<<1, 2, 3, 4, 5>>");
 interpreter_test("FuncMap", "map([[1, 'a'], [2, 'b'], [3, 'c'], [3, 'd'], [4, 'e'], [5, 'f']])", "<<<1 => 'a', 2 => 'b', 3 => 'd', 4 => 'e', 5 => 'f'>>>");
 interpreter_test("FuncSubstitute", "substitute('abcdef', 3, 'x')", "'abcxef'");
 interpreter_test("FuncRandom", "require random; random->set_seed(1); random->random(10)", "2");
-interpreter_test("FuncSqrt", "sqrt(4)", "2.0");
+interpreter_test("FuncSqrt", "require math; math->sqrt(4)", "2.0");
 interpreter_test("BlockFuncOrdering", "def a = fn(y) do def b = fn(x) 2 * c(x); def c = fn(x) 3 + x; b(y); end; a(12)", "30");
 interpreter_test("BlockFuncOrderingGlobal", "def b = fn(x) 2 * c(x); def c = fn(x) 3 + x; b(12)", "30");
 interpreter_test("EmptyListLiteral", "def f(x, y) do def r = []; append(r, x); append(r, y); return r; end; f(1, 2); f(2, 3);", "[2, 3]");
@@ -412,11 +412,11 @@ collectvars_test("TestPredefinedFunctions", "lower(a) < 'a'", '["a"]');
 
 // extracts tests from the info associated to functions
 // and runs and verifies them.
-
 const env = Environment.getBaseEnvironment(false);
 for (const symbol of env.getSymbols()) {
     const tests = [];
-    const info = env.get(symbol).info;
+    const obj = env.get(symbol);
+    const info = obj.info;
     info.split(/[\r\n]+/).forEach(line => { 
         if (line.startsWith(":")) {
             const [test, expected] = line.substr(1).split(" ==> ");
@@ -424,7 +424,7 @@ for (const symbol of env.getSymbols()) {
         }
     });
     for (let [test, expected] of tests) {
-        const interpreter = new Interpreter(false);
+        const interpreter = new Interpreter(false, true);
         tests_run++;
         let result = interpreter.interpret(test, "{info-test}");
         if (!expected.startsWith("<")) expected = interpreter.interpret(expected, "{info-test-expected}");

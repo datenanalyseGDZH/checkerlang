@@ -59,8 +59,10 @@ public class NodeFor implements Node {
             }
             list = lst;
         }
-        if (list.isList() || list.isSet() || list.isMap()) {
-            List<Value> values = list.asList().getValue();
+        if (list.isList() || list.isSet() || list.isMap() || list.isObject()) {
+            List<Value> values;
+            if (list.isObject()) values = new ArrayList<>(list.asObject().value.values());
+            else values = list.asList().getValue();
             Value result = ValueBoolean.TRUE;
             Environment localEnv = environment.newEnv();
             for (Value value : values) {

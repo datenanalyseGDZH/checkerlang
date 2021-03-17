@@ -28,9 +28,9 @@ namespace CheckerLang
         private Environment baseEnvironment;
         private Environment environment;
         
-        public Interpreter(bool secure = true)
+        public Interpreter(bool secure = true, bool legacy = true)
         {
-            baseEnvironment = Environment.GetBaseEnvironment(secure);
+            baseEnvironment = Environment.GetBaseEnvironment(secure, legacy);
             environment = baseEnvironment.NewEnv();
             if (!secure)
             {

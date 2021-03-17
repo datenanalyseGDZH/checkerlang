@@ -1,6 +1,8 @@
 # advent of code day 3
 # https://adventofcode.com/2019/day/3
 
+require io;
+
 # Part 1
 
 def get_wire_data(wire) do
@@ -37,12 +39,12 @@ def nearest(points) do
     min();
 end;
 
-def wires = read_file("aoc2019-day3-input.txt") !> lines() !> map_list(fn(line) line !> split(","));
+def wires = io->read_file("aoc2019-day3-input.txt") !> lines() !> map_list(fn(line) line !> split(","));
 def crossings = intersections(wires[0], wires[1]);
 
 nearest(crossings) !>
 sprintf(fmt="part1: {0}") !>
-println();
+io->println();
 
 
 # Part 2
@@ -63,4 +65,4 @@ end;
 
 nearest_timing(crossings) !>
 sprintf(fmt="part2: {0}") !>
-println()
+io->println()

@@ -21,6 +21,8 @@
 # Solves the so called eight queens problem.
 # https://en.wikipedia.org/wiki/Eight_queens_puzzle
 
+require io unqualified;
+
 def empty_board = [
 ". . . . ",
 " . . . .",

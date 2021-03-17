@@ -1,6 +1,8 @@
 # advent of code day 4
 # https://adventofcode.com/2019/day/4
 
+require io;
+
 # Part 1
 
 def is_valid_number_step1(n) do
@@ -18,7 +20,7 @@ interval(240298, 784956) !>
 filter(is_valid_number_step1) !>
 length() !>
 sprintf(fmt="part1: {0}") !>
-println();
+io->println();
 
 
 # Part 2
@@ -42,4 +44,4 @@ interval(240298, 784956) !>
 filter(is_valid_number_step2) !>
 length() !>
 sprintf(fmt="part2: {0}") !>
-println();
+io->println();

@@ -137,7 +137,7 @@ namespace CheckerLang
             builder.Append("<<");
             SortedSet<Value> value_ = new SortedSet<Value>(value, new ComparerValue());
             foreach (var item in value_) {
-                builder.Append(item.AsString().GetValue()).Append(", ");
+                builder.Append(item).Append(", ");
             }
             if (builder.Length > "<<".Length) builder.Remove(builder.Length - ", ".Length, ", ".Length);
             builder.Append(">>");

@@ -28,7 +28,7 @@ namespace repl
     {
         static void Main(string[] args)
         {
-            var interpreter = new Interpreter(false);
+            var interpreter = new Interpreter(false, false);
             interpreter.SetStandardInput(Console.In);
             interpreter.SetStandardOutput(Console.Out);
             Console.Write("> ");

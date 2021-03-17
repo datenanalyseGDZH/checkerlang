@@ -187,7 +187,7 @@ namespace CheckerLang
             return new Environment();
         }
         
-        public static Environment GetBaseEnvironment(bool secure = true)
+        public static Environment GetBaseEnvironment(bool secure = true, bool legacy = true)
         {
             var result = GetNullEnvironment();
             result.Put("checkerlang_secure_mode", ValueBoolean.From(secure));
@@ -198,8 +198,16 @@ namespace CheckerLang
             result.Put("MAXDECIMAL", new ValueDecimal(decimal.MaxValue).WithInfo("MAXDECIMAL\n\nThe maximal decimal value"));
             result.Put("MINDECIMAL", new ValueDecimal(decimal.MinValue).WithInfo("MINDECIMAL\n\nThe minimal decimal value"));
             var assembly = typeof(Environment).Assembly;
-            var basenode = Parser.Parse(new StreamReader(assembly.GetManifestResourceStream("checkerlang.module-base.ckl")), "{res}/module-base.ckl");
-            basenode.Evaluate(result);
+            if (legacy)
+            {
+                var basenode = Parser.Parse(new StreamReader(assembly.GetManifestResourceStream("checkerlang.module-legacy.ckl")), "mod:legacy.ckl");
+                basenode.Evaluate(result);
+            }
+            else
+            {
+                var basenode = Parser.Parse(new StreamReader(assembly.GetManifestResourceStream("checkerlang.module-base.ckl")), "mod:base.ckl");
+                basenode.Evaluate(result);
+            }
             return result;
         }
 

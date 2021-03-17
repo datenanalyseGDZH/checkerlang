@@ -1,11 +1,13 @@
 # advent of code day 5
 # https://adventofcode.com/2019/day/5
 
+require io;
+
 # Part 1
 
 def read_orbits() do
     def result = map();
-    read_file("aoc2019-day6-input.txt") !>
+    io->read_file("aoc2019-day6-input.txt") !>
     lines() !>
     map_list(fn(line) line !> split("\\)")) !>
     for_each(fn(item) do 
@@ -29,13 +31,13 @@ end;
 
 count_orbits() !>
 sprintf(fmt="part1: {0}") !>
-println();
+io->println();
 
 # Part 2
 
 def read_orbits_bidirectional() do
     def result = map();
-    read_file("aoc2019-day6-input.txt") !>
+    io->read_file("aoc2019-day6-input.txt") !>
     lines() !>
     map_list(fn(line) line !> split("\\)")) !>
     for_each(fn(item) do 
@@ -66,4 +68,4 @@ while "SAN" not in front do
     length += 1;
 end;
 
-println("part2: " + (length - 2));
+io->println("part2: " + (length - 2));

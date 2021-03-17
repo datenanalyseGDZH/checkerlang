@@ -1,7 +1,8 @@
 # advent of code day 11
 # https://adventofcode.com/2019/day/11
 
-run("intcomputer.ckl");
+require io;
+require intcomputer as c;
 
 # Part 1
 
@@ -24,10 +25,10 @@ def dir = dir_up;
 
 def run_paint_job(machine) do
     while not machine->halted do
-        machine !> wait_for_output(2);
+        machine !> c->wait_for_output(2);
         
-        def color = machine !> get_output(1);
-        def turn = machine !> get_output(0);
+        def color = machine !> c->get_output(1);
+        def turn = machine !> c->get_output(0);
         
         cells[x + "," + y] = color;
         
@@ -40,22 +41,22 @@ def run_paint_job(machine) do
         elif dir == dir_down then y -= 1
         elif dir == dir_right then x += 1;
         
-        machine !> add_input(cells !> map_get(x + "," + y, default_value = 0));
+        machine !> c->add_input(cells !> map_get(x + "," + y, default_value = 0));
     end;
 end;
 
-def machine = make_machine(read_file("aoc2019-day11-input.txt"));
-machine !> add_input(0);
+def machine = c->make_machine(io->read_file("aoc2019-day11-input.txt"));
+machine !> c->add_input(0);
 run_paint_job(machine);
 
-println("part1: " + length(cells));
+io->println("part1: " + length(cells));
 
 
 # Part 2
 
 cells = <<<>>>;
-machine = make_machine(read_file("aoc2019-day11-input.txt"));
-machine !> add_input(1);
+machine = c->make_machine(io->read_file("aoc2019-day11-input.txt"));
+machine !> c->add_input(1);
 run_paint_job(machine);
 
 def get_rect(cells) do
@@ -73,14 +74,14 @@ def get_rect(cells) do
     [x1, y1, x2, y2];
 end;
 
-println("part2:");
+io->println("part2:");
 def [x1, y1, x2, y2] = get_rect(cells);
 for y in interval(y1, y2) do
     for x in reverse(interval(x1, x2)) do
         def color = cells !> map_get(x + "," + y, default_value = -1);
-        if color == 1 then print("#") 
-        elif color == 0 then print(" ")
-        else print(" ");
+        if color == 1 then io->print("#") 
+        elif color == 0 then io->print(" ")
+        else io->print(" ");
     end;
-    println();
+    io->println();
 end;

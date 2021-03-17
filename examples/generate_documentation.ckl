@@ -21,6 +21,8 @@
 # This extracts the documentation of the functions and
 # writes it as a HTML file.
 
+require io unqualified;
+
 def out = file_output("documentation/checkerlang_functions.html");
 
 println("<html>", out);

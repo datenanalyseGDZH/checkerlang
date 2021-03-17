@@ -50,6 +50,7 @@
 
 	<target name="package" depends="test">
         <mkdir dir="../dist"/>
+        <copy file="src/module-legacy.ckl" todir="build"/>
         <copy file="src/module-base.ckl" todir="build"/>
         <copy file="src/module-core.ckl" todir="build"/>
         <copy file="src/module-io.ckl" todir="build"/>

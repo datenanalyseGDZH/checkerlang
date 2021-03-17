@@ -1,3 +1,4 @@
+export const modulelegacy = `
 # Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,10 +21,9 @@
 
 require sys unqualified;
 require core unqualified;
-require math;
-require random;
-require io;
-
+require math unqualified;
+require random unqualified;
+require io unqualified;
 
 "
 is_list(obj) 
@@ -113,6 +113,7 @@ is_object(obj)
 Returns TRUE if the object is of type object.
 
 : is_object(object()) ==> TRUE
+: is_object(map()) ==> FALSE
 "
 def is_object(obj) type(obj) == 'object';
 
@@ -245,9 +246,9 @@ Returns the absolute value of n.
 "
 def abs(n) do
   if is_null(n) then NULL
-  if not is_numeric(n) then error(string(n) + " is not numerical")
-  if n < 0 then - n 
-  else n
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
+  if n < 0 then - n
+  else n;
 end;
 
 
@@ -261,9 +262,9 @@ Returns the signum of n
 "
 def sign(n) do
   if is_null(n) then NULL
-  if not is_numeric(n) then error(string(n) + " is not numerical")
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
   if n < 0 then -1
-  if n > 0 then 1 
+  if n > 0 then 1
   else 0;
 end;
 
@@ -278,7 +279,7 @@ Returns the first element of a list.
 "
 def first(lst) do
   if is_null(lst) then NULL
-  if not is_list(lst) then error(string(lst) + " is not a list")
+  if not is_list(lst) then error("argument is not a list (" + type(lst) + ")")
   else lst[0];
 end;
 
@@ -305,7 +306,7 @@ Returns the last element of a list.
 "
 def last(lst) do
   if is_null(lst) then NULL
-  if not is_list(lst) then error(string(lst) + " is not a list")
+  if not is_list(lst) then error("argument is not a list (" + type(lst) + ")")
   else lst[-1];
 end;
 
@@ -328,9 +329,6 @@ rest(lst)
 Returns the rest of a list, i.e. everything but the first element.
 
 : rest([1, 2, 3]) ==> [2, 3]
-: rest([1]) ==> []
-: rest([]) ==> []
-: rest(NULL) ==> NULL
 "
 def rest(lst) sublist(lst, 1);
 
@@ -374,7 +372,7 @@ parameters.
 
 : is_alphanumerical('Ab12') ==> TRUE
 "
-def is_alphanumerical(str, min=0, max=99999) is_string(str) and str matches pattern('^[a-zA-Z0-9]{' + min + ',' + max + '}$');
+def is_alphanumerical(str, min=0, max=99999) is_string(str) and str_matches(str, pattern('^[a-zA-Z0-9]{' + min + ',' + max + '}$'));
 
 
 "
@@ -385,7 +383,7 @@ specify minimal and maximal length using the min and max optional parameters.
 
 : is_numerical('123') ==> TRUE
 " 
-def is_numerical(str, min=0, max=99999) is_string(str) and str matches pattern('^[0-9]{' + min + ',' + max + '}$'); 
+def is_numerical(str, min=0, max=99999) is_string(str) and str_matches(str, pattern('^[0-9]{' + min + ',' + max + '}$'));
 
 
 "
@@ -396,11 +394,10 @@ is yyyyMMdd. It is possible to specify different formats using the fmt
 optional parameter.
 
 : is_valid_date('20170304') ==> TRUE
+: is_valid_date('2017030412') ==> FALSE
+: is_valid_date('20170399') ==> FALSE
 "
-def is_valid_date(str, fmt="yyyyMMdd") do
-    if not is_string(str) then return FALSE;
-    parse_date(str, fmt) != NULL;
-end;
+def is_valid_date(str, fmt="yyyyMMdd") is_string(str) and parse_date(str, fmt) != NULL;
 
 
 "
@@ -411,12 +408,8 @@ is HHmm. It is possible to specify different formats using the fmt
 optional parameter.
 
 : is_valid_time('1245') ==> TRUE
-: is_valid_time(NULL) ==> FALSE
 "
-def is_valid_time(str, fmt="HHmm") do
-    if not is_string(str) then return FALSE;
-    parse_date(str, fmt) != NULL;
-end;
+def is_valid_time(str, fmt="HHmm") is_string(str) and parse_date(str, fmt) != NULL;
 
 
 "
@@ -426,12 +419,13 @@ Returns a reversed copy of a list.
 
 : reverse_list([1, 2, 3]) ==> [3, 2, 1]
 : reverse_list(NULL) ==> NULL
+: reverse_list('abc') ==> NULL
 "
 def reverse_list(list) do
-  if is_null(list) then return NULL;
+  if not is_list(list) then return NULL;
   def result = [];
   for element in list do
-    result = [element] + result
+    insert_at(result, 0, element);
   end;
   result 
 end;
@@ -443,9 +437,11 @@ reverse_string(str)
 Returns a reversed copy of a string.
 
 : reverse_string('abc') ==> 'cba'
+: reverse_string(NULL) ==> NULL
+: reverse_string(12) ==> NULL
 "
 def reverse_string(str) do
-  if is_null(str) then return NULL;
+  if not is_string(str) then return NULL;
   def result = "";
   for ch in str do
     result = ch + result
@@ -465,7 +461,7 @@ Returns a reversed copy of a string or a list.
 def reverse(obj) do
   if is_string(obj) then reverse_string(obj)
   if is_list(obj) then reverse_list(obj)
-  else error("cannot reverse " + string(obj))
+  else error("cannot reverse " + type(obj))
 end;
 
 
@@ -503,36 +499,12 @@ def prod(list) reduce(list, mul);
 
 
 "
-log2(x)
-
-Returns the logarithm of x to base 2.
-
-: log2(1024) ==> 10
-"
-def log2(x) do
-  if not is_numeric(x) then error(string(x) + " is not numeric")
-  else round(log(x) / log(2), 12);
-end;
-
-
-"
-log10(x)
-
-Returns the logarithm of x to base 10.
-
-: log10(1000) ==> 3
-"
-def log10(x) do
-  if not is_numeric(x) then error(string(x) + " is not numeric")
-  else round(log(x) / log(10), 12);
-end;
-
-
-"
 substitute(obj, idx, value)
 
 If obj is a list or string, returns a list or string with the element
 at index idx replaced by value.
+
+The original string or list remain untouched.
 
 : substitute('abcd', 2, 'x') ==> 'abxd'
 : substitute([1, 2, 3, 4], 2, 'x') ==> [1, 2, 'x', 4] 
@@ -540,7 +512,7 @@ at index idx replaced by value.
 def substitute(obj, idx, value) do
   if is_string(obj) then substr(obj, 0, idx) + value + substr(obj, idx + 1)
   if is_list(obj) then sublist(obj, 0, idx) + value + sublist(obj, idx + 1)
-  else error('Cannot substitute in ' + string(obj))
+  else error('Cannot substitute in ' + type(obj))
 end;
 
 
@@ -565,15 +537,39 @@ end;
 
 
 "
+interval(a)
 interval(a, b)
 
 Returns the interval of integers between a and b, inclusive.
+If only a is provided, the interval is taken to be [1, ... a]
 
 : interval(1, 10) ==> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 : interval(1, 1) ==> [1]
+: interval(10) ==> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 "
-def interval(a, b) do
-    return [n for n in range(a, b + 1)]
+def interval(a, b = NULL) do
+    if is_null(a) then return NULL
+    if is_null(b) then range(1, a + 1)
+    else range(a, b + 1)
+end;
+
+
+"
+replace(s, a, b, start = 0)
+
+Replaces all occurences of a in the string s with b.
+The optional parameter start specifies the start index.
+
+: replace('abc', 'b', 'x') ==> 'axc'
+: replace('abc', 'b', 'xy') ==> 'axyc'
+: replace('abcdef', 'bcd', 'xy') ==> 'axyef'
+: replace('abcabcabc', 'abc', 'xy', start = 3) ==> 'abcxyxy'
+"
+def replace(s, a, b, start = 0) do
+  if is_null(s) then return NULL;
+  def pos = str_find(s, a, start = start);
+  if pos == -1 then return s;
+  return replace(substr(s, 0, pos) + b + substr(s, pos + length(a)), a, b, start = pos + length(b));
 end;
 
 
@@ -595,22 +591,14 @@ end;
 
 "
 any(lst, predicate)
-any(lst)
 
 Returns TRUE, if the predicate function returns
 TRUE for any element of the list.
 
-If no predicate function is passed, the list must
-contain boolean values.
-
 : any([1, 2, 3], fn(n) n == 3) ==> TRUE
 : any([1, 2, 3], fn(n) n == 4) ==> FALSE
-: any([TRUE, TRUE, TRUE]) ==> TRUE
-: any([TRUE, FALSE, TRUE]) ==> TRUE
-: any([e >= 2 for e in [2, 3, 4]]) ==> TRUE
-: any([e >= 2 for e in [1, 3, 4]]) ==> TRUE
 "
-def any(lst, pred = fn(x) x) do
+def any(lst, pred) do
     for element in lst do
         if pred(element) then return TRUE;
     end;
@@ -620,26 +608,36 @@ end;
 
 "
 all(lst, predicate)
-all(lst)
 
 Returns TRUE, if the predicate function returns
 TRUE for all elements of the list.
 
-If no predicate function is passed, the list must
-contain boolean values.
-
 : all([1, 2, 3], fn(n) n <= 3) ==> TRUE
 : all([1, 2, 3], fn(n) n <  3) ==> FALSE
-: all([TRUE, TRUE, TRUE]) ==> TRUE
-: all([TRUE, FALSE, TRUE]) ==> FALSE
-: all([e >= 2 for e in [2, 3, 4]]) ==> TRUE
-: all([e >= 2 for e in [1, 3, 4]]) ==> FALSE
 "
-def all(lst, pred = fn(x) x) do
+def all(lst, pred) do
     for element in lst do
         if not pred(element) then return FALSE;
     end;
     return TRUE;
+end;
+
+
+"
+pairs(lst)
+
+Returns a list where each entry consists of a pair
+of elements of lst.
+
+: pairs([1, 2, 3]) ==> [[1, 2], [2, 3]]
+: pairs([1, 2, 3, 4]) ==> [[1, 2], [2, 3], [3, 4]]
+"
+def pairs(lst) do
+    def result = [];
+    for index in range(length(lst)-1) do
+        append(result, [lst[index], lst[index + 1]]);
+    end;
+    return result;
 end;
 
 
@@ -707,6 +705,14 @@ def map_list(lst, f) do
     if type(lst) == 'func' then [f, lst] = [lst, f];
     return [f(element) for element in lst];
 end;
+
+
+"
+now()
+
+Returns the current date.
+"
+def now() date();
 
 
 "
@@ -792,6 +798,26 @@ end;
 
 
 "
+div0(a, b, div_0_value = MAXINT)
+
+If b is not zero, the result of a / b is returned.
+If b is zero, the value div_0_value is returned.
+
+: div0(12, 3) ==> 4
+: div0(12, 5) ==> 2
+: div0(12.0, 5) ==> 2.4
+: div0(12.5, 2) ==> 6.25
+: div0(12, 0) ==> MAXINT
+: div0(12, 0, 0) ==> 0
+: div0(12, 0.0, 0) ==> 0
+"
+def div0(a, b, div_0_value = MAXINT) do
+    if b == 0 then div_0_value
+    else div(a, b);
+end;
+
+
+"
 map_get(m, k, default_value=NULL)
 
 If the map m contains the key k, then the corresponding
@@ -853,7 +879,7 @@ For other data types, an error is thrown.
 
 Typically, you would use this in a for loop, e.g.
   for entry in enumerate(some_list) do
-    println('index = ' + entry[0] + ', value = ' + entry[1]); 
+    println('index = ' + entry[0] + ', value = ' + entry[1]);
   end;
 
 : enumerate(['a', 'b', 'c']) ==> [[0, 'a'], [1, 'b'], [2, 'c']]
@@ -861,7 +887,7 @@ Typically, you would use this in a for loop, e.g.
 "
 def enumerate(obj) do
     if is_list(obj) then [[i, obj[i]] for i in range(length(obj))]
-    if is_map(obj) then [[key, obj[key]] for key in set(obj)]
+    elif is_map(obj) then [[key, obj[key]] for key in set(obj)]
     elif is_object(obj) then [[member, obj[member]] for member in obj]
     else error("can only enumerate list, set and map objects")
 end;
@@ -956,7 +982,7 @@ lines(str)
 
 Splits the string str into lines and returns them as a list.
 
-: lines('a\\nb c\\r\\nd') ==> ['a', 'b c', 'd']
+: lines('a\\\\nb c\\\\r\\\\nd') ==> ['a', 'b c', 'd']
 "
 def lines(str) do
   split(str, '\\r?\\n');
@@ -968,7 +994,7 @@ words(str)
 
 Splits the string str into words and returns them as a list.
 
-: words('one  two\\tthree four') ==> ['one', 'two', 'three', 'four']
+: words('one  two\\\\tthree four') ==> ['one', 'two', 'three', 'four']
 "
 def words(str) do
   split(str, '[ \\t\\r\\n]+');
@@ -980,7 +1006,7 @@ unlines(lst)
 
 Joins a list of lines into one string.
 
-: unlines(['a', 'b', 'c']) ==> 'a\\nb\\nc'
+: unlines(['a', 'b', 'c']) ==> 'a\\\\nb\\\\nc'
 "
 def unlines(lst) do
   lst !> join(sep = '\n');
@@ -1000,26 +1026,13 @@ end;
 
 
 "
-read_file(filename, encoding = 'utf-8')
-
-Opens a file, reads the contents as a single
-string, closes the file and returns the string.
-"
-def read_file(filename, encoding = 'utf-8') do
-  def infile = file_input(filename, encoding);
-  do
-      return read_all(infile);
-  finally
-      close(infile);
-  end;
-end;
-
-
-"
 grouped(lst, cmp = compare, key = identity)
 
 Creates a list of groups, where all equal adjacent elements
 of a list are put together in one group.
+
+Typically, you would use the sorted function first to gather
+equal elements next to each other.
 
 : [1, 1, 2, 2, 2, 3, 4, 5, 2] !> grouped() ==> [[1, 1], [2, 2, 2], [3], [4], [5], [2]]
 : [1, 1, 2, 2, 2] !> grouped() ==> [[1, 1], [2, 2, 2]]
@@ -1189,3 +1202,6 @@ def flatten(lst) do
     end;
     result;
 end;
+
+
+`;

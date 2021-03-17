@@ -20,9 +20,10 @@
 */
 
 import { RuntimeError } from "./errors.mjs";
-import { Environment, FuncLambda } from "./functions.mjs";
+import { FuncLambda } from "./functions.mjs";
 import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
+import { moduleloader } from "./moduleloader.mjs";
 
 import { 
     ValueBoolean,
@@ -577,6 +578,34 @@ export class NodeFor {
             }
             return result;
         }
+        if (list instanceof ValueObject) {
+            const localEnv = environment.newEnv();
+            const values = list.value;
+            let result = ValueBoolean.TRUE;
+            for (const [key, value] of values) {
+                if (this.identifiers.length == 1) {
+                    localEnv.put(this.identifiers[0], value);
+                } else {
+                    let vals;
+                    if (value.isList()) vals = value.value;
+                    else if (value.isSet()) vals = value.value.sortedValues();
+                    for (let i = 0; i < this.identifiers.length; i++) {
+                        localEnv.put(this.identifiers[i], vals[i]);
+                    }
+                }
+                result = this.block.evaluate(localEnv);
+                if (result instanceof ValueControlBreak) {
+                    result = ValueBoolean.TRUE;
+                    break;
+                } else if (result instanceof ValueControlContinue) {
+                    result = ValueBoolean.TRUE;
+                    // continue
+                } else if (result instanceof ValueControlReturn) {
+                    break;
+                }
+            }
+            return result;
+        }
         if (list instanceof ValueString) {
             const localEnv = environment.newEnv();
             const str = list.value;
@@ -779,6 +808,8 @@ export class NodeIn {
             return ValueBoolean.from(container.hasItem(value));
         } else if (container instanceof ValueMap) {
             return ValueBoolean.from(container.hasItem(value));
+        } else if (container instanceof ValueObject) {
+            return ValueBoolean.from(container.value.has(value));
         } else if (container instanceof ValueString) {
             return ValueBoolean.from(container.value.indexOf(value.value) != -1);
         }
@@ -1157,8 +1188,6 @@ export class NodeRequire {
         this.pos = pos;
     }
 
-    static fs = null;
-
     evaluate(environment) {
         const modules = environment.getModules();
         // resolve module file, identifier and name
@@ -1179,8 +1208,7 @@ export class NodeRequire {
             moduleEnv = modules.get(moduleidentifier);
         } else {
             moduleEnv = environment.getBase().newEnv();
-            const loader = moduleEnv.getModuleLoader();
-            const modulesrc = loader(modulefile, this.pos, NodeRequire.fs);
+            const modulesrc = moduleloader(modulefile, this.pos);
             const node = Parser.parseScript(modulesrc, "mod:" + modulefile.substr(0, modulefile.length - 4));
             node.evaluate(moduleEnv);
             modules.set(moduleidentifier, moduleEnv);

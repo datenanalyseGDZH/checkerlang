@@ -22,8 +22,10 @@
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
+import { system } from "./system.mjs";
 import { moduleloader } from "./moduleloader.mjs";
 import { modulebase } from "./module_base.mjs";
+import { modulelegacy } from "./module_legacy.mjs";
 
 import { 
     convertDateToOADate, 
@@ -59,7 +61,6 @@ export class Environment {
         this.parent = parent;
         if (this.parent == null) {
             this.modules = new Map();
-            this.moduleloader = null;
             this.modulestack = [];
         }
     }
@@ -68,14 +69,15 @@ export class Environment {
         return new Environment();
     }
 
-    static getBaseEnvironment(secure = true) {
+    static getBaseEnvironment(secure = true, legacy = true) {
         const result = Environment.getNullEnvironment();
         bind_native(result, "bind_native");
+        result.put("checkerlang_secure_mode", ValueBoolean.from(secure));
         result.put("NULL", ValueNull.NULL);
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
-        result.setModuleLoader(moduleloader);
-        Parser.parseScript(modulebase, ":base").evaluate(result);
+        if (legacy) Parser.parseScript(modulelegacy, ":legacy").evaluate(result);
+        else Parser.parseScript(modulebase, ":base").evaluate(result);
         return result;
     }
 
@@ -108,14 +110,6 @@ export class Environment {
 
     getModules() {
         return this.getBase().modules;
-    }
-
-    getModuleLoader() {
-        return this.getBase().moduleloader;
-    }
-
-    setModuleLoader(moduleloader) {
-        this.getBase().moduleloader = moduleloader;
     }
 
     pushModuleStack(moduleidentifier, pos) {
@@ -202,6 +196,8 @@ const bind_native = function(environment, native, alias = null) {
         case "escape_pattern": Environment.add(environment, new FuncEscapePattern(), alias); break;
         case "eval": Environment.add(environment, new FuncEval(), alias); break;
         case "exp": Environment.add(environment, new FuncExp(), alias); break;
+        case "file_input": Environment.add(environment, new FuncFileInput(system.fs));
+        case "file_output": Environment.add(environment, new FuncFileOutput(system.fs));
         case "find": Environment.add(environment, new FuncFind(), alias); break;
         case "floor": Environment.add(environment, new FuncFloor(), alias); break;
         case "format_date": Environment.add(environment, new FuncFormatDate(), alias); break;
@@ -2469,7 +2465,7 @@ export class FuncS extends ValueFunc {
                 ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
                 ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
-                ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
+                ": require math; s('{math->PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
     getArgNames() {

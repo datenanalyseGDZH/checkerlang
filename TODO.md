@@ -20,7 +20,6 @@
 # language
 
 * js: maybe rename isEquals() to equals(), seems to be the canonical name for the equality function
-* add module system
 * categorize functions into modules
 * provide legacy module that corresponds to the features of ckl 2
 * parse_json should support fileinput values and read only as much as is needed.
@@ -28,3 +27,15 @@
 * optimize for loop in java/dotnet so that sets and maps are not first converted to lists and only then traversed
 * unfortunately, iterating over a map traverses the values, not the keys. This cannot be changed due to backwards compatibility, but maybe a more efficient way than for x in set(m) could be devised.
 * spreading works in funcalls and lists. What about sets and maps? Can we implement this?
+
+* run unittests for modules, how? in a function, require the module, iterate over the object keys...
+* revisit all function names, make them more consistent, provide legacy module for older names
+* provide backwards-compatibility mode for having all functions in the main environment
+* make valueobject parseable (useful as a more efficient map with string keys)
+* support relative paths (relative to the current module/script!)
+* set module import path using a command line argument (or interpreter parameter)
+* support "require a using [x, y, z]" to selectively import module symbols...
+
+* change date to include time in print representation!
+* add iso_date for formatting date value
+* add iso_date_time for formatting date time value

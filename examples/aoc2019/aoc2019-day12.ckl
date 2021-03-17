@@ -1,6 +1,9 @@
 # advent of code day 12
 # https://adventofcode.com/2019/day/12
 
+require io;
+require math;
+
 # Part 1
 
 def convert_to_xyz(spec) do
@@ -16,7 +19,7 @@ end;
 
 def init_xyz() <<<x => 0, y => 0, z => 0>>>;
 
-def positions = read_file("aoc2019-day12-input.txt") !>
+def positions = io->read_file("aoc2019-day12-input.txt") !>
                 lines() !>
                 map_list(convert_to_xyz);
                 
@@ -59,12 +62,12 @@ end;
 
 def total_energy() sum([total_energy_for_moon(i) for i in range(4)]);
 
-println("part1: " + total_energy());
+io->println("part1: " + total_energy());
 
 
 # Part 2
 
-positions = read_file("aoc2019-day12-input.txt") !>
+positions = io->read_file("aoc2019-day12-input.txt") !>
             lines() !>
             map_list(convert_to_xyz);
                 
@@ -99,11 +102,4 @@ while TRUE do
     if length(finished) == 3 then break;
 end;
 
-def gcd(a, b) do
-    if b == 0 then a
-    else gcd(b, a % b)
-end;
-
-def lcm(a, b) a * b / gcd(a, b);
-
-println("part2: " + string(reduce(list(finished), lcm)));
+io->println("part2: " + string(reduce(list(finished), math->lcm)));

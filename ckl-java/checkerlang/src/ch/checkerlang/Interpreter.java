@@ -35,11 +35,11 @@ public class Interpreter {
     private Environment environment;
 
     public Interpreter() {
-        this(true);
+        this(true, true);
     }
 
-    public Interpreter(boolean secure) {
-        baseEnvironment = Environment.getBaseEnvironment(secure);
+    public Interpreter(boolean secure, boolean legacy) {
+        baseEnvironment = Environment.getBaseEnvironment(secure, legacy);
         environment = baseEnvironment.newEnv();
         if (!secure) {
             baseEnvironment.put("stdout", new ValueOutput(new StringWriter()));

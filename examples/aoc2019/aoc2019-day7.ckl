@@ -1,6 +1,8 @@
 # advent of code day 7
 # https://adventofcode.com/2019/day/7
 
+require io;
+
 def trace = FALSE;
 
 def parse_program(data) split(data, ",") !> map_list(int);
@@ -32,49 +34,49 @@ def step(machine) do
     end elif opcode == 1 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
-        if trace then println("add " + a + " + " + b + " store in " + prog[machine->ip + 3]);
+        if trace then io->println("add " + a + " + " + b + " store in " + prog[machine->ip + 3]);
         prog[prog[machine->ip + 3]] = a + b;
         machine->ip += 4;
     end elif opcode == 2 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
-        if trace then println("mul " + a + " * " + b + " store in " + prog[machine->ip + 3]);
+        if trace then io->println("mul " + a + " * " + b + " store in " + prog[machine->ip + 3]);
         prog[prog[machine->ip + 3]] = a * b;
         machine->ip += 4;
     end elif opcode == 3 then do
         def value = first(machine->input);
         machine->input = rest(machine->input);
         prog[prog[machine->ip + 1]] = value;
-        if trace then println("inp " + value + " store in " + prog[machine->ip + 1]);
+        if trace then io->println("inp " + value + " store in " + prog[machine->ip + 1]);
         machine->ip += 2;
     end elif opcode == 4 then do
         def value = param_resolve(machine, 1, mode1);
         machine->output !> append(value);
-        if trace then println("out " + value);
+        if trace then io->println("out " + value);
         machine->ip += 2;
     end elif opcode == 5 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if a != 0 then machine->ip = b
         else machine->ip += 3;
-        if trace then println("jump-if-true " + a + " to " + b);
+        if trace then io->println("jump-if-true " + a + " to " + b);
     end elif opcode == 6 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         if a == 0 then machine->ip = b
         else machine->ip += 3;
-        if trace then println("jump-if-false " + a + " to " + b);
+        if trace then io->println("jump-if-false " + a + " to " + b);
     end elif opcode == 7 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         prog[prog[machine->ip + 3]] = (if a < b then 1 else 0);
-        if trace then println("less " + a + " " + b + " store in " + prog[machine->ip + 3]);
+        if trace then io->println("less " + a + " " + b + " store in " + prog[machine->ip + 3]);
         machine->ip += 4;
     end elif opcode == 8 then do
         def a = param_resolve(machine, 1, mode1);
         def b = param_resolve(machine, 2, mode2);
         prog[prog[machine->ip + 3]] = (if a == b then 1 else 0);
-        if trace then println("equals " + a + " " + b + " store in " + prog[machine->ip + 3]);
+        if trace then io->println("equals " + a + " " + b + " store in " + prog[machine->ip + 3]);
         machine->ip += 4;
     end;
     machine;
@@ -100,7 +102,7 @@ def get_output(machine, idx) machine->output[-1 - idx];
 # Part 1
 
 def amplify(filename, phase, input) do
-    read_file(filename) !>
+    io->read_file(filename) !>
     make_machine() !>
     set_input([phase, input]) !>
     execute() !>
@@ -117,13 +119,13 @@ for setting in permutations(range(5)) do
     value = amplify("aoc2019-day7-input.txt", setting[4], value);
     maxvalue = max(maxvalue, value); 
 end;
-println("part1: " + maxvalue);
+io->println("part1: " + maxvalue);
 
 
 # Part 2
 
 def amplifier(filename, phase) do
-    read_file(filename) !>
+    io->read_file(filename) !>
     make_machine() !>
     set_input([phase]);
 end;
@@ -159,4 +161,4 @@ for setting in permutations(interval(5, 9)) do
     def value = amp5 !> get_output(0);
     maxvalue = max(maxvalue, value); 
 end;
-println("part2: " + maxvalue);
+io->println("part2: " + maxvalue);

@@ -22,23 +22,17 @@
 import { Interpreter } from "./js/interpreter.mjs";
 import { Parser } from "./js/parser.mjs";
 import { ValueNull, ValueList } from "./js/values.mjs";
-import { FuncFileInput, FuncFileOutput, FuncRun } from "./js/functions.mjs";
-import { NodeRequire } from "./js/nodes.mjs";
-import { moduleloader } from "./js/moduleloader.mjs";
+import { system } from "./js/system.mjs";
 
-import * as fs from "fs";
 import * as readline from "readline";
+import * as fs from "fs";
+import * as path from "path";
 
-const interpreter = new Interpreter(false);
+system.fs = fs;
+system.path = path;
 
-interpreter.fs = fs;
-interpreter.baseEnvironment.setModuleLoader(moduleloader);
+const interpreter = new Interpreter(false, false);
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
-interpreter.baseEnvironment.put("file_input", new FuncFileInput(fs));
-interpreter.baseEnvironment.put("file_output", new FuncFileOutput(fs));
-interpreter.baseEnvironment.put("run", new FuncRun(interpreter, fs));
-NodeRequire.fs = fs;
-
 interpreter.environment.put("args", new ValueList());
 
 for (let scriptname of process.argv.slice(2)) {

@@ -52,6 +52,8 @@ public class NodeIn implements Node {
             return ValueBoolean.from(container.asSet().getValue().contains(value));
         } else if (container.isMap()) {
             return ValueBoolean.from(container.asMap().getValue().containsKey(value));
+        } else if (container.isObject()) {
+            return ValueBoolean.from(container.asObject().value.containsKey(value.asString().getValue()));
         } else if (container.isString()) {
             return ValueBoolean.from(container.asString().getValue().contains(value.asString().getValue()));
         }

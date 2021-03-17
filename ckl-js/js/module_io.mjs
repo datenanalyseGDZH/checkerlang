@@ -30,10 +30,11 @@ bind_native("readln");
 bind_native("str_input");
 bind_native("str_output");
 
-# The following require access to the fs module and are directly in ckl-run/ckl-repl handled
-# TODO file_input
-# TODO file_output
-# TODO run
+if not checkerlang_secure_mode then do
+    bind_native("file_input");
+    bind_native("file_output");
+end;
+
 
 "
 read_file(filename, encoding = 'utf-8')

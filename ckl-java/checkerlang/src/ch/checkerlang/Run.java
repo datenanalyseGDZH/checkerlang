@@ -33,7 +33,7 @@ public class Run {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter stdout = new PrintWriter(new OutputStreamWriter(System.out));
         try {
-            Interpreter interpreter = new Interpreter(false);
+            Interpreter interpreter = new Interpreter(false, false);
             interpreter.setStandardInput(stdin);
             interpreter.setStandardOutput(stdout);
             // TODO handle options placed before the scriptname, e.g. -i for include path!

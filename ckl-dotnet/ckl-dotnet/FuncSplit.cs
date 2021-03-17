@@ -74,6 +74,16 @@ namespace CheckerLang
                 
                 return new ValueList(values);
             }
+            else if (delim == "")
+            {
+                var values = new List<Value>();
+                foreach (var ch in value)
+                {
+                    values.Add(new ValueString(ch.ToString()));
+                }
+
+                return new ValueList(values);
+            }
             else
             {
                 var values = new List<Value>();

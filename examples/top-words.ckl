@@ -6,6 +6,8 @@
 # Please provide the file path as the first
 # argument to the program.
 
+require io;
+
 def normalize_word(w)
     w !> replace(",", "")
       !> replace(";", "")
@@ -14,7 +16,7 @@ def normalize_word(w)
       !> replace("!", "")
       !> replace("?", "");
 
-read_file(args[0]) !>
+io->read_file(args[0]) !>
 words() !>
 map_list(normalize_word) !>
 sorted() !>
@@ -22,4 +24,4 @@ grouped() !>
 map_list(fn(ws) [ws[0], length(ws)]) !>
 sorted(key = fn(item) -item[1]) !>
 first_n(10) !>
-for_each(fn(item) println(item[0] + ": " + item[1]));
+for_each(fn(item) io->println(item[0] + ": " + item[1]));

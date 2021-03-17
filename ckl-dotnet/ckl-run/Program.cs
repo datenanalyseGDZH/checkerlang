@@ -30,7 +30,7 @@ namespace run
         static void Main(string[] args)
         {
             try {
-                var interpreter = new Interpreter(false);
+                var interpreter = new Interpreter(false, false);
                 interpreter.SetStandardInput(Console.In);
                 interpreter.SetStandardOutput(Console.Out);
                 

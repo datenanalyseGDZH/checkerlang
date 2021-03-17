@@ -1,6 +1,8 @@
 # This performs a series of (micro) benchmarks and appends
 # the results to the file "examples/benchmark-results.txt". 
 
+require io unqualified;
+
 def started = format_date(now(), fmt = 'yyyyMMdd-HHmmss');
 
 def benchmark_split() split('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20', ',');

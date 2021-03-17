@@ -21,9 +21,9 @@ export const modulebase = `
 
 require sys unqualified;
 require core unqualified;
-require math unqualified;
-require random unqualified;
-require io unqualified;
+require math;
+require random;
+require io;
 
 "
 is_list(obj) 
@@ -1091,7 +1091,7 @@ an explanation of available formatting suffixes.
 : sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'
 : sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '
 : sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'
-: sprintf('{0#.4}', PI) ==> '3.1416'
+: require math; sprintf('{0#.4}', math->PI) ==> '3.1416'
 "
 def sprintf(fmt, args...) do
     for entry in enumerate(args...) do
@@ -1117,7 +1117,7 @@ def permutations(lst) do
         end else do
             for i in range(size) do
                 perms(lst, size - 1);
-                if is_odd(size) then do
+                if size % 2 == 1 then do
                     def temp = lst[0];
                     lst[0] = lst[size - 1];
                     lst[size - 1] = temp;

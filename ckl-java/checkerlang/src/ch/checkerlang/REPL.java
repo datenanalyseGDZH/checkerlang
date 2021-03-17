@@ -29,7 +29,7 @@ public class REPL {
     public static void main(String[] args) throws Exception {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter stdout = new PrintWriter(new OutputStreamWriter(System.out));
-        Interpreter interpreter = new Interpreter(false);
+        Interpreter interpreter = new Interpreter(false, false);
         interpreter.setStandardInput(stdin);
         interpreter.setStandardOutput(stdout);
         stdout.print("> ");

@@ -1,6 +1,8 @@
 # advent of code day 2
 # https://adventofcode.com/2019/day/2
 
+require io;
+
 # Part 1
 
 def parse_program(data) split(data, ",") !> map_list(int);
@@ -36,14 +38,14 @@ end;
 
 def get_data(machine, idx) machine->program[idx];
 
-read_file("aoc2019-day2-input.txt") !>
+io->read_file("aoc2019-day2-input.txt") !>
 make_machine() !>
 set_data(1, 12) !>
 set_data(2, 2) !>
 execute() !>
 get_data(0) !>
 sprintf(fmt="part1: {0}") !>
-println();
+io->println();
 
 
 # Part 2
@@ -62,7 +64,7 @@ def find_noun_and_verb_for(input, value) do
     end;
 end;
 
-read_file("aoc2019-day2-input.txt") !>
+io->read_file("aoc2019-day2-input.txt") !>
 find_noun_and_verb_for(19690720) !>
 sprintf(fmt="part2: {0}") !>
-println();
+io->println();

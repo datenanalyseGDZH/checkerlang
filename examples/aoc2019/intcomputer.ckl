@@ -2,6 +2,8 @@
 # in the advent of code 2019 problems. This is
 # the state of the intcomputer after day 9.
 
+require io;
+
 def trace = FALSE;
 
 def ensure_min_length(lst, min_length, default_value = 0) do 
@@ -53,7 +55,7 @@ def step(machine) do
         def a = param_resolve_src(machine, 1, mode1);
         def b = param_resolve_src(machine, 2, mode2);
         def c = param_resolve_dest(machine, 3, mode3);
-        if trace then println("add " + a + " + " + b + " store in " + c);
+        if trace then io->println("add " + a + " + " + b + " store in " + c);
         ensure_min_length(machine->program, c + 1);
         prog[c] = a + b;
         machine->ip += 4;
@@ -61,7 +63,7 @@ def step(machine) do
         def a = param_resolve_src(machine, 1, mode1);
         def b = param_resolve_src(machine, 2, mode2);
         def c = param_resolve_dest(machine, 3, mode3);
-        if trace then println("mul " + a + " * " + b + " store in " + c);
+        if trace then io->println("mul " + a + " * " + b + " store in " + c);
         ensure_min_length(machine->program, c + 1);
         prog[c] = a * b;
         machine->ip += 4;
@@ -71,32 +73,32 @@ def step(machine) do
         def a = param_resolve_dest(machine, 1, mode1);
         ensure_min_length(machine->program, a + 1);
         prog[a] = value;
-        if trace then println("inp " + value + " store in " + a);
+        if trace then io->println("inp " + value + " store in " + a);
         machine->ip += 2;
     end elif opcode == 4 then do
         def value = param_resolve_src(machine, 1, mode1);
         machine->output !> append(value);
-        if trace then println("out " + value);
+        if trace then io->println("out " + value);
         machine->ip += 2;
     end elif opcode == 5 then do
         def a = param_resolve_src(machine, 1, mode1);
         def b = param_resolve_src(machine, 2, mode2);
         if a != 0 then machine->ip = b
         else machine->ip += 3;
-        if trace then println("jump-if-true " + a + " to " + b);
+        if trace then io->println("jump-if-true " + a + " to " + b);
     end elif opcode == 6 then do
         def a = param_resolve_src(machine, 1, mode1);
         def b = param_resolve_src(machine, 2, mode2);
         if a == 0 then machine->ip = b
         else machine->ip += 3;
-        if trace then println("jump-if-false " + a + " to " + b);
+        if trace then io->println("jump-if-false " + a + " to " + b);
     end elif opcode == 7 then do
         def a = param_resolve_src(machine, 1, mode1);
         def b = param_resolve_src(machine, 2, mode2);
         def c = param_resolve_dest(machine, 3, mode3);
         ensure_min_length(machine->program, c + 1);
         prog[c] = (if a < b then 1 else 0);
-        if trace then println("less " + a + " " + b + " store in " + c);
+        if trace then io->println("less " + a + " " + b + " store in " + c);
         machine->ip += 4;
     end elif opcode == 8 then do
         def a = param_resolve_src(machine, 1, mode1);
@@ -104,12 +106,12 @@ def step(machine) do
         def c = param_resolve_dest(machine, 3, mode3);
         ensure_min_length(machine->program, c + 1);
         prog[c] = (if a == b then 1 else 0);
-        if trace then println("equals " + a + " " + b + " store in " + c);
+        if trace then io->println("equals " + a + " " + b + " store in " + c);
         machine->ip += 4;
     end elif opcode == 9 then do
         def a = param_resolve_src(machine, 1, mode1);
         machine->rel_base += a;
-        if trace then println("adjust rel_base by " + a + " to become " + machine->rel_base);
+        if trace then io->println("adjust rel_base by " + a + " to become " + machine->rel_base);
         machine->ip += 2;
     end;
     machine;

@@ -22,6 +22,7 @@
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Environment } from "./functions.mjs";
+import { system } from "./system.mjs";
 
 import { 
     StringInput,
@@ -316,8 +317,8 @@ export class Args {
 }
 
 export class Interpreter {
-    constructor(secure = true) {
-        this.baseEnvironment = Environment.getBaseEnvironment(secure);
+    constructor(secure = true, legacy = false) {
+        this.baseEnvironment = Environment.getBaseEnvironment(secure, legacy);
         this.environment = this.baseEnvironment.newEnv();
         this.baseEnvironment.put("console", new ValueOutput(new ConsoleOutput()));
         if (!secure) {
@@ -346,7 +347,7 @@ export class Interpreter {
     loadFile(filename, encoding = "utf8") {
         let enc = encoding.toLowerCase()
         if (enc === 'utf-8') enc = 'utf8';
-        const contents = this.fs.readFileSync(filename, {encoding: enc, flag: 'r'});
+        const contents = system.fs.readFileSync(filename, {encoding: enc, flag: 'r'});
         interpret(contents, filename); // TODO extract filename from path
     }
 

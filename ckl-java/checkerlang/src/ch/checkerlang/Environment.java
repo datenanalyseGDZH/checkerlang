@@ -53,10 +53,10 @@ public class Environment {
     }
 
     public static Environment getBaseEnvironment() {
-        return getBaseEnvironment(true);
+        return getBaseEnvironment(true, true);
     }
 
-    public static Environment getBaseEnvironment(boolean secure) {
+    public static Environment getBaseEnvironment(boolean secure, boolean legacy) {
         Environment result = getNullEnvironment();
         result.put("checkerlang_secure_mode", ValueBoolean.from(secure));
         result.put("bind_native", new FuncBindNative());
@@ -64,8 +64,13 @@ public class Environment {
         result.put("MAXINT", new ValueInt(Long.MAX_VALUE).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Long.MIN_VALUE).withInfo("MININT\n\nThe minimal int value"));
         try {
-            Node basenode = Parser.parse(new InputStreamReader(Value.class.getResourceAsStream("/module-base.ckl"), StandardCharsets.UTF_8), "{res}module-base.ckl");
-            basenode.evaluate(result);
+            if (legacy) {
+                Node basenode = Parser.parse(new InputStreamReader(Value.class.getResourceAsStream("/module-legacy.ckl"), StandardCharsets.UTF_8), "mod:legacy.ckl");
+                basenode.evaluate(result);
+            } else {
+                Node basenode = Parser.parse(new InputStreamReader(Value.class.getResourceAsStream("/module-base.ckl"), StandardCharsets.UTF_8), "mod:base.ckl");
+                basenode.evaluate(result);
+            }
         } catch (IOException e) {
             // ignore
         }
