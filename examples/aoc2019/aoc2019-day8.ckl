@@ -1,18 +1,18 @@
 # advent of code day 8
 # https://adventofcode.com/2019/day/8
 
-require io;
+require io [read_file, println, printf];
 
 def rows = 6;
 def cols = 25;
 
 # Part 1
 
-io->read_file("aoc2019-day8-input.txt") !>
+read_file("aoc2019-day8-input.txt") !>
 chunks(rows * cols) !>
 min(key = fn(layer) count(layer, '0')) !>
 (fn(layer) count(layer, '1') * count(layer, '2'))() !>
-io->printf(fmt = "part1: {0}\n");
+printf(fmt = "part1: {0}\n");
 
 # Part 2
 
@@ -29,11 +29,11 @@ end;
 
 def print_image(image) do
     image = image !> replace('0', ' ') !> replace('1', '#') !> replace('2', ' ');
-    for chunk in chunks(image, cols) io->println(chunk);
+    for chunk in chunks(image, cols) println(chunk);
 end;
 
-io->println("part2:");
-io->read_file("aoc2019-day8-input.txt") !>
+println("part2:");
+read_file("aoc2019-day8-input.txt") !>
 chunks(rows * cols) !>
 reduce(merge_layers) !>
 print_image();

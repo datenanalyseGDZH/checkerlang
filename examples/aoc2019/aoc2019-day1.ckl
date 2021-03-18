@@ -1,19 +1,19 @@
 # advent of code day 1
 # https://adventofcode.com/2019/day/1
 
-require io;
+require io [read_file, println];
 
 # Part 1
 
 def fuel_required(mass) int(mass / 3) - 2;
 
-io->read_file("aoc2019-day1-input.txt") !>
+read_file("aoc2019-day1-input.txt") !>
 words() !>
 map_list(int) !>
 map_list(fuel_required) !>
 sum() !>
 sprintf(fmt="part1: {0}") !>
-io->println();
+println();
 
 
 # Part 2
@@ -24,10 +24,10 @@ def total_fuel_required(mass) do
     else fuel + total_fuel_required(fuel);
 end;
 
-io->read_file("aoc2019-day1-input.txt") !>
+read_file("aoc2019-day1-input.txt") !>
 words() !>
 map_list(int) !>
 map_list(total_fuel_required) !>
 sum() !>
 sprintf(fmt="part2: {0}") !>
-io->println();
+println();

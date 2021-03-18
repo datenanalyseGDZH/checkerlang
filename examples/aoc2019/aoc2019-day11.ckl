@@ -1,7 +1,7 @@
 # advent of code day 11
 # https://adventofcode.com/2019/day/11
 
-require io;
+require io [read_file, println, print];
 require intcomputer as c;
 
 # Part 1
@@ -45,17 +45,17 @@ def run_paint_job(machine) do
     end;
 end;
 
-def machine = c->make_machine(io->read_file("aoc2019-day11-input.txt"));
+def machine = c->make_machine(read_file("aoc2019-day11-input.txt"));
 machine !> c->add_input(0);
 run_paint_job(machine);
 
-io->println("part1: " + length(cells));
+println("part1: " + length(cells));
 
 
 # Part 2
 
 cells = <<<>>>;
-machine = c->make_machine(io->read_file("aoc2019-day11-input.txt"));
+machine = c->make_machine(read_file("aoc2019-day11-input.txt"));
 machine !> c->add_input(1);
 run_paint_job(machine);
 
@@ -74,14 +74,14 @@ def get_rect(cells) do
     [x1, y1, x2, y2];
 end;
 
-io->println("part2:");
+println("part2:");
 def [x1, y1, x2, y2] = get_rect(cells);
 for y in interval(y1, y2) do
     for x in reverse(interval(x1, x2)) do
         def color = cells !> map_get(x + "," + y, default_value = -1);
-        if color == 1 then io->print("#") 
-        elif color == 0 then io->print(" ")
-        else io->print(" ");
+        if color == 1 then print("#") 
+        elif color == 0 then print(" ")
+        else print(" ");
     end;
-    io->println();
+    println();
 end;

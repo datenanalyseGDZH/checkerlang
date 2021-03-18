@@ -1,12 +1,12 @@
 # advent of code day 10
 # https://adventofcode.com/2019/day/10
 
-require io;
-require math;
+require io [read_file, println, printf];
+require math [atan2, sqrt, PI];
 
 # Part 1
 
-def asteroids = io->read_file("aoc2019-day10-input.txt") !>
+def asteroids = read_file("aoc2019-day10-input.txt") !>
                 lines() !>
                 enumerate() !>
                 map_list(fn(item) do
@@ -21,25 +21,25 @@ def asteroids = io->read_file("aoc2019-day10-input.txt") !>
 def asteroids_visible_at(x, y) do
     asteroids !>
     filter(fn(a) not (a->x == x and a->y == y)) !>
-    map_list(fn(a) math->atan2(a->y - y, a->x - x)) !>
+    map_list(fn(a) atan2(a->y - y, a->x - x)) !>
     sorted() !>
     unique() !>
     length()
 end;
 
 max([asteroids_visible_at(a->x, a->y) for a in asteroids]) !>
-io->printf(fmt = "part1: {0}\n");
+printf(fmt = "part1: {0}\n");
 
 # Part 2
 
 def [x, y] = max([[a->x, a->y, asteroids_visible_at(a->x, a->y)] for a in asteroids], key = fn(item) item[2]);
 
-def distance(x0, y0, x1, y1) math->sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+def distance(x0, y0, x1, y1) sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
 
 def asteroids_from(x, y) do
     asteroids !>
     filter(fn(a) not (a->x == x and a->y == y)) !>
-    map_list(fn(a) [(math->atan2(a->y - y, a->x - x) + 2 * math->PI) % (2 * math->PI), distance(x, y, a->x, a->y), a->x, a->y]) !>
+    map_list(fn(a) [(atan2(a->y - y, a->x - x) + 2 * PI) % (2 * PI), distance(x, y, a->x, a->y), a->x, a->y]) !>
     sorted(key = fn(item) item[0]) !>
     grouped(key = fn(item) item[0]) !>
     map_list(fn(group) do
@@ -49,11 +49,11 @@ end;
 
 def asteroid_list = asteroids_from(x, y);
 
-def idx = find(asteroid_list, 3*math->PI/2, key = fn(x) x[0]);
+def idx = find(asteroid_list, 3*PI/2, key = fn(x) x[0]);
 
 for i in range(199) do
     def ray = asteroid_list[idx];
-    #io->println((i+1) + ": " + ray[1]);
+    #println((i+1) + ": " + ray[1]);
     delete_at(ray[1], 0);
     if length(ray[1]) == 0 then do 
         delete_at(asteroid_list, idx);
@@ -67,4 +67,4 @@ end;
 
 def [rx, ry] = asteroid_list[idx][1][0] !> sublist(1);
 
-io->println("part2: " + (rx * 100 + ry));
+println("part2: " + (rx * 100 + ry));

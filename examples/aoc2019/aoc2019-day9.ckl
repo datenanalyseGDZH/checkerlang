@@ -1,23 +1,23 @@
 # advent of code day 9
 # https://adventofcode.com/2019/day/9
 
-require io;
+require io [read_file, printf];
 require intcomputer as c;
 
 # Part 1
 
-io->read_file("aoc2019-day9-input.txt") !>
+read_file("aoc2019-day9-input.txt") !>
 c->make_machine() !>
 c->set_input([1]) !>
 c->execute() !>
 c->get_output(0) !>
-io->printf(fmt = "part1: {0}\n");
+printf(fmt = "part1: {0}\n");
 
 # Part 2
 
-io->read_file("aoc2019-day9-input.txt") !>
+read_file("aoc2019-day9-input.txt") !>
 c->make_machine() !>
 c->set_input([2]) !>
 c->execute() !>
 c->get_output(0) !>
-io->printf(fmt = "part2: {0}\n");
+printf(fmt = "part2: {0}\n");
