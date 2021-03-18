@@ -39,3 +39,5 @@
 * change date to include time in print representation!
 * add iso_date for formatting date value
 * add iso_date_time for formatting date time value
+
+* expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
