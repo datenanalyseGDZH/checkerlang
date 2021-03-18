@@ -21,9 +21,6 @@ export const modulebase = `
 
 require sys unqualified;
 require core unqualified;
-require math;
-require random;
-require io;
 
 "
 is_list(obj) 

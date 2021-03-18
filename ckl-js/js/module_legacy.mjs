@@ -24,6 +24,7 @@ require core unqualified;
 require math unqualified;
 require random unqualified;
 require io unqualified;
+require stat unqualified;
 
 "
 is_list(obj) 

@@ -4,6 +4,7 @@ import { modulemath } from "./module_math.mjs";
 import { modulecore } from "./module_core.mjs";
 import { moduleio } from "./module_io.mjs";
 import { modulerandom } from "./module_random.mjs";
+import { modulestat } from "./module_stat.mjs";
 import { modulesys } from "./module_sys.mjs";
 
 export const moduleloader = function(modulefile, pos) {
@@ -12,6 +13,7 @@ export const moduleloader = function(modulefile, pos) {
         case "io.ckl": return moduleio;
         case "math.ckl": return modulemath;
         case "random.ckl": return modulerandom;
+        case "stat.ckl": return modulestat;
         case "sys.ckl": return modulesys;
         default:
             if (fs !== undefined && fs !== null) {
