@@ -26,10 +26,7 @@ import ch.checkerlang.values.ValueString;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Parser {
     public static Node parse(String script, String filename) throws IOException {
@@ -131,13 +128,28 @@ public class Parser {
                 throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
             String modulespec = token.value;
             boolean unqualified = false;
+            Map<String, String> symbols = null;
             String name = null;
             if (lexer.matchIf("unqualified", TokenType.Identifier)) {
                 unqualified = true;
             } else if (lexer.matchIf("as", TokenType.Keyword)) {
                 name = lexer.matchIdentifier();
+            } else if (lexer.matchIf("[", TokenType.Interpunction)) {
+                symbols = new HashMap<>();
+                while (!lexer.peekn(1, "]", TokenType.Interpunction)) {
+                    String symbol = lexer.matchIdentifier();
+                    String symbolname = symbol;
+                    if (lexer.matchIf("as", TokenType.Keyword)) {
+                        symbolname = lexer.matchIdentifier();
+                    }
+                    symbols.put(symbol, symbolname);
+                    if (!lexer.peekn(1, "]", TokenType.Interpunction)) {
+                        lexer.match(",", TokenType.Interpunction);
+                    }
+                }
+                lexer.match("]", TokenType.Interpunction);
             }
-            return new NodeRequire(modulespec, name, unqualified, pos);
+            return new NodeRequire(modulespec, name, unqualified, symbols, pos);
         }
 
         if (lexer.matchIf("def", TokenType.Keyword)) {

@@ -29,13 +29,15 @@ namespace CheckerLang
         private string modulespec;
         private string name;
         private bool unqualified;
+        private Dictionary<string, string> symbols;
 
         private SourcePos pos;
 
-        public NodeRequire(string modulespec, string name, bool unqualified, SourcePos pos) {
+        public NodeRequire(string modulespec, string name, bool unqualified, Dictionary<string, string> symbols, SourcePos pos) {
             this.modulespec = modulespec;
             this.name = name;
             this.unqualified = unqualified;
+            this.symbols = symbols;
             this.pos = pos;
         }
 
@@ -59,7 +61,7 @@ namespace CheckerLang
                 moduleEnv = modules[moduleidentifier];
             } else {
                 moduleEnv = environment.GetBase().NewEnv();
-                string modulesrc = ModuleLoader.LoadModule(modulefile, pos);
+                var modulesrc = ModuleLoader.LoadModule(modulefile, pos);
                 Node node = null;
                 try {
                     node = Parser.Parse(modulesrc, modulefile);
@@ -80,6 +82,15 @@ namespace CheckerLang
                     environment.Put(symbol, moduleEnv.Get(symbol, pos));
                 }
             } 
+            else if (symbols != null)
+            {
+                foreach (var symbol in moduleEnv.GetLocalSymbols()) 
+                {
+                    if (symbol.StartsWith("_")) continue; // skip private module symbols
+                    if (!symbols.ContainsKey(symbol)) continue;
+                    environment.Put(symbols[symbol], moduleEnv.Get(symbol, pos));
+                }
+            }
             else 
             {
                 var obj = new ValueObject {isModule = true};

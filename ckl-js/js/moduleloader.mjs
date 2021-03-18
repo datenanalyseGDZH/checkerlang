@@ -16,7 +16,7 @@ export const moduleloader = function(modulefile, pos) {
         case "stat.ckl": return modulestat;
         case "sys.ckl": return modulesys;
         default:
-            if (fs !== undefined && fs !== null) {
+            if (system.fs !== undefined && system.fs !== null) {
                 // TODO prevent directory traversal, but allow some relative paths?!
                 // TODO configure base module path
                 const path = modulefile.replace(/\\/g, "/").split("/");

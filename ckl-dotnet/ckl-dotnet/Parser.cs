@@ -131,6 +131,7 @@ namespace CheckerLang
                     throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
                 var modulespec = token.value;
                 var unqualified = false;
+                Dictionary<string, string> symbols = null;
                 string name = null;
                 if (lexer.MatchIf("unqualified", TokenType.Identifier)) 
                 {
@@ -140,7 +141,23 @@ namespace CheckerLang
                 {
                     name = lexer.MatchIdentifier();
                 }
-                return new NodeRequire(modulespec, name, unqualified, pos);
+                else if (lexer.MatchIf("[", TokenType.Interpunction))
+                {
+                    symbols = new Dictionary<string, string>();
+                    while (!lexer.Peekn(1, "]", TokenType.Interpunction)) {
+                        var symbol = lexer.MatchIdentifier();
+                        var symbolname = symbol;
+                        if (lexer.MatchIf("as", TokenType.Keyword)) {
+                            symbolname = lexer.MatchIdentifier();
+                        }
+                        symbols[symbol] = symbolname;
+                        if (!lexer.Peekn(1, "]", TokenType.Interpunction)) {
+                            lexer.Match(",", TokenType.Interpunction);
+                        }
+                    }
+                    lexer.Match("]", TokenType.Interpunction);
+                }
+                return new NodeRequire(modulespec, name, unqualified, symbols, pos);
             }
             if (lexer.MatchIf("def", TokenType.Keyword))
             {

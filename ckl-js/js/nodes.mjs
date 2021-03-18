@@ -1181,10 +1181,11 @@ export class NodeOr {
 }
 
 export class NodeRequire {
-    constructor(modulespec, name, unqualified, pos) {
+    constructor(modulespec, name, unqualified, symbols, pos) {
         this.modulespec = modulespec;
         this.name = name;
         this.unqualified = unqualified;
+        this.symbols = symbols;
         this.pos = pos;
     }
 
@@ -1220,6 +1221,12 @@ export class NodeRequire {
             for (const name of moduleEnv.getLocalSymbols()) {
                 if (name.startsWith("_")) continue; // skip private module symbols
                 environment.put(name, moduleEnv.get(name));
+            }
+        } else if (this.symbols !== null) {
+            for (const name of moduleEnv.getLocalSymbols()) {
+                if (name.startsWith("_")) continue; // skip private module symbols
+                if (!this.symbols.has(name)) continue;
+                environment.put(this.symbols.get(name), moduleEnv.get(name));
             }
         } else {
             const obj = new ValueObject();

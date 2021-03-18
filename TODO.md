@@ -34,10 +34,11 @@
 * make valueobject parseable (useful as a more efficient map with string keys)
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
-* support "require a using [x, y, z]" to selectively import module symbols...
 
 * change date to include time in print representation!
 * add iso_date for formatting date value
 * add iso_date_time for formatting date time value
+
+* set operations (new module with list, set and map operations, including union, intersection, setdiff)
 
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]

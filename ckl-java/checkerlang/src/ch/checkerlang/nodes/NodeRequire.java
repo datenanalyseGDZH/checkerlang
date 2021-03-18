@@ -30,13 +30,15 @@ public class NodeRequire implements Node {
     private String modulespec;
     private String name;
     private boolean unqualified;
+    private Map<String, String> symbols;
 
     private SourcePos pos;
 
-    public NodeRequire(String modulespec, String name, boolean unqualified, SourcePos pos) {
+    public NodeRequire(String modulespec, String name, boolean unqualified, Map<String, String> symbols, SourcePos pos) {
         this.modulespec = modulespec;
         this.name = name;
         this.unqualified = unqualified;
+        this.symbols = symbols;
         this.pos = pos;
     }
 
@@ -77,6 +79,12 @@ public class NodeRequire implements Node {
             for (String symbol : moduleEnv.getLocalSymbols()) {
                 if (symbol.startsWith("_")) continue; // skip private module symbols
                 environment.put(symbol, moduleEnv.get(symbol, this.pos));
+            }
+        } else if (symbols != null) {
+            for (String symbol : moduleEnv.getLocalSymbols()) {
+                if (symbol.startsWith("_")) continue; // skip private module symbols
+                if (!symbols.containsKey(symbol)) continue;
+                environment.put(symbols.get(symbol), moduleEnv.get(symbol, this.pos));
             }
         } else {
             ValueObject obj = new ValueObject();

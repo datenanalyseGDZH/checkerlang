@@ -158,13 +158,28 @@ export class Parser {
             if (token.type !== "identifier" && token.type !== "string") throw new SyntaxError("Expected module specifier, but got " + token, token.pos);
             const modulespec = token.value;
             let unqualified = false;
+            let symbols = null;
             let name = null;
             if (lexer.matchIf("unqualified", "identifier")) {
                 unqualified = true;
             } else if (lexer.matchIf("as", "keyword")) {
                 name = lexer.matchIdentifier();
+            } else if (lexer.matchIf("[", "interpunction")) {
+                symbols = new Map();
+                while (!lexer.peekn(1, "]", "interpunction")) {
+                    const symbol = lexer.matchIdentifier();
+                    let symbolname = symbol;
+                    if (lexer.matchIf("as", "keyword")) {
+                        symbolname = lexer.matchIdentifier();
+                    }
+                    symbols.set(symbol, symbolname);
+                    if (!lexer.peekn(1, "]", "interpunction")) {
+                        lexer.match(",", "interpunction");
+                    }
+                }
+                lexer.match("]", "interpunction");
             }
-            return new NodeRequire(modulespec, name, unqualified, pos);
+            return new NodeRequire(modulespec, name, unqualified, symbols, pos);
         }
 
         if (lexer.matchIf("def", "keyword")) {
