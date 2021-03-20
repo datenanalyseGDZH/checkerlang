@@ -68,23 +68,22 @@ namespace CheckerLang
                 List<Value> values;
                 if (list.IsObject()) values = new List<Value>(list.AsObject().value.Values);
                 else values = list.AsList().GetValue();
-                var localEnv = environment.NewEnv();
                 Value result = ValueBoolean.TRUE;
                 foreach (var value in values)
                 {
                     if (identifiers.Count == 1) 
                     {
-                        localEnv.Put(identifiers[0], value);
+                        environment.Put(identifiers[0], value);
                     } 
                     else 
                     {
                         var vals = value.AsList().GetValue();
                         for (int i = 0; i < identifiers.Count; i++) 
                         {
-                            localEnv.Put(identifiers[i], vals[i]);
+                            environment.Put(identifiers[i], vals[i]);
                         }
                     }
-                    result = block.Evaluate(localEnv);
+                    result = block.Evaluate(environment);
                     if (result.IsBreak())
                     {
                         result = ValueBoolean.TRUE;
@@ -100,6 +99,13 @@ namespace CheckerLang
                     if (result.IsReturn())
                     {
                         break;
+                    }
+                }
+                if (identifiers.Count == 1) {
+                    environment.Remove(identifiers[0]);
+                } else {
+                    for (var i = 0; i < identifiers.Count; i++) {
+                        environment.Remove(identifiers[i]);
                     }
                 }
                 return result;
@@ -107,12 +113,11 @@ namespace CheckerLang
             if (list.IsString())
             {
                 var str = list.AsString().GetValue();
-                var localEnv = environment.NewEnv();
                 Value result = ValueBoolean.TRUE;
                 foreach (var value in str)
                 {
-                    localEnv.Put(identifiers[0], new ValueString(value.ToString()));
-                    result = block.Evaluate(localEnv);
+                    environment.Put(identifiers[0], new ValueString(value.ToString()));
+                    result = block.Evaluate(environment);
                     if (result.IsBreak())
                     {
                         result = ValueBoolean.TRUE;
@@ -130,6 +135,7 @@ namespace CheckerLang
                         break;
                     }
                 }
+                environment.Remove(identifiers[0]);
                 return result;
             }
             throw new ControlErrorException("Cannot iterate over " + list, pos);

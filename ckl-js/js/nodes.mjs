@@ -495,21 +495,20 @@ export class NodeFor {
             list = lst;
         }
         if (list instanceof ValueList) {
-            const localEnv = environment.newEnv();
             const values = list.value;
             let result = ValueBoolean.TRUE;
             for (const value of values) {
                 if (this.identifiers.length == 1) {
-                    localEnv.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], value);
                 } else {
                     let vals;
                     if (value.isList()) vals = value.value;
                     else if (value.isSet()) vals = value.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
-                        localEnv.put(this.identifiers[i], vals[i]);
+                        environment.put(this.identifiers[i], vals[i]);
                     }
                 }
-                result = this.block.evaluate(localEnv);
+                result = this.block.evaluate(environment);
                 if (result instanceof ValueControlBreak) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -518,26 +517,32 @@ export class NodeFor {
                     // continue
                 } else if (result instanceof ValueControlReturn) {
                     break;
+                }
+            }
+            if (this.identifiers.length == 1) {
+                environment.remove(this.identifiers[0]);
+            } else {
+                for (let i = 0; i < this.identifiers.length; i++) {
+                    environment.remove(this.identifiers[i]);
                 }
             }
             return result;
         }
         if (list instanceof ValueSet) {
-            const localEnv = environment.newEnv();
             const values = list.value.sortedValues();
             let result = ValueBoolean.TRUE;
             for (const value of values) {
                 if (this.identifiers.length == 1) {
-                    localEnv.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], value);
                 } else {
                     let vals;
                     if (value.isList()) vals = value.value;
                     else if (value.isSet()) vals = value.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
-                        localEnv.put(this.identifiers[i], vals[i]);
+                        environment.put(this.identifiers[i], vals[i]);
                     }
                 }
-                result = this.block.evaluate(localEnv);
+                result = this.block.evaluate(environment);
                 if (result instanceof ValueControlBreak) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -546,26 +551,32 @@ export class NodeFor {
                     // continue
                 } else if (result instanceof ValueControlReturn) {
                     break;
+                }
+            }
+            if (this.identifiers.length == 1) {
+                environment.remove(this.identifiers[0]);
+            } else {
+                for (let i = 0; i < this.identifiers.length; i++) {
+                    environment.remove(this.identifiers[i]);
                 }
             }
             return result;
         }
         if (list instanceof ValueMap) {
-            const localEnv = environment.newEnv();
             const values = list.value.sortedEntries();
             let result = ValueBoolean.TRUE;
             for (const [key, value] of values) {
                 if (this.identifiers.length == 1) {
-                    localEnv.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], value);
                 } else {
                     let vals;
                     if (value.isList()) vals = value.value;
                     else if (value.isSet()) vals = value.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
-                        localEnv.put(this.identifiers[i], vals[i]);
+                        environment.put(this.identifiers[i], vals[i]);
                     }
                 }
-                result = this.block.evaluate(localEnv);
+                result = this.block.evaluate(environment);
                 if (result instanceof ValueControlBreak) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -574,26 +585,32 @@ export class NodeFor {
                     // continue
                 } else if (result instanceof ValueControlReturn) {
                     break;
+                }
+            }
+            if (this.identifiers.length == 1) {
+                environment.remove(this.identifiers[0]);
+            } else {
+                for (let i = 0; i < this.identifiers.length; i++) {
+                    environment.remove(this.identifiers[i]);
                 }
             }
             return result;
         }
         if (list instanceof ValueObject) {
-            const localEnv = environment.newEnv();
             const values = list.value;
             let result = ValueBoolean.TRUE;
             for (const [key, value] of values) {
                 if (this.identifiers.length == 1) {
-                    localEnv.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], value);
                 } else {
                     let vals;
                     if (value.isList()) vals = value.value;
                     else if (value.isSet()) vals = value.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
-                        localEnv.put(this.identifiers[i], vals[i]);
+                        environment.put(this.identifiers[i], vals[i]);
                     }
                 }
-                result = this.block.evaluate(localEnv);
+                result = this.block.evaluate(environment);
                 if (result instanceof ValueControlBreak) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -604,15 +621,21 @@ export class NodeFor {
                     break;
                 }
             }
+            if (this.identifiers.length == 1) {
+                environment.remove(this.identifiers[0]);
+            } else {
+                for (let i = 0; i < this.identifiers.length; i++) {
+                    environment.remove(this.identifiers[i]);
+                }
+            }
             return result;
         }
         if (list instanceof ValueString) {
-            const localEnv = environment.newEnv();
             const str = list.value;
             let result = ValueBoolean.TRUE;
             for (let i = 0; i < str.length; i++) {
-                localEnv.put(this.identifiers[0], new ValueString(str.substring(i, i + 1)));
-                result = this.block.evaluate(localEnv);
+                environment.put(this.identifiers[0], new ValueString(str.substring(i, i + 1)));
+                result = this.block.evaluate(environment);
                 if (result instanceof ValueControlBreak) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -622,6 +645,7 @@ export class NodeFor {
                 } else if (result instanceof ValueControlReturn) {
                     break;
                 }
+                environment.remove(this.identifiers[0]);
             }
             return result;
         }

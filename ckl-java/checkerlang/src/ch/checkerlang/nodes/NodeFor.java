@@ -64,17 +64,16 @@ public class NodeFor implements Node {
             if (list.isObject()) values = new ArrayList<>(list.asObject().value.values());
             else values = list.asList().getValue();
             Value result = ValueBoolean.TRUE;
-            Environment localEnv = environment.newEnv();
             for (Value value : values) {
                 if (identifiers.size() == 1) {
-                    localEnv.put(identifiers.get(0), value);
+                    environment.put(identifiers.get(0), value);
                 } else {
                     List<Value> vals = value.asList().getValue();
                     for (int i = 0; i < identifiers.size(); i++) {
-                        localEnv.put(identifiers.get(i), vals.get(i));
+                        environment.put(identifiers.get(i), vals.get(i));
                     }
                 }
-                result = block.evaluate(localEnv);
+                result = block.evaluate(environment);
                 if (result.isBreak()) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -83,6 +82,13 @@ public class NodeFor implements Node {
                     // continue
                 } else if (result.isReturn()) {
                     break;
+                }
+            }
+            if (identifiers.size() == 1) {
+                environment.remove(identifiers.get(0));
+            } else {
+                for (int i = 0; i < identifiers.size(); i++) {
+                    environment.remove(identifiers.get(i));
                 }
             }
             return result;
@@ -90,10 +96,9 @@ public class NodeFor implements Node {
         if (list.isString()) {
             String str = list.asString().getValue();
             Value result = ValueBoolean.TRUE;
-            Environment localEnv = environment.newEnv();
             for (int i = 0; i < str.length(); i++) {
-                localEnv.put(identifiers.get(0), new ValueString(str.substring(i, i + 1)));
-                result = block.evaluate(localEnv);
+                environment.put(identifiers.get(0), new ValueString(str.substring(i, i + 1)));
+                result = block.evaluate(environment);
                 if (result.isBreak()) {
                     result = ValueBoolean.TRUE;
                     break;
@@ -104,6 +109,7 @@ public class NodeFor implements Node {
                     break;
                 }
             }
+            environment.remove(identifiers.get(0));
             return result;
         }
         throw new ControlErrorException("Cannot iterate over " + list, pos);
