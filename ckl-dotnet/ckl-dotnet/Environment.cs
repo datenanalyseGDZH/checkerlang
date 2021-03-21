@@ -69,10 +69,18 @@ namespace CheckerLang
 
         public IEnumerable<string> GetSymbols()
         {
-            var result = new List<string>();
-            result.AddRange(map.Keys);
-            if (parent != null) result.AddRange(parent.GetSymbols());
-            result.Sort();
+            var result = new SortedSet<string>();
+            if (parent != null)
+            {
+                foreach (var item in parent.GetSymbols())
+                {
+                    result.Add(item);
+                }
+            }
+            foreach (var item in map.Keys)
+            {
+                result.Add(item);
+            }
             return result;
         }
         

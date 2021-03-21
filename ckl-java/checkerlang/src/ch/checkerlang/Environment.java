@@ -151,11 +151,10 @@ public class Environment {
     }
 
     public List<String> getSymbols() {
-        List<String> result = new ArrayList<>();
-        result.addAll(map.keySet());
+        Set<String> result = new TreeSet<>();
         if (parent != null) result.addAll(parent.getSymbols());
-        Collections.sort(result);
-        return result;
+        result.addAll(map.keySet());
+        return new ArrayList<>(result);
     }
 
     public List<String> getLocalSymbols() {

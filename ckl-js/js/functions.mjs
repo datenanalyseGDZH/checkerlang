@@ -97,8 +97,16 @@ export class Environment {
     }
 
     getSymbols() {
-        let result = [...this.map.keys()];
-        if (this.parent !== null) result = result.concat(this.parent.getSymbols());
+        let result = new Set();
+        if (this.parent !== null) {
+            for (const symbol of this.parent.getSymbols()) {
+                result.add(symbol);
+            }
+        }
+        for (const symbol of this.map.keys()) {
+            result.add(symbol);
+        }
+        result = [...result];
         result.sort();
         return result;
     }
