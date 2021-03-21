@@ -119,7 +119,7 @@ function loadState() {
     contents.querySelector("textarea").focus();
 }
 
-const interpreter = new Interpreter(false);
+const interpreter = new Interpreter(false, true);
 
 const keypress = function(event) {
     if (event.ctrlKey && event.code === "Enter") {
