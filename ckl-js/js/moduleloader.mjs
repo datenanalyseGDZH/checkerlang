@@ -1,9 +1,11 @@
 import { RuntimeError } from "./errors.mjs";
 import { system } from "./system.mjs";
-import { modulemath } from "./module_math.mjs";
 import { modulecore } from "./module_core.mjs";
 import { moduleio } from "./module_io.mjs";
+import { modulelists } from "./module_lists.mjs";
+import { modulemath } from "./module_math.mjs";
 import { modulerandom } from "./module_random.mjs";
+import { modulesets } from "./module_sets.mjs";
 import { modulestat } from "./module_stat.mjs";
 import { modulesys } from "./module_sys.mjs";
 
@@ -11,8 +13,10 @@ export const moduleloader = function(modulefile, pos) {
     switch (modulefile) {
         case "core.ckl": return modulecore;
         case "io.ckl": return moduleio;
+        case "lists.ckl": return modulelists;
         case "math.ckl": return modulemath;
         case "random.ckl": return modulerandom;
+        case "sets.ckl": return modulesets;
         case "stat.ckl": return modulestat;
         case "sys.ckl": return modulesys;
         default:

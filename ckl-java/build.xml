@@ -54,8 +54,10 @@
         <copy file="src/module-base.ckl" todir="build"/>
         <copy file="src/module-core.ckl" todir="build"/>
         <copy file="src/module-io.ckl" todir="build"/>
+        <copy file="src/module-lists.ckl" todir="build"/>
         <copy file="src/module-math.ckl" todir="build"/>
         <copy file="src/module-random.ckl" todir="build"/>
+        <copy file="src/module-sets.ckl" todir="build"/>
         <copy file="src/module-stat.ckl" todir="build"/>
         <copy file="src/module-sys.ckl" todir="build"/>
 	    <jar basedir="build" destfile="../dist/ckl-java-repl.jar">

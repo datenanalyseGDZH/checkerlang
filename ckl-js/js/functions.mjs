@@ -23,7 +23,6 @@ import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Args } from "./interpreter.mjs";
 import { system } from "./system.mjs";
-import { moduleloader } from "./moduleloader.mjs";
 import { modulebase } from "./module_base.mjs";
 import { modulelegacy } from "./module_legacy.mjs";
 

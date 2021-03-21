@@ -34,6 +34,26 @@ bind_native("sqrt");
 bind_native("tan");
 
 "
+log2(x)
+
+Returns the logarithm of x to base 2.
+
+: int(log2(1024)) ==> 10
+"
+def log2(x) round(log(x) / log(2), 12);
+
+
+"
+log10(x)
+
+Returns the logarithm of x to base 10.
+
+: int(log10(1000)) ==> 3
+"
+def log10(x) round(log(x) / log(10), 12);
+
+
+"
 is_even(n)
 
 Returns TRUE if the number is even.
