@@ -22,6 +22,7 @@
 # https://en.wikipedia.org/wiki/Eight_queens_puzzle
 
 require io unqualified;
+require lists import [reverse];
 
 def empty_board = [
 ". . . . ",

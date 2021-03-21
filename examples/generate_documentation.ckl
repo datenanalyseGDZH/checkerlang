@@ -21,7 +21,11 @@
 # This extracts the documentation of the functions and
 # writes it as a HTML file.
 
-require io unqualified;
+require sys;
+
+for module in sys->checkerlang_modules do
+    require module unqualified;
+end;
 
 def out = file_output("documentation/checkerlang_functions.html");
 

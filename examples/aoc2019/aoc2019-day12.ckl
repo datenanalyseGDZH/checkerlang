@@ -1,8 +1,9 @@
 # advent of code day 12
 # https://adventofcode.com/2019/day/12
 
-require io [read_file, println];
-require math [lcm];
+require io import [read_file, println];
+require lists import [map_list, reduce];
+require math import [lcm];
 
 # Part 1
 

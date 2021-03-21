@@ -26,14 +26,14 @@ namespace CheckerLang
 {
     public class NodeRequire : Node
     {
-        private string modulespec;
+        private Node modulespec;
         private string name;
         private bool unqualified;
         private Dictionary<string, string> symbols;
 
         private SourcePos pos;
 
-        public NodeRequire(string modulespec, string name, bool unqualified, Dictionary<string, string> symbols, SourcePos pos) {
+        public NodeRequire(Node modulespec, string name, bool unqualified, Dictionary<string, string> symbols, SourcePos pos) {
             this.modulespec = modulespec;
             this.name = name;
             this.unqualified = unqualified;
@@ -44,11 +44,26 @@ namespace CheckerLang
         public Value Evaluate(Environment environment) {
             var modules = environment.GetModules();
             // resolve module file, identifier and name
-            var modulefile = modulespec;
+            string spec;
+            if (modulespec is NodeIdentifier) {
+                spec = ((NodeIdentifier) this.modulespec).GetValue();
+                if (environment.IsDefined(spec)) {
+                    var val = environment.Get(spec, this.pos);
+                    if (!(val.IsObject() && val.AsObject().isModule)) {
+                        if (!val.IsString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + val.Type(), pos);
+                        spec = val.AsString().GetValue();
+                    }
+                }
+            } else {
+                var specval = this.modulespec.Evaluate(environment);
+                if (!specval.IsString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + specval.Type(), pos);
+                spec = specval.AsString().GetValue();
+            }
+            var modulefile = spec;
             if (!modulefile.EndsWith(".ckl")) modulefile += ".ckl";
             string moduleidentifier;
             var modulename = this.name;
-            var parts = modulespec.Split('/');
+            var parts = spec.Split('/');
             var name = parts[parts.Length - 1];
             if (name.EndsWith(".ckl")) name = name.Substring(0, name.Length - 4);
             moduleidentifier = name;

@@ -348,7 +348,7 @@ interpreter_test("Methods2", "' xy '!>trim()", "'xy'");
 interpreter_test("Methods3", "require lists; [1, 2, 3]!>lists->reverse()", "[3, 2, 1]");
 interpreter_test("Methods4", "[2, 4, 6] !> all(fn(x) x % 2 == 0)", "TRUE");
 interpreter_test("Methods5", "12 !> max(2)", "12");
-interpreter_test("Methods6", "require lists unqualified; [1, 2, 3] !> reverse() !> join(sep = '-')", "'3-2-1'");
+interpreter_test("Methods6", "require lists; [1, 2, 3] !> lists->reverse() !> join(sep = '-')", "'3-2-1'");
 interpreter_test("WhileStringTest", "def s = '012'; while s !> starts_with('0') do s = s !> substr(1); end;", "'12'");
 interpreter_test("NumConv1", "int('-5')", "-5");
 interpreter_test_exception("NumConv2", "int('-5.5')");

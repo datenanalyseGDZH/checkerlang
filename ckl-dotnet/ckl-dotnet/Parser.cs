@@ -126,10 +126,7 @@ namespace CheckerLang
             if (lexer.MatchIf("require", TokenType.Keyword)) 
             {
                 var pos = lexer.GetPos();
-                var token = lexer.Next();
-                if (token.type != TokenType.Identifier && token.type != TokenType.String)
-                    throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
-                var modulespec = token.value;
+                var modulespec = ParseIfExpr(lexer);
                 var unqualified = false;
                 Dictionary<string, string> symbols = null;
                 string name = null;
@@ -141,7 +138,7 @@ namespace CheckerLang
                 {
                     name = lexer.MatchIdentifier();
                 }
-                else if (lexer.MatchIf("[", TokenType.Interpunction))
+                else if (lexer.MatchIf("import", TokenType.Identifier, "[", TokenType.Interpunction))
                 {
                     symbols = new Dictionary<string, string>();
                     while (!lexer.Peekn(1, "]", TokenType.Interpunction)) {

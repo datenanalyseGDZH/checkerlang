@@ -1,7 +1,8 @@
 # advent of code day 6
 # https://adventofcode.com/2019/day/6
 
-require io [read_file, println];
+require io import [read_file, println];
+require lists import [map_list, for_each, append_all];
 
 # Part 1
 

@@ -123,10 +123,7 @@ public class Parser {
         }
         if (lexer.matchIf("require", TokenType.Keyword)) {
             SourcePos pos = lexer.getPos();
-            Token token = lexer.next();
-            if (token.type != TokenType.Identifier && token.type != TokenType.String)
-                throw new SyntaxError("Expected module specifier, but got " + token.value, token.pos);
-            String modulespec = token.value;
+            Node modulespec = parseIfExpr(lexer);
             boolean unqualified = false;
             Map<String, String> symbols = null;
             String name = null;
@@ -134,7 +131,7 @@ public class Parser {
                 unqualified = true;
             } else if (lexer.matchIf("as", TokenType.Keyword)) {
                 name = lexer.matchIdentifier();
-            } else if (lexer.matchIf("[", TokenType.Interpunction)) {
+            } else if (lexer.matchIf("import", TokenType.Identifier, "[", TokenType.Interpunction)) {
                 symbols = new HashMap<>();
                 while (!lexer.peekn(1, "]", TokenType.Interpunction)) {
                     String symbol = lexer.matchIdentifier();

@@ -1,7 +1,7 @@
 # advent of code day 9
 # https://adventofcode.com/2019/day/9
 
-require io [read_file, printf];
+require io import [read_file, printf];
 require intcomputer as c;
 
 # Part 1

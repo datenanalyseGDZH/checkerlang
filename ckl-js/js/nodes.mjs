@@ -1216,11 +1216,38 @@ export class NodeRequire {
     evaluate(environment) {
         const modules = environment.getModules();
         // resolve module file, identifier and name
-        let modulefile = this.modulespec;
+        let modulespec = null;
+        if (this.modulespec instanceof NodeIdentifier) {
+            modulespec = this.modulespec.value;
+            /*
+            If we have an identifier node, then two cases can happen:
+            either the identifier signifies a module, then we want to retain the identifier
+            otherwise, we evaluate the identifier and use the (necessarily) string value
+            thus resulting. This allows things like 
+                for module in sys->checkerlang_modules do
+                    require module unqualified;
+                done;
+            while retaining the possibility to use
+                require math
+            even if the math module is already loaded (and thus "math" is defined in the environment)
+            */
+            if (environment.isDefined(modulespec)) {
+                const val = environment.get(modulespec, this.pos);
+                if (!(val.isObject() && val.isModule)) {
+                    if (!val.isString()) throw new RuntimeError("Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
+                    modulespec = val.value;
+                }
+            }
+        } else {
+            modulespec = this.modulespec.evaluate(environment);
+            if (!modulespec.isString()) throw new RuntimeError("Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
+            modulespec = modulespec.value;
+        }
+        let modulefile = modulespec;
         if (!modulefile.endsWith(".ckl")) modulefile += ".ckl";
         let moduleidentifier = null;
         let modulename = this.name;
-        const parts = this.modulespec.split("/");
+        const parts = modulespec.split("/");
         let name = parts[parts.length - 1];
         if (name.endsWith(".ckl")) name = name.substr(0, name.length - 4);
         moduleidentifier = name;

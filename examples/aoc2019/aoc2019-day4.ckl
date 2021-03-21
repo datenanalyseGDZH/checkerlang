@@ -1,7 +1,8 @@
 # advent of code day 4
 # https://adventofcode.com/2019/day/4
 
-require io [println];
+require io import [println];
+require lists import [filter];
 
 # Part 1
 

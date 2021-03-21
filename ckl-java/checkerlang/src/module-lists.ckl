@@ -197,41 +197,6 @@ end;
 
 
 "
-enumerate(obj)
-
-Enumerates the contents of a list, set or map.
-
-The result for a list is a list of pairs (index, value).
-
-The result for a map is a list of pairs (key, value).
-
-A set cannot be enumerated, since it does not have a
-well defined ordering of its elements. If you wish to
-enumerate a set, then convert it into a list and sort it
-first, e.g. enumerate(sorted(list(some_set))). But be aware
-that this involves a costly sort operation, maybe you
-should think about using a list instead of the set in
-the first place.
-
-For other data types, an error is thrown.
-
-Typically, you would use this in a for loop, e.g.
-  for entry in enumerate(some_list) do
-    println('index = ' + entry[0] + ', value = ' + entry[1]);
-  end;
-
-: enumerate(['a', 'b', 'c']) ==> [[0, 'a'], [1, 'b'], [2, 'c']]
-: enumerate(<<<a => 5, b => 6, c => 7>>>) ==> [['a', 5], ['b', 6], ['c', 7]]
-"
-def enumerate(obj) do
-    if is_list(obj) then [[i, obj[i]] for i in range(length(obj))]
-    elif is_map(obj) then [[key, obj[key]] for key in set(obj)]
-    elif is_object(obj) then [[member, obj[member]] for member in obj]
-    else error("can only enumerate list, set and map objects")
-end;
-
-
-"
 unique(lst, key = identity)
 
 Makes the elements of the list unique, by discarding duplicates,

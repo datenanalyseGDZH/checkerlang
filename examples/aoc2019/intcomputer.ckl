@@ -3,6 +3,7 @@
 # the state of the intcomputer after day 9.
 
 require io;
+require lists import [map_list, first, rest];
 
 def trace = FALSE;
 

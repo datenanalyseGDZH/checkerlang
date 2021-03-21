@@ -27,14 +27,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class NodeRequire implements Node {
-    private String modulespec;
+    private Node modulespec;
     private String name;
     private boolean unqualified;
     private Map<String, String> symbols;
 
     private SourcePos pos;
 
-    public NodeRequire(String modulespec, String name, boolean unqualified, Map<String, String> symbols, SourcePos pos) {
+    public NodeRequire(Node modulespec, String name, boolean unqualified, Map<String, String> symbols, SourcePos pos) {
         this.modulespec = modulespec;
         this.name = name;
         this.unqualified = unqualified;
@@ -45,11 +45,26 @@ public class NodeRequire implements Node {
     public Value evaluate(Environment environment) {
         Map<String, Environment> modules = environment.getModules();
         // resolve module file, identifier and name
-        String modulefile = this.modulespec;
+        String modulespec = null;
+        if (this.modulespec instanceof NodeIdentifier) {
+            modulespec = ((NodeIdentifier) this.modulespec).getValue();
+            if (environment.isDefined(modulespec)) {
+                Value val = environment.get(modulespec, this.pos);
+                if (!(val.isObject() && val.asObject().isModule)) {
+                    if (!val.isString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + val.type(), this.pos);
+                    modulespec = val.asString().getValue();
+                }
+            }
+        } else {
+            Value spec = this.modulespec.evaluate(environment);
+            if (!spec.isString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + spec.type(), this.pos);
+            modulespec = spec.asString().getValue();
+        }
+        String modulefile = modulespec;
         if (!modulefile.endsWith(".ckl")) modulefile += ".ckl";
         String moduleidentifier = null;
         String modulename = this.name;
-        String[] parts = this.modulespec.split("/");
+        String[] parts = modulespec.split("/");
         String name = parts[parts.length - 1];
         if (name.endsWith(".ckl")) name = name.substring(0, name.length() - 4);
         moduleidentifier = name;

@@ -19,26 +19,43 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <h1>CKL 3.4.0-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
+<li><a href='#E'>E</a></li>
 <li><a href='#MAXINT'>MAXINT</a></li>
 <li><a href='#MININT'>MININT</a></li>
+<li><a href='#PI'>PI</a></li>
 <li><a href='#abs'>abs</a></li>
+<li><a href='#acos'>acos</a></li>
+<li><a href='#add'>add</a></li>
 <li><a href='#add'>add</a></li>
 <li><a href='#all'>all</a></li>
 <li><a href='#any'>any</a></li>
 <li><a href='#append'>append</a></li>
+<li><a href='#append'>append</a></li>
 <li><a href='#append_all'>append_all</a></li>
 <li><a href='#apply'>apply</a></li>
+<li><a href='#asin'>asin</a></li>
+<li><a href='#atan'>atan</a></li>
+<li><a href='#atan2'>atan2</a></li>
 <li><a href='#bind_native'>bind_native</a></li>
 <li><a href='#body'>body</a></li>
+<li><a href='#body'>body</a></li>
+<li><a href='#boolean'>boolean</a></li>
 <li><a href='#boolean'>boolean</a></li>
 <li><a href='#ceiling'>ceiling</a></li>
+<li><a href='#ceiling'>ceiling</a></li>
+<li><a href='#choice'>choice</a></li>
+<li><a href='#choices'>choices</a></li>
 <li><a href='#chunks'>chunks</a></li>
 <li><a href='#close'>close</a></li>
 <li><a href='#compare'>compare</a></li>
+<li><a href='#compare'>compare</a></li>
 <li><a href='#const'>const</a></li>
 <li><a href='#contains'>contains</a></li>
+<li><a href='#contains'>contains</a></li>
+<li><a href='#cos'>cos</a></li>
 <li><a href='#count'>count</a></li>
 <li><a href='#curry'>curry</a></li>
+<li><a href='#date'>date</a></li>
 <li><a href='#date'>date</a></li>
 <li><a href='#date_day'>date_day</a></li>
 <li><a href='#date_hour'>date_hour</a></li>
@@ -47,53 +64,84 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#date_second'>date_second</a></li>
 <li><a href='#date_year'>date_year</a></li>
 <li><a href='#decimal'>decimal</a></li>
+<li><a href='#decimal'>decimal</a></li>
 <li><a href='#delete_at'>delete_at</a></li>
+<li><a href='#delete_at'>delete_at</a></li>
+<li><a href='#diff'>diff</a></li>
+<li><a href='#div'>div</a></li>
 <li><a href='#div'>div</a></li>
 <li><a href='#div0'>div0</a></li>
 <li><a href='#ends_with'>ends_with</a></li>
+<li><a href='#ends_with'>ends_with</a></li>
 <li><a href='#enumerate'>enumerate</a></li>
+<li><a href='#equals'>equals</a></li>
 <li><a href='#equals'>equals</a></li>
 <li><a href='#esc'>esc</a></li>
 <li><a href='#escape_pattern'>escape_pattern</a></li>
+<li><a href='#escape_pattern'>escape_pattern</a></li>
 <li><a href='#eval'>eval</a></li>
+<li><a href='#eval'>eval</a></li>
+<li><a href='#exp'>exp</a></li>
 <li><a href='#file_input'>file_input</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#filter'>filter</a></li>
+<li><a href='#find'>find</a></li>
 <li><a href='#find'>find</a></li>
 <li><a href='#first'>first</a></li>
 <li><a href='#first_n'>first_n</a></li>
 <li><a href='#flatten'>flatten</a></li>
 <li><a href='#floor'>floor</a></li>
+<li><a href='#floor'>floor</a></li>
 <li><a href='#for_each'>for_each</a></li>
 <li><a href='#format_date'>format_date</a></li>
+<li><a href='#format_date'>format_date</a></li>
+<li><a href='#gcd'>gcd</a></li>
+<li><a href='#geometric_mean'>geometric_mean</a></li>
 <li><a href='#get_output_string'>get_output_string</a></li>
 <li><a href='#greater'>greater</a></li>
+<li><a href='#greater'>greater</a></li>
+<li><a href='#greater_equals'>greater_equals</a></li>
 <li><a href='#greater_equals'>greater_equals</a></li>
 <li><a href='#grep'>grep</a></li>
 <li><a href='#grouped'>grouped</a></li>
+<li><a href='#harmonic_mean'>harmonic_mean</a></li>
+<li><a href='#identity'>identity</a></li>
 <li><a href='#identity'>identity</a></li>
 <li><a href='#if_empty'>if_empty</a></li>
+<li><a href='#if_empty'>if_empty</a></li>
+<li><a href='#if_null'>if_null</a></li>
 <li><a href='#if_null'>if_null</a></li>
 <li><a href='#if_null_or_empty'>if_null_or_empty</a></li>
+<li><a href='#if_null_or_empty'>if_null_or_empty</a></li>
+<li><a href='#info'>info</a></li>
 <li><a href='#info'>info</a></li>
 <li><a href='#insert_at'>insert_at</a></li>
+<li><a href='#insert_at'>insert_at</a></li>
 <li><a href='#int'>int</a></li>
+<li><a href='#int'>int</a></li>
+<li><a href='#intersection'>intersection</a></li>
 <li><a href='#interval'>interval</a></li>
 <li><a href='#is_alphanumerical'>is_alphanumerical</a></li>
 <li><a href='#is_boolean'>is_boolean</a></li>
 <li><a href='#is_decimal'>is_decimal</a></li>
 <li><a href='#is_empty'>is_empty</a></li>
+<li><a href='#is_empty'>is_empty</a></li>
+<li><a href='#is_even'>is_even</a></li>
 <li><a href='#is_func'>is_func</a></li>
 <li><a href='#is_int'>is_int</a></li>
 <li><a href='#is_list'>is_list</a></li>
 <li><a href='#is_map'>is_map</a></li>
 <li><a href='#is_negative'>is_negative</a></li>
 <li><a href='#is_not_empty'>is_not_empty</a></li>
+<li><a href='#is_not_empty'>is_not_empty</a></li>
 <li><a href='#is_not_null'>is_not_null</a></li>
+<li><a href='#is_not_null'>is_not_null</a></li>
+<li><a href='#is_null'>is_null</a></li>
 <li><a href='#is_null'>is_null</a></li>
 <li><a href='#is_numeric'>is_numeric</a></li>
 <li><a href='#is_numerical'>is_numerical</a></li>
 <li><a href='#is_object'>is_object</a></li>
+<li><a href='#is_odd'>is_odd</a></li>
 <li><a href='#is_positive'>is_positive</a></li>
 <li><a href='#is_set'>is_set</a></li>
 <li><a href='#is_string'>is_string</a></li>
@@ -104,39 +152,67 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#label_data'>label_data</a></li>
 <li><a href='#last'>last</a></li>
 <li><a href='#last_n'>last_n</a></li>
+<li><a href='#lcm'>lcm</a></li>
+<li><a href='#length'>length</a></li>
 <li><a href='#length'>length</a></li>
 <li><a href='#less'>less</a></li>
+<li><a href='#less'>less</a></li>
+<li><a href='#less_equals'>less_equals</a></li>
 <li><a href='#less_equals'>less_equals</a></li>
 <li><a href='#list'>list</a></li>
+<li><a href='#list'>list</a></li>
+<li><a href='#log'>log</a></li>
+<li><a href='#log10'>log10</a></li>
+<li><a href='#log2'>log2</a></li>
+<li><a href='#lower'>lower</a></li>
 <li><a href='#lower'>lower</a></li>
 <li><a href='#ls'>ls</a></li>
+<li><a href='#ls'>ls</a></li>
+<li><a href='#map'>map</a></li>
 <li><a href='#map'>map</a></li>
 <li><a href='#map_get'>map_get</a></li>
 <li><a href='#map_get_pattern'>map_get_pattern</a></li>
 <li><a href='#map_list'>map_list</a></li>
 <li><a href='#matches'>matches</a></li>
+<li><a href='#matches'>matches</a></li>
 <li><a href='#max'>max</a></li>
+<li><a href='#mean'>mean</a></li>
+<li><a href='#median'>median</a></li>
+<li><a href='#median_high'>median_high</a></li>
+<li><a href='#median_low'>median_low</a></li>
 <li><a href='#min'>min</a></li>
 <li><a href='#mod'>mod</a></li>
+<li><a href='#mod'>mod</a></li>
+<li><a href='#mul'>mul</a></li>
 <li><a href='#mul'>mul</a></li>
 <li><a href='#non_empty'>non_empty</a></li>
 <li><a href='#non_zero'>non_zero</a></li>
 <li><a href='#not_equals'>not_equals</a></li>
+<li><a href='#not_equals'>not_equals</a></li>
 <li><a href='#now'>now</a></li>
+<li><a href='#object'>object</a></li>
 <li><a href='#object'>object</a></li>
 <li><a href='#pairs'>pairs</a></li>
 <li><a href='#parse'>parse</a></li>
+<li><a href='#parse'>parse</a></li>
+<li><a href='#parse_date'>parse_date</a></li>
 <li><a href='#parse_date'>parse_date</a></li>
 <li><a href='#parse_json'>parse_json</a></li>
+<li><a href='#parse_json'>parse_json</a></li>
+<li><a href='#pattern'>pattern</a></li>
 <li><a href='#pattern'>pattern</a></li>
 <li><a href='#permutations'>permutations</a></li>
+<li><a href='#pow'>pow</a></li>
 <li><a href='#print'>print</a></li>
 <li><a href='#printf'>printf</a></li>
 <li><a href='#println'>println</a></li>
 <li><a href='#process_lines'>process_lines</a></li>
 <li><a href='#prod'>prod</a></li>
 <li><a href='#put'>put</a></li>
+<li><a href='#put'>put</a></li>
 <li><a href='#q'>q</a></li>
+<li><a href='#random'>random</a></li>
+<li><a href='#range'>range</a></li>
 <li><a href='#range'>range</a></li>
 <li><a href='#read'>read</a></li>
 <li><a href='#read_all'>read_all</a></li>
@@ -144,46 +220,83 @@ pre { font-family: Courier New; font-height: 12pt; white-space: pre; }
 <li><a href='#readln'>readln</a></li>
 <li><a href='#reduce'>reduce</a></li>
 <li><a href='#remove'>remove</a></li>
+<li><a href='#remove'>remove</a></li>
 <li><a href='#replace'>replace</a></li>
 <li><a href='#rest'>rest</a></li>
 <li><a href='#reverse'>reverse</a></li>
 <li><a href='#reverse_list'>reverse_list</a></li>
 <li><a href='#reverse_string'>reverse_string</a></li>
 <li><a href='#round'>round</a></li>
-<li><a href='#run'>run</a></li>
+<li><a href='#round'>round</a></li>
 <li><a href='#s'>s</a></li>
+<li><a href='#s'>s</a></li>
+<li><a href='#sample'>sample</a></li>
 <li><a href='#set'>set</a></li>
+<li><a href='#set'>set</a></li>
+<li><a href='#set_seed'>set_seed</a></li>
 <li><a href='#sign'>sign</a></li>
+<li><a href='#sin'>sin</a></li>
+<li><a href='#sorted'>sorted</a></li>
 <li><a href='#sorted'>sorted</a></li>
 <li><a href='#split'>split</a></li>
+<li><a href='#split'>split</a></li>
+<li><a href='#split2'>split2</a></li>
 <li><a href='#split2'>split2</a></li>
 <li><a href='#sprintf'>sprintf</a></li>
+<li><a href='#sqrt'>sqrt</a></li>
+<li><a href='#starts_with'>starts_with</a></li>
 <li><a href='#starts_with'>starts_with</a></li>
 <li><a href='#str_contains'>str_contains</a></li>
+<li><a href='#str_contains'>str_contains</a></li>
 <li><a href='#str_ends_with'>str_ends_with</a></li>
+<li><a href='#str_ends_with'>str_ends_with</a></li>
+<li><a href='#str_find'>str_find</a></li>
 <li><a href='#str_find'>str_find</a></li>
 <li><a href='#str_input'>str_input</a></li>
 <li><a href='#str_matches'>str_matches</a></li>
+<li><a href='#str_matches'>str_matches</a></li>
 <li><a href='#str_output'>str_output</a></li>
 <li><a href='#str_starts_with'>str_starts_with</a></li>
+<li><a href='#str_starts_with'>str_starts_with</a></li>
+<li><a href='#str_trim'>str_trim</a></li>
 <li><a href='#str_trim'>str_trim</a></li>
 <li><a href='#string'>string</a></li>
+<li><a href='#string'>string</a></li>
 <li><a href='#sub'>sub</a></li>
+<li><a href='#sub'>sub</a></li>
+<li><a href='#sublist'>sublist</a></li>
 <li><a href='#sublist'>sublist</a></li>
 <li><a href='#substitute'>substitute</a></li>
 <li><a href='#substr'>substr</a></li>
+<li><a href='#substr'>substr</a></li>
 <li><a href='#sum'>sum</a></li>
+<li><a href='#sum'>sum</a></li>
+<li><a href='#symmetric_diff'>symmetric_diff</a></li>
+<li><a href='#tan'>tan</a></li>
+<li><a href='#timestamp'>timestamp</a></li>
 <li><a href='#timestamp'>timestamp</a></li>
 <li><a href='#trim'>trim</a></li>
+<li><a href='#trim'>trim</a></li>
 <li><a href='#type'>type</a></li>
+<li><a href='#type'>type</a></li>
+<li><a href='#union'>union</a></li>
 <li><a href='#unique'>unique</a></li>
 <li><a href='#unlines'>unlines</a></li>
 <li><a href='#unwords'>unwords</a></li>
 <li><a href='#upper'>upper</a></li>
+<li><a href='#upper'>upper</a></li>
 <li><a href='#words'>words</a></li>
 <li><a href='#zip'>zip</a></li>
+<li><a href='#zip'>zip</a></li>
+<li><a href='#zip_map'>zip_map</a></li>
 <li><a href='#zip_map'>zip_map</a></li>
 </ul>
+<h2 id='E'>E</h2>
+<pre>
+E
+</pre><p>
+The mathematical constant E (Eulers number)
+</p>
 <h2 id='MAXINT'>MAXINT</h2>
 <pre>
 MAXINT
@@ -196,6 +309,12 @@ MININT
 </pre><p>
 The minimal int value
 </p>
+<h2 id='PI'>PI</h2>
+<pre>
+PI
+</pre><p>
+The mathematical constant PI
+</p>
 <h2 id='abs'>abs</h2>
 <pre>
 abs(n) 
@@ -206,6 +325,30 @@ Returns the absolute value of n.
 <div class='examples_title'>Examples:</div>
 <div class='example'>abs(2) ==&gt; 2</div>
 <div class='example'>abs(-3) ==&gt; 3</div>
+</pre><p>
+</div></p>
+<h2 id='acos'>acos</h2>
+<pre>
+acos(x)
+</pre><p>
+Returns the arcus cosinus of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>acos(1) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
+<h2 id='add'>add</h2>
+<pre>
+add(a, b)
+</pre><p>
+Returns the sum of a and b. For numerical values this uses usual arithmetic.
+For lists and strings it concatenates. For sets it uses union.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>add(1, 2) ==&gt; 3</div>
+<div class='example'>add(date('20100201'), 3) ==&gt; '20100204'</div>
 </pre><p>
 </div></p>
 <h2 id='add'>add</h2>
@@ -260,6 +403,19 @@ Returns the changed list.
 <div class='example'>append(set([1, 2]), 3) ==&gt; set([1, 2, 3])</div>
 </pre><p>
 </div></p>
+<h2 id='append'>append</h2>
+<pre>
+append(lst, element)
+</pre><p>
+Appends the element to the list lst. The lst may also be a set.
+Returns the changed list.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>append([1, 2], 3) ==&gt; [1, 2, 3]</div>
+<div class='example'>append(set([1, 2]), 3) ==&gt; set([1, 2, 3])</div>
+</pre><p>
+</div></p>
 <h2 id='append_all'>append_all</h2>
 <pre>
 append_all(lst, items)
@@ -286,6 +442,39 @@ Applies the function with the arguments in the list args.
 <div class='example'>apply(fn(a, b, c) a + b + c, [1, 2, 3]) ==&gt; 6</div>
 </pre><p>
 </div></p>
+<h2 id='asin'>asin</h2>
+<pre>
+asin(x)
+</pre><p>
+Returns the arcus sinus of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>asin(0) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
+<h2 id='atan'>atan</h2>
+<pre>
+atan(x)
+</pre><p>
+Returns the arcus tangens of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>atan(0) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
+<h2 id='atan2'>atan2</h2>
+<pre>
+atan2(y, x)
+</pre><p>
+Returns the arcus tangens of y / x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>atan2(0, 1) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
 <h2 id='bind_native'>bind_native</h2>
 <pre>
 bind_native(native)
@@ -303,6 +492,28 @@ Returns the body of the lambda f.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>body(fn(x) 2 * x) ==&gt; '(mul 2, x)'</div>
+</pre><p>
+</div></p>
+<h2 id='body'>body</h2>
+<pre>
+body(f)
+</pre><p>
+Returns the body of the lambda f.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>body(fn(x) 2 * x) ==&gt; '(mul 2, x)'</div>
+</pre><p>
+</div></p>
+<h2 id='boolean'>boolean</h2>
+<pre>
+boolean(obj)
+</pre><p>
+Converts the obj to a boolean, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>boolean(1) ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='boolean'>boolean</h2>
@@ -327,6 +538,35 @@ Returns the integral decimal value that is equal to or next higher than x.
 <div class='example'>ceiling(1.3) ==&gt; 2.0</div>
 </pre><p>
 </div></p>
+<h2 id='ceiling'>ceiling</h2>
+<pre>
+ceiling(x)
+</pre><p>
+Returns the integral decimal value that is equal to or next higher than x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>ceiling(1.3) ==&gt; 2.0</div>
+</pre><p>
+</div></p>
+<h2 id='choice'>choice</h2>
+<pre>
+choice(lst)
+</pre><p>
+Returns a random element from the list or set lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>choice([1, 1, 1, 1]) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='choices'>choices</h2>
+<pre>
+choices(lst, n)
+</pre><p>
+Returns a list with n random elements from the list or set lst.
+</pre><p>
+</p>
 <h2 id='chunks'>chunks</h2>
 <pre>
 chunks(obj, chunk_size)
@@ -349,6 +589,26 @@ close(conn)
 Closes the input or output connection and releases system resources.
 </pre><p>
 </p>
+<h2 id='compare'>compare</h2>
+<pre>
+compare(a, b)
+</pre><p>
+Returns an int less than 0 if a is less than b,
+0 if a is equal to b, and an int greater than 0
+if a is greater than b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>compare(1, 2) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(3, 1) &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(1, 1) == 0 ==&gt; TRUE</div>
+<div class='example'>compare('1', 2) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare('2', 1) &lt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(100, '100') &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(NULL, 1) &gt; 0 ==&gt; TRUE</div>
+<div class='example'>compare(NULL, NULL) == 0 ==&gt; TRUE</div>
+</pre><p>
+</div></p>
 <h2 id='compare'>compare</h2>
 <pre>
 compare(a, b)
@@ -401,6 +661,37 @@ if part is contained.
 <div class='example'>&lt;&lt;&lt;a =&gt; 1, b =&gt; 2&gt;&gt;&gt; !&gt; contains('b') ==&gt; TRUE</div>
 </pre><p>
 </div></p>
+<h2 id='contains'>contains</h2>
+<pre>
+contains(obj, part)
+</pre><p>
+Returns TRUE if the string obj contains part.
+If obj is a list, set or map, TRUE is returned,
+if part is contained.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>contains('abcdef', 'abc') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'cde') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'def') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'efg') ==&gt; FALSE</div>
+<div class='example'>contains(NULL, 'abc') ==&gt; FALSE</div>
+<div class='example'>contains([1, 2, 3], 2) ==&gt; TRUE</div>
+<div class='example'>&lt;&lt;1, 2, 3&gt;&gt; !&gt; contains(3) ==&gt; TRUE</div>
+<div class='example'>&lt;&lt;&lt;a =&gt; 1, b =&gt; 2&gt;&gt;&gt; !&gt; contains('b') ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='cos'>cos</h2>
+<pre>
+cos(x)
+</pre><p>
+Returns the cosinus of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>cos(PI) ==&gt; -1.0</div>
+</pre><p>
+</div></p>
 <h2 id='count'>count</h2>
 <pre>
 count(obj, elem)
@@ -427,6 +718,21 @@ args of the original function f.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>def f(a, b, c) [a, b, c]; def g = curry(f, 1); g(2, 3) ==&gt; [1, 2, 3]</div>
+</pre><p>
+</div></p>
+<h2 id='date'>date</h2>
+<pre>
+date(obj)
+</pre><p>
+Converts the obj to a date, if possible.
+If obj is a string, the format YYYYmmdd is assumed.
+If this fails, the fallback YYYYmmddHH is tried.
+</pre><p>
+See parse_date for handling other formats.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>string(date('20170102')) ==&gt; '20170102'</div>
 </pre><p>
 </div></p>
 <h2 id='date'>date</h2>
@@ -531,6 +837,17 @@ Converts the obj to a decimal, if possible.
 <div class='example'>decimal('1.2') ==&gt; 1.2</div>
 </pre><p>
 </div></p>
+<h2 id='decimal'>decimal</h2>
+<pre>
+decimal(obj)
+</pre><p>
+Converts the obj to a decimal, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>decimal('1.2') ==&gt; 1.2</div>
+</pre><p>
+</div></p>
 <h2 id='delete_at'>delete_at</h2>
 <pre>
 delete_at(lst, index)
@@ -545,6 +862,50 @@ NULL, if no element was removed
 <div class='example'>delete_at(['a', 'b', 'c', 'd'], -3) ==&gt; 'b'</div>
 <div class='example'>def lst = ['a', 'b', 'c', 'd']; delete_at(lst, 2); lst ==&gt; ['a', 'b', 'd']</div>
 <div class='example'>delete_at(['a', 'b', 'c', 'd'], 4) ==&gt; NULL</div>
+</pre><p>
+</div></p>
+<h2 id='delete_at'>delete_at</h2>
+<pre>
+delete_at(lst, index)
+</pre><p>
+Removes the element at the given index from the list lst.
+The list is changed in place. Returns the removed element or
+NULL, if no element was removed
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>delete_at(['a', 'b', 'c', 'd'], 2) ==&gt; 'c'</div>
+<div class='example'>delete_at(['a', 'b', 'c', 'd'], -3) ==&gt; 'b'</div>
+<div class='example'>def lst = ['a', 'b', 'c', 'd']; delete_at(lst, 2); lst ==&gt; ['a', 'b', 'd']</div>
+<div class='example'>delete_at(['a', 'b', 'c', 'd'], 4) ==&gt; NULL</div>
+</pre><p>
+</div></p>
+<h2 id='diff'>diff</h2>
+<pre>
+diff(seta, setb)
+</pre><p>
+Returns the difference between seta and setb, i.e. a set
+containing all elements in seta, which are not in setb.
+Also works for lists.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;3, 4&gt;&gt;) ==&gt; &lt;&lt;1, 2&gt;&gt;</div>
+<div class='example'>diff([1, 2, 3, 4], [3, 4]) ==&gt; &lt;&lt;1, 2&gt;&gt;</div>
+<div class='example'>diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;&gt;&gt;) ==&gt; &lt;&lt;1, 2, 3, 4&gt;&gt;</div>
+<div class='example'>diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;1, 2, 3, 4&gt;&gt;) ==&gt; &lt;&lt;&gt;&gt;</div>
+</pre><p>
+</div></p>
+<h2 id='div'>div</h2>
+<pre>
+div(a, b)
+</pre><p>
+Returns the value of a divided by b. If both values are ints,
+then the result is also an int. Otherwise, it is a decimal.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>div(6, 2) ==&gt; 3</div>
 </pre><p>
 </div></p>
 <h2 id='div'>div</h2>
@@ -575,6 +936,19 @@ If b is zero, the value div_0_value is returned.
 <div class='example'>div0(12, 0) ==&gt; MAXINT</div>
 <div class='example'>div0(12, 0, 0) ==&gt; 0</div>
 <div class='example'>div0(12, 0.0, 0) ==&gt; 0</div>
+</pre><p>
+</div></p>
+<h2 id='ends_with'>ends_with</h2>
+<pre>
+ends_with(str, part)
+</pre><p>
+Returns TRUE if the string str ends with part.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>ends_with('abcdef', 'def') ==&gt; TRUE</div>
+<div class='example'>ends_with('abcdef', 'abc') ==&gt; FALSE</div>
+<div class='example'>ends_with(NULL, 'abc') ==&gt; FALSE</div>
 </pre><p>
 </div></p>
 <h2 id='ends_with'>ends_with</h2>
@@ -637,6 +1011,22 @@ Integer values are propagated to decimal values, if required.
 <div class='example'>equals('a', 'b') ==&gt; FALSE</div>
 </pre><p>
 </div></p>
+<h2 id='equals'>equals</h2>
+<pre>
+equals(a, b)
+</pre><p>
+Returns TRUE if a is equals to b.
+</pre><p>
+Integer values are propagated to decimal values, if required.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>equals(1, 2) ==&gt; FALSE</div>
+<div class='example'>equals(1, 1) ==&gt; TRUE</div>
+<div class='example'>equals(1, 1.0) ==&gt; TRUE</div>
+<div class='example'>equals('a', 'b') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
 <h2 id='esc'>esc</h2>
 <pre>
 esc(str)
@@ -647,6 +1037,22 @@ Escapes the characters &lt;, &gt; and &amp; by their HTML entities.
 <div class='examples_title'>Examples:</div>
 <div class='example'>esc('a&lt;b') ==&gt; 'a&amp;lt;b'</div>
 <div class='example'>esc('&lt;code&gt;') ==&gt; '&amp;lt;code&amp;gt;'</div>
+</pre><p>
+</div></p>
+<h2 id='escape_pattern'>escape_pattern</h2>
+<pre>
+escape_pattern(s)
+</pre><p>
+Escapes special characters in the string s, so that
+the result can be used in pattern matching to match
+the literal string.
+</pre><p>
+Currently, the | and . characters are escaped.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>escape_pattern('|') ==&gt; '\\|'</div>
+<div class='example'>escape_pattern('|.|') ==&gt; '\\|\\.\\|'</div>
 </pre><p>
 </div></p>
 <h2 id='escape_pattern'>escape_pattern</h2>
@@ -676,6 +1082,28 @@ Evaluates the string or node s.
 <div class='example'>eval('1+1') ==&gt; 2</div>
 </pre><p>
 </div></p>
+<h2 id='eval'>eval</h2>
+<pre>
+eval(s)
+</pre><p>
+Evaluates the string or node s.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>eval('1+1') ==&gt; 2</div>
+</pre><p>
+</div></p>
+<h2 id='exp'>exp</h2>
+<pre>
+exp(x)
+</pre><p>
+Returns the power e ^ x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>exp(0) ==&gt; 1</div>
+</pre><p>
+</div></p>
 <h2 id='file_input'>file_input</h2>
 <pre>
 file_input(filename, encoding = 'UTF-8')
@@ -703,6 +1131,27 @@ all elements for which the predicate returns FALSE.
 <div class='example'>[1, 2, 3, 4, 5, 6] !&gt; filter(fn(x) x % 2 == 0) ==&gt; [2, 4, 6]</div>
 <div class='example'>[1, 'one', 2.2, TRUE, sum] !&gt; filter(is_numeric) ==&gt; [1, 2.2]</div>
 <div class='example'>[['abc', 1], ['bbc', 2], ['acc', 3]] !&gt; filter(fn(x) x !&gt; starts_with('a'), key = fn(x) x[0]) ==&gt; [['abc', 1], ['acc', 3]]</div>
+</pre><p>
+</div></p>
+<h2 id='find'>find</h2>
+<pre>
+find(obj, part, key = identity, start = 0)
+</pre><p>
+Returns the index of the first occurence of part in obj.
+If part is not contained in obj, then -1 is returned. Start specifies
+the search start index. It defaults to 0.
+Obj can be a string or a list. In case of a string, part can be any
+substring, in case of a list, a single element.
+In case of lists, the elements can be accessed using the
+key function.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>find('abcdefg', 'cde') ==&gt; 2</div>
+<div class='example'>find('abc|def|ghi', '|', start = 4) ==&gt; 7</div>
+<div class='example'>find('abcxyabc', 'abc', start = 5) ==&gt; 5</div>
+<div class='example'>find([1, 2, 3, 4], 3) ==&gt; 2</div>
+<div class='example'>find(['abc', 'def'], 'e', key = fn(x) x[1]) ==&gt; 1</div>
 </pre><p>
 </div></p>
 <h2 id='find'>find</h2>
@@ -774,6 +1223,17 @@ Returns the integral decimal value that is equal to or next lower than x.
 <div class='example'>floor(1.3) ==&gt; 1.0</div>
 </pre><p>
 </div></p>
+<h2 id='floor'>floor</h2>
+<pre>
+floor(x)
+</pre><p>
+Returns the integral decimal value that is equal to or next lower than x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>floor(1.3) ==&gt; 1.0</div>
+</pre><p>
+</div></p>
 <h2 id='for_each'>for_each</h2>
 <pre>
 for_each(lst, func)
@@ -793,6 +1253,47 @@ Formats the date value according to fmt and returns a string value.
 <div class='example'>format_date(date('20170102')) ==&gt; '2017-01-02 00:00:00'</div>
 <div class='example'>format_date(NULL) ==&gt; NULL</div>
 <div class='example'>format_date(date('2017010212'), fmt = 'HH') ==&gt; '12'</div>
+</pre><p>
+</div></p>
+<h2 id='format_date'>format_date</h2>
+<pre>
+format_date(date, fmt = 'yyyy-MM-dd HH:mm:ss')
+</pre><p>
+Formats the date value according to fmt and returns a string value.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>format_date(date('20170102')) ==&gt; '2017-01-02 00:00:00'</div>
+<div class='example'>format_date(NULL) ==&gt; NULL</div>
+<div class='example'>format_date(date('2017010212'), fmt = 'HH') ==&gt; '12'</div>
+</pre><p>
+</div></p>
+<h2 id='gcd'>gcd</h2>
+<pre>
+gcd(a, b)
+</pre><p>
+Calculates the greatest common divisor of two
+integers a and b.
+</pre><p>
+Use reduce([a, b, ...], gcd) to calculate the gcd
+of more than two values.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>gcd(2 * 3, 2 * 2) ==&gt; 2</div>
+<div class='example'>gcd(2 * 2  * 3 * 5, 2  * 3 * 5) ==&gt; 30</div>
+<div class='example'>reduce([2 * 2 * 3 * 5, 2 * 3 * 3, 2 * 3 * 5 * 7], gcd) ==&gt; 6</div>
+</pre><p>
+</div></p>
+<h2 id='geometric_mean'>geometric_mean</h2>
+<pre>
+geometric_mean(lst)
+</pre><p>
+Returns the geometric mean of lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>round(geometric_mean([54, 24, 36]), 1) ==&gt; 36.0</div>
 </pre><p>
 </div></p>
 <h2 id='get_output_string'>get_output_string</h2>
@@ -817,6 +1318,32 @@ Returns TRUE if a is greater than b.
 <div class='example'>greater(1, 2) ==&gt; FALSE</div>
 <div class='example'>greater(1, 1) ==&gt; FALSE</div>
 <div class='example'>greater(2, 1) ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='greater'>greater</h2>
+<pre>
+greater(a, b)
+</pre><p>
+Returns TRUE if a is greater than b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>greater(1, 2) ==&gt; FALSE</div>
+<div class='example'>greater(1, 1) ==&gt; FALSE</div>
+<div class='example'>greater(2, 1) ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='greater_equals'>greater_equals</h2>
+<pre>
+greater_equals(a, b)
+</pre><p>
+Returns TRUE if a is greater than or equals to b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>greater_equals(1, 2) ==&gt; FALSE</div>
+<div class='example'>greater_equals(1, 1) ==&gt; TRUE</div>
+<div class='example'>greater_equals(2, 1) ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='greater_equals'>greater_equals</h2>
@@ -869,6 +1396,30 @@ equal elements next to each other.
 <div class='example'>[[1, 'a'], [1, 'b'], [2, 'c']] !&gt; grouped(key = fn(x) x[0]) ==&gt; [[[1, 'a'], [1, 'b']], [[2, 'c']]]</div>
 </pre><p>
 </div></p>
+<h2 id='harmonic_mean'>harmonic_mean</h2>
+<pre>
+harmonic_mean(lst)
+</pre><p>
+Returns the harmonic mean of lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>round(harmonic_mean([40, 60]), 1) ==&gt; 48.0</div>
+<div class='example'>round(harmonic_mean([2.5, 3, 10]), 1) ==&gt; 3.6</div>
+</pre><p>
+</div></p>
+<h2 id='identity'>identity</h2>
+<pre>
+identity(obj)
+</pre><p>
+Returns obj.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>identity(1) ==&gt; 1</div>
+<div class='example'>identity('a') ==&gt; 'a'</div>
+</pre><p>
+</div></p>
 <h2 id='identity'>identity</h2>
 <pre>
 identity(obj)
@@ -891,6 +1442,30 @@ Returns b if a is an empty string otherwise returns a.
 <div class='examples_title'>Examples:</div>
 <div class='example'>if_empty(1, 2) ==&gt; 1</div>
 <div class='example'>if_empty('', 2) ==&gt; 2</div>
+</pre><p>
+</div></p>
+<h2 id='if_empty'>if_empty</h2>
+<pre>
+if_empty(a, b)
+</pre><p>
+Returns b if a is an empty string otherwise returns a.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>if_empty(1, 2) ==&gt; 1</div>
+<div class='example'>if_empty('', 2) ==&gt; 2</div>
+</pre><p>
+</div></p>
+<h2 id='if_null'>if_null</h2>
+<pre>
+if_null(a, b)
+</pre><p>
+Returns b if a is NULL otherwise returns a.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>if_null(1, 2) ==&gt; 1</div>
+<div class='example'>if_null(NULL, 2) ==&gt; 2</div>
 </pre><p>
 </div></p>
 <h2 id='if_null'>if_null</h2>
@@ -918,6 +1493,19 @@ Returns b if a is null or an empty string otherwise returns a.
 <div class='example'>if_null_or_empty('', 2) ==&gt; 2</div>
 </pre><p>
 </div></p>
+<h2 id='if_null_or_empty'>if_null_or_empty</h2>
+<pre>
+if_null_or_empty(a, b)
+</pre><p>
+Returns b if a is null or an empty string otherwise returns a.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>if_null_or_empty(1, 2) ==&gt; 1</div>
+<div class='example'>if_null_or_empty(NULL, 2) ==&gt; 2</div>
+<div class='example'>if_null_or_empty('', 2) ==&gt; 2</div>
+</pre><p>
+</div></p>
 <h2 id='info'>info</h2>
 <pre>
 info(obj)
@@ -925,6 +1513,31 @@ info(obj)
 Returns the info associated with an object.
 </pre><p>
 </p>
+<h2 id='info'>info</h2>
+<pre>
+info(obj)
+</pre><p>
+Returns the info associated with an object.
+</pre><p>
+</p>
+<h2 id='insert_at'>insert_at</h2>
+<pre>
+insert_at(lst, index, value)
+</pre><p>
+Inserts the element at the given index of the list lst.
+The list is changed in place. Returns the changed list.
+If index is out of bounds, the list is not changed at all.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>insert_at([1, 2, 3], 0, 9) ==&gt; [9, 1, 2, 3]</div>
+<div class='example'>insert_at([1, 2, 3], 2, 9) ==&gt; [1, 2, 9, 3]</div>
+<div class='example'>insert_at([1, 2, 3], 3, 9) ==&gt; [1, 2, 3, 9]</div>
+<div class='example'>insert_at([1, 2, 3], -1, 9) ==&gt; [1, 2, 3, 9]</div>
+<div class='example'>insert_at([1, 2, 3], -2, 9) ==&gt; [1, 2, 9, 3]</div>
+<div class='example'>insert_at([1, 2, 3], 4, 9) ==&gt; [1, 2, 3]</div>
+</pre><p>
+</div></p>
 <h2 id='insert_at'>insert_at</h2>
 <pre>
 insert_at(lst, index, value)
@@ -952,6 +1565,31 @@ Converts the obj to an int, if possible.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>int('1') ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='int'>int</h2>
+<pre>
+int(obj)
+</pre><p>
+Converts the obj to an int, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>int('1') ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='intersection'>intersection</h2>
+<pre>
+intersection(seta, setb)
+</pre><p>
+Returns the intersection of the two sets. Also works for lists.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>intersection(&lt;&lt;1, 2, 3&gt;&gt;, &lt;&lt;2, 3, 4&gt;&gt;) ==&gt; &lt;&lt;2, 3&gt;&gt;</div>
+<div class='example'>intersection([1, 2, 3], [2, 3, 4]) ==&gt; &lt;&lt;2, 3&gt;&gt;</div>
+<div class='example'>intersection(&lt;&lt;1, 2&gt;&gt;, &lt;&lt;3, 4&gt;&gt;) ==&gt; &lt;&lt;&gt;&gt;</div>
+<div class='example'>intersection(&lt;&lt;1, 2&gt;&gt;, &lt;&lt;&gt;&gt;) ==&gt; &lt;&lt;&gt;&gt;</div>
 </pre><p>
 </div></p>
 <h2 id='interval'>interval</h2>
@@ -1020,6 +1658,36 @@ Strings are empty, if the contain no characters. NULL is always empty.
 <div class='example'>is_empty(&lt;&lt;&gt;&gt;) ==&gt; TRUE</div>
 <div class='example'>is_empty(set([1, 2])) ==&gt; FALSE</div>
 <div class='example'>is_empty('') ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='is_empty'>is_empty</h2>
+<pre>
+is_empty(obj)
+</pre><p>
+Returns TRUE, if the obj is empty.
+Lists, sets and maps are empty, if they do not contain elements.
+Strings are empty, if the contain no characters. NULL is always empty.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_empty(NULL) ==&gt; TRUE</div>
+<div class='example'>is_empty(1) ==&gt; FALSE</div>
+<div class='example'>is_empty([]) ==&gt; TRUE</div>
+<div class='example'>is_empty(&lt;&lt;&gt;&gt;) ==&gt; TRUE</div>
+<div class='example'>is_empty(set([1, 2])) ==&gt; FALSE</div>
+<div class='example'>is_empty('') ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='is_even'>is_even</h2>
+<pre>
+is_even(n)
+</pre><p>
+Returns TRUE if the number is even.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_even(2) ==&gt; TRUE</div>
+<div class='example'>is_even(3) ==&gt; FALSE</div>
 </pre><p>
 </div></p>
 <h2 id='is_func'>is_func</h2>
@@ -1093,6 +1761,21 @@ Strings are empty, if the contain no characters. NULL is always empty.
 <div class='example'>is_not_empty('a') ==&gt; TRUE</div>
 </pre><p>
 </div></p>
+<h2 id='is_not_empty'>is_not_empty</h2>
+<pre>
+is_not_empty(obj)
+</pre><p>
+Returns TRUE, if the obj is not empty.
+Lists, sets and maps are empty, if they do not contain elements.
+Strings are empty, if the contain no characters. NULL is always empty.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_not_empty([]) ==&gt; FALSE</div>
+<div class='example'>is_not_empty(set([1, 2])) ==&gt; TRUE</div>
+<div class='example'>is_not_empty('a') ==&gt; TRUE</div>
+</pre><p>
+</div></p>
 <h2 id='is_not_null'>is_not_null</h2>
 <pre>
 is_not_null(obj)
@@ -1104,6 +1787,32 @@ Returns TRUE, if the obj is not NULL.
 <div class='example'>is_not_null('') ==&gt; TRUE</div>
 <div class='example'>is_not_null(1) ==&gt; TRUE</div>
 <div class='example'>is_not_null(NULL) ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='is_not_null'>is_not_null</h2>
+<pre>
+is_not_null(obj)
+</pre><p>
+Returns TRUE, if the obj is not NULL.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_not_null('') ==&gt; TRUE</div>
+<div class='example'>is_not_null(1) ==&gt; TRUE</div>
+<div class='example'>is_not_null(NULL) ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='is_null'>is_null</h2>
+<pre>
+is_null(obj)
+</pre><p>
+Returns TRUE, if the obj is NULL.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_null('') ==&gt; FALSE</div>
+<div class='example'>is_null(1) ==&gt; FALSE</div>
+<div class='example'>is_null(NULL) ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='is_null'>is_null</h2>
@@ -1154,6 +1863,18 @@ Returns TRUE if the object is of type object.
 <div class='examples_title'>Examples:</div>
 <div class='example'>is_object(object()) ==&gt; TRUE</div>
 <div class='example'>is_object(map()) ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='is_odd'>is_odd</h2>
+<pre>
+is_odd(n)
+</pre><p>
+Returns TRUE if the number is odd.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>is_odd(2) ==&gt; FALSE</div>
+<div class='example'>is_odd(3) ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='is_positive'>is_positive</h2>
@@ -1282,6 +2003,36 @@ Returns the last n elements of the list.
 <div class='example'>range(100) !&gt; last_n(5) ==&gt; [95, 96, 97, 98, 99]</div>
 </pre><p>
 </div></p>
+<h2 id='lcm'>lcm</h2>
+<pre>
+lcm(a, b)
+</pre><p>
+Calculates the least common multiple of two
+integers a and b.
+</pre><p>
+Use reduce([a, b, ...], lcm) to calculate the lcm
+of more than two values.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>lcm(2 * 2 * 2 * 3, 2 * 2 * 3 * 3) ==&gt; 72</div>
+</pre><p>
+</div></p>
+<h2 id='length'>length</h2>
+<pre>
+length(obj)
+</pre><p>
+Returns the length of obj. This only works for strings, lists, sets and maps.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>length('123') ==&gt; 3</div>
+<div class='example'>length([1, 2, 3]) ==&gt; 3</div>
+<div class='example'>length(&lt;&lt;1, 2, 3&gt;&gt;) ==&gt; 3</div>
+<div class='example'>&lt;&lt;&lt;'a' =&gt; 1, 'b' =&gt; 2, 'c' =&gt;3&gt;&gt;&gt; !&gt; length() ==&gt; 3</div>
+<div class='example'>length(object()) ==&gt; 0</div>
+</pre><p>
+</div></p>
 <h2 id='length'>length</h2>
 <pre>
 length(obj)
@@ -1308,6 +2059,30 @@ Returns TRUE if a is less than b.
 <div class='example'>less(1, 2) ==&gt; TRUE</div>
 </pre><p>
 </div></p>
+<h2 id='less'>less</h2>
+<pre>
+less(obj)
+</pre><p>
+Returns TRUE if a is less than b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>less(1, 2) ==&gt; TRUE</div>
+</pre><p>
+</div></p>
+<h2 id='less_equals'>less_equals</h2>
+<pre>
+less_equals(a, b)
+</pre><p>
+Returns TRUE if a is less than or equals to b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>less_equals(1, 2) ==&gt; TRUE</div>
+<div class='example'>less_equals(2, 1) ==&gt; FALSE</div>
+<div class='example'>less_equals(1, 1) ==&gt; TRUE</div>
+</pre><p>
+</div></p>
 <h2 id='less_equals'>less_equals</h2>
 <pre>
 less_equals(a, b)
@@ -1332,6 +2107,61 @@ Converts the obj to a list.
 <div class='example'>list(1) ==&gt; [1]</div>
 </pre><p>
 </div></p>
+<h2 id='list'>list</h2>
+<pre>
+list(obj)
+</pre><p>
+Converts the obj to a list.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>list(1) ==&gt; [1]</div>
+</pre><p>
+</div></p>
+<h2 id='log'>log</h2>
+<pre>
+log(x)
+</pre><p>
+Returns the natural logarithm of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>int(log(E)) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='log10'>log10</h2>
+<pre>
+log10(x)
+</pre><p>
+Returns the logarithm of x to base 10.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>int(log10(1000)) ==&gt; 3</div>
+</pre><p>
+</div></p>
+<h2 id='log2'>log2</h2>
+<pre>
+log2(x)
+</pre><p>
+Returns the logarithm of x to base 2.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>int(log2(1024)) ==&gt; 10</div>
+</pre><p>
+</div></p>
+<h2 id='lower'>lower</h2>
+<pre>
+lower(str)
+</pre><p>
+Converts str to lower case letters.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>lower('Hello') ==&gt; 'hello'</div>
+</pre><p>
+</div></p>
 <h2 id='lower'>lower</h2>
 <pre>
 lower(str)
@@ -1351,6 +2181,28 @@ ls(module)
 Returns a list of all defines symbols (functions and constants) in
 the current environment or in the specified module.
 </p>
+<h2 id='ls'>ls</h2>
+<pre>
+ls()
+ls(module)
+</pre><p>
+Returns a list of all defines symbols (functions and constants) in
+the current environment or in the specified module.
+</p>
+<h2 id='map'>map</h2>
+<pre>
+map(obj)
+map()
+</pre><p>
+Converts the obj to a map, if possible. If obj is omitted,
+an empty map is returned.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>map([[1, 2], [3, 4]]) ==&gt; &lt;&lt;&lt;1 =&gt; 2, 3 =&gt; 4&gt;&gt;&gt;</div>
+<div class='example'>map() ==&gt; &lt;&lt;&lt;&gt;&gt;&gt;</div>
+</pre><p>
+</div></p>
 <h2 id='map'>map</h2>
 <pre>
 map(obj)
@@ -1430,6 +2282,18 @@ Returns TRUE, if str matches the regular expression pattern.
 <div class='example'>matches(NULL, //[a-c]+[1-9]+//) ==&gt; FALSE</div>
 </pre><p>
 </div></p>
+<h2 id='matches'>matches</h2>
+<pre>
+matches(str, pattern)
+</pre><p>
+Returns TRUE, if str matches the regular expression pattern.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>matches('abc12', //[a-c]+[1-9]+//) ==&gt; TRUE</div>
+<div class='example'>matches(NULL, //[a-c]+[1-9]+//) ==&gt; FALSE</div>
+</pre><p>
+</div></p>
 <h2 id='max'>max</h2>
 <pre>
 max(a, b, key = identity) 
@@ -1448,6 +2312,55 @@ Default key is the identity function.
 <div class='example'>max(1, 2) ==&gt; 2</div>
 <div class='example'>max([1, 'z'], [2, 'a'], key = fn(x) x[1]) ==&gt; [1, 'z']</div>
 <div class='example'>max([1, 3, 2, 4, 2]) ==&gt; 4</div>
+</pre><p>
+</div></p>
+<h2 id='mean'>mean</h2>
+<pre>
+mean(lst)
+</pre><p>
+Returns the mean of lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>mean([1, 2, 3, 4, 4]) ==&gt; 2.8</div>
+<div class='example'>mean([-1.0, 2.5, 3.25, 5.75]) ==&gt; 2.625</div>
+</pre><p>
+</div></p>
+<h2 id='median'>median</h2>
+<pre>
+median(lst)
+</pre><p>
+Returns the median of lst, using the 'mean of middle two'
+method.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>median([1, 3, 5]) ==&gt; 3</div>
+<div class='example'>median([1, 3, 5, 7]) ==&gt; 4.0</div>
+</pre><p>
+</div></p>
+<h2 id='median_high'>median_high</h2>
+<pre>
+median_high(lst)
+</pre><p>
+Returns the high median of lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>median_high([1, 3, 5]) ==&gt; 3</div>
+<div class='example'>median_high([1, 3, 5, 7]) ==&gt; 5</div>
+</pre><p>
+</div></p>
+<h2 id='median_low'>median_low</h2>
+<pre>
+median_low(lst)
+</pre><p>
+Returns the low median of lst.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>median_low([1, 3, 5]) ==&gt; 3</div>
+<div class='example'>median_low([1, 3, 5, 7]) ==&gt; 3</div>
 </pre><p>
 </div></p>
 <h2 id='min'>min</h2>
@@ -1479,6 +2392,32 @@ Returns the modulus of a modulo b.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>mod(7, 2) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='mod'>mod</h2>
+<pre>
+mod(a, b)
+</pre><p>
+Returns the modulus of a modulo b.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>mod(7, 2) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='mul'>mul</h2>
+<pre>
+mul(a, b)
+</pre><p>
+Returns the product of a and b. For numerical values this uses the usual arithmetic.
+If a is a string and b is an int, then the string a is repeated b times. If a is a
+list and b is an int, then the list is repeated b times.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>mul(2, 3) ==&gt; 6</div>
+<div class='example'>mul('2', 3) ==&gt; '222'</div>
+<div class='example'>mul([1, 2], 3) ==&gt; [1, 2, 1, 2, 1, 2]</div>
 </pre><p>
 </div></p>
 <h2 id='mul'>mul</h2>
@@ -1536,6 +2475,22 @@ Integer values are propagated to decimal values, if required.
 <div class='example'>not_equals('a', 'b') ==&gt; TRUE</div>
 </pre><p>
 </div></p>
+<h2 id='not_equals'>not_equals</h2>
+<pre>
+not_equals(a, b)
+</pre><p>
+Returns TRUE if a is not equals to b.
+</pre><p>
+Integer values are propagated to decimal values, if required.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>not_equals(1, 2) ==&gt; TRUE</div>
+<div class='example'>not_equals(1, 1) ==&gt; FALSE</div>
+<div class='example'>not_equals(1, 1.0) ==&gt; FALSE</div>
+<div class='example'>not_equals('a', 'b') ==&gt; TRUE</div>
+</pre><p>
+</div></p>
 <h2 id='now'>now</h2>
 <pre>
 now()
@@ -1543,6 +2498,20 @@ now()
 Returns the current date.
 </pre><p>
 </p>
+<h2 id='object'>object</h2>
+<pre>
+object()
+object(obj)
+</pre><p>
+Creates an empty object value or converts a list of pairs or a map to an object.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>object() ==&gt; &lt;!!&gt;</div>
+<div class='example'>object(&lt;&lt;&lt;a =&gt; 1&gt;&gt;&gt;) ==&gt; &lt;!a=1!&gt;</div>
+<div class='example'>object([['a', 1]]) ==&gt; &lt;!a=1!&gt;</div>
+</pre><p>
+</div></p>
 <h2 id='object'>object</h2>
 <pre>
 object()
@@ -1581,6 +2550,41 @@ Parses the string s.
 <div class='example'>parse('2+3') ==&gt; '(add 2, 3)'</div>
 </pre><p>
 </div></p>
+<h2 id='parse'>parse</h2>
+<pre>
+parse(s)
+</pre><p>
+Parses the string s.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>parse('2+3') ==&gt; '(add 2, 3)'</div>
+</pre><p>
+</div></p>
+<h2 id='parse_date'>parse_date</h2>
+<pre>
+parse_date(str, fmt = 'yyyyMMdd')
+</pre><p>
+Parses the string str according to fmt and returns a datetime value.
+If the format does not match or if the date is invalid, the NULL
+value is returned.
+</pre><p>
+It is possible to pass a list of formats to the fmt parameter.
+The function sequentially tries to convert the str and if it
+works, returns the value.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>parse_date('20170102') ==&gt; '20170102'</div>
+<div class='example'>parse_date('20170102', fmt = 'yyyyMMdd') ==&gt; '20170102'</div>
+<div class='example'>parse_date('2017010222', fmt = 'yyyyMMdd') ==&gt; NULL</div>
+<div class='example'>parse_date('20170102', fmt = 'yyyyMMddHH') ==&gt; NULL</div>
+<div class='example'>parse_date('20170102', fmt = ['yyyyMMdd']) ==&gt; '20170102'</div>
+<div class='example'>parse_date('201701022015', fmt = ['yyyyMMddHHmm', 'yyyyMMddHH', 'yyyyMMdd']) ==&gt; '20170102'</div>
+<div class='example'>parse_date('20170112', fmt = ['yyyyMM', 'yyyy']) ==&gt; NULL</div>
+<div class='example'>parse_date('20170144') ==&gt; NULL</div>
+</pre><p>
+</div></p>
 <h2 id='parse_date'>parse_date</h2>
 <pre>
 parse_date(str, fmt = 'yyyyMMdd')
@@ -1617,6 +2621,29 @@ Parses the JSON string s and returns a map or list.
 <div class='example'>parse_json('[1, 2, 3, 4]') ==&gt; '[1, 2, 3, 4]'</div>
 </pre><p>
 </div></p>
+<h2 id='parse_json'>parse_json</h2>
+<pre>
+parse_json(s)
+</pre><p>
+Parses the JSON string s and returns a map or list.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>parse_json('{"a": 12, "b": [1, 2, 3, 4]}') ==&gt; '&lt;&lt;&lt;\'a\' =&gt; 12, \'b\' =&gt; [1, 2, 3, 4]&gt;&gt;&gt;'</div>
+<div class='example'>parse_json('[1, 2, 3, 4]') ==&gt; '[1, 2, 3, 4]'</div>
+</pre><p>
+</div></p>
+<h2 id='pattern'>pattern</h2>
+<pre>
+pattern(obj)
+</pre><p>
+Converts the obj to a regexp pattern, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>pattern('xy[1-9]{3}') ==&gt; //xy[1-9]{3}//</div>
+</pre><p>
+</div></p>
 <h2 id='pattern'>pattern</h2>
 <pre>
 pattern(obj)
@@ -1637,6 +2664,21 @@ Returns a list containing all permutations of the input list.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>permutations([1, 2, 3]) ==&gt; [[1, 2, 3], [2, 1, 3], [3, 1, 2], [1, 3, 2], [2, 3, 1], [3, 2, 1]]</div>
+</pre><p>
+</div></p>
+<h2 id='pow'>pow</h2>
+<pre>
+pow(x, y)
+</pre><p>
+Returns the power x ^ y.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>pow(2, 3) ==&gt; 8</div>
+<div class='example'>pow(2.5, 2) ==&gt; 6.25</div>
+<div class='example'>pow(4, 2) ==&gt; 16</div>
+<div class='example'>pow(4.0, 2.0) ==&gt; 16.0</div>
+<div class='example'>round(pow(2, 1.5), digits = 3) ==&gt; 2.828</div>
 </pre><p>
 </div></p>
 <h2 id='print'>print</h2>
@@ -1717,6 +2759,17 @@ Puts the value into the map m at the given key.
 <div class='example'>def m = map([[1, 2], [3, 4]]); put(m, 1, 9) ==&gt; &lt;&lt;&lt;1 =&gt; 9, 3 =&gt; 4&gt;&gt;&gt;</div>
 </pre><p>
 </div></p>
+<h2 id='put'>put</h2>
+<pre>
+put(m, key, value)
+</pre><p>
+Puts the value into the map m at the given key.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>def m = map([[1, 2], [3, 4]]); put(m, 1, 9) ==&gt; &lt;&lt;&lt;1 =&gt; 9, 3 =&gt; 4&gt;&gt;&gt;</div>
+</pre><p>
+</div></p>
 <h2 id='q'>q</h2>
 <pre>
 q(lst)
@@ -1728,6 +2781,41 @@ separated by a pipe character.
 <div class='examples_title'>Examples:</div>
 <div class='example'>q([1, 2, 3]) ==&gt; '1|2|3'</div>
 <div class='example'>q([]) ==&gt; ''</div>
+</pre><p>
+</div></p>
+<h2 id='random'>random</h2>
+<pre>
+random()
+random(a)
+random(a, b)
+</pre><p>
+Returns a random number. If no argument is provided, a decimal
+value in the range [0, 1) is returned. If only a is provided, then 
+an int value in the range [0, a) is returned. If both a and b are
+provided, then an int value in the range [a, b) is returned.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>set_seed(1); random(5) ==&gt; 1</div>
+</pre><p>
+</div></p>
+<h2 id='range'>range</h2>
+<pre>
+range(a)
+range(a, b)
+range(a, b, step)
+</pre><p>
+Returns a list containing int values in the range. If only a is
+provided, the range is [0, a). If both a and b are provided, the
+range is [a, b). If step is given, then only every step element
+is included in the list.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>range(4) ==&gt; [0, 1, 2, 3]</div>
+<div class='example'>range(3, 6) ==&gt; [3, 4, 5]</div>
+<div class='example'>range(10, step = 3) ==&gt; [0, 3, 6, 9]</div>
+<div class='example'>range(10, 0, step = -2) ==&gt; [10, 8, 6, 4, 2]</div>
 </pre><p>
 </div></p>
 <h2 id='range'>range</h2>
@@ -1800,6 +2888,20 @@ partial results and list elements.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>reduce([1, 2, 3, 4], add) ==&gt; 10</div>
+</pre><p>
+</div></p>
+<h2 id='remove'>remove</h2>
+<pre>
+remove(lst, element)
+</pre><p>
+Removes the element from the list lst. The lst may also be a set or a map.
+Returns the changed list, but the list is changed in place.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>remove([1, 2, 3, 4], 3) ==&gt; [1, 2, 4]</div>
+<div class='example'>remove(&lt;&lt;1, 2, 3, 4&gt;&gt;, 3) ==&gt; &lt;&lt;1, 2, 4&gt;&gt;</div>
+<div class='example'>remove(&lt;&lt;&lt;a =&gt; 1, b =&gt; 2, c =&gt; 3, d =&gt; 4&gt;&gt;&gt;, 'c') ==&gt; &lt;&lt;&lt;'a' =&gt; 1, 'b' =&gt; 2, 'd' =&gt; 4&gt;&gt;&gt;</div>
 </pre><p>
 </div></p>
 <h2 id='remove'>remove</h2>
@@ -1892,13 +2994,18 @@ Default for digits is 0.
 <div class='example'>round(1.345, digits = 1) ==&gt; 1.3</div>
 </pre><p>
 </div></p>
-<h2 id='run'>run</h2>
+<h2 id='round'>round</h2>
 <pre>
-run(file)
+round(x, digits = 0)
 </pre><p>
-Loads and interprets the file.
+Returns the decimal value x rounded to the specified number of digits.
+Default for digits is 0.
 </pre><p>
-</p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>round(1.345, digits = 1) ==&gt; 1.3</div>
+</pre><p>
+</div></p>
 <h2 id='s'>s</h2>
 <pre>
 s(str, start = 0)
@@ -1935,6 +3042,56 @@ is reached, e.g. '001.23'. Please refer to the examples below.
 <div class='example'>require math; s('{math-&gt;PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
 </pre><p>
 </div></p>
+<h2 id='s'>s</h2>
+<pre>
+s(str, start = 0)
+</pre><p>
+Returns a string, where all placeholders are replaced with their
+appropriate values. Placeholder have the form '{var}' and result
+in the value of the variable var inserted at this location.
+</pre><p>
+The placeholder can also be expressions and their result will
+be inserted instead of the placeholder.
+</pre><p>
+There are formatting suffixes to the placeholder, which allow
+some control over the formatting. They formatting spec starts after
+a # character and consists of align/fill, width and precision fields.
+For example #06.2 will format the decimal to a width of six characters
+and uses two digits after the decimal point. If the number is less than
+six characters wide, then it is prefixed with zeroes until the width
+is reached, e.g. '001.23'. Please refer to the examples below.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>def name = 'damian'; s('hello {name}') ==&gt; 'hello damian'</div>
+<div class='example'>def foo = '{bar}'; def bar = 'baz'; s('{foo}{bar}') ==&gt; '{bar}baz'</div>
+<div class='example'>def a = 'abc'; s('"{a#-8}"') ==&gt; '"abc     "'</div>
+<div class='example'>def a = 'abc'; s('"{a#8}"') ==&gt; '"     abc"'</div>
+<div class='example'>def a = 'abc'; s('a = {a#5}') ==&gt; 'a =   abc'</div>
+<div class='example'>def a = 'abc'; s('a = {a#-5}') ==&gt; 'a = abc  '</div>
+<div class='example'>def n = 12; s('n = {n#5}') ==&gt; 'n =    12'</div>
+<div class='example'>def n = 12; s('n = {n#-5}') ==&gt; 'n = 12   '</div>
+<div class='example'>def n = 12; s('n = {n#05}') ==&gt; 'n = 00012'</div>
+<div class='example'>def n = 1.2345678; s('n = {n#.2}') ==&gt; 'n = 1.23'</div>
+<div class='example'>def n = 1.2345678; s('n = {n#06.2}') ==&gt; 'n = 001.23'</div>
+<div class='example'>s('2x3 = {2*3}') ==&gt; '2x3 = 6'</div>
+<div class='example'>require math; s('{math-&gt;PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
+</pre><p>
+</div></p>
+<h2 id='sample'>sample</h2>
+<pre>
+sample(lst, n)
+</pre><p>
+Returns a set with n random elements from the list or set lst,
+without repetitions. Also works with a string.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sample([1, 2, 3], 3) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
+<div class='example'>sample([1, 1, 1, 2, 2, 3], 3) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
+<div class='example'>sample('abc', 3) ==&gt; &lt;&lt;'a', 'b', 'c'&gt;&gt;</div>
+</pre><p>
+</div></p>
 <h2 id='set'>set</h2>
 <pre>
 set(obj)
@@ -1944,6 +3101,28 @@ Converts the obj to a set, if possible.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>set([1, 2, 3]) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
+</pre><p>
+</div></p>
+<h2 id='set'>set</h2>
+<pre>
+set(obj)
+</pre><p>
+Converts the obj to a set, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>set([1, 2, 3]) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
+</pre><p>
+</div></p>
+<h2 id='set_seed'>set_seed</h2>
+<pre>
+set_seed(n)
+</pre><p>
+Sets the seed of the random number generator to n.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>set_seed(1) ==&gt; 1</div>
 </pre><p>
 </div></p>
 <h2 id='sign'>sign</h2>
@@ -1956,6 +3135,31 @@ Returns the signum of n
 <div class='examples_title'>Examples:</div>
 <div class='example'>sign(2) ==&gt; 1</div>
 <div class='example'>sign(-3) ==&gt; -1</div>
+</pre><p>
+</div></p>
+<h2 id='sin'>sin</h2>
+<pre>
+sin(x)
+</pre><p>
+Returns the sinus of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sin(0) ==&gt; 0.0</div>
+</pre><p>
+</div></p>
+<h2 id='sorted'>sorted</h2>
+<pre>
+sorted(lst, cmp=compare, key=identity)
+</pre><p>
+Returns a sorted copy of the list. This is sorted according to the
+value returned by the key function for each element of the list.
+The values are compared using the compare function cmp.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sorted([3, 2, 1]) ==&gt; [1, 2, 3]</div>
+<div class='example'>sorted([6, 2, 5, 3, 1, 4]) ==&gt; [1, 2, 3, 4, 5, 6]</div>
 </pre><p>
 </div></p>
 <h2 id='sorted'>sorted</h2>
@@ -1982,6 +3186,31 @@ The delim is a regular expression. Default is spaces or tabs.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>split('a,b,c', //,//) ==&gt; ['a', 'b', 'c']</div>
+</pre><p>
+</div></p>
+<h2 id='split'>split</h2>
+<pre>
+split(str, delim = '[ \t]+')
+</pre><p>
+Splits the string str into parts and returns a list of strings.
+The delim is a regular expression. Default is spaces or tabs.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>split('a,b,c', //,//) ==&gt; ['a', 'b', 'c']</div>
+</pre><p>
+</div></p>
+<h2 id='split2'>split2</h2>
+<pre>
+split2(str, sep1, sep2)
+</pre><p>
+Performs a two-stage split of the string data.
+This results in a list of list of strings.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>split2('a:b:c|d:e:f', escape_pattern('|'), escape_pattern(':')) ==&gt; [['a', 'b', 'c'], ['d', 'e', 'f']]</div>
+<div class='example'>split2('', '\|', ':') ==&gt; []</div>
 </pre><p>
 </div></p>
 <h2 id='split2'>split2</h2>
@@ -2018,6 +3247,17 @@ an explanation of available formatting suffixes.
 <div class='example'>require math; sprintf('{0#.4}', math-&gt;PI) ==&gt; '3.1416'</div>
 </pre><p>
 </div></p>
+<h2 id='sqrt'>sqrt</h2>
+<pre>
+sqrt(x)
+</pre><p>
+Returns the square root of num as a decimal value.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sqrt(4) ==&gt; 2.0</div>
+</pre><p>
+</div></p>
 <h2 id='starts_with'>starts_with</h2>
 <pre>
 starts_with(str, part)
@@ -2028,6 +3268,38 @@ Returns TRUE if the string str starts with part.
 <div class='examples_title'>Examples:</div>
 <div class='example'>starts_with('abcdef', 'abc') ==&gt; TRUE</div>
 <div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='starts_with'>starts_with</h2>
+<pre>
+starts_with(str, part)
+</pre><p>
+Returns TRUE if the string str starts with part.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>starts_with('abcdef', 'abc') ==&gt; TRUE</div>
+<div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='str_contains'>str_contains</h2>
+<pre>
+contains(obj, part)
+</pre><p>
+Returns TRUE if the string obj contains part.
+If obj is a list, set or map, TRUE is returned,
+if part is contained.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>contains('abcdef', 'abc') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'cde') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'def') ==&gt; TRUE</div>
+<div class='example'>contains('abcdef', 'efg') ==&gt; FALSE</div>
+<div class='example'>contains(NULL, 'abc') ==&gt; FALSE</div>
+<div class='example'>contains([1, 2, 3], 2) ==&gt; TRUE</div>
+<div class='example'>&lt;&lt;1, 2, 3&gt;&gt; !&gt; contains(3) ==&gt; TRUE</div>
+<div class='example'>&lt;&lt;&lt;a =&gt; 1, b =&gt; 2&gt;&gt;&gt; !&gt; contains('b') ==&gt; TRUE</div>
 </pre><p>
 </div></p>
 <h2 id='str_contains'>str_contains</h2>
@@ -2061,6 +3333,40 @@ Returns TRUE if the string str ends with part.
 <div class='example'>ends_with('abcdef', 'def') ==&gt; TRUE</div>
 <div class='example'>ends_with('abcdef', 'abc') ==&gt; FALSE</div>
 <div class='example'>ends_with(NULL, 'abc') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='str_ends_with'>str_ends_with</h2>
+<pre>
+ends_with(str, part)
+</pre><p>
+Returns TRUE if the string str ends with part.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>ends_with('abcdef', 'def') ==&gt; TRUE</div>
+<div class='example'>ends_with('abcdef', 'abc') ==&gt; FALSE</div>
+<div class='example'>ends_with(NULL, 'abc') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
+<h2 id='str_find'>str_find</h2>
+<pre>
+find(obj, part, key = identity, start = 0)
+</pre><p>
+Returns the index of the first occurence of part in obj.
+If part is not contained in obj, then -1 is returned. Start specifies
+the search start index. It defaults to 0.
+Obj can be a string or a list. In case of a string, part can be any
+substring, in case of a list, a single element.
+In case of lists, the elements can be accessed using the
+key function.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>find('abcdefg', 'cde') ==&gt; 2</div>
+<div class='example'>find('abc|def|ghi', '|', start = 4) ==&gt; 7</div>
+<div class='example'>find('abcxyabc', 'abc', start = 5) ==&gt; 5</div>
+<div class='example'>find([1, 2, 3, 4], 3) ==&gt; 2</div>
+<div class='example'>find(['abc', 'def'], 'e', key = fn(x) x[1]) ==&gt; 1</div>
 </pre><p>
 </div></p>
 <h2 id='str_find'>str_find</h2>
@@ -2107,6 +3413,18 @@ Returns TRUE, if str matches the regular expression pattern.
 <div class='example'>matches(NULL, //[a-c]+[1-9]+//) ==&gt; FALSE</div>
 </pre><p>
 </div></p>
+<h2 id='str_matches'>str_matches</h2>
+<pre>
+matches(str, pattern)
+</pre><p>
+Returns TRUE, if str matches the regular expression pattern.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>matches('abc12', //[a-c]+[1-9]+//) ==&gt; TRUE</div>
+<div class='example'>matches(NULL, //[a-c]+[1-9]+//) ==&gt; FALSE</div>
+</pre><p>
+</div></p>
 <h2 id='str_output'>str_output</h2>
 <pre>
 str_output()
@@ -2130,6 +3448,18 @@ Returns TRUE if the string str starts with part.
 <div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
 </pre><p>
 </div></p>
+<h2 id='str_starts_with'>str_starts_with</h2>
+<pre>
+starts_with(str, part)
+</pre><p>
+Returns TRUE if the string str starts with part.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>starts_with('abcdef', 'abc') ==&gt; TRUE</div>
+<div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
+</pre><p>
+</div></p>
 <h2 id='str_trim'>str_trim</h2>
 <pre>
 trim(str)
@@ -2139,6 +3469,28 @@ Trims any leading or trailing whitespace from the string str.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>trim(' a  ') ==&gt; 'a'</div>
+</pre><p>
+</div></p>
+<h2 id='str_trim'>str_trim</h2>
+<pre>
+trim(str)
+</pre><p>
+Trims any leading or trailing whitespace from the string str.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>trim(' a  ') ==&gt; 'a'</div>
+</pre><p>
+</div></p>
+<h2 id='string'>string</h2>
+<pre>
+string(obj)
+</pre><p>
+Converts the obj to a string, if possible.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>string(123) ==&gt; '123'</div>
 </pre><p>
 </div></p>
 <h2 id='string'>string</h2>
@@ -2169,6 +3521,37 @@ datetime after subtracting these number of days is returned.
 <div class='example'>sub(date('20170405'), date('20170402')) ==&gt; 3</div>
 <div class='example'>sub(date('20170405'), 3) ==&gt; '20170402'</div>
 <div class='example'>sub(&lt;&lt;3, 1, 2&gt;&gt;, 2) ==&gt; &lt;&lt;1, 3&gt;&gt;</div>
+</div></p>
+<h2 id='sub'>sub</h2>
+<pre>
+sub(a, b)
+</pre><p>
+Returns the subtraction of b from a. For numerical values this uses usual arithmetic.
+For lists and sets, this returns lists and sets minus the element b. If a is a datetime
+value and b is datetime value, then the date difference is returned. If a is a datetime
+value and b is a numeric value, then b is interpreted as number of days and the corresponding
+datetime after subtracting these number of days is returned.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sub(1, 2) ==&gt; -1</div>
+<div class='example'>sub([1, 2, 3], 2) ==&gt; [1, 3]</div>
+<div class='example'>sub(date('20170405'), date('20170402')) ==&gt; 3</div>
+<div class='example'>sub(date('20170405'), 3) ==&gt; '20170402'</div>
+<div class='example'>sub(&lt;&lt;3, 1, 2&gt;&gt;, 2) ==&gt; &lt;&lt;1, 3&gt;&gt;</div>
+</div></p>
+<h2 id='sublist'>sublist</h2>
+<pre>
+sublist(lst, startidx)
+sublist(lst, startidx, endidx)
+</pre><p>
+Returns the sublist starting with startidx. If endidx is provided,
+this marks the end of the sublist. Endidx is not included.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sublist([1, 2, 3, 4], 2) ==&gt; [3, 4]</div>
+</pre><p>
 </div></p>
 <h2 id='sublist'>sublist</h2>
 <pre>
@@ -2211,6 +3594,19 @@ this marks the end of the substring. Endidx is not included.
 <div class='example'>substr('abcd', 2) ==&gt; 'cd'</div>
 </pre><p>
 </div></p>
+<h2 id='substr'>substr</h2>
+<pre>
+substr(str, startidx)
+substr(str, startidx, endidx)
+</pre><p>
+Returns the substring starting with startidx. If endidx is provided,
+this marks the end of the substring. Endidx is not included.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>substr('abcd', 2) ==&gt; 'cd'</div>
+</pre><p>
+</div></p>
 <h2 id='sum'>sum</h2>
 <pre>
 sum(list, ignore = [])
@@ -2234,6 +3630,53 @@ are counted as 0.
 <div class='example'>sum([1, NULL, '', 3], ignore = [NULL, '']) ==&gt; 4</div>
 </pre><p>
 </div></p>
+<h2 id='sum'>sum</h2>
+<pre>
+sum(list, ignore = [])
+</pre><p>
+Returns the sum of a list of numbers. Values contained in the optional list ignore
+are counted as 0.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>sum([1, 2, 3]) ==&gt; 6</div>
+<div class='example'>sum([1, 2.5, 3]) ==&gt; 6.5</div>
+<div class='example'>sum([1, 2.5, 1.5, 3]) ==&gt; 8.0</div>
+<div class='example'>sum([1.0, 2.0, 3.0]) ==&gt; 6.0</div>
+<div class='example'>sum([1.0, 2, -3.0]) ==&gt; 0.0</div>
+<div class='example'>sum([1, 2, -3]) ==&gt; 0</div>
+<div class='example'>sum([1, '1', 1], ignore = ['1']) ==&gt; 2</div>
+<div class='example'>sum(range(101)) ==&gt; 5050</div>
+<div class='example'>sum([]) ==&gt; 0</div>
+<div class='example'>sum([NULL], ignore = [NULL]) ==&gt; 0</div>
+<div class='example'>sum([1, NULL, 3], ignore = [NULL]) ==&gt; 4</div>
+<div class='example'>sum([1, NULL, '', 3], ignore = [NULL, '']) ==&gt; 4</div>
+</pre><p>
+</div></p>
+<h2 id='symmetric_diff'>symmetric_diff</h2>
+<pre>
+symmetric_diff(seta, setb)
+</pre><p>
+Returns a set containing all elements of seta and setb,
+which are either only in seta, or only in setb contained.
+Also works for lists.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>symmetric_diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;3, 4, 5, 6&gt;&gt;) ==&gt; &lt;&lt;1, 2, 5, 6&gt;&gt;</div>
+</pre><p>
+</div></p>
+<h2 id='tan'>tan</h2>
+<pre>
+tan(x)
+</pre><p>
+Returns the tangens of x.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>tan(0) ==&gt; 0</div>
+</pre><p>
+</div></p>
 <h2 id='timestamp'>timestamp</h2>
 <pre>
 timestamp(x)
@@ -2241,6 +3684,24 @@ timestamp(x)
 Returns current system timestamp.
 </pre><p>
 </p>
+<h2 id='timestamp'>timestamp</h2>
+<pre>
+timestamp(x)
+</pre><p>
+Returns current system timestamp.
+</pre><p>
+</p>
+<h2 id='trim'>trim</h2>
+<pre>
+trim(str)
+</pre><p>
+Trims any leading or trailing whitespace from the string str.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>trim(' a  ') ==&gt; 'a'</div>
+</pre><p>
+</div></p>
 <h2 id='trim'>trim</h2>
 <pre>
 trim(str)
@@ -2261,6 +3722,31 @@ Returns the name of the type of obj as a string.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>type('Hello') ==&gt; 'string'</div>
+</pre><p>
+</div></p>
+<h2 id='type'>type</h2>
+<pre>
+type(obj)
+</pre><p>
+Returns the name of the type of obj as a string.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>type('Hello') ==&gt; 'string'</div>
+</pre><p>
+</div></p>
+<h2 id='union'>union</h2>
+<pre>
+union(seta, setb)
+</pre><p>
+Returns the union of the two sets. Also works for lists.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>union(&lt;&lt;1, 2, 3&gt;&gt;, &lt;&lt;2, 3, 4&gt;&gt;) ==&gt; &lt;&lt;1, 2, 3, 4&gt;&gt;</div>
+<div class='example'>union([1, 2, 3], [2, 3, 4]) ==&gt; &lt;&lt;1, 2, 3, 4&gt;&gt;</div>
+<div class='example'>union(&lt;&lt;1, 2&gt;&gt;, &lt;&lt;3, 4&gt;&gt;) ==&gt; &lt;&lt;1, 2, 3, 4&gt;&gt;</div>
+<div class='example'>union(&lt;&lt;1, 2&gt;&gt;, &lt;&lt;&gt;&gt;) ==&gt; &lt;&lt;1, 2&gt;&gt;</div>
 </pre><p>
 </div></p>
 <h2 id='unique'>unique</h2>
@@ -2310,6 +3796,17 @@ Converts str to upper case letters.
 <div class='example'>upper('Hello') ==&gt; 'HELLO'</div>
 </pre><p>
 </div></p>
+<h2 id='upper'>upper</h2>
+<pre>
+upper(str)
+</pre><p>
+Converts str to upper case letters.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>upper('Hello') ==&gt; 'HELLO'</div>
+</pre><p>
+</div></p>
 <h2 id='words'>words</h2>
 <pre>
 words(str)
@@ -2333,6 +3830,33 @@ the same length as the shorter of the two input lists.
 <div class='examples'>
 <div class='examples_title'>Examples:</div>
 <div class='example'>zip([1, 2, 3], [4, 5, 6, 7]) ==&gt; [[1, 4], [2, 5], [3, 6]]</div>
+</pre><p>
+</div></p>
+<h2 id='zip'>zip</h2>
+<pre>
+zip(a, b)
+</pre><p>
+Returns a list where each element is a list of two items.
+The first of the two items is taken from the first list,
+the second from the second list. The resulting list has
+the same length as the shorter of the two input lists.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>zip([1, 2, 3], [4, 5, 6, 7]) ==&gt; [[1, 4], [2, 5], [3, 6]]</div>
+</pre><p>
+</div></p>
+<h2 id='zip_map'>zip_map</h2>
+<pre>
+zip_map(a, b)
+</pre><p>
+Returns a map where the key of each entry is taken from a,
+and where the value of each entry is taken from b, where
+a and b are lists of identical length.
+</pre><p>
+<div class='examples'>
+<div class='examples_title'>Examples:</div>
+<div class='example'>zip_map(['a', 'b', 'c'], [1, 2, 3]) ==&gt; &lt;&lt;&lt;'a' =&gt; 1, 'b' =&gt; 2, 'c' =&gt; 3&gt;&gt;&gt;</div>
 </pre><p>
 </div></p>
 <h2 id='zip_map'>zip_map</h2>

@@ -1,8 +1,9 @@
 # advent of code day 10
 # https://adventofcode.com/2019/day/10
 
-require io [read_file, println, printf];
-require math [atan2, sqrt, PI];
+require io import [read_file, println, printf];
+require math import [atan2, sqrt, PI];
+require lists import [map_list, filter, flatten, grouped, unique];
 
 # Part 1
 
