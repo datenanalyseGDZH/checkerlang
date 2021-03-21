@@ -39,7 +39,7 @@ import java.util.List;
 public class FuncFileOutput extends FuncBase {
     public FuncFileOutput() {
         super("file_output");
-        info = "file_output(filename, encoding = 'UTF-8', append = FALSE\r\n" +
+        info = "file_output(filename, encoding = 'UTF-8', append = FALSE)\r\n" +
                 "\r\n" +
                 "Returns an output object, that writes to the given file. If\r\n" +
                 "the file exists it is overwritten.\r\n";

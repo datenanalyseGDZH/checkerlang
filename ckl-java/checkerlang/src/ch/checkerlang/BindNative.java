@@ -101,8 +101,8 @@ public class BindNative {
             case "upper": bindNative(env, new FuncUpper(), nativeAlias); break;
             case "zip": bindNative(env, new FuncZip(), nativeAlias); break;
             case "zip_map": bindNative(env, new FuncZipMap(), nativeAlias); break;
-            case "E": env.put("E", new ValueDecimal(Math.E)); break;
-            case "PI": env.put("PI", new ValueDecimal(Math.PI)); break;
+            case "E": env.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
+            case "PI": env.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
             default:
                 System.out.println(nativeName);
                 throw new ControlErrorException("Unknown native " + nativeName, pos);

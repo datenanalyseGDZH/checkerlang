@@ -20,7 +20,7 @@ export const modulelists = `
 # SOFTWARE.
 
 "
-first(lst) 
+first(lst)
 
 Returns the first element of a list.
 
@@ -47,7 +47,7 @@ end;
 
 
 "
-last(lst) 
+last(lst)
 
 Returns the last element of a list.
 
@@ -74,7 +74,7 @@ end;
 
 
 "
-rest(lst) 
+rest(lst)
 
 Returns the rest of a list, i.e. everything but the first element.
 
@@ -150,7 +150,7 @@ end;
 
 
 "
-prod(list) 
+prod(list)
 
 Returns the product of a list of numbers.
 

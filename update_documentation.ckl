@@ -68,6 +68,7 @@ def collect_information() do
     end;
     require sys;
     for module in sys->checkerlang_modules do
+        if module == "core" then continue;
         collect_module_information(result, module);
     end;
     return result;

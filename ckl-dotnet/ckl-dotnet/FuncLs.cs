@@ -29,7 +29,7 @@ namespace CheckerLang
             info = "ls()\r\n" +
                    "ls(module)\r\n" +
                    "\r\n" +
-                   "Returns a list of all defines symbols (functions and constants)\r\n" +
+                   "Returns a list of all defined symbols (functions and constants)\r\n" +
                    "in the current environment or in the specified module.\r\n";
         }
         
@@ -50,7 +50,11 @@ namespace CheckerLang
             }
             else
             {
-                foreach (var symbol in args.Get("module").AsObject().value.Keys)
+                var moduleArg = args.Get("module");
+                Dictionary<string, Value> module;
+                if (moduleArg.IsString()) module = environment.Get(moduleArg.AsString().GetValue(), pos).AsObject().value;
+                else module = args.Get("module").AsObject().value;
+                foreach (var symbol in module.Keys)
                 {
                     result.AddItem(new ValueString(symbol));
                 }

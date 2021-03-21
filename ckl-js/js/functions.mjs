@@ -203,8 +203,8 @@ const bind_native = function(environment, native, alias = null) {
         case "escape_pattern": Environment.add(environment, new FuncEscapePattern(), alias); break;
         case "eval": Environment.add(environment, new FuncEval(), alias); break;
         case "exp": Environment.add(environment, new FuncExp(), alias); break;
-        case "file_input": Environment.add(environment, new FuncFileInput(system.fs));
-        case "file_output": Environment.add(environment, new FuncFileOutput(system.fs));
+        case "file_input": Environment.add(environment, new FuncFileInput(system.fs)); break;
+        case "file_output": Environment.add(environment, new FuncFileOutput(system.fs)); break;
         case "find": Environment.add(environment, new FuncFind(), alias); break;
         case "floor": Environment.add(environment, new FuncFloor(), alias); break;
         case "format_date": Environment.add(environment, new FuncFormatDate(), alias); break;
@@ -1609,7 +1609,7 @@ export class FuncLs extends ValueFunc {
         this.info = "ls()\r\n" +
                     "ls(module)\r\n" +
                     "\r\n" +
-                    "Returns a list of all defines symbols (functions and constants) in\r\n" +
+                    "Returns a list of all defined symbols (functions and constants) in\r\n" +
                     "the current environment or in the specified module.";
     }
 
@@ -1936,7 +1936,7 @@ export class FuncParseJson extends ValueFunc {
                 "Parses the JSON string s and returns a map or list.\r\n" +
                 "\r\n" +
                 ": parse_json('{\"a\": 12, \"b\": [1, 2, 3, 4]}') ==> '<<<\\\'a\\\' => 12, \\\'b\\\' => [1, 2, 3, 4]>>>'\r\n" +
-                ": parse_json('[1, 2, 3, 4]') ==> '[1, 2, 3, 4]'\r\n";
+                ": parse_json('[1, 2.5, 3, 4]') ==> '[1, 2.5, 3, 4]'\r\n";
     }
 
     getArgNames() {

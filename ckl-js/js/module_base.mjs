@@ -105,7 +105,7 @@ def is_map(obj) type(obj) == 'map';
 
 
 "
-is_object(obj) 
+is_object(obj)
 
 Returns TRUE if the object is of type object.
 

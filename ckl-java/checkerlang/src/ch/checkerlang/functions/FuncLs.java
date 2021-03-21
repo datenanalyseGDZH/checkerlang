@@ -30,6 +30,7 @@ import ch.checkerlang.values.ValueString;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FuncLs extends FuncBase {
     public FuncLs() {
@@ -37,7 +38,7 @@ public class FuncLs extends FuncBase {
         info = "ls()\r\n" +
                "ls(module)\r\n" +
                "\r\n" +
-               "Returns a list of all defines symbols (functions and constants)\r\n" +
+               "Returns a list of all defined symbols (functions and constants)\r\n" +
                "in the current environment or the specified module.\r\n";
     }
 
@@ -48,7 +49,11 @@ public class FuncLs extends FuncBase {
     public Value execute(Args args, Environment environment, SourcePos pos) {
         ValueList result = new ValueList();
         if (args.hasArg("module")) {
-            for (String symbol : args.get("module").asObject().value.keySet()) {
+            Value moduleArg = args.get("module");
+            Map<String, Value> module;
+            if (moduleArg.isString()) module = environment.get(moduleArg.asString().getValue(), pos).asObject().value;
+            else module = args.get("module").asObject().value;
+            for (String symbol : module.keySet()) {
                 result.addItem(new ValueString(symbol));
             }
         } else {

@@ -103,8 +103,8 @@ namespace CheckerLang
                 case "upper": BindNativeFunc(env, new FuncUpper(), nativeAlias); break;
                 case "zip": BindNativeFunc(env, new FuncZip(), nativeAlias); break;
                 case "zip_map": BindNativeFunc(env, new FuncZipMap(), nativeAlias); break;
-                case "E": env.Put("E", new ValueDecimal((decimal) Math.E)); break;
-                case "PI": env.Put("PI", new ValueDecimal((decimal) Math.PI)); break;
+                case "E": env.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
+                case "PI": env.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("PI\n\nThe mathematical constant PI")); break;
                 default:
                     throw new ControlErrorException("Unknown native " + nativeName, pos);
             }

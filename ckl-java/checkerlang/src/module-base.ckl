@@ -109,6 +109,7 @@ is_object(obj)
 Returns TRUE if the object is of type object.
 
 : is_object(object()) ==> TRUE
+: is_object(map()) ==> FALSE
 "
 def is_object(obj) type(obj) == 'object';
 
@@ -324,6 +325,8 @@ is yyyyMMdd. It is possible to specify different formats using the fmt
 optional parameter.
 
 : is_valid_date('20170304') ==> TRUE
+: is_valid_date('2017030412') ==> FALSE
+: is_valid_date('20170399') ==> FALSE
 "
 def is_valid_date(str, fmt="yyyyMMdd") parse_date(str, fmt) != NULL;
 
@@ -346,8 +349,11 @@ reverse_string(str)
 Returns a reversed copy of a string.
 
 : reverse_string('abc') ==> 'cba'
+: reverse_string(NULL) ==> NULL
+: reverse_string(12) ==> NULL
 "
 def reverse_string(str) do
+  if not is_string(str) then return NULL;
   def result = "";
   for ch in str do
     result = ch + result
@@ -724,22 +730,6 @@ Joins a list of words into one string.
 "
 def unwords(lst) do
   lst !> join(sep = ' ');
-end;
-
-
-"
-read_file(filename, encoding = 'utf-8'
-
-Opens a file, reads the contents as a single
-string, closes the file and returns the string.
-"
-def read_file(filename, encoding = 'utf-8') do
-  def infile = file_input(filename, encoding);
-  do
-      return read_all(infile);
-  finally
-      close(infile);
-  end;
 end;
 
 
