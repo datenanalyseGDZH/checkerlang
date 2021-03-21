@@ -611,15 +611,21 @@ export class ValueDate extends Value {
     }
 
     toString() {
-        // format yyyyMMdd
+        // format yyyyMMddHHmmss
         let year = String(this.value.getFullYear())
         let month = String(this.value.getMonth() + 1);
         let day = String(this.value.getDate());
+        let hours = String(this.value.getHours());
+        let minutes = String(this.value.getMinutes());
+        let seconds = String(this.value.getSeconds());
 
         if (month.length == 1) month = "0" + month;
         if (day.length == 1) day = "0" + day;
+        if (hours.length == 1) hours = "0" + hours;
+        if (minutes.length == 1) minutes = "0" + minutes;
+        if (seconds.length == 1) seconds = "0" + seconds;
 
-        return year.concat(month, day);
+        return year.concat(month, day, hours, minutes, seconds);
     }
 
 }
@@ -1512,14 +1518,16 @@ export class ValueString extends Value {
     }
 
     asDate() {
-        // handle yyyyMMddHH and yyyyMMdd, throw exception if not matching
+        // handle yyyyMMddHHmmss, yyyyMMddHH and yyyyMMdd, throw exception if not matching
         if (this.value.length < 8) throw new RuntimeError("Cannot convert " + this.value + " to date");
         const year = Number(this.value.substr(0, 4));
         const month = Number(this.value.substr(4, 2));
         const day = Number(this.value.substr(6, 2));
-        const hour = this.value.length == 10 ? Number(this.value.substr(8, 2)) : 0;
-        if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hour)) throw new RuntimeError("Cannot convert " + this.value + " to date");
-        return new ValueDate(new Date(year, month - 1, day, hour));
+        const hours = this.value.length >= 10 ? Number(this.value.substr(8, 2)) : 0;
+        const minutes = this.value.length == 14 ? Number(this.value.substr(10, 2)) : 0;
+        const seconds = this.value.length == 14 ? Number(this.value.substr(12, 2)) : 0;
+        if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) throw new RuntimeError("Cannot convert " + this.value + " to date");
+        return new ValueDate(new Date(year, month - 1, day, hours, minutes, seconds));
     }
 
     asPattern() {

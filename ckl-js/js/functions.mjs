@@ -309,7 +309,7 @@ export class FuncAdd extends ValueFunc {
                 "For lists and strings it concatenates. For sets it uses union.\r\n" +
                 "\r\n" +
                 ": add(1, 2) ==> 3\r\n" +
-                ": add(date('20100201'), 3) ==> '20100204'\r\n";
+                ": add(date('20100201'), 3) ==> '20100204000000'\r\n";
     }
 
     getArgNames() {
@@ -676,12 +676,15 @@ export class FuncDate extends ValueFunc {
         this.info = "date(obj)\r\n" +
                 "\r\n" +
                 "Converts the obj to a date, if possible.\r\n" +
-                "If obj is a string, the format YYYYmmdd is assumed.\r\n" +
-                "If this fails, the fallback YYYYmmddHH is tried.\r\n" +
+                "If obj is a string, the format yyyyMMdd is assumed.\r\n" +
+                "If this fails, the fallback yyyyMMddHH is tried.\r\n" +
+                "If this fails, the fallback yyyyMMddHHmmss is tried.\r\n" +
                 "\r\n" +
                 "See parse_date for handling other formats.\r\n" +
                 "\r\n" +
-                ": string(date('20170102')) ==> '20170102'\r\n";
+                ": string(date('20170102')) ==> '20170102000000'\r\n" +
+                ": string(date('2017010212')) ==> '20170102120000'\r\n" +
+                ": string(date('20170102123456')) ==> '20170102123456'\r\n";
     }
 
     getArgNames() {
@@ -1854,12 +1857,12 @@ export class FuncParseDate extends ValueFunc {
                 "The function sequentially tries to convert the str and if it\r\n" +
                 "works, returns the value.\r\n" +
                 "\r\n" +
-                ": parse_date('20170102') ==> '20170102'\r\n" +
-                ": parse_date('20170102', fmt = 'yyyyMMdd') ==> '20170102'\r\n" +
+                ": parse_date('20170102') ==> '20170102000000'\r\n" +
+                ": parse_date('20170102', fmt = 'yyyyMMdd') ==> '20170102000000'\r\n" +
                 ": parse_date('2017010222', fmt = 'yyyyMMdd') ==> NULL\r\n" +
                 ": parse_date('20170102', fmt = 'yyyyMMddHH') ==> NULL\r\n" +
-                ": parse_date('20170102', fmt = ['yyyyMMdd']) ==> '20170102'\r\n" +
-                ": parse_date('201701022015', fmt = ['yyyyMMddHHmm', 'yyyyMMddHH', 'yyyyMMdd']) ==> '20170102'\r\n" +
+                ": parse_date('20170102', fmt = ['yyyyMMdd']) ==> '20170102000000'\r\n" +
+                ": parse_date('201701022015', fmt = ['yyyyMMddHHmm', 'yyyyMMddHH', 'yyyyMMdd']) ==> '20170102201500'\r\n" +
                 ": parse_date('20170112', fmt = ['yyyyMM', 'yyyy']) ==> NULL\r\n" +
                 ": parse_date('20170144') ==> NULL\r\n";
     }
@@ -2815,7 +2818,7 @@ export class FuncSub extends ValueFunc {
                 ": sub(1, 2) ==> -1\r\n" +
                 ": sub([1, 2, 3], 2) ==> [1, 3]\r\n" +
                 ": sub(date('20170405'), date('20170402')) ==> 3\r\n" +
-                ": sub(date('20170405'), 3) ==> '20170402'\r\n" +
+                ": sub(date('20170405'), 3) ==> '20170402000000'\r\n" +
                 ": sub(<<3, 1, 2>>, 2) ==> <<1, 3>>";
     }
 

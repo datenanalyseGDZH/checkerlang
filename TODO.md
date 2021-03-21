@@ -1,7 +1,8 @@
 # notebook
 
+* provide switch between default and legacy mode (where default means, modules must be used)
 * number the cells?
-*  store the last value in a variable (LAST)
+* store the last value in a variable (LAST)
 * delete, insert, copy cells
 * join adjacent cells
 * split cell
@@ -20,8 +21,6 @@
 # language
 
 * js: maybe rename isEquals() to equals(), seems to be the canonical name for the equality function
-* categorize functions into modules
-* provide legacy module that corresponds to the features of ckl 2
 * parse_json should support fileinput values and read only as much as is needed.
 * destructuring assign should support more than just identifiers, also a->b, a[b], a(b)[c], a(b)->c and so on
 * optimize for loop in java/dotnet so that sets and maps are not first converted to lists and only then traversed
@@ -30,13 +29,21 @@
 
 * run unittests for modules, how? in a function, require the module, iterate over the object keys...
 * revisit all function names, make them more consistent, provide legacy module for older names
-* provide backwards-compatibility mode for having all functions in the main environment
 * make valueobject parseable (useful as a more efficient map with string keys)
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
-* change date to include time in print representation!
+* change date to include time in print representation! OK:js
 * add iso_date for formatting date value
 * add iso_date_time for formatting date time value
+
+* module strings
+* module dates
+* module types (contains is_xy functions)
+* module predicates (contains non-type is_xy predicates)
+
+* move alle lambdas from base/legacy to core (and later on distribute them to other modules)
+* maybe change module names to upper case, this would allow to use names like List, Set, String, Date without collisions with list, set, string, date functions
+
 
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
