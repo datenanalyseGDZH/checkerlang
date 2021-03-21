@@ -1,0 +1,167 @@
+# Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# This visits all modules and for each symbol in the module (mostly functions)
+# it generates a documentation entry. All the entries, as well as overall and
+# per module tables of contents result in the checkerlang_function.html output.
+
+def prepare_info(value) do
+    def lines = info(value) !> split(//\n|\r\n//);
+    if not is_empty(lines) and lines[0] == "" then lines = sublist(lines, 1);
+    return lines;
+end;
+
+def get_info_parts(symbol, module = NULL) do
+    def result = <<<module => module, symbol => symbol, header => [], text => [], examples => []>>>;
+    def value = NULL;
+    if not is_null(module) then value = eval("require " + module + "; " + module + "->" + symbol)
+    else value = eval(symbol);
+    def lines = prepare_info(value);
+    if not is_empty(lines) then do
+        def in_header = TRUE;
+        for line in lines do
+            if line !> starts_with(":") then result->examples !> append(substr(line, 1) !> trim())
+            elif in_header and line == "" then in_header = FALSE
+            elif in_header then result->header !> append(line)
+            else result->text !> append(line);
+        end;
+    end;
+    result;
+end;
+
+def collect_module_information(result, module) do
+    require module;
+    result->modules[module] = <<<>>>;
+    for symbol in ls(module) do
+        def infos = get_info_parts(symbol, module);
+        if is_empty(infos->header) then continue;
+        if not symbol in result->entries then result->entries[symbol] = [];
+        result->entries[symbol] !> append(infos);
+        result->modules[module][symbol] = infos;
+    end;
+end;
+
+def collect_information() do
+    def result = <<<>>>;
+    result->entries = <<<>>>;
+    result->modules = <<<>>>;
+    for symbol in ls() do
+        def infos = get_info_parts(symbol);
+        if not is_empty(infos->header) then result->entries[symbol] = [infos];
+    end;
+    require sys;
+    for module in sys->checkerlang_modules do
+        collect_module_information(result, module);
+    end;
+    return result;
+end;
+
+def information = collect_information();
+
+require sys;
+require io import [file_output, close, println];
+
+def out = file_output("documentation/checkerlang_functions.html");
+
+println("<html>", out);
+println("<head>", out);
+println("<title>CKL " + sys->checkerlang_version + "-" + sys->checkerlang_platform + " function ref</title>", out);
+println("<style>", out);
+println("h1 { font-family: Arial Black; font-height: 18pt; }", out);
+println("h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }", out);
+println("body { font-family: Arial; font-height: 11pt; max-width: 45em; margin: 0 auto; background-color: #222; color: #aaa; }", out);
+println(".toc { list-style-type: none; column-count: 4; margin: 0; padding: 0; margin-bottom: 1em;}", out);
+println(".toc li { margin: 0; padding: 0; }", out);
+println("a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-weight: bold;  }", out);
+println(".header { font-family: Courier New; font-height: 12pt; margin-bottom: 0.5em; }", out);
+println(".header_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
+println(".text { font-family: Arial; font-height: 10pt; margin-bottom: 0.5em; }", out);
+println(".text_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
+println(".module { font-family: Arial; font-height: 10pt; margin-bottom: 0.5em; }", out);
+println(".module_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
+println(".examples { margin-bottom: 0.5em; }", out);
+println(".examples_title { font-family: Arial Black; font-height: 10pt; padding-bottom: 0.3em; }", out);
+println(".example { font-family: Courier New; font-height: 12pt; white-space: pre; }", out);
+println("</style>", out);
+println("<link rel=\"shortcut icon\" type=\"image/png\" href=\"../img/ckl.png\">", out);
+println("</head>", out);
+println("<body>", out);
+println("<h1>CKL " + sys->checkerlang_version + "-" + sys->checkerlang_platform + " function ref</h1>", out);
+
+println("<h2>Table of contents</h2>", out);
+
+println("<ul class='toc'>", out);
+for module in set(information->modules) do
+    println("<li><a href='#module_" + module + "'>Module " + module + "</a></li>", out);
+end;
+for symbol in set(information->entries) do
+    println("<li><a href='#" + symbol + "'>" + symbol + "</a></li>", out);
+end;
+println("</ul>", out);
+
+for module in set(information->modules) do
+    def infos = information->modules[module];
+    println("<h2 id='module_" + module + "'>Module " + esc(module) + "</h2>", out);
+    println("<ul class='toc'>", out);
+    for symbol in set(infos) do
+        println("<li><a href='#" + symbol + "'>" + symbol + "</a></li>", out);
+    end;
+    println("</ul>", out);
+end;
+
+for symbol in set(information->entries) do
+    def infos = information->entries[symbol];
+    for info in infos do
+        println("<h2 id='" + symbol + "'>" + symbol + "</h2>", out);
+        println("<div class='header'>", out);
+        println("<div class='header_title'>Syntax</div>", out);
+        for line in info->header do
+            println(esc(line), out);
+        end;
+        println("</div>", out);
+        if not is_empty(info->text) then do
+            println("<div class='text'>", out);
+            println("<div class='text_title'>Description</div>", out);
+            for line in info->text do
+                println(esc(line), out);
+            end;
+            println("</div>", out);
+        end;
+        if not is_empty(info->module) then do
+            println("<div class='module'>", out);
+            println("<div class='module_title'>Module</div>", out);
+            println(esc(info->module), out);
+            println("</div>", out);
+        end;
+        if not is_empty(info->examples) then do
+            println("<div class='examples'>", out);
+            println("<div class='examples_title'>Examples</div>", out);
+            for line in info->examples do
+                println("<div class='example'>" + esc(line) + "</div>", out);
+            end;
+        end;
+        println("</div>", out);
+    end;
+end;
+
+println("</body>", out);
+println("</html>", out);
+
+close(out);

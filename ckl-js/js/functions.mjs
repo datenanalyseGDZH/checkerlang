@@ -1620,7 +1620,10 @@ export class FuncLs extends ValueFunc {
     execute(args, environment, pos) {
         const result = new ValueList();
         if (args.hasArg("module")) {
-            const module = args.get("module").asObject().value;
+            const moduleArg = args.get("module");
+            let module;
+            if (moduleArg.isString()) module = environment.get(moduleArg.value, pos).value;
+            else module = args.get("module").asObject().value;
             for (const symbol of module.keys()) {
                 result.addItem(new ValueString(symbol));
             }
