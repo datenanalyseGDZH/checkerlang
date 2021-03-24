@@ -91,7 +91,7 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return value.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
+            return value.ToString("yyyyMMddHHmmss", DateTimeFormatInfo.InvariantInfo);
         }
  
     }

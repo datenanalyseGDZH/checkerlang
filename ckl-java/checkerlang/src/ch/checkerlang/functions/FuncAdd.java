@@ -35,7 +35,7 @@ public class FuncAdd extends FuncBase {
                 "For lists and strings it concatenates. For sets it uses union.\r\n" +
                 "\r\n" +
                 ": add(1, 2) ==> 3\r\n" +
-                ": add(date('20100201'), 3) ==> '20100204'\r\n";
+                ": add(date('20100201'), 3) ==> '20100204000000'\r\n";
     }
 
     public List<String> getArgNames() {

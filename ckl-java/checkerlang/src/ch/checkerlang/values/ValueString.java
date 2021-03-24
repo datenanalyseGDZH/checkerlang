@@ -83,14 +83,16 @@ public class ValueString extends Value {
     }
 
     public ValueDate asDate() {
+        String fmt = "yyyyMMdd";
+        if (value.length() == 10) {
+            fmt = "yyyyMMddHH";
+        } else if (value.length() == 14) {
+            fmt = "yyyyMMddHHmmss";
+        }
         try {
-            return new ValueDate(new SimpleDateFormat("yyyyMMddHH").parse(value));
+            return new ValueDate(new SimpleDateFormat(fmt).parse(value));
         } catch (Exception e) {
-            try {
-                return new ValueDate(new SimpleDateFormat("yyyyMMdd").parse(value));
-            } catch (Exception e1) {
-                throw new ControlErrorException("Cannot convert '" + value + "' to date");
-            }
+            throw new ControlErrorException("Cannot convert '" + value + "' to date");
         }
     }
 

@@ -38,12 +38,12 @@ namespace CheckerLang
                    "The function sequentially tries to convert the str and if it\r\n" +
                    "works, returns the value.\r\n" +
                    "\r\n" +
-                   ": parse_date('20170102') ==> '20170102'\r\n" +
-                   ": parse_date('20170102', fmt = 'yyyyMMdd') ==> '20170102'\r\n" +
+                   ": parse_date('20170102') ==> '20170102000000'\r\n" +
+                   ": parse_date('20170102', fmt = 'yyyyMMdd') ==> '20170102000000'\r\n" +
                    ": parse_date('2017010222', fmt = 'yyyyMMdd') ==> NULL\r\n" +
                    ": parse_date('20170102', fmt = 'yyyyMMddHH') ==> NULL\r\n" +
-                   ": parse_date('20170102', fmt = ['yyyyMMdd']) ==> '20170102'\r\n" +
-                   ": parse_date('201701022015', fmt = ['yyyyMMdd', 'yyyyMMddHH', 'yyyyMMddHHmm']) ==> '20170102'\r\n" +
+                   ": parse_date('20170102', fmt = ['yyyyMMdd']) ==> '20170102000000'\r\n" +
+                   ": parse_date('201701022015', fmt = ['yyyyMMdd', 'yyyyMMddHH', 'yyyyMMddHHmm']) ==> '20170102201500'\r\n" +
                    ": parse_date('20170112', fmt = ['yyyy', 'yyyyMM']) ==> NULL\r\n" +
                    ": parse_date('20170144') ==> NULL\r\n";
         }

@@ -33,7 +33,6 @@
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
-* change date to include time in print representation! OK:js
 * add iso_date for formatting date value
 * add iso_date_time for formatting date time value
 

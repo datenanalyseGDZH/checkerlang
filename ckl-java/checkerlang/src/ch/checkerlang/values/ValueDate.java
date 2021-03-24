@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ValueDate extends Value {
-    private static final DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    private static final DateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
 
     private Date value;
 

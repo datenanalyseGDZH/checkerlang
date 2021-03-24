@@ -41,7 +41,7 @@ public class FuncDate extends FuncBase {
                 "\r\n" +
                 "See parse_date for handling other formats.\r\n" +
                 "\r\n" +
-                ": string(date('20170102')) ==> '20170102'\r\n";
+                ": string(date('20170102')) ==> '20170102000000'\r\n";
     }
 
     public List<String> getArgNames() {
