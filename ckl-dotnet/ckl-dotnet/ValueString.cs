@@ -101,20 +101,16 @@ namespace CheckerLang
 
         public override ValueDate AsDate()
         {
-            try
-            {
-                return new ValueDate(DateTime.ParseExact(value, "yyyyMMdd", DateTimeFormatInfo.InvariantInfo));
+            var fmt = "yyyyMMdd";
+            if (value.Length == 10) {
+                fmt = "yyyyMMddHH";
+            } else if (value.Length == 14) {
+                fmt = "yyyyMMddHHmmss";
             }
-            catch (Exception)
-            {
-                try
-                {
-                    return new ValueDate(DateTime.ParseExact(value, "yyyyMMddHH", DateTimeFormatInfo.InvariantInfo));
-                }
-                catch (Exception)
-                {
-                    throw new ControlErrorException("Cannot convert '" + value + "' to date");
-                }
+            try {
+                return new ValueDate(DateTime.ParseExact(value, fmt, DateTimeFormatInfo.InvariantInfo));
+            } catch (Exception) {
+                throw new ControlErrorException("Cannot convert '" + value + "' to date");
             }
         }
 

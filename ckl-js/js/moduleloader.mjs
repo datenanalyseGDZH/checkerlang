@@ -1,6 +1,7 @@
 import { RuntimeError } from "./errors.mjs";
 import { system } from "./system.mjs";
 import { modulecore } from "./module_core.mjs";
+import { moduledates } from "./module_dates.mjs";
 import { moduleio } from "./module_io.mjs";
 import { modulelists } from "./module_lists.mjs";
 import { modulemath } from "./module_math.mjs";
@@ -12,6 +13,7 @@ import { modulesys } from "./module_sys.mjs";
 export const moduleloader = function(modulefile, pos) {
     switch (modulefile) {
         case "core.ckl": return modulecore;
+        case "dates.ckl": return moduledates;
         case "io.ckl": return moduleio;
         case "lists.ckl": return modulelists;
         case "math.ckl": return modulemath;

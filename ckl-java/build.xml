@@ -53,6 +53,7 @@
         <copy file="src/module-legacy.ckl" todir="build"/>
         <copy file="src/module-base.ckl" todir="build"/>
         <copy file="src/module-core.ckl" todir="build"/>
+        <copy file="src/module-dates.ckl" todir="build"/>
         <copy file="src/module-io.ckl" todir="build"/>
         <copy file="src/module-lists.ckl" todir="build"/>
         <copy file="src/module-math.ckl" todir="build"/>

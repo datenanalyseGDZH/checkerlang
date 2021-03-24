@@ -20,6 +20,7 @@
 
 require sys unqualified;
 require core unqualified;
+require dates unqualified;
 require lists unqualified;
 require math unqualified;
 require random unqualified;
@@ -516,88 +517,6 @@ Escapes the characters <, > and & by their HTML entities.
 "
 def esc(str) do
     return replace(replace(replace(str, '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
-end;
-
-
-"
-date_year(value)
-
-Extracts the year part from the given date value and
-returns it as an integer. The value will be converted
-to a date value using the date function.
-
-: date_year('20190102') ==> 2019
-"
-def date_year(value) do
-    return int(format_date(date(value), fmt = 'yyyy'));
-end;
-
-
-"
-date_month(value)
-
-Extracts the month part from the given date value and
-returns it as an integer. The value will be converted
-to a date value using the date function.
-
-: date_month('20190102') ==> 01
-"
-def date_month(value) do
-    return int(format_date(date(value), fmt = 'MM'));
-end;
-
-
-"
-date_day(value)
-
-Extracts the day part from the given date value and
-returns it as an integer. The value will be converted
-to a date value using the date function.
-
-: date_day('20190102') ==> 02
-"
-def date_day(value) do
-    return int(format_date(date(value), fmt = 'dd'));
-end;
-
-
-"
-date_hour(value)
-
-Extracts the hour part from the given date value and
-returns it as an integer. The value will be converted
-to a date value using the date function.
-
-: date_hour('2019010212') ==> 12
-"
-def date_hour(value) do
-    return int(format_date(date(value), fmt = 'HH'));
-end;
-
-
-"
-date_minute(value)
-
-Extracts the hour part from the given date value and
-returns it as an integer.
-
-: date_minute(parse_date('201901021223', fmt='yyyyMMddHHmm')) ==> 23
-"
-def date_minute(value) do
-    return int(format_date(date(value), fmt = 'mm'));
-end;
-
-
-"
-date_second(value)
-
-Extracts the second part from the given date value and
-returns it as an integer.
-
-: date_second(parse_date('20190102122345', fmt='yyyyMMddHHmmss')) ==> 45
-"
-def date_second(value) do
-    return int(format_date(date(value), fmt = 'ss'));
 end;
 
 

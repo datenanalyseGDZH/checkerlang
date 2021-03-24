@@ -33,11 +33,7 @@
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
-* add iso_date for formatting date value
-* add iso_date_time for formatting date time value
-
 * module strings
-* module dates
 * module types (contains is_xy functions)
 * module predicates (contains non-type is_xy predicates)
 

@@ -16,6 +16,7 @@
   <ItemGroup>
     <EmbeddedResource Include="module-base.ckl" />
     <EmbeddedResource Include="module-core.ckl" />
+    <EmbeddedResource Include="module-dates.ckl" />
     <EmbeddedResource Include="module-io.ckl" />
     <EmbeddedResource Include="module-legacy.ckl" />
     <EmbeddedResource Include="module-lists.ckl" />

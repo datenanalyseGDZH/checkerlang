@@ -22,6 +22,6 @@ export const modulesys = `
 def checkerlang_version = "3.4.0";
 def checkerlang_platform = "js";
 
-def checkerlang_modules = ["core", "io", "lists", "math", "random", "sets", "sys", "stat"];
+def checkerlang_modules = ["core", "dates", "io", "lists", "math", "random", "sets", "sys", "stat"];
 
 `;
