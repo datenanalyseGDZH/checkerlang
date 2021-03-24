@@ -37,8 +37,4 @@
 * module types (contains is_xy functions)
 * module predicates (contains non-type is_xy predicates)
 
-* move alle lambdas from base/legacy to core (and later on distribute them to other modules)
-* maybe change module names to upper case, this would allow to use names like List, Set, String, Date without collisions with list, set, string, date functions
-
-
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
