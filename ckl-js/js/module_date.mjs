@@ -25,6 +25,38 @@ bind_native("format_date");
 
 
 "
+is_valid_date(str, fmt='yyyyMMdd')
+
+Returns TRUE if the string represents a valid date. The default format
+is yyyyMMdd. It is possible to specify different formats using the fmt
+optional parameter.
+
+: is_valid_date('20170304') ==> TRUE
+: is_valid_date('2017030412') ==> FALSE
+: is_valid_date('20170399') ==> FALSE
+"
+def is_valid_date(str, fmt="yyyyMMdd") do
+  require Date;
+  is_string(str) and Date->parse_date(str, fmt) != NULL;
+end;
+
+
+"
+is_valid_time(str, fmt='HHmm')
+
+Returns TRUE if the string represents a valid time. The default format
+is HHmm. It is possible to specify different formats using the fmt
+optional parameter.
+
+: is_valid_time('1245') ==> TRUE
+"
+def is_valid_time(str, fmt="HHmm") do
+  require Date;
+  is_string(str) and Date->parse_date(str, fmt) != NULL;
+end;
+
+
+"
 date_year(value)
 
 Extracts the year part from the given date value and

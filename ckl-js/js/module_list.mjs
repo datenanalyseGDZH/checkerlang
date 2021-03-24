@@ -19,6 +19,9 @@ export const modulelist = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+bind_native("contains");
+bind_native("find");
+
 "
 first(lst)
 
@@ -174,9 +177,10 @@ are added to the pattern, so that the pattern matches partially.
 : grep(['1:2', '12:2', '123:3'], //2//, key = fn(x) split(x, ':')[1]) ==> ['1:2', '12:2']
 "
 def grep(lst, pat, key = identity) do
+  require String import [contains, matches];
   def pat_ = string(pat);
-  if not str_contains(pat_, '^') and not str_contains(pat_, '$') then pat_ = '^.*' + pat_ + '.*$';
-  return [element for element in lst if str_matches(key(element), pattern(pat_))]
+  if not contains(pat_, '^') and not contains(pat_, '$') then pat_ = '^.*' + pat_ + '.*$';
+  return [element for element in lst if matches(key(element), pattern(pat_))]
 end;
 
 

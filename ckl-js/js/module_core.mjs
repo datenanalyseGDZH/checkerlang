@@ -25,16 +25,13 @@ bind_native("body");
 bind_native("boolean");
 bind_native("ceiling");
 bind_native("compare");
-bind_native("contains", "str_contains");
 bind_native("date");
 bind_native("decimal");
 bind_native("delete_at");
 bind_native("div");
-bind_native("ends_with", "str_ends_with");
 bind_native("equals");
 bind_native("escape_pattern");
 bind_native("eval");
-bind_native("find", "str_find");
 bind_native("floor");
 bind_native("greater");
 bind_native("greater_equals");
@@ -45,18 +42,12 @@ bind_native("if_null_or_empty");
 bind_native("info");
 bind_native("insert_at");
 bind_native("int");
-bind_native("is_empty");
-bind_native("is_not_empty");
-bind_native("is_not_null");
-bind_native("is_null");
 bind_native("length");
 bind_native("less");
 bind_native("less_equals");
 bind_native("list");
-bind_native("lower");
 bind_native("ls");
 bind_native("map");
-bind_native("matches", "str_matches");
 bind_native("mod");
 bind_native("mul");
 bind_native("not_equals");
@@ -68,160 +59,73 @@ bind_native("put");
 bind_native("range");
 bind_native("remove");
 bind_native("round");
-bind_native("s");
 bind_native("set");
 bind_native("sorted");
-bind_native("split");
-bind_native("split2");
-bind_native("starts_with", "str_starts_with");
 bind_native("string");
 bind_native("sub");
 bind_native("sublist");
-bind_native("substr");
 bind_native("sum");
 bind_native("timestamp");
-bind_native("trim", "str_trim");
 bind_native("type");
-bind_native("upper");
 bind_native("zip");
 bind_native("zip_map");
 
-"
-is_valid_date(str, fmt='yyyyMMdd')
 
-Returns TRUE if the string represents a valid date. The default format
-is yyyyMMdd. It is possible to specify different formats using the fmt
-optional parameter.
+require Type import [
+    is_string, 
+    is_list, 
+    is_set, 
+    is_map, 
+    is_object, 
+    is_numeric
+];
 
-: is_valid_date('20170304') ==> TRUE
-: is_valid_date('2017030412') ==> FALSE
-: is_valid_date('20170399') ==> FALSE
-"
-def is_valid_date(str, fmt="yyyyMMdd") do
-  require Date;
-  is_string(str) and Date->parse_date(str, fmt) != NULL;
-end;
+require Predicate import [
+    is_empty, 
+    is_zero, 
+    is_negative, 
+    is_numerical, 
+    is_alphanumerical, 
+    is_empty, 
+    is_not_empty, 
+    is_null, 
+    is_not_null
+];
 
+require Date import [
+    is_valid_date, 
+    is_valid_time
+];
 
-"
-is_valid_time(str, fmt='HHmm')
+require IO import [
+    println, 
+    print
+];
 
-Returns TRUE if the string represents a valid time. The default format
-is HHmm. It is possible to specify different formats using the fmt
-optional parameter.
+require String import [
+    starts_with,
+    ends_with,
+    contains,
+    find,
+    substr, 
+    matches, 
+    trim,
+    split, 
+    split2,
+    replace,
+    join,
+    q,
+    esc,
+    s,
+    reverse as reverse_string
+];
 
-: is_valid_time('1245') ==> TRUE
-"
-def is_valid_time(str, fmt="HHmm") do
-  require Date;
-  is_string(str) and Date->parse_date(str, fmt) != NULL;
-end;
+require Math import [
+    abs,
+    sign
+];
 
-
-"
-is_list(obj) 
-
-Returns TRUE if the object is of type list.
-
-: is_list([1, 2, 3]) ==> TRUE
-"
-def is_list(obj) type(obj) == 'list';
-
-
-"
-is_string(obj) 
-
-Returns TRUE if the object is of type string.
-
-: is_string('abc') ==> TRUE
-"
-def is_string(obj) type(obj) == 'string';
-
-
-"
-is_int(obj) 
-
-Returns TRUE if the object is of type int.
-
-: is_int(123) ==> TRUE
-"
-def is_int(obj) type(obj) == 'int';
-
-
-"
-is_decimal(obj) 
-
-Returns TRUE if the object is of type decimal.
-
-: is_decimal(123.45) ==> TRUE
-"
-def is_decimal(obj) type(obj) == 'decimal';
-
-
-"
-is_numeric(obj) 
-
-Returns TRUE if the object is of type numeric. Numeric
-types are int and decimal.
-
-: is_numeric(123) ==> TRUE
-: is_numeric(123.45) ==> TRUE
-"
-def is_numeric(obj) is_int(obj) or is_decimal(obj);
-
-
-"
-is_boolean(obj) 
-
-Returns TRUE if the object is of type boolean.
-
-: is_boolean(1 == 2) ==> TRUE
-"
-def is_boolean(obj) type(obj) == 'boolean';
-
-
-"
-is_set(obj) 
-
-Returns TRUE if the object is of type set.
-
-: is_set(set([1, 2, 3])) ==> TRUE
-"
-def is_set(obj) type(obj) == 'set';
-
-
-"
-is_map(obj) 
-
-Returns TRUE if the object is of type map.
-
-: is_map(map([['a', 1], ['b', 2]])) ==> TRUE
-"
-def is_map(obj) type(obj) == 'map';
-
-
-"
-is_object(obj)
-
-Returns TRUE if the object is of type object.
-
-: is_object(object()) ==> TRUE
-: is_object(map()) ==> FALSE
-"
-def is_object(obj) type(obj) == 'object';
-
-
-"
-is_func(obj) 
-
-Returns TRUE if the object is of type func.
-
-: is_func(fn(x) 2 * x) ==> TRUE
-: is_func(sum) ==> TRUE
-"
-def is_func(obj) type(obj) == 'func';
-
-
+    
 "
 non_zero(a, b) 
 
@@ -330,111 +234,6 @@ end;
 
 
 "
-abs(n) 
-
-Returns the absolute value of n.
-
-: abs(2) ==> 2
-: abs(-3) ==> 3
-"
-def abs(n) do
-  if is_null(n) then NULL
-  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
-  if n < 0 then - n
-  else n;
-end;
-
-
-"
-sign(n) 
-
-Returns the signum of n
-
-: sign(2) ==> 1
-: sign(-3) ==> -1
-"
-def sign(n) do
-  if is_null(n) then NULL
-  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
-  if n < 0 then -1
-  if n > 0 then 1
-  else 0;
-end;
-
-
-"
-is_zero(obj)
-
-Returns TRUE if the obj is zero.
-
-: is_zero(0) ==> TRUE
-"
-def is_zero(obj) is_numeric(obj) and obj == 0;
-
-
-"
-is_negative(obj)
-
-Returns TRUE if the obj is negative.
-
-: is_negative(-1) ==> TRUE
-"
-def is_negative(obj) is_numeric(obj) and obj < 0;
-
-
-"
-is_positive(obj)
-
-Returns TRUE if the obj is positive.
-
-: is_positive(1) ==> TRUE
-"
-def is_positive(obj) is_numeric(obj) and obj > 0;
-
-
-"
-is_alphanumerical(str, min = 0, max = 99999)
-
-Returns TRUE if the string is alphanumerical, i.e. contains only a-z, A-Z and 0-9.
-It is possible to specify minimal and maximal length using the min and max optional
-parameters.
-
-: is_alphanumerical('Ab12') ==> TRUE
-"
-def is_alphanumerical(str, min=0, max=99999) is_string(str) and str_matches(str, pattern('^[a-zA-Z0-9]{' + min + ',' + max + '}$'));
-
-
-"
-is_numerical(str, min = 0, max = 99999)
-
-Returns TRUE if the string is numerical, i.e. contains only 0-9. It is possible to
-specify minimal and maximal length using the min and max optional parameters.
-
-: is_numerical('123') ==> TRUE
-" 
-def is_numerical(str, min=0, max=99999) is_string(str) and str_matches(str, pattern('^[0-9]{' + min + ',' + max + '}$'));
-
-
-"
-reverse_string(str)
-
-Returns a reversed copy of a string.
-
-: reverse_string('abc') ==> 'cba'
-: reverse_string(NULL) ==> NULL
-: reverse_string(12) ==> NULL
-"
-def reverse_string(str) do
-  if not is_string(str) then return NULL;
-  def result = "";
-  for ch in str do
-    result = ch + result
-  end;
-  result
-end;
-
-
-"
 substitute(obj, idx, value)
 
 If obj is a list or string, returns a list or string with the element
@@ -467,25 +266,6 @@ def interval(a, b = NULL) do
     if is_null(a) then return NULL
     if is_null(b) then range(1, a + 1)
     else range(a, b + 1)
-end;
-
-
-"
-replace(s, a, b, start = 0)
-
-Replaces all occurences of a in the string s with b.
-The optional parameter start specifies the start index.
-
-: replace('abc', 'b', 'x') ==> 'axc'
-: replace('abc', 'b', 'xy') ==> 'axyc'
-: replace('abcdef', 'bcd', 'xy') ==> 'axyef'
-: replace('abcabcabc', 'abc', 'xy', start = 3) ==> 'abcxyxy'
-"
-def replace(s, a, b, start = 0) do
-  if is_null(s) then return NULL;
-  def pos = str_find(s, a, start = start);
-  if pos == -1 then return s;
-  return replace(substr(s, 0, pos) + b + substr(s, pos + length(a)), a, b, start = pos + length(b));
 end;
 
 
@@ -554,55 +334,6 @@ def pairs(lst) do
         append(result, [lst[index], lst[index + 1]]);
     end;
     return result;
-end;
-
-
-"
-join(lst, sep = ' ')
-
-Returns a string containing all elements of the list lst
-separated by the string sep.
-
-: join([1, 2, 3], '|') ==> '1|2|3'
-: join(['one', 'world'], '--') ==> 'one--world'
-: join([], '|') ==> ''
-: join([1], '|') ==> '1'
-: join('|', [1, 2, 3]) ==> '1|2|3'
-"
-def join(lst, sep) do
-    if type(lst) == "string" then [lst, sep] = [sep, lst];
-    def result = "";
-    for element in lst do
-        result = result + sep + string(element);
-    end;
-    return substr(result, length(sep));
-end;
-
-
-"
-q(lst)
-
-Returns a string containing all elements of the list lst
-separated by a pipe character.
-
-: q([1, 2, 3]) ==> '1|2|3'
-: q([]) ==> ''
-"
-def q(lst) do
-    return join("|", lst);
-end;
-
-
-"
-esc(str)
-
-Escapes the characters <, > and & by their HTML entities.
-
-: esc('a<b') ==> 'a&lt;b'
-: esc('<code>') ==> '&lt;code&gt;'
-"
-def esc(str) do
-    return replace(replace(replace(str, '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
 end;
 
 

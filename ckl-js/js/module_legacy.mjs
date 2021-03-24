@@ -24,9 +24,20 @@ require Core unqualified;
 require Date unqualified;
 require List unqualified;
 require Math unqualified;
+require Predicate unqualified;
 require Random unqualified;
 require IO unqualified;
 require Set unqualified;
 require Stat unqualified;
+require String unqualified;
+require Type unqualified;
+
+require String import [
+    starts_with as str_starts_with, 
+    ends_with as str_ends_with, 
+    contains as str_contains, 
+    find as str_find, 
+    matches as str_matches, 
+    trim as str_trim];
 
 `;

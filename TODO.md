@@ -33,8 +33,6 @@
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
-* module strings
-* module types (contains is_xy functions)
-* module predicates (contains non-type is_xy predicates)
-
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
+
+* port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests

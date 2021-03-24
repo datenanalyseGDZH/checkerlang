@@ -140,10 +140,10 @@ parser_test("Pipeline", "0 !> sprintf(fmt=\"part2: {0}\") !> println()", "(print
 
 
 function interpreter_test(description, code, expected) {
-    run_test("Interpreter:" + description, function() { return new Interpreter().interpret(code, "{test}").toString(); }, expected);
+    run_test("Interpreter:" + description, function() { return new Interpreter(false, false).interpret(code, "{test}").toString(); }, expected);
 }
 function interpreter_test_exception(description, code) {
-    run_test_exception("Interpreter:" + description, function() { return new interpreter().interpret(code, "{test}").toString(); });
+    run_test_exception("Interpreter:" + description, function() { return new Interpreter(false, false).interpret(code, "{test}").toString(); });
 }
 
 interpreter_test("String", "'abc'" , "'abc'");
@@ -237,8 +237,8 @@ interpreter_test("FuncDefaultArg", "def a = fn(x = 12) x; a(10)", "10");
 interpreter_test("FuncDefaultArg", "def a = fn(x = 12) x; a()", "12");
 interpreter_test("FuncLength", "length('abc')", "3");
 interpreter_test("FuncLength", "length([1, 2, 3])", "3");
-interpreter_test("FuncLower", "lower('Abc')", "'abc'");
-interpreter_test("FuncUpper", "upper('Abc')", "'ABC'");
+interpreter_test("FuncLower", "require String; String->lower('Abc')", "'abc'");
+interpreter_test("FuncUpper", "require String; String->upper('Abc')", "'ABC'");
 interpreter_test("FuncNonZero", "non_zero('12', '3')", "'12'");
 interpreter_test("FuncNonZero", "non_zero('0', '3')", "'3'");
 interpreter_test("FuncNonEmpty", "non_empty('12', '3')", "'12'");
@@ -279,8 +279,6 @@ interpreter_test("FuncSublist", "sublist([1, 2, 3, 4], 3)", "[4]");
 interpreter_test("FuncSublist", "sublist([1, 2, 3, 4], 4)", "[]");
 interpreter_test("FuncFindStr", "find('abcd', 'b')", "1");
 interpreter_test("FuncFindStr", "find('abcd', 'e')", "-1");
-interpreter_test("FuncStrFind", "str_find('abcd', 'bc')", "1");
-interpreter_test("FuncStrFind", "str_find('abcd', 'de')", "-1");
 interpreter_test("FuncFindList", "find([1, 2, 3], 2)", "1");
 interpreter_test("FuncFindList", "find([1, 2, 3], 4)", "-1");
 interpreter_test("FuncFindListWithKey", "find([[1, 'a'], [2, 'b'], [3, 'c']], 2, fn(x) x[0])", "1");

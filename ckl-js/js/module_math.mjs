@@ -34,6 +34,40 @@ bind_native("sin");
 bind_native("sqrt");
 bind_native("tan");
 
+
+"
+abs(n) 
+
+Returns the absolute value of n.
+
+: abs(2) ==> 2
+: abs(-3) ==> 3
+"
+def abs(n) do
+  if is_null(n) then NULL
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
+  if n < 0 then - n
+  else n;
+end;
+
+
+"
+sign(n) 
+
+Returns the signum of n
+
+: sign(2) ==> 1
+: sign(-3) ==> -1
+"
+def sign(n) do
+  if is_null(n) then NULL
+  if not is_numeric(n) then error("argument is not numerical (" + type(n) + ")")
+  if n < 0 then -1
+  if n > 0 then 1
+  else 0;
+end;
+
+
 "
 log2(x)
 

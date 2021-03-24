@@ -28,10 +28,10 @@ def prepare_info(value) do
     return lines;
 end;
 
-def get_info_parts(symbol, module = NULL) do
-    def result = <<<module => module, symbol => symbol, header => [], text => [], examples => []>>>;
+def get_info_parts(symbol, module = "Core") do
+    def result = <<<modules => [module], symbol => symbol, header => [], text => [], examples => []>>>;
     def value = NULL;
-    if not is_null(module) then value = eval("require " + module + "; " + module + "->" + symbol)
+    if module != "Core" then value = eval("require " + module + "; " + module + "->" + symbol)
     else value = eval(symbol);
     def lines = prepare_info(value);
     if not is_empty(lines) then do
@@ -53,7 +53,16 @@ def collect_module_information(result, module) do
         def infos = get_info_parts(symbol, module);
         if is_empty(infos->header) then continue;
         if not symbol in result->entries then result->entries[symbol] = [];
-        result->entries[symbol] !> append(infos);
+        def found = FALSE;
+        for entry in result->entries[symbol] do
+            if entry->header == infos->header and entry->text == infos->text and entry->examples == infos->examples then do
+                found = TRUE;
+                entry->modules !> append(module);
+            end;
+        end;
+        if not found then do
+            result->entries[symbol] !> append(infos);
+        end;
         result->modules[module][symbol] = infos;
     end;
 end;
@@ -145,10 +154,10 @@ for symbol in set(information->entries) do
             end;
             println("</div>", out);
         end;
-        if not is_empty(info->module) then do
+        if not is_empty(info->modules) then do
             println("<div class='module'>", out);
-            println("<div class='module_title'>Module</div>", out);
-            println(esc(info->module), out);
+            println("<div class='module_title'>Modules</div>", out);
+            println(esc(join(info->modules, ", ")), out);
             println("</div>", out);
         end;
         if not is_empty(info->examples) then do

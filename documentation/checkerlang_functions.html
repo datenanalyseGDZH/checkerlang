@@ -28,10 +28,13 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#module_IO'>Module IO</a></li>
 <li><a href='#module_List'>Module List</a></li>
 <li><a href='#module_Math'>Module Math</a></li>
+<li><a href='#module_Predicate'>Module Predicate</a></li>
 <li><a href='#module_Random'>Module Random</a></li>
 <li><a href='#module_Set'>Module Set</a></li>
 <li><a href='#module_Stat'>Module Stat</a></li>
+<li><a href='#module_String'>Module String</a></li>
 <li><a href='#module_Sys'>Module Sys</a></li>
+<li><a href='#module_Type'>Module Type</a></li>
 <li><a href='#E'>E</a></li>
 <li><a href='#MAXINT'>MAXINT</a></li>
 <li><a href='#MININT'>MININT</a></li>
@@ -205,14 +208,8 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#sprintf'>sprintf</a></li>
 <li><a href='#sqrt'>sqrt</a></li>
 <li><a href='#starts_with'>starts_with</a></li>
-<li><a href='#str_contains'>str_contains</a></li>
-<li><a href='#str_ends_with'>str_ends_with</a></li>
-<li><a href='#str_find'>str_find</a></li>
 <li><a href='#str_input'>str_input</a></li>
-<li><a href='#str_matches'>str_matches</a></li>
 <li><a href='#str_output'>str_output</a></li>
-<li><a href='#str_starts_with'>str_starts_with</a></li>
-<li><a href='#str_trim'>str_trim</a></li>
 <li><a href='#string'>string</a></li>
 <li><a href='#sub'>sub</a></li>
 <li><a href='#sublist'>sublist</a></li>
@@ -242,6 +239,8 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#date_second'>date_second</a></li>
 <li><a href='#date_year'>date_year</a></li>
 <li><a href='#format_date'>format_date</a></li>
+<li><a href='#is_valid_date'>is_valid_date</a></li>
+<li><a href='#is_valid_time'>is_valid_time</a></li>
 <li><a href='#iso_date'>iso_date</a></li>
 <li><a href='#iso_datetime'>iso_datetime</a></li>
 <li><a href='#parse_date'>parse_date</a></li>
@@ -266,7 +265,9 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <h2 id='module_List'>Module List</h2>
 <ul class='toc'>
 <li><a href='#append_all'>append_all</a></li>
+<li><a href='#contains'>contains</a></li>
 <li><a href='#filter'>filter</a></li>
+<li><a href='#find'>find</a></li>
 <li><a href='#first'>first</a></li>
 <li><a href='#first_n'>first_n</a></li>
 <li><a href='#flatten'>flatten</a></li>
@@ -288,6 +289,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <ul class='toc'>
 <li><a href='#E'>E</a></li>
 <li><a href='#PI'>PI</a></li>
+<li><a href='#abs'>abs</a></li>
 <li><a href='#acos'>acos</a></li>
 <li><a href='#asin'>asin</a></li>
 <li><a href='#atan'>atan</a></li>
@@ -302,9 +304,22 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#log10'>log10</a></li>
 <li><a href='#log2'>log2</a></li>
 <li><a href='#pow'>pow</a></li>
+<li><a href='#sign'>sign</a></li>
 <li><a href='#sin'>sin</a></li>
 <li><a href='#sqrt'>sqrt</a></li>
 <li><a href='#tan'>tan</a></li>
+</ul>
+<h2 id='module_Predicate'>Module Predicate</h2>
+<ul class='toc'>
+<li><a href='#is_alphanumerical'>is_alphanumerical</a></li>
+<li><a href='#is_empty'>is_empty</a></li>
+<li><a href='#is_negative'>is_negative</a></li>
+<li><a href='#is_not_empty'>is_not_empty</a></li>
+<li><a href='#is_not_null'>is_not_null</a></li>
+<li><a href='#is_null'>is_null</a></li>
+<li><a href='#is_numerical'>is_numerical</a></li>
+<li><a href='#is_positive'>is_positive</a></li>
+<li><a href='#is_zero'>is_zero</a></li>
 </ul>
 <h2 id='module_Random'>Module Random</h2>
 <ul class='toc'>
@@ -330,8 +345,41 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#median_high'>median_high</a></li>
 <li><a href='#median_low'>median_low</a></li>
 </ul>
+<h2 id='module_String'>Module String</h2>
+<ul class='toc'>
+<li><a href='#contains'>contains</a></li>
+<li><a href='#ends_with'>ends_with</a></li>
+<li><a href='#esc'>esc</a></li>
+<li><a href='#find'>find</a></li>
+<li><a href='#join'>join</a></li>
+<li><a href='#lower'>lower</a></li>
+<li><a href='#matches'>matches</a></li>
+<li><a href='#q'>q</a></li>
+<li><a href='#replace'>replace</a></li>
+<li><a href='#reverse'>reverse</a></li>
+<li><a href='#s'>s</a></li>
+<li><a href='#split'>split</a></li>
+<li><a href='#split2'>split2</a></li>
+<li><a href='#starts_with'>starts_with</a></li>
+<li><a href='#substr'>substr</a></li>
+<li><a href='#trim'>trim</a></li>
+<li><a href='#upper'>upper</a></li>
+</ul>
 <h2 id='module_Sys'>Module Sys</h2>
 <ul class='toc'>
+</ul>
+<h2 id='module_Type'>Module Type</h2>
+<ul class='toc'>
+<li><a href='#is_boolean'>is_boolean</a></li>
+<li><a href='#is_decimal'>is_decimal</a></li>
+<li><a href='#is_func'>is_func</a></li>
+<li><a href='#is_int'>is_int</a></li>
+<li><a href='#is_list'>is_list</a></li>
+<li><a href='#is_map'>is_map</a></li>
+<li><a href='#is_numeric'>is_numeric</a></li>
+<li><a href='#is_object'>is_object</a></li>
+<li><a href='#is_set'>is_set</a></li>
+<li><a href='#is_string'>is_string</a></li>
 </ul>
 <h2 id='E'>E</h2>
 <div class='header'>
@@ -343,7 +391,7 @@ E
 The mathematical constant E (Eulers number)
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 </div>
@@ -356,6 +404,10 @@ MAXINT
 <div class='text_title'>Description</div>
 The maximal int value
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='MININT'>MININT</h2>
 <div class='header'>
@@ -365,6 +417,10 @@ MININT
 <div class='text'>
 <div class='text_title'>Description</div>
 The minimal int value
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 </div>
 <h2 id='PI'>PI</h2>
@@ -377,7 +433,7 @@ PI
 The mathematical constant PI
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 </div>
@@ -391,6 +447,10 @@ abs(n)
 Returns the absolute value of n.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -409,7 +469,7 @@ Returns the arcus cosinus of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -428,6 +488,10 @@ For lists and strings it concatenates. For sets it uses union.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>add(1, 2) ==&gt; 3</div>
@@ -444,6 +508,10 @@ Returns TRUE, if the predicate function returns
 TRUE for all elements of the list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -462,6 +530,10 @@ TRUE for any element of the list.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>any([1, 2, 3], fn(n) n == 3) ==&gt; TRUE</div>
@@ -478,6 +550,10 @@ Appends the element to the list lst. The lst may also be a set.
 Returns the changed list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -497,7 +573,7 @@ can be in a list or a set.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -518,6 +594,10 @@ Applies the function with the arguments in the list args.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>apply(fn(a, b, c) a + b + c, [1, 2, 3]) ==&gt; 6</div>
@@ -534,7 +614,7 @@ Returns the arcus sinus of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -553,7 +633,7 @@ Returns the arcus tangens of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -572,7 +652,7 @@ Returns the arcus tangens of y / x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -590,6 +670,10 @@ bind_native(native, alias)
 Binds a native function in the current environment.
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='body'>body</h2>
 <div class='header'>
@@ -601,6 +685,10 @@ body(f)
 Returns the body of the lambda f.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -617,6 +705,10 @@ Converts the obj to a boolean, if possible.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>boolean(1) ==&gt; TRUE</div>
@@ -631,6 +723,10 @@ ceiling(x)
 Returns the integral decimal value that is equal to or next higher than x.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -648,7 +744,7 @@ Returns a random element from the list or set lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Random
 </div>
 <div class='examples'>
@@ -666,7 +762,7 @@ Returns a list with n random elements from the list or set lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Random
 </div>
 </div>
@@ -682,6 +778,10 @@ except perhaps the last, which may be smaller. Obj can be a string
 or a list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -700,7 +800,7 @@ Closes the input or output connection and releases system resources.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 </div>
@@ -716,6 +816,10 @@ Returns an int less than 0 if a is less than b,
 if a is greater than b.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -739,6 +843,10 @@ Returns a function that returns a constant value, regardless of the argument use
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>def f = const(2); f(1) ==&gt; 2</div>
@@ -756,6 +864,10 @@ If obj is a list, set or map, TRUE is returned,
 if part is contained.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, List, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -780,7 +892,7 @@ Returns the cosinus of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -800,6 +912,10 @@ then the values of the map, not the keys are checked.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>count([1, 2, 2, 2, 3, 4], 2) ==&gt; 3</div>
@@ -818,6 +934,10 @@ This returns another function which takes the remaining
 args of the original function f.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -839,6 +959,10 @@ See parse_date for handling other formats.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>string(date('20170102')) ==&gt; '20170102000000'</div>
@@ -859,7 +983,7 @@ to a date value using the date function.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -880,7 +1004,7 @@ to a date value using the date function.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -900,7 +1024,7 @@ returns it as an integer.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -921,7 +1045,7 @@ to a date value using the date function.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -941,7 +1065,7 @@ returns it as an integer.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -962,7 +1086,7 @@ to a date value using the date function.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -980,6 +1104,10 @@ Converts the obj to a decimal, if possible.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>decimal('1.2') ==&gt; 1.2</div>
@@ -996,6 +1124,10 @@ The list is changed in place. Returns the removed element or
 NULL, if no element was removed
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1018,7 +1150,7 @@ Also works for lists.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Set
 </div>
 <div class='examples'>
@@ -1040,6 +1172,10 @@ then the result is also an int. Otherwise, it is a decimal.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>div(6, 2) ==&gt; 3</div>
@@ -1055,6 +1191,10 @@ If b is not zero, the result of a / b is returned.
 If b is zero, the value div_0_value is returned.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1076,6 +1216,10 @@ ends_with(str, part)
 Returns TRUE if the string str ends with part.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1113,6 +1257,10 @@ Typically, you would use this in a for loop, e.g.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>enumerate(['a', 'b', 'c']) ==&gt; [[0, 'a'], [1, 'b'], [2, 'c']]</div>
@@ -1131,6 +1279,10 @@ Integer values are propagated to decimal values, if required.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>equals(1, 2) ==&gt; FALSE</div>
@@ -1148,6 +1300,10 @@ esc(str)
 Escapes the characters &lt;, &gt; and &amp; by their HTML entities.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1169,6 +1325,10 @@ Currently, the | and . characters are escaped.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>escape_pattern('|') ==&gt; '\\|'</div>
@@ -1184,6 +1344,10 @@ eval(s)
 Evaluates the string or node s.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1201,7 +1365,7 @@ Returns the power e ^ x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -1219,7 +1383,7 @@ Returns an input object, that reads the characters from the given file.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 </div>
@@ -1235,7 +1399,7 @@ the file exists it is overwritten.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 </div>
@@ -1252,7 +1416,7 @@ all elements for which the predicate returns FALSE.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1278,6 +1442,10 @@ key function.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, List, String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>find('abcdefg', 'cde') ==&gt; 2</div>
@@ -1298,7 +1466,7 @@ Returns the first element of a list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1318,7 +1486,7 @@ Returns the first n elements of the list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1338,7 +1506,7 @@ This does only work at the top level and does not recurse.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1358,6 +1526,10 @@ Returns the integral decimal value that is equal to or next lower than x.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>floor(1.3) ==&gt; 1.0</div>
@@ -1374,7 +1546,7 @@ of the list lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 </div>
@@ -1390,7 +1562,7 @@ Formats the date value according to fmt and returns a string value.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -1415,7 +1587,7 @@ of more than two values.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -1436,7 +1608,7 @@ Returns the geometric mean of lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -1455,7 +1627,7 @@ Returns the value of a string output object.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
@@ -1473,6 +1645,10 @@ Returns TRUE if a is greater than b.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>greater(1, 2) ==&gt; FALSE</div>
@@ -1489,6 +1665,10 @@ greater_equals(a, b)
 Returns TRUE if a is greater than or equals to b.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1512,7 +1692,7 @@ are added to the pattern, so that the pattern matches partially.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1537,7 +1717,7 @@ equal elements next to each other.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -1561,7 +1741,7 @@ Returns the harmonic mean of lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -1580,6 +1760,10 @@ Returns obj.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>identity(1) ==&gt; 1</div>
@@ -1595,6 +1779,10 @@ if_empty(a, b)
 Returns b if a is an empty string otherwise returns a.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1612,6 +1800,10 @@ Returns b if a is NULL otherwise returns a.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>if_null(1, 2) ==&gt; 1</div>
@@ -1627,6 +1819,10 @@ if_null_or_empty(a, b)
 Returns b if a is null or an empty string otherwise returns a.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1644,6 +1840,10 @@ info(obj)
 Returns the info associated with an object.
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='insert_at'>insert_at</h2>
 <div class='header'>
@@ -1657,6 +1857,10 @@ The list is changed in place. Returns the changed list.
 If index is out of bounds, the list is not changed at all.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1678,6 +1882,10 @@ Converts the obj to an int, if possible.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>int('1') ==&gt; 1</div>
@@ -1694,7 +1902,7 @@ Returns the intersection of the two sets. Also works for lists.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Set
 </div>
 <div class='examples'>
@@ -1717,6 +1925,10 @@ If only a is provided, the interval is taken to be [1, ... a]
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>interval(1, 10) ==&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div>
@@ -1736,6 +1948,10 @@ parameters.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_alphanumerical('Ab12') ==&gt; TRUE</div>
@@ -1751,6 +1967,10 @@ Returns TRUE if the object is of type boolean.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_boolean(1 == 2) ==&gt; TRUE</div>
@@ -1765,6 +1985,10 @@ is_decimal(obj)
 Returns TRUE if the object is of type decimal.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Type
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1782,6 +2006,10 @@ Lists, sets and maps are empty, if they do not contain elements.
 Strings are empty, if the contain no characters. NULL is always empty.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1804,7 +2032,7 @@ Returns TRUE if the number is even.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -1823,6 +2051,10 @@ Returns TRUE if the object is of type func.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_func(fn(x) 2 * x) ==&gt; TRUE</div>
@@ -1839,6 +2071,10 @@ Returns TRUE if the object is of type int.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_int(123) ==&gt; TRUE</div>
@@ -1853,6 +2089,10 @@ is_list(obj)
 Returns TRUE if the object is of type list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1869,6 +2109,10 @@ Returns TRUE if the object is of type map.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_map(map([['a', 1], ['b', 2]])) ==&gt; TRUE</div>
@@ -1883,6 +2127,10 @@ is_negative(obj)
 Returns TRUE if the obj is negative.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1901,6 +2149,10 @@ Strings are empty, if the contain no characters. NULL is always empty.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_not_empty([]) ==&gt; FALSE</div>
@@ -1918,6 +2170,10 @@ Returns TRUE, if the obj is not NULL.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_not_null('') ==&gt; TRUE</div>
@@ -1934,6 +2190,10 @@ is_null(obj)
 Returns TRUE, if the obj is NULL.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1953,6 +2213,10 @@ types are int and decimal.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_numeric(123) ==&gt; TRUE</div>
@@ -1970,6 +2234,10 @@ specify minimal and maximal length using the min and max optional parameters.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_numerical('123') ==&gt; TRUE</div>
@@ -1984,6 +2252,10 @@ is_object(obj)
 Returns TRUE if the object is of type object.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2002,7 +2274,7 @@ Returns TRUE if the number is odd.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2021,6 +2293,10 @@ Returns TRUE if the obj is positive.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Predicate
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_positive(1) ==&gt; TRUE</div>
@@ -2036,6 +2312,10 @@ Returns TRUE if the object is of type set.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_set(set([1, 2, 3])) ==&gt; TRUE</div>
@@ -2050,6 +2330,10 @@ is_string(obj)
 Returns TRUE if the object is of type string.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Type
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2067,6 +2351,10 @@ is yyyyMMdd. It is possible to specify different formats using the fmt
 optional parameter.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2087,6 +2375,10 @@ optional parameter.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Date
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>is_valid_time('1245') ==&gt; TRUE</div>
@@ -2101,6 +2393,10 @@ is_zero(obj)
 Returns TRUE if the obj is zero.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Predicate
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2118,7 +2414,7 @@ Formats the date value as an ISO date (i.e. using format yyyy-MM-dd).
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -2137,7 +2433,7 @@ Formats the datetime value as an ISO datetime (i.e. using format yyyy-MM-dd'T'HH
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -2155,6 +2451,10 @@ Returns a string containing all elements of the list lst
 separated by the string sep.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2179,6 +2479,10 @@ length. Labels must be unique.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>label_data(['a', 'b', 'c'], [1, 2, 3]) ==&gt; &lt;&lt;&lt;'a' =&gt; 1, 'b' =&gt; 2, 'c' =&gt; 3&gt;&gt;&gt;</div>
@@ -2195,7 +2499,7 @@ Returns the last element of a list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -2215,7 +2519,7 @@ Returns the last n elements of the list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -2238,7 +2542,7 @@ of more than two values.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2255,6 +2559,10 @@ length(obj)
 Returns the length of obj. This only works for strings, lists, sets and maps.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2275,6 +2583,10 @@ Returns TRUE if a is less than b.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>less(1, 2) ==&gt; TRUE</div>
@@ -2289,6 +2601,10 @@ less_equals(a, b)
 Returns TRUE if a is less than or equals to b.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2307,6 +2623,10 @@ Splits the string str into lines and returns them as a list.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>lines('a\nb c\r\nd') ==&gt; ['a', 'b c', 'd']</div>
@@ -2321,6 +2641,10 @@ list(obj)
 Converts the obj to a list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2338,7 +2662,7 @@ Returns the natural logarithm of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2357,7 +2681,7 @@ Returns the logarithm of x to base 10.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2376,7 +2700,7 @@ Returns the logarithm of x to base 2.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2394,6 +2718,10 @@ Converts str to lower case letters.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>lower('Hello') ==&gt; 'hello'</div>
@@ -2409,6 +2737,10 @@ ls(module)
 Returns a list of all defined symbols (functions and constants) in
 the current environment or in the specified module.
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='map'>map</h2>
 <div class='header'>
@@ -2422,6 +2754,10 @@ Converts the obj to a map, if possible. If obj is omitted,
 an empty map is returned.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2440,6 +2776,10 @@ value is returned. Otherwise, the default_value is
 returned.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2466,6 +2806,10 @@ value.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>map_get_pattern(&lt;&lt;&lt;//[ab]// =&gt; 1, //[cd]// =&gt; 2&gt;&gt;&gt;, 'a') ==&gt; 1</div>
@@ -2488,7 +2832,7 @@ the list are mapped using the function func to new values.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -2507,6 +2851,10 @@ matches(str, pattern)
 Returns TRUE, if str matches the regular expression pattern.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2531,6 +2879,10 @@ Default key is the identity function.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>max(1, 2) ==&gt; 2</div>
@@ -2549,7 +2901,7 @@ Returns the mean of lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -2570,7 +2922,7 @@ method.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -2590,7 +2942,7 @@ Returns the high median of lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -2610,7 +2962,7 @@ Returns the low median of lst.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Stat
 </div>
 <div class='examples'>
@@ -2636,6 +2988,10 @@ Default key is the identity function.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>min(1, 2) ==&gt; 1</div>
@@ -2652,6 +3008,10 @@ mod(a, b)
 Returns the modulus of a modulo b.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2670,6 +3030,10 @@ list and b is an int, then the list is repeated b times.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>mul(2, 3) ==&gt; 6</div>
@@ -2687,6 +3051,10 @@ Returns the value a, if a is a non-empty string, otherwise returns b.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>non_empty('a', 'b') ==&gt; 'a'</div>
@@ -2702,6 +3070,10 @@ non_zero(a, b)
 Returns the value a, if a is a non-zero integer, otherwise returns b.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2721,6 +3093,10 @@ Integer values are propagated to decimal values, if required.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>not_equals(1, 2) ==&gt; TRUE</div>
@@ -2738,6 +3114,10 @@ now()
 Returns the current date.
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='object'>object</h2>
 <div class='header'>
@@ -2750,6 +3130,10 @@ object(obj)
 Creates an empty object value or converts a list of pairs or a map to an object.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2769,6 +3153,10 @@ of elements of lst.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>pairs([1, 2, 3]) ==&gt; [[1, 2], [2, 3]]</div>
@@ -2784,6 +3172,10 @@ parse(s)
 Parses the string s.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2807,7 +3199,7 @@ works, returns the value.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Date
 </div>
 <div class='examples'>
@@ -2832,6 +3224,10 @@ Parses the JSON string s and returns a map or list.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>parse_json('{"a": 12, "b": [1, 2, 3, 4]}') ==&gt; '&lt;&lt;&lt;\'a\' =&gt; 12, \'b\' =&gt; [1, 2, 3, 4]&gt;&gt;&gt;'</div>
@@ -2847,6 +3243,10 @@ pattern(obj)
 Converts the obj to a regexp pattern, if possible.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2864,7 +3264,7 @@ Returns a list containing all permutations of the input list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -2883,7 +3283,7 @@ Returns the power x ^ y.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -2908,8 +3308,8 @@ or be silently ignored.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
-IO
+<div class='module_title'>Modules</div>
+Core, IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2929,7 +3329,7 @@ This is basically the combination of print and sprintf.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 </div>
@@ -2947,8 +3347,8 @@ case of REPL) or a file or be silently ignored.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
-IO
+<div class='module_title'>Modules</div>
+Core, IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2972,7 +3372,7 @@ The function returns the number of processed lines.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
@@ -2993,7 +3393,7 @@ Returns the product of a list of numbers.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -3012,6 +3412,10 @@ Puts the value into the map m at the given key.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>def m = map([[1, 2], [3, 4]]); put(m, 1, 9) ==&gt; &lt;&lt;&lt;1 =&gt; 9, 3 =&gt; 4&gt;&gt;&gt;</div>
@@ -3027,6 +3431,10 @@ Returns a string containing all elements of the list lst
 separated by a pipe character.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3050,7 +3458,7 @@ provided, then an int value in the range [a, b) is returned.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Random
 </div>
 <div class='examples'>
@@ -3073,6 +3481,10 @@ is included in the list.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>range(4) ==&gt; [0, 1, 2, 3]</div>
@@ -3092,7 +3504,7 @@ Read a character from the input. If end of input is reached, an empty string is 
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
@@ -3111,7 +3523,7 @@ Read the whole input. If end of input is reached, NULL is returned.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
@@ -3130,7 +3542,7 @@ string, closes the file and returns the string.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 </div>
@@ -3146,7 +3558,7 @@ Read one line from the input. If end of input is reached, NULL is returned.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
@@ -3166,7 +3578,7 @@ partial results and list elements.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -3185,6 +3597,10 @@ Returns the changed list, but the list is changed in place.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>remove([1, 2, 3, 4], 3) ==&gt; [1, 2, 4]</div>
@@ -3202,6 +3618,10 @@ Replaces all occurences of a in the string s with b.
 The optional parameter start specifies the start index.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3222,7 +3642,7 @@ Returns the rest of a list, i.e. everything but the first element.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -3241,13 +3661,34 @@ Returns a reversed copy of a string or a list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>reverse([1, 2, 3]) ==&gt; [3, 2, 1]</div>
 <div class='example'>reverse('abc') ==&gt; 'cba'</div>
+</div>
+<h2 id='reverse'>reverse</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+reverse(str)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns a reversed copy of a string.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>reverse('abc') ==&gt; 'cba'</div>
+<div class='example'>reverse(NULL) ==&gt; NULL</div>
+<div class='example'>reverse(12) ==&gt; NULL</div>
 </div>
 <h2 id='reverse_list'>reverse_list</h2>
 <div class='header'>
@@ -3261,7 +3702,7 @@ Returns a reversed copy of a list.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -3273,7 +3714,7 @@ List
 <h2 id='reverse_string'>reverse_string</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
-reverse_string(str)
+reverse(str)
 </div>
 <div class='text'>
 <div class='text_title'>Description</div>
@@ -3281,11 +3722,15 @@ Returns a reversed copy of a string.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
-<div class='example'>reverse_string('abc') ==&gt; 'cba'</div>
-<div class='example'>reverse_string(NULL) ==&gt; NULL</div>
-<div class='example'>reverse_string(12) ==&gt; NULL</div>
+<div class='example'>reverse('abc') ==&gt; 'cba'</div>
+<div class='example'>reverse(NULL) ==&gt; NULL</div>
+<div class='example'>reverse(12) ==&gt; NULL</div>
 </div>
 <h2 id='round'>round</h2>
 <div class='header'>
@@ -3298,6 +3743,10 @@ Returns the decimal value x rounded to the specified number of digits.
 Default for digits is 0.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3326,6 +3775,10 @@ six characters wide, then it is prefixed with zeroes until the width
 is reached, e.g. '001.23'. Please refer to the examples below.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3356,7 +3809,7 @@ without repetitions. Also works with a string.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Random
 </div>
 <div class='examples'>
@@ -3376,6 +3829,10 @@ Converts the obj to a set, if possible.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>set([1, 2, 3]) ==&gt; &lt;&lt;1, 2, 3&gt;&gt;</div>
@@ -3392,7 +3849,7 @@ Sets the seed of the random number generator to n.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Random
 </div>
 <div class='examples'>
@@ -3409,6 +3866,10 @@ sign(n)
 Returns the signum of n
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3427,7 +3888,7 @@ Returns the sinus of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -3447,6 +3908,10 @@ The values are compared using the compare function cmp.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>sorted([3, 2, 1]) ==&gt; [1, 2, 3]</div>
@@ -3464,6 +3929,10 @@ The delim is a regular expression. Default is spaces or tabs.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>split('a,b,c', //,//) ==&gt; ['a', 'b', 'c']</div>
@@ -3479,6 +3948,10 @@ Performs a two-stage split of the string data.
 This results in a list of list of strings.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3501,6 +3974,10 @@ an explanation of available formatting suffixes.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>sprintf('{0} {1}', 1, 2) ==&gt; '1 2'</div>
@@ -3522,7 +3999,7 @@ Returns the square root of num as a decimal value.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -3540,76 +4017,14 @@ Returns TRUE if the string str starts with part.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>starts_with('abcdef', 'abc') ==&gt; TRUE</div>
 <div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
-</div>
-<h2 id='str_contains'>str_contains</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-contains(obj, part)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Returns TRUE if the string obj contains part.
-If obj is a list, set or map, TRUE is returned,
-if part is contained.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>contains('abcdef', 'abc') ==&gt; TRUE</div>
-<div class='example'>contains('abcdef', 'cde') ==&gt; TRUE</div>
-<div class='example'>contains('abcdef', 'def') ==&gt; TRUE</div>
-<div class='example'>contains('abcdef', 'efg') ==&gt; FALSE</div>
-<div class='example'>contains(NULL, 'abc') ==&gt; FALSE</div>
-<div class='example'>contains([1, 2, 3], 2) ==&gt; TRUE</div>
-<div class='example'>&lt;&lt;1, 2, 3&gt;&gt; !&gt; contains(3) ==&gt; TRUE</div>
-<div class='example'>&lt;&lt;&lt;a =&gt; 1, b =&gt; 2&gt;&gt;&gt; !&gt; contains('b') ==&gt; TRUE</div>
-</div>
-<h2 id='str_ends_with'>str_ends_with</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-ends_with(str, part)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Returns TRUE if the string str ends with part.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>ends_with('abcdef', 'def') ==&gt; TRUE</div>
-<div class='example'>ends_with('abcdef', 'abc') ==&gt; FALSE</div>
-<div class='example'>ends_with(NULL, 'abc') ==&gt; FALSE</div>
-</div>
-<h2 id='str_find'>str_find</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-find(obj, part, key = identity, start = 0)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Returns the index of the first occurence of part in obj.
-If part is not contained in obj, then -1 is returned. Start specifies
-the search start index. It defaults to 0.
-Obj can be a string or a list. In case of a string, part can be any
-substring, in case of a list, a single element.
-In case of lists, the elements can be accessed using the
-key function.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>find('abcdefg', 'cde') ==&gt; 2</div>
-<div class='example'>find('abc|def|ghi', '|', start = 4) ==&gt; 7</div>
-<div class='example'>find('abcxyabc', 'abc', start = 5) ==&gt; 5</div>
-<div class='example'>find([1, 2, 3, 4], 3) ==&gt; 2</div>
-<div class='example'>find(['abc', 'def'], 'e', key = fn(x) x[1]) ==&gt; 1</div>
 </div>
 <h2 id='str_input'>str_input</h2>
 <div class='header'>
@@ -3623,28 +4038,12 @@ Returns an input object, that reads the characters of the given string str.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>str_input('abc') ==&gt; &lt;!input-stream&gt;</div>
-</div>
-<h2 id='str_matches'>str_matches</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-matches(str, pattern)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Returns TRUE, if str matches the regular expression pattern.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>matches('abc12', //[a-c]+[1-9]+//) ==&gt; TRUE</div>
-<div class='example'>matches(NULL, //[a-c]+[1-9]+//) ==&gt; FALSE</div>
 </div>
 <h2 id='str_output'>str_output</h2>
 <div class='header'>
@@ -3658,43 +4057,12 @@ Returns an output object. Things written to this output object can be retrieved 
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>do def o = str_output(); print('abc', out = o); get_output_string(o); end ==&gt; 'abc'</div>
-</div>
-<h2 id='str_starts_with'>str_starts_with</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-starts_with(str, part)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Returns TRUE if the string str starts with part.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>starts_with('abcdef', 'abc') ==&gt; TRUE</div>
-<div class='example'>starts_with(NULL, 'abc') ==&gt; FALSE</div>
-</div>
-<h2 id='str_trim'>str_trim</h2>
-<div class='header'>
-<div class='header_title'>Syntax</div>
-trim(str)
-</div>
-<div class='text'>
-<div class='text_title'>Description</div>
-Trims any leading or trailing whitespace from the string str.
-
-
-</div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>trim(' a  ') ==&gt; 'a'</div>
 </div>
 <h2 id='string'>string</h2>
 <div class='header'>
@@ -3706,6 +4074,10 @@ string(obj)
 Converts the obj to a string, if possible.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3724,6 +4096,10 @@ value and b is datetime value, then the date difference is returned. If a is a d
 value and b is a numeric value, then b is interpreted as number of days and the corresponding
 datetime after subtracting these number of days is returned.
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3746,6 +4122,10 @@ this marks the end of the sublist. Endidx is not included.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>sublist([1, 2, 3, 4], 2) ==&gt; [3, 4]</div>
@@ -3763,6 +4143,10 @@ at index idx replaced by value.
 The original string or list remain untouched.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3782,6 +4166,10 @@ this marks the end of the substring. Endidx is not included.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>substr('abcd', 2) ==&gt; 'cd'</div>
@@ -3797,6 +4185,10 @@ Returns the sum of a list of numbers. Values contained in the optional list igno
 are counted as 0.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3827,7 +4219,7 @@ Also works for lists.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Set
 </div>
 <div class='examples'>
@@ -3846,7 +4238,7 @@ Returns the tangens of x.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Math
 </div>
 <div class='examples'>
@@ -3863,6 +4255,10 @@ timestamp(x)
 Returns current system timestamp.
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 </div>
 <h2 id='trim'>trim</h2>
 <div class='header'>
@@ -3874,6 +4270,10 @@ trim(str)
 Trims any leading or trailing whitespace from the string str.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, String
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3889,6 +4289,10 @@ type(obj)
 Returns the name of the type of obj as a string.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3906,7 +4310,7 @@ Returns the union of the two sets. Also works for lists.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 Set
 </div>
 <div class='examples'>
@@ -3930,7 +4334,7 @@ duplicate is retained.
 
 </div>
 <div class='module'>
-<div class='module_title'>Module</div>
+<div class='module_title'>Modules</div>
 List
 </div>
 <div class='examples'>
@@ -3949,6 +4353,10 @@ Joins a list of lines into one string.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>unlines(['a', 'b', 'c']) ==&gt; 'a\nb\nc'</div>
@@ -3963,6 +4371,10 @@ unwords(lst)
 Joins a list of words into one string.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3979,6 +4391,10 @@ Converts str to upper case letters.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>upper('Hello') ==&gt; 'HELLO'</div>
@@ -3993,6 +4409,10 @@ words(str)
 Splits the string str into words and returns them as a list.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -4012,6 +4432,10 @@ the same length as the shorter of the two input lists.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>zip([1, 2, 3], [4, 5, 6, 7]) ==&gt; [[1, 4], [2, 5], [3, 6]]</div>
@@ -4028,6 +4452,10 @@ and where the value of each entry is taken from b, where
 a and b are lists of identical length.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
