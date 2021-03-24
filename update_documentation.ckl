@@ -66,9 +66,9 @@ def collect_information() do
         def infos = get_info_parts(symbol);
         if not is_empty(infos->header) then result->entries[symbol] = [infos];
     end;
-    require sys;
-    for module in sys->checkerlang_modules do
-        if module == "core" then continue;
+    require Sys;
+    for module in Sys->checkerlang_modules do
+        if module == "Core" then continue;
         collect_module_information(result, module);
     end;
     return result;
@@ -76,14 +76,14 @@ end;
 
 def information = collect_information();
 
-require sys;
-require io import [file_output, close, println];
+require Sys;
+require IO import [file_output, close, println];
 
 def out = file_output("documentation/checkerlang_functions.html");
 
 println("<html>", out);
 println("<head>", out);
-println("<title>CKL " + sys->checkerlang_version + "-" + sys->checkerlang_platform + " function ref</title>", out);
+println("<title>CKL " + Sys->checkerlang_version + "-" + Sys->checkerlang_platform + " function ref</title>", out);
 println("<style>", out);
 println("h1 { font-family: Arial Black; font-height: 18pt; }", out);
 println("h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }", out);
@@ -104,7 +104,7 @@ println("</style>", out);
 println("<link rel=\"shortcut icon\" type=\"image/png\" href=\"../img/ckl.png\">", out);
 println("</head>", out);
 println("<body>", out);
-println("<h1>CKL " + sys->checkerlang_version + "-" + sys->checkerlang_platform + " function ref</h1>", out);
+println("<h1>CKL " + Sys->checkerlang_version + "-" + Sys->checkerlang_platform + " function ref</h1>", out);
 
 println("<h2>Table of contents</h2>", out);
 

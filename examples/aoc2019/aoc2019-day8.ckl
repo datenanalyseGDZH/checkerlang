@@ -1,8 +1,8 @@
 # advent of code day 8
 # https://adventofcode.com/2019/day/8
 
-require io import [read_file, println, printf];
-require lists import [reduce];
+require IO import [read_file, println, printf];
+require List import [reduce];
 
 def rows = 6;
 def cols = 25;

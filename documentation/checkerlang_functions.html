@@ -24,13 +24,14 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <h1>CKL 3.4.0-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
-<li><a href='#module_io'>Module io</a></li>
-<li><a href='#module_lists'>Module lists</a></li>
-<li><a href='#module_math'>Module math</a></li>
-<li><a href='#module_random'>Module random</a></li>
-<li><a href='#module_sets'>Module sets</a></li>
-<li><a href='#module_stat'>Module stat</a></li>
-<li><a href='#module_sys'>Module sys</a></li>
+<li><a href='#module_Date'>Module Date</a></li>
+<li><a href='#module_IO'>Module IO</a></li>
+<li><a href='#module_List'>Module List</a></li>
+<li><a href='#module_Math'>Module Math</a></li>
+<li><a href='#module_Random'>Module Random</a></li>
+<li><a href='#module_Set'>Module Set</a></li>
+<li><a href='#module_Stat'>Module Stat</a></li>
+<li><a href='#module_Sys'>Module Sys</a></li>
 <li><a href='#E'>E</a></li>
 <li><a href='#MAXINT'>MAXINT</a></li>
 <li><a href='#MININT'>MININT</a></li>
@@ -129,6 +130,8 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#is_valid_date'>is_valid_date</a></li>
 <li><a href='#is_valid_time'>is_valid_time</a></li>
 <li><a href='#is_zero'>is_zero</a></li>
+<li><a href='#iso_date'>iso_date</a></li>
+<li><a href='#iso_datetime'>iso_datetime</a></li>
 <li><a href='#join'>join</a></li>
 <li><a href='#label_data'>label_data</a></li>
 <li><a href='#last'>last</a></li>
@@ -230,7 +233,20 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#zip'>zip</a></li>
 <li><a href='#zip_map'>zip_map</a></li>
 </ul>
-<h2 id='module_io'>Module io</h2>
+<h2 id='module_Date'>Module Date</h2>
+<ul class='toc'>
+<li><a href='#date_day'>date_day</a></li>
+<li><a href='#date_hour'>date_hour</a></li>
+<li><a href='#date_minute'>date_minute</a></li>
+<li><a href='#date_month'>date_month</a></li>
+<li><a href='#date_second'>date_second</a></li>
+<li><a href='#date_year'>date_year</a></li>
+<li><a href='#format_date'>format_date</a></li>
+<li><a href='#iso_date'>iso_date</a></li>
+<li><a href='#iso_datetime'>iso_datetime</a></li>
+<li><a href='#parse_date'>parse_date</a></li>
+</ul>
+<h2 id='module_IO'>Module IO</h2>
 <ul class='toc'>
 <li><a href='#close'>close</a></li>
 <li><a href='#file_input'>file_input</a></li>
@@ -247,7 +263,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#str_input'>str_input</a></li>
 <li><a href='#str_output'>str_output</a></li>
 </ul>
-<h2 id='module_lists'>Module lists</h2>
+<h2 id='module_List'>Module List</h2>
 <ul class='toc'>
 <li><a href='#append_all'>append_all</a></li>
 <li><a href='#filter'>filter</a></li>
@@ -268,7 +284,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#reverse_list'>reverse_list</a></li>
 <li><a href='#unique'>unique</a></li>
 </ul>
-<h2 id='module_math'>Module math</h2>
+<h2 id='module_Math'>Module Math</h2>
 <ul class='toc'>
 <li><a href='#E'>E</a></li>
 <li><a href='#PI'>PI</a></li>
@@ -290,7 +306,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#sqrt'>sqrt</a></li>
 <li><a href='#tan'>tan</a></li>
 </ul>
-<h2 id='module_random'>Module random</h2>
+<h2 id='module_Random'>Module Random</h2>
 <ul class='toc'>
 <li><a href='#choice'>choice</a></li>
 <li><a href='#choices'>choices</a></li>
@@ -298,14 +314,14 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#sample'>sample</a></li>
 <li><a href='#set_seed'>set_seed</a></li>
 </ul>
-<h2 id='module_sets'>Module sets</h2>
+<h2 id='module_Set'>Module Set</h2>
 <ul class='toc'>
 <li><a href='#diff'>diff</a></li>
 <li><a href='#intersection'>intersection</a></li>
 <li><a href='#symmetric_diff'>symmetric_diff</a></li>
 <li><a href='#union'>union</a></li>
 </ul>
-<h2 id='module_stat'>Module stat</h2>
+<h2 id='module_Stat'>Module Stat</h2>
 <ul class='toc'>
 <li><a href='#geometric_mean'>geometric_mean</a></li>
 <li><a href='#harmonic_mean'>harmonic_mean</a></li>
@@ -314,7 +330,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#median_high'>median_high</a></li>
 <li><a href='#median_low'>median_low</a></li>
 </ul>
-<h2 id='module_sys'>Module sys</h2>
+<h2 id='module_Sys'>Module Sys</h2>
 <ul class='toc'>
 </ul>
 <h2 id='E'>E</h2>
@@ -328,7 +344,7 @@ The mathematical constant E (Eulers number)
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 </div>
 <h2 id='MAXINT'>MAXINT</h2>
@@ -362,7 +378,7 @@ The mathematical constant PI
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 </div>
 <h2 id='abs'>abs</h2>
@@ -394,7 +410,7 @@ Returns the arcus cosinus of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -415,7 +431,7 @@ For lists and strings it concatenates. For sets it uses union.
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>add(1, 2) ==&gt; 3</div>
-<div class='example'>add(date('20100201'), 3) ==&gt; '20100204'</div>
+<div class='example'>add(date('20100201'), 3) ==&gt; '20100204000000'</div>
 </div>
 <h2 id='all'>all</h2>
 <div class='header'>
@@ -482,7 +498,7 @@ can be in a list or a set.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -519,7 +535,7 @@ Returns the arcus sinus of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -538,7 +554,7 @@ Returns the arcus tangens of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -557,7 +573,7 @@ Returns the arcus tangens of y / x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -633,7 +649,7 @@ Returns a random element from the list or set lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-random
+Random
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -651,7 +667,7 @@ Returns a list with n random elements from the list or set lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-random
+Random
 </div>
 </div>
 <h2 id='chunks'>chunks</h2>
@@ -685,7 +701,7 @@ Closes the input or output connection and releases system resources.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 </div>
 <h2 id='compare'>compare</h2>
@@ -765,7 +781,7 @@ Returns the cosinus of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -815,8 +831,9 @@ date(obj)
 <div class='text'>
 <div class='text_title'>Description</div>
 Converts the obj to a date, if possible.
-If obj is a string, the format YYYYmmdd is assumed.
-If this fails, the fallback YYYYmmddHH is tried.
+If obj is a string, the format yyyyMMdd is assumed.
+If this fails, the fallback yyyyMMddHH is tried.
+If this fails, the fallback yyyyMMddHHmmss is tried.
 
 See parse_date for handling other formats.
 
@@ -824,7 +841,9 @@ See parse_date for handling other formats.
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
-<div class='example'>string(date('20170102')) ==&gt; '20170102'</div>
+<div class='example'>string(date('20170102')) ==&gt; '20170102000000'</div>
+<div class='example'>string(date('2017010212')) ==&gt; '20170102120000'</div>
+<div class='example'>string(date('20170102123456')) ==&gt; '20170102123456'</div>
 </div>
 <h2 id='date_day'>date_day</h2>
 <div class='header'>
@@ -838,6 +857,10 @@ returns it as an integer. The value will be converted
 to a date value using the date function.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -856,6 +879,10 @@ to a date value using the date function.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>date_hour('2019010212') ==&gt; 12</div>
@@ -871,6 +898,10 @@ Extracts the hour part from the given date value and
 returns it as an integer.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -889,6 +920,10 @@ to a date value using the date function.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>date_month('20190102') ==&gt; 01</div>
@@ -904,6 +939,10 @@ Extracts the second part from the given date value and
 returns it as an integer.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -921,6 +960,10 @@ returns it as an integer. The value will be converted
 to a date value using the date function.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -976,7 +1019,7 @@ Also works for lists.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-sets
+Set
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1159,7 +1202,7 @@ Returns the power e ^ x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1177,7 +1220,7 @@ Returns an input object, that reads the characters from the given file.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 </div>
 <h2 id='file_output'>file_output</h2>
@@ -1193,7 +1236,7 @@ the file exists it is overwritten.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 </div>
 <h2 id='filter'>filter</h2>
@@ -1210,7 +1253,7 @@ all elements for which the predicate returns FALSE.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1256,7 +1299,7 @@ Returns the first element of a list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1276,7 +1319,7 @@ Returns the first n elements of the list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1296,7 +1339,7 @@ This does only work at the top level and does not recurse.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1332,7 +1375,7 @@ of the list lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 </div>
 <h2 id='format_date'>format_date</h2>
@@ -1345,6 +1388,10 @@ format_date(date, fmt = 'yyyy-MM-dd HH:mm:ss')
 Formats the date value according to fmt and returns a string value.
 
 
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1369,7 +1416,7 @@ of more than two values.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1390,7 +1437,7 @@ Returns the geometric mean of lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1409,7 +1456,7 @@ Returns the value of a string output object.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1466,7 +1513,7 @@ are added to the pattern, so that the pattern matches partially.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1491,7 +1538,7 @@ equal elements next to each other.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1515,7 +1562,7 @@ Returns the harmonic mean of lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1648,7 +1695,7 @@ Returns the intersection of the two sets. Also works for lists.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-sets
+Set
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1758,7 +1805,7 @@ Returns TRUE if the number is even.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -1956,7 +2003,7 @@ Returns TRUE if the number is odd.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2059,6 +2106,44 @@ Returns TRUE if the obj is zero.
 <div class='examples_title'>Examples</div>
 <div class='example'>is_zero(0) ==&gt; TRUE</div>
 </div>
+<h2 id='iso_date'>iso_date</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+iso_date(value)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Formats the date value as an ISO date (i.e. using format yyyy-MM-dd).
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>iso_date(date('20200203')) ==&gt; '2020-02-03'</div>
+</div>
+<h2 id='iso_datetime'>iso_datetime</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+iso_datetime(value)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Formats the datetime value as an ISO datetime (i.e. using format yyyy-MM-dd'T'HH:mm:ss).
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>iso_datetime(date('20200203201544')) ==&gt; '2020-02-03T20:15:44'</div>
+</div>
 <h2 id='join'>join</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -2111,7 +2196,7 @@ Returns the last element of a list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2131,7 +2216,7 @@ Returns the last n elements of the list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2154,7 +2239,7 @@ of more than two values.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2254,7 +2339,7 @@ Returns the natural logarithm of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2273,7 +2358,7 @@ Returns the logarithm of x to base 10.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2292,7 +2377,7 @@ Returns the logarithm of x to base 2.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2404,7 +2489,7 @@ the list are mapped using the function func to new values.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2465,7 +2550,7 @@ Returns the mean of lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2486,7 +2571,7 @@ method.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2506,7 +2591,7 @@ Returns the high median of lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2526,7 +2611,7 @@ Returns the low median of lst.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-stat
+Stat
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2721,14 +2806,18 @@ works, returns the value.
 
 
 </div>
+<div class='module'>
+<div class='module_title'>Module</div>
+Date
+</div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
-<div class='example'>parse_date('20170102') ==&gt; '20170102'</div>
-<div class='example'>parse_date('20170102', fmt = 'yyyyMMdd') ==&gt; '20170102'</div>
+<div class='example'>parse_date('20170102') ==&gt; '20170102000000'</div>
+<div class='example'>parse_date('20170102', fmt = 'yyyyMMdd') ==&gt; '20170102000000'</div>
 <div class='example'>parse_date('2017010222', fmt = 'yyyyMMdd') ==&gt; NULL</div>
 <div class='example'>parse_date('20170102', fmt = 'yyyyMMddHH') ==&gt; NULL</div>
-<div class='example'>parse_date('20170102', fmt = ['yyyyMMdd']) ==&gt; '20170102'</div>
-<div class='example'>parse_date('201701022015', fmt = ['yyyyMMddHHmm', 'yyyyMMddHH', 'yyyyMMdd']) ==&gt; '20170102'</div>
+<div class='example'>parse_date('20170102', fmt = ['yyyyMMdd']) ==&gt; '20170102000000'</div>
+<div class='example'>parse_date('201701022015', fmt = ['yyyyMMddHHmm', 'yyyyMMddHH', 'yyyyMMdd']) ==&gt; '20170102201500'</div>
 <div class='example'>parse_date('20170112', fmt = ['yyyyMM', 'yyyy']) ==&gt; NULL</div>
 <div class='example'>parse_date('20170144') ==&gt; NULL</div>
 </div>
@@ -2776,7 +2865,7 @@ Returns a list containing all permutations of the input list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2795,7 +2884,7 @@ Returns the power x ^ y.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2820,7 +2909,7 @@ or be silently ignored.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2841,7 +2930,7 @@ This is basically the combination of print and sprintf.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 </div>
 <h2 id='println'>println</h2>
@@ -2859,7 +2948,7 @@ case of REPL) or a file or be silently ignored.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2884,7 +2973,7 @@ The function returns the number of processed lines.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2905,7 +2994,7 @@ Returns the product of a list of numbers.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -2962,7 +3051,7 @@ provided, then an int value in the range [a, b) is returned.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-random
+Random
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3004,7 +3093,7 @@ Read a character from the input. If end of input is reached, an empty string is 
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3023,7 +3112,7 @@ Read the whole input. If end of input is reached, NULL is returned.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3042,7 +3131,7 @@ string, closes the file and returns the string.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 </div>
 <h2 id='readln'>readln</h2>
@@ -3058,7 +3147,7 @@ Read one line from the input. If end of input is reached, NULL is returned.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3078,7 +3167,7 @@ partial results and list elements.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3134,7 +3223,7 @@ Returns the rest of a list, i.e. everything but the first element.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3153,7 +3242,7 @@ Returns a reversed copy of a string or a list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3173,7 +3262,7 @@ Returns a reversed copy of a list.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3252,7 +3341,7 @@ is reached, e.g. '001.23'. Please refer to the examples below.
 <div class='example'>def n = 1.2345678; s('n = {n#.2}') ==&gt; 'n = 1.23'</div>
 <div class='example'>def n = 1.2345678; s('n = {n#06.2}') ==&gt; 'n = 001.23'</div>
 <div class='example'>s('2x3 = {2*3}') ==&gt; '2x3 = 6'</div>
-<div class='example'>require math; s('{math-&gt;PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
+<div class='example'>require Math; s('{Math-&gt;PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
 </div>
 <h2 id='sample'>sample</h2>
 <div class='header'>
@@ -3268,7 +3357,7 @@ without repetitions. Also works with a string.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-random
+Random
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3304,7 +3393,7 @@ Sets the seed of the random number generator to n.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-random
+Random
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3339,7 +3428,7 @@ Returns the sinus of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3419,7 +3508,7 @@ an explanation of available formatting suffixes.
 <div class='example'>sprintf('{0#5} {1#5}', 1, 2) ==&gt; '    1     2'</div>
 <div class='example'>sprintf('{0#-5} {1#-5}', 1, 2) ==&gt; '1     2    '</div>
 <div class='example'>sprintf('{0#05} {1#05}', 1, 2) ==&gt; '00001 00002'</div>
-<div class='example'>require math; sprintf('{0#.4}', math-&gt;PI) ==&gt; '3.1416'</div>
+<div class='example'>require Math; sprintf('{0#.4}', Math-&gt;PI) ==&gt; '3.1416'</div>
 </div>
 <h2 id='sqrt'>sqrt</h2>
 <div class='header'>
@@ -3434,7 +3523,7 @@ Returns the square root of num as a decimal value.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3535,7 +3624,7 @@ Returns an input object, that reads the characters of the given string str.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3570,7 +3659,7 @@ Returns an output object. Things written to this output object can be retrieved 
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-io
+IO
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3641,7 +3730,7 @@ datetime after subtracting these number of days is returned.
 <div class='example'>sub(1, 2) ==&gt; -1</div>
 <div class='example'>sub([1, 2, 3], 2) ==&gt; [1, 3]</div>
 <div class='example'>sub(date('20170405'), date('20170402')) ==&gt; 3</div>
-<div class='example'>sub(date('20170405'), 3) ==&gt; '20170402'</div>
+<div class='example'>sub(date('20170405'), 3) ==&gt; '20170402000000'</div>
 <div class='example'>sub(&lt;&lt;3, 1, 2&gt;&gt;, 2) ==&gt; &lt;&lt;1, 3&gt;&gt;</div>
 </div>
 <h2 id='sublist'>sublist</h2>
@@ -3739,7 +3828,7 @@ Also works for lists.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-sets
+Set
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3758,7 +3847,7 @@ Returns the tangens of x.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-math
+Math
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3818,7 +3907,7 @@ Returns the union of the two sets. Also works for lists.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-sets
+Set
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
@@ -3842,7 +3931,7 @@ duplicate is retained.
 </div>
 <div class='module'>
 <div class='module_title'>Module</div>
-lists
+List
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>

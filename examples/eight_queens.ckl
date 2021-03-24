@@ -21,8 +21,8 @@
 # Solves the so called eight queens problem.
 # https://en.wikipedia.org/wiki/Eight_queens_puzzle
 
-require io unqualified;
-require lists import [reverse];
+require IO unqualified;
+require List import [reverse];
 
 def empty_board = [
 ". . . . ",

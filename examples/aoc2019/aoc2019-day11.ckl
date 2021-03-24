@@ -1,8 +1,8 @@
 # advent of code day 11
 # https://adventofcode.com/2019/day/11
 
-require io import [read_file, println, print];
-require lists import [reverse];
+require IO import [read_file, println, print];
+require List import [reverse];
 require intcomputer as c;
 
 # Part 1

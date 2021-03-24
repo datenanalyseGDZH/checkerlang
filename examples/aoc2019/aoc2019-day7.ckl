@@ -1,8 +1,8 @@
 # advent of code day 7
 # https://adventofcode.com/2019/day/7
 
-require io import [read_file, println];
-require lists import [map_list, first, rest, permutations];
+require IO import [read_file, println];
+require List import [map_list, first, rest, permutations];
 
 def trace = FALSE;
 

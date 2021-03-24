@@ -5,7 +5,7 @@
 # Please provide the file path as the first
 # argument to the program.
 
-require io unqualified;
+require IO unqualified;
 
 def text = read_file(args[0]);
 

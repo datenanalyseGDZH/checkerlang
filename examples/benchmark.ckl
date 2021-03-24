@@ -1,7 +1,8 @@
 # This performs a series of (micro) benchmarks and appends
 # the results to the file "examples/benchmark-results.txt". 
 
-require io unqualified;
+require IO unqualified;
+require Date import [format_date];
 
 def started = format_date(now(), fmt = 'yyyyMMdd-HHmmss');
 

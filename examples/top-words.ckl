@@ -6,8 +6,8 @@
 # Please provide the file path as the first
 # argument to the program.
 
-require io import [read_file, println];
-require lists unqualified;
+require IO import [read_file, println];
+require List unqualified;
 
 def normalize_word(w)
     w !> replace(",", "")
