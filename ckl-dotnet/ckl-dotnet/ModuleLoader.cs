@@ -7,7 +7,7 @@ namespace CheckerLang
         public static string LoadModule(string moduleidentifier, SourcePos pos) {
             try {
                 var assembly = typeof(Environment).Assembly;
-                var strm = assembly.GetManifestResourceStream("checkerlang.module-" + moduleidentifier);
+                var strm = assembly.GetManifestResourceStream("checkerlang.module-" + moduleidentifier.ToLower());
                 if (strm != null)
                 {
                     return new StreamReader(strm).ReadToEnd();

@@ -1,4 +1,4 @@
-export const moduledates = `
+export const moduledate = `
 # Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy

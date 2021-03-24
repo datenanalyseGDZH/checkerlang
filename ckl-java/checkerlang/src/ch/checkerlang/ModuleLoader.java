@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 public class ModuleLoader {
     public static String loadModule(String moduleidentifier, SourcePos pos) {
         try {
-            InputStream strm = ModuleLoader.class.getResourceAsStream("/module-" + moduleidentifier);
+            InputStream strm = ModuleLoader.class.getResourceAsStream("/module-" + moduleidentifier.toLowerCase());
             if (strm == null) strm = new FileInputStream("./" + new File(moduleidentifier).getName());
             BufferedReader rdr = new BufferedReader(new InputStreamReader(strm, StandardCharsets.UTF_8));
             StringBuilder result = new StringBuilder();

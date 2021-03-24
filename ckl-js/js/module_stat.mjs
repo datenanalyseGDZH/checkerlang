@@ -19,7 +19,7 @@ export const modulestat = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require math;
+require Math;
 
 "
 mean(lst)
@@ -92,7 +92,7 @@ Returns the geometric mean of lst.
 : round(geometric_mean([54, 24, 36]), 1) ==> 36.0
 "
 def geometric_mean(lst) do
-	math->pow(prod(lst), 1.0 / length(lst));
+	Math->pow(prod(lst), 1.0 / length(lst));
 end;
 
 

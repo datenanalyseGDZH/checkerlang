@@ -19,8 +19,8 @@ export const modulebase = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require sys unqualified;
-require core unqualified;
+require Sys unqualified;
+require Core unqualified;
 
 
 "
@@ -35,8 +35,8 @@ optional parameter.
 : is_valid_date('20170399') ==> FALSE
 "
 def is_valid_date(str, fmt="yyyyMMdd") do
-  require dates;
-  is_string(str) and dates->parse_date(str, fmt) != NULL;
+  require Date;
+  is_string(str) and Date->parse_date(str, fmt) != NULL;
 end;
 
 
@@ -50,8 +50,8 @@ optional parameter.
 : is_valid_time('1245') ==> TRUE
 "
 def is_valid_time(str, fmt="HHmm") do
-  require dates;
-  is_string(str) and dates->parse_date(str, fmt) != NULL;
+  require Date;
+  is_string(str) and Date->parse_date(str, fmt) != NULL;
 end;
 
 
@@ -732,7 +732,7 @@ an explanation of available formatting suffixes.
 : sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'
 : sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '
 : sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'
-: require math; sprintf('{0#.4}', math->PI) ==> '3.1416'
+: require Math; sprintf('{0#.4}', Math->PI) ==> '3.1416'
 "
 def sprintf(fmt, args...) do
     for entry in enumerate(args...) do

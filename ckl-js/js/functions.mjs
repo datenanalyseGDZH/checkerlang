@@ -2478,7 +2478,7 @@ export class FuncS extends ValueFunc {
                 ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
                 ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
-                ": require math; s('{math->PI} is cool') ==> '3.141592653589793 is cool'\r\n";
+                ": require Math; s('{Math->PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
     getArgNames() {
