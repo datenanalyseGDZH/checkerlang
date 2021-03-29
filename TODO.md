@@ -36,3 +36,10 @@
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
 
 * port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests
+
+* support <*...*> syntax for object literals (lexer, parser, node),  OK:js
+
+* provide custom printing support in objects, by adding a _str_ member
+* Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
+* deref of objects should return NULL if missing member
+* deref of NULL should return NULL, then we could do something like a->b->c->d and if b is missing, we get no error but NULL instead.

@@ -1280,12 +1280,12 @@ export class ValueObject extends Value {
     }
 
     toString() {
-        let result = "<!";
+        let result = "<*";
         for (const key of this.value.keys()) {
             result = result.concat(key, "=", this.value.get(key).toString(), ", ");
         }
-        if (result.length > "<!".length) result = result.substr(0, result.length - 2);
-        return result.concat("!>");
+        if (result.length > "<*".length) result = result.substr(0, result.length - 2);
+        return result.concat("*>");
     }
 }
 

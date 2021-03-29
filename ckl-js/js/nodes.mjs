@@ -1159,6 +1159,42 @@ export class NodeNull {
     }
 }
 
+export class NodeObject {
+    constructor(pos) {
+        this.keys = [];
+        this.values = [];
+        this.pos = pos;
+    }
+
+    addKeyValue(key, value) {
+        this.keys.push(key);
+        this.values.push(value);
+    }
+
+    evaluate(environment) {
+        const result = new ValueObject();
+        for (let i = 0; i < this.keys.length; i++) {
+            result.addItem(this.keys[i], this.values[i].evaluate(environment));
+        }
+        return result;
+    }
+
+    toString() {
+        let result = "<*";
+        for (let i = 0; i < this.keys.length; i++) {
+            result = result.concat(this.keys[i], "=", this.values[i], ", ");
+        }
+        if (result.length > 2) result = result.substr(0, result.length - 2);
+        return result.concat("*>");
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        for (const item of this.values) {
+            item.collectVars(freeVars, boundVars, additionalBoundVars);
+        }
+    }
+}
+
 export class NodeOr {
     constructor(pos) {
         this.expressions = [];

@@ -233,7 +233,7 @@ export class Lexer {
                     }
                     break;
 
-                case 2: // <>, <=, >=, ==, <<, >>, <<<, >>>, !>
+                case 2: // <>, <=, >=, ==, <<, >>, <<<, >>>, !>, <*, *>
                     if (ch === '=') {
                         token = token.concat(ch);
                         this.tokens.push(new Token(token, "operator", new SourcePos(filename, line, column - token.length + 1)));
@@ -257,6 +257,10 @@ export class Lexer {
                     } else if (ch === '>' && token === "!") {
                         token = token.concat(ch);
                         this.tokens.push(new Token("!>", "operator", new SourcePos(filename, line, column - token.length + 1)));
+                        token = "";
+                        state = 0;
+                    } else if (ch === '*' && token === "<") {
+                        this.tokens.push(new Token("<*", "interpunction", new SourcePos(filename, line, column - 1)));
                         token = "";
                         state = 0;
                     } else {
@@ -406,7 +410,7 @@ export class Lexer {
                     }
                     break;
 
-                case 10: // potentially composite assign or ->
+                case 10: // potentially composite assign or -> or *>
                     if (ch === '=') {
                         token = token.concat(ch);
                         this.tokens.push(new Token(token, "operator", new SourcePos(filename, line, column)));
@@ -414,6 +418,10 @@ export class Lexer {
                         state = 0;
                     } else if (token === '-' && ch === '>') {
                         this.tokens.push(new Token("->", "operator", new SourcePos(filename, line, column)));
+                        token = "";
+                        state = 0;
+                    } else if (token === '*' && ch === '>') {
+                        this.tokens.push(new Token("*>", "interpunction", new SourcePos(filename, line, column)));
                         token = "";
                         state = 0;
                     } else {

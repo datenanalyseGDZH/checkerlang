@@ -373,7 +373,8 @@ interpreter_test("MapAsInt", "int(<<<a => 12>>>)", "1");
 interpreter_test("MapAsBool1", "boolean(<<<a => 12>>>)", "TRUE");
 interpreter_test("MapAsBool2", "boolean(<<<>>>)", "FALSE");
 interpreter_test("ObjectBasics1", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o->a", "12");
-interpreter_test("ObjectBasics2", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o", "<!a=12, b=<#lambda>!>");
+interpreter_test("ObjectBasics2", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o", "<*a=12, b=<#lambda>*>");
+interpreter_test("ObjectLiteral", "def o = <*a = 2, b=3, c=2*3*>; o->c", "6");
 
 
 function collectvars_test(description, code, expected) {

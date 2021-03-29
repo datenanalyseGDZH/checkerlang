@@ -63,6 +63,7 @@ import {
     NodeSpread,
     NodeWhile
 } from "./nodes.mjs";
+import { NodeObject } from "./nodes.mjs";
 
 export class Parser {
     static parseScript(script, filename) {
@@ -636,6 +637,8 @@ export class Parser {
                     result = this.parseSetLiteral(lexer, token);
                 } else if (token.value === "<<<" && token.type == "interpunction") {
                     result = this.parseMapLiteral(lexer, token);
+                } else if (token.value === "<*" && token.type == "interpunction") {
+                    result = this.parseObjectLiteral(lexer, token);
                 } else if (token.value === "..." && token.type == "interpunction") {
                     token = lexer.next();
                     if (token.value === "[" && token.type == "interpunction") {
@@ -770,6 +773,21 @@ export class Parser {
                 return this.derefOrInvoke(lexer, map);
             }
         }
+    }
+
+    parseObjectLiteral(lexer, token) {
+        const obj = new NodeObject(token.pos);
+        while (!lexer.peekn(1, "*>", "interpunction")) {
+            const key = lexer.matchIdentifier();
+            lexer.match("=", "operator");
+            const value = this.parseIfExpr(lexer);
+            obj.addKeyValue(key, value);
+            if (!lexer.peekn(1, "*>", "interpunction")) {
+                lexer.match(",", "interpunction");
+            }
+        }
+        lexer.match("*>", "interpunction");
+        return this.derefOrInvoke(lexer, obj);
     }
 
     parseFn(lexer, pos) {
