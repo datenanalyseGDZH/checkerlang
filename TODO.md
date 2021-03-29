@@ -43,3 +43,6 @@
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
 * deref of objects should return NULL if missing member
 * deref of NULL should return NULL, then we could do something like a->b->c->d and if b is missing, we get no error but NULL instead.
+
+* rework unittests to run per module (without legacy!)
+* add much more unit tests and unify them across all plattforms
