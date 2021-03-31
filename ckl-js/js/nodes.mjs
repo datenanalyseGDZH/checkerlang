@@ -833,7 +833,7 @@ export class NodeIn {
         } else if (container instanceof ValueMap) {
             return ValueBoolean.from(container.hasItem(value));
         } else if (container instanceof ValueObject) {
-            return ValueBoolean.from(container.value.has(value));
+            return ValueBoolean.from(container.hasItem(value.value));
         } else if (container instanceof ValueString) {
             return ValueBoolean.from(container.value.indexOf(value.value) != -1);
         }
@@ -1345,15 +1345,17 @@ export class NodeReturn {
     }
 
     evaluate(environment) {
-        return new ValueControlReturn(this.expression.evaluate(environment), this.pos);
+        return new ValueControlReturn(this.expression === null ? ValueNull.NULL : this.expression.evaluate(environment), this.pos);
     }
 
     toString() {
-        return "(return " + this.expression + ")";
+        return "(return" + (this.expression === null ? "" : " " + this.expression) + ")";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
-        this.expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.expression !== null) {
+            this.expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        }
     }
 }
 

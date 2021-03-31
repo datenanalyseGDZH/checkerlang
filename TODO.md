@@ -29,15 +29,10 @@
 
 * run unittests for modules, how? in a function, require the module, iterate over the object keys...
 * revisit all function names, make them more consistent, provide legacy module for older names
-* make valueobject parseable (useful as a more efficient map with string keys)
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
 * expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
-
-* port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests
-
-* support <*...*> syntax for object literals (lexer, parser, node),  OK:js
 
 * provide custom printing support in objects, by adding a _str_ member
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
@@ -46,3 +41,16 @@
 
 * rework unittests to run per module (without legacy!)
 * add much more unit tests and unify them across all plattforms
+
+* extend for-syntax:
+    * for x in keys m do ... end;
+    * for x in vals m do ... end;
+    * for [x, y] in entries m do ... end;
+  which directly iterates over keys, values and entries of a map or object
+
+
+* port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests
+* support <*...*> syntax for object literals (lexer, parser, node),  OK:js
+* remove should work with objects OK: js
+* support return without value OK: js
+* members with a leading _ are considered private and will not be included in toString, OK: js

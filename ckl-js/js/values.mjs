@@ -1202,7 +1202,8 @@ export class ValueObject extends Value {
     }
 
     removeItem(key) {
-        this.value.remove(key);
+        this.value.delete(key);
+        this.value;
     }
 
     isEquals(other) {
@@ -1282,6 +1283,7 @@ export class ValueObject extends Value {
     toString() {
         let result = "<*";
         for (const key of this.value.keys()) {
+            if (key.startsWith("_")) continue;
             result = result.concat(key, "=", this.value.get(key).toString(), ", ");
         }
         if (result.length > "<*".length) result = result.substr(0, result.length - 2);

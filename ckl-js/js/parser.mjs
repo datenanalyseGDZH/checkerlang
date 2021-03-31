@@ -616,7 +616,8 @@ export class Parser {
                 } else if (token.value === "continue" && token.type == "keyword") {
                     result = new NodeContinue(token.pos);
                 } else if (token.value === "return" && token.type == "keyword") {
-                    result = new NodeReturn(this.parseExpression(lexer), token.pos);
+                    if (lexer.peekn(1, ";", "interpunction")) result = new NodeReturn(null, token.pos);
+                    else result = new NodeReturn(this.parseExpression(lexer), token.pos);
                 } else if (token.value === "error" && token.type == "keyword") {
                     result = new NodeError(this.parseExpression(lexer), token.pos);
                 } else if (token.value === "do" && token.type == "keyword") {

@@ -2365,7 +2365,8 @@ export class FuncRemove extends ValueFunc {
                 "\r\n" +
                 ": remove([1, 2, 3, 4], 3) ==> [1, 2, 4]\r\n" +
                 ": remove(<<1, 2, 3, 4>>, 3) ==> <<1, 2, 4>>\r\n" +
-                ": remove(<<<a => 1, b => 2, c => 3, d => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n";
+                ": remove(<<<a => 1, b => 2, c => 3, d => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n" +
+                ": remove(<*a=1, b=2*>, 'b') ==> <*a=1*>\r\n";
     }
 
     getArgNames() {
@@ -2378,6 +2379,9 @@ export class FuncRemove extends ValueFunc {
 
         if (lst.isList() || lst.isSet() || lst.isMap()) {
             lst.removeItem(element);
+            return lst;
+        } else if (lst.isObject()) {
+            lst.value.delete(element.value);
             return lst;
         }
 
