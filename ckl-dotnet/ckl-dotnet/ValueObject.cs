@@ -123,12 +123,14 @@ namespace CheckerLang
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("<!");
-            foreach (var item in value.Keys) {
+            builder.Append("<*");
+            foreach (var item in value.Keys)
+            {
+                if (item.StartsWith("_")) continue;
                 builder.Append(item).Append("=").Append(value[item]).Append(", ");
             }
-            if (builder.Length > "<!".Length) builder.Remove(builder.Length - ", ".Length, ", ".Length);
-            builder.Append("!>");
+            if (builder.Length > 2) builder.Remove(builder.Length - ", ".Length, ", ".Length);
+            builder.Append("*>");
             return builder.ToString();
         }
 

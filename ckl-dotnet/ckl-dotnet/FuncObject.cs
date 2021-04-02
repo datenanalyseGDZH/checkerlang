@@ -31,9 +31,9 @@ namespace CheckerLang
                    "\r\n" +
                    "Creates an empty object value or converts a list of pairs or a map to an object.\r\n" +
                    "\r\n" +
-                   ": object() ==> <!!>\r\n" +
-                   ": object(<<<a => 1>>>) ==> <!a=1!>\r\n" +
-                   ": object([['a', 1]]) ==> <!a=1!>\r\n";
+                   ": object() ==> <**>\r\n" +
+                   ": object(<<<a => 1>>>) ==> <*a=1*>\r\n" +
+                   ": object([['a', 1]]) ==> <*a=1*>\r\n";
         }
         
         public override List<string> GetArgNames()

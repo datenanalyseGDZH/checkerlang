@@ -752,7 +752,7 @@ namespace Tests
 
         [Test]
         public void TestMethods3() {
-            Verify("[3, 2, 1]", "[1, 2, 3]!>reverse()");
+            Verify("[3, 2, 1]", "require List; [1, 2, 3]!>List->reverse()");
         }
 
         [Test]
@@ -767,7 +767,7 @@ namespace Tests
 
         [Test]
         public void TestMethods6() {
-            Verify("'3-2-1'", "[1, 2, 3] !> reverse() !> join(sep = '-')");
+            Verify("'3-2-1'", "require List; [1, 2, 3] !> List->reverse() !> join(sep = '-')");
         }
         
         [Test]

@@ -303,6 +303,11 @@ public class Lexer {
                         tokens.add(new Token(token.toString(), TokenType.Interpunction, new SourcePos(filename, line, column - token.length() + 1)));
                         token = new StringBuilder();
                         state = 0;
+                    } else if (ch == '*' && token.toString().equals("<")) {
+                        token.append(ch);
+                        tokens.add(new Token("<*", TokenType.Interpunction, new SourcePos(filename, line, column - token.length() + 1)));
+                        token = new StringBuilder();
+                        state = 0;
                     } else if (ch == '>' && token.toString().equals("<")) {
                         tokens.add(new Token("<>", TokenType.Operator, new SourcePos(filename, line, column - 1)));
                         token = new StringBuilder();
@@ -467,6 +472,10 @@ public class Lexer {
                         state = 0;
                     } else if (token.toString().equals("-") && ch == '>') {
                         tokens.add(new Token("->", TokenType.Operator, new SourcePos(filename, line, column)));
+                        token = new StringBuilder();
+                        state = 0;
+                    } else if (token.toString().equals("*") && ch == '>') {
+                        tokens.add(new Token("*>", TokenType.Interpunction, new SourcePos(filename, line, column)));
                         token = new StringBuilder();
                         state = 0;
                     } else {

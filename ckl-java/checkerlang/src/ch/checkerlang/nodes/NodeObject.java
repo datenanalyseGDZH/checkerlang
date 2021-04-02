@@ -23,33 +23,51 @@ package ch.checkerlang.nodes;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueControlReturn;
-import ch.checkerlang.values.ValueNull;
+import ch.checkerlang.values.ValueMap;
+import ch.checkerlang.values.ValueObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class NodeReturn implements Node {
-    private Node expression;
+public class NodeObject implements Node {
+    private List<String> keys = new ArrayList<>();
+    private List<Node> values = new ArrayList<>();
 
     private SourcePos pos;
 
-    public NodeReturn(Node expression, SourcePos pos) {
-        this.expression = expression;
+    public NodeObject(SourcePos pos) {
         this.pos = pos;
     }
 
-    public Node getExpression() { return expression; }
+    public void addKeyValue(String key, Node value) {
+        keys.add(key);
+        values.add(value);
+    }
 
     public Value evaluate(Environment environment) {
-        return new ValueControlReturn(expression == null ? ValueNull.NULL : expression.evaluate(environment), pos);
+        ValueObject result = new ValueObject();
+        for (int i = 0; i < keys.size(); i++) {
+            result.addItem(keys.get(i), values.get(i).evaluate(environment));
+        }
+        return result;
     }
 
     public String toString() {
-        return "(return" + (expression == null ? "" : (" " + expression)) + ")";
+        StringBuilder builder = new StringBuilder();
+        builder.append("<*");
+        for (int i = 0; i < keys.size(); i++) {
+            builder.append(keys.get(i)).append("=").append(values.get(i)).append(", ");
+        }
+        if (builder.length() > 2) builder.setLength(builder.length() - 2);
+        builder.append("*>");
+        return builder.toString();
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
-        if (expression != null) expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        for (Node item : values) {
+            item.collectVars(freeVars, boundVars, additionalBoundVars);
+        }
     }
 
     public SourcePos getSourcePos() {

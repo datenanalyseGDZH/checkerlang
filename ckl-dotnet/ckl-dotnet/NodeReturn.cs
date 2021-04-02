@@ -41,16 +41,16 @@ namespace CheckerLang
         
         public Value Evaluate(Environment environment)
         {
-            return new ValueControlReturn(expression.Evaluate(environment), pos);
+            return new ValueControlReturn(expression == null ? ValueNull.NULL : expression.Evaluate(environment), pos);
         }
 
         public override string ToString() {
-            return "(return " + expression + ")";
+            return "(return" + (expression == null ? "" : " " + expression) + ")";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)
         {
-            expression.CollectVars(freeVars, boundVars, additionalBoundVars);
+            expression?.CollectVars(freeVars, boundVars, additionalBoundVars);
         }
         
         public SourcePos GetSourcePos()

@@ -744,6 +744,10 @@ namespace CheckerLang
                     {
                         result = ParseMapLiteral(lexer, token);
                     } 
+                    else if (token.value == "<*") // object literal
+                    {
+                        result = ParseObjectLiteral(lexer, token);
+                    } 
                     else if (token.value == "..." && token.type == TokenType.Interpunction) 
                     {
                         token = lexer.Next();
@@ -909,6 +913,21 @@ namespace CheckerLang
             return DerefOrInvoke(lexer, map);
         }
         
+        public Node ParseObjectLiteral(Lexer lexer, Token token) {
+            var obj = new NodeObject(token.pos);
+            while (!lexer.Peekn(1, "*>", TokenType.Interpunction)) {
+                var key = lexer.MatchIdentifier();
+                lexer.Match("=", TokenType.Operator);
+                var value = ParseIfExpr(lexer);
+                obj.AddKeyValue(key, value);
+                if (!lexer.Peekn(1, "*>", TokenType.Interpunction)) {
+                    lexer.Match(",", TokenType.Interpunction);
+                }
+            }
+            lexer.Match("*>", TokenType.Interpunction);
+            return DerefOrInvoke(lexer, obj);
+        }
+
         public Node ParseFn(Lexer lexer, SourcePos pos)
         {
             var lambda = new NodeLambda(pos);

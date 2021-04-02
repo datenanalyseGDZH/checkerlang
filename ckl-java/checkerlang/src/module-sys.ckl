@@ -21,4 +21,4 @@
 def checkerlang_version = "3.4.0";
 def checkerlang_platform = "js";
 
-def checkerlang_modules = ["Core", "Date", "IO", "List", "Math", "Random", "Set", "Stat", "Sys"];
+def checkerlang_modules = ["Core", "Date", "IO", "List", "Math", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];

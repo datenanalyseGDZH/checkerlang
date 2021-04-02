@@ -377,6 +377,12 @@ namespace CheckerLang
                             token = new StringBuilder();
                             state = 0;
                         }
+                        else if (ch == '*' && token.ToString() == "<")
+                        {
+                            tokens.Add(new Token("<*", TokenType.Interpunction, new SourcePos(filename, line, column - 1)));
+                            token = new StringBuilder();
+                            state = 0;
+                        }
                         else if (ch == '>' && token.ToString() == "!")
                         {
                             tokens.Add(new Token("!>", TokenType.Operator, new SourcePos(filename, line, column - 1)));
@@ -571,7 +577,7 @@ namespace CheckerLang
 
                         break;
 
-                    case 10: // potentially composite assign
+                    case 10: // potentially composite assign, ->, *>
                         if (ch == '=')
                         {
                             token.Append(ch);
@@ -583,6 +589,12 @@ namespace CheckerLang
                         else if (token.ToString() == "-" && ch == '>')
                         {
                             tokens.Add(new Token("->", TokenType.Operator, new SourcePos(filename, line, column)));
+                            token = new StringBuilder();
+                            state = 0;
+                        } 
+                        else if (token.ToString() == "*" && ch == '>')
+                        {
+                            tokens.Add(new Token("*>", TokenType.Interpunction, new SourcePos(filename, line, column)));
                             token = new StringBuilder();
                             state = 0;
                         } 

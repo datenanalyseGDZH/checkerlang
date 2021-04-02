@@ -637,6 +637,8 @@ public class Parser {
                     result = parseSetLiteral(lexer, token);
                 } else if (token.value.equals("<<<") && token.type == TokenType.Interpunction) {
                     result = parseMapLiteral(lexer, token);
+                } else if (token.value.equals("<*") && token.type == TokenType.Interpunction) {
+                    result = parseObjectLiteral(lexer, token);
                 } else if (token.value.equals("...") && token.type == TokenType.Interpunction) {
                     token = lexer.next();
                     if (token.value.equals("[") && token.type == TokenType.Interpunction) {
@@ -772,6 +774,21 @@ public class Parser {
                 return derefOrInvoke(lexer, map);
             }
         }
+    }
+
+    private Node parseObjectLiteral(Lexer lexer, Token token) {
+        NodeObject obj = new NodeObject(token.pos);
+        while (!lexer.peekn(1, "*>", TokenType.Interpunction)) {
+            String key = lexer.matchIdentifier();
+            lexer.match("=", TokenType.Operator);
+            Node value = this.parseIfExpr(lexer);
+            obj.addKeyValue(key, value);
+            if (!lexer.peekn(1, "*>", TokenType.Interpunction)) {
+                lexer.match(",", TokenType.Interpunction);
+            }
+        }
+        lexer.match("*>", TokenType.Interpunction);
+        return this.derefOrInvoke(lexer, obj);
     }
 
     private NodeLambda parseFn(Lexer lexer, SourcePos pos) {

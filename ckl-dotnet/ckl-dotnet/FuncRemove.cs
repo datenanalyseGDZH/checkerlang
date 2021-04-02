@@ -33,7 +33,8 @@ namespace CheckerLang
                         "\r\n" +
                         ": remove([1, 2, 3, 4], 3) ==> [1, 2, 4]\r\n" +
                         ": remove(<<1, 2, 3, 4>>, 3) ==> <<1, 2, 4>>\r\n" +
-                        ": remove(<<< 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n";
+                        ": remove(<<<a => 1, b => 2, c => 3, d => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n" +
+                        ": remove(<*a=1, b=2*>, 'b') ==> <*a=1*>\r\n";
         }
         
         public override List<string> GetArgNames()
@@ -64,6 +65,11 @@ namespace CheckerLang
             if (lst.IsMap()) {
                 var map = lst.AsMap().GetValue();
                 map.Remove(element);
+                return lst;
+            }
+            if (lst.IsObject()) {
+                var map = lst.AsObject().value;
+                map.Remove(element.AsString().GetValue());
                 return lst;
             }
 

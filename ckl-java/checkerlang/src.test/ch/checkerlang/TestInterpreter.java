@@ -632,7 +632,7 @@ public class TestInterpreter {
 
     @Test
     public void testMethods3() {
-        verify("[3, 2, 1]", "[1, 2, 3]!>reverse()");
+        verify("[3, 2, 1]", "require List; [1, 2, 3]!>List->reverse()");
     }
 
     @Test
@@ -647,7 +647,7 @@ public class TestInterpreter {
 
     @Test
     public void testMethods6() {
-        verify("'3-2-1'", "[1, 2, 3] !> reverse() !> join(sep = '-')");
+        verify("'3-2-1'", "require List; [1, 2, 3] !> List->reverse() !> join(sep = '-')");
     }
 
     @Test

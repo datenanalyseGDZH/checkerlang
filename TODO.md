@@ -49,9 +49,3 @@
 
 * when calling a function that is a member of an object, provide self argument that points to object, i.e.
   def o = <* f = fn(self, n) self->a + n, a = 12 *>; o->f(3) ==> 15
-
-* port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests
-* support <*...*> syntax for object literals (lexer, parser, node),  OK:js
-* remove should work with objects OK:js
-* support return without value OK:js
-* members with a leading _ are considered private and will not be included in toString, OK:js

@@ -117,12 +117,13 @@ public class ValueObject extends Value {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<!");
+        builder.append("<*");
         for (String item : value.keySet()) {
+            if (item.startsWith("_")) continue;
             builder.append(item).append("=").append(value.get(item)).append(", ");
         }
-        if (builder.length() > "<!".length()) builder.setLength(builder.length() - 2);
-        builder.append("!>");
+        if (builder.length() > 2) builder.setLength(builder.length() - 2);
+        builder.append("*>");
         return builder.toString();
     }
 

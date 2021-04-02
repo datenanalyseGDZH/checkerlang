@@ -57,10 +57,13 @@
         <copy file="src/module-io.ckl" todir="build"/>
         <copy file="src/module-list.ckl" todir="build"/>
         <copy file="src/module-math.ckl" todir="build"/>
+        <copy file="src/module-predicate.ckl" todir="build"/>
         <copy file="src/module-random.ckl" todir="build"/>
         <copy file="src/module-set.ckl" todir="build"/>
         <copy file="src/module-stat.ckl" todir="build"/>
+        <copy file="src/module-string.ckl" todir="build"/>
         <copy file="src/module-sys.ckl" todir="build"/>
+        <copy file="src/module-type.ckl" todir="build"/>
 	    <jar basedir="build" destfile="../dist/ckl-java-repl.jar">
             <manifest>
                 <attribute name="Main-Class" value="ch.checkerlang.REPL"/>

@@ -41,7 +41,8 @@ public class FuncRemove extends FuncBase {
                 "\r\n" +
                 ": remove([1, 2, 3, 4], 3) ==> [1, 2, 4]\r\n" +
                 ": remove(<<1, 2, 3, 4>>, 3) ==> <<1, 2, 4>>\r\n" +
-                ": remove(<<< 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n";
+                ": remove(<<<a => 1, b => 2, c => 3, d => 4>>>, 'c') ==> <<<'a' => 1, 'b' => 2, 'd' => 4>>>\r\n" +
+                ": remove(<*a=1, b=2*>, 'b') ==> <*a=1*>\r\n";
     }
 
     public List<String> getArgNames() {
@@ -70,6 +71,11 @@ public class FuncRemove extends FuncBase {
         if (lst.isMap()) {
             Map<Value, Value> map = lst.asMap().getValue();
             map.remove(element);
+            return lst;
+        }
+        if (lst.isObject()) {
+            Map<String, Value> map = lst.asObject().value;
+            map.remove(element.asString().getValue());
             return lst;
         }
 

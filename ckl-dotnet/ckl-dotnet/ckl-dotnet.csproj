@@ -21,10 +21,13 @@
     <EmbeddedResource Include="module-legacy.ckl" />
     <EmbeddedResource Include="module-list.ckl" />
     <EmbeddedResource Include="module-math.ckl" />
+    <EmbeddedResource Include="module-predicate.ckl" />
     <EmbeddedResource Include="module-random.ckl" />
     <EmbeddedResource Include="module-set.ckl" />
     <EmbeddedResource Include="module-stat.ckl" />
+    <EmbeddedResource Include="module-string.ckl" />
     <EmbeddedResource Include="module-sys.ckl" />
+    <EmbeddedResource Include="module-type.ckl" />
   </ItemGroup>
 
   <ItemGroup>
