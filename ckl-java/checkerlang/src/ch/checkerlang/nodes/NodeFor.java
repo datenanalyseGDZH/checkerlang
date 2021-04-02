@@ -46,25 +46,140 @@ public class NodeFor implements Node {
         Value list = expression.evaluate(environment);
         if (list.isInput()) {
             ValueInput input = list.asInput();
-            ValueList lst = new ValueList();
+            Value result = ValueBoolean.TRUE;
             String line = null;
             try {
                 line = input.readLine();
                 while (line != null) {
-                    lst.addItem(new ValueString(line));
+                    Value value = new ValueString(line);
+                    if (identifiers.size() == 1) {
+                        environment.put(identifiers.get(0), value);
+                    } else {
+                        List<Value> vals = value.asList().getValue();
+                        for (int i = 0; i < identifiers.size(); i++) {
+                            environment.put(identifiers.get(i), vals.get(i));
+                        }
+                    }
+                    result = block.evaluate(environment);
+                    if (result.isBreak()) {
+                        result = ValueBoolean.TRUE;
+                        break;
+                    } else if (result.isContinue()) {
+                        result = ValueBoolean.TRUE;
+                        // continue
+                    } else if (result.isReturn()) {
+                        break;
+                    }
                     line = input.readLine();
+                }
+                if (identifiers.size() == 1) {
+                    environment.remove(identifiers.get(0));
+                } else {
+                    for (int i = 0; i < identifiers.size(); i++) {
+                        environment.remove(identifiers.get(i));
+                    }
                 }
             } catch (IOException e) {
                 throw new ControlErrorException("Cannot read from input");
             }
-            list = lst;
+            return result;
         }
-        if (list.isList() || list.isSet() || list.isMap() || list.isObject()) {
-            List<Value> values;
-            if (list.isObject()) values = new ArrayList<>(list.asObject().value.values());
-            else values = list.asList().getValue();
+        if (list.isList()) {
             Value result = ValueBoolean.TRUE;
-            for (Value value : values) {
+            for (Value value : list.asList().getValue()) {
+                if (identifiers.size() == 1) {
+                    environment.put(identifiers.get(0), value);
+                } else {
+                    List<Value> vals = value.asList().getValue();
+                    for (int i = 0; i < identifiers.size(); i++) {
+                        environment.put(identifiers.get(i), vals.get(i));
+                    }
+                }
+                result = block.evaluate(environment);
+                if (result.isBreak()) {
+                    result = ValueBoolean.TRUE;
+                    break;
+                } else if (result.isContinue()) {
+                    result = ValueBoolean.TRUE;
+                    // continue
+                } else if (result.isReturn()) {
+                    break;
+                }
+            }
+            if (identifiers.size() == 1) {
+                environment.remove(identifiers.get(0));
+            } else {
+                for (int i = 0; i < identifiers.size(); i++) {
+                    environment.remove(identifiers.get(i));
+                }
+            }
+            return result;
+        }
+        if (list.isSet()) {
+            Value result = ValueBoolean.TRUE;
+            for (Value value : list.asSet().getValue()) {
+                if (identifiers.size() == 1) {
+                    environment.put(identifiers.get(0), value);
+                } else {
+                    List<Value> vals = value.asList().getValue();
+                    for (int i = 0; i < identifiers.size(); i++) {
+                        environment.put(identifiers.get(i), vals.get(i));
+                    }
+                }
+                result = block.evaluate(environment);
+                if (result.isBreak()) {
+                    result = ValueBoolean.TRUE;
+                    break;
+                } else if (result.isContinue()) {
+                    result = ValueBoolean.TRUE;
+                    // continue
+                } else if (result.isReturn()) {
+                    break;
+                }
+            }
+            if (identifiers.size() == 1) {
+                environment.remove(identifiers.get(0));
+            } else {
+                for (int i = 0; i < identifiers.size(); i++) {
+                    environment.remove(identifiers.get(i));
+                }
+            }
+            return result;
+        }
+        if (list.isMap()) {
+            Value result = ValueBoolean.TRUE;
+            for (Value value : list.asMap().getValue().values()) {
+                if (identifiers.size() == 1) {
+                    environment.put(identifiers.get(0), value);
+                } else {
+                    List<Value> vals = value.asList().getValue();
+                    for (int i = 0; i < identifiers.size(); i++) {
+                        environment.put(identifiers.get(i), vals.get(i));
+                    }
+                }
+                result = block.evaluate(environment);
+                if (result.isBreak()) {
+                    result = ValueBoolean.TRUE;
+                    break;
+                } else if (result.isContinue()) {
+                    result = ValueBoolean.TRUE;
+                    // continue
+                } else if (result.isReturn()) {
+                    break;
+                }
+            }
+            if (identifiers.size() == 1) {
+                environment.remove(identifiers.get(0));
+            } else {
+                for (int i = 0; i < identifiers.size(); i++) {
+                    environment.remove(identifiers.get(i));
+                }
+            }
+            return result;
+        }
+        if (list.isObject()) {
+            Value result = ValueBoolean.TRUE;
+            for (Value value : list.asObject().value.values()) {
                 if (identifiers.size() == 1) {
                     environment.put(identifiers.get(0), value);
                 } else {

@@ -481,18 +481,45 @@ export class NodeFor {
         let list = this.expression.evaluate(environment);
         if (list instanceof ValueInput) {
             const input = list;
-            const lst = new ValueList();
+            let result = ValueBoolean.TRUE;
             let line = null;
             try {
                 line = input.readLine();
                 while (line != null) {
-                    lst.addItem(new ValueString(line));
+                    const value = new ValueString(line);
+                    if (this.identifiers.length == 1) {
+                        environment.put(this.identifiers[0], value);
+                    } else {
+                        let vals;
+                        if (value.isList()) vals = value.value;
+                        else if (value.isSet()) vals = value.value.sortedValues();
+                        for (let i = 0; i < this.identifiers.length; i++) {
+                            environment.put(this.identifiers[i], vals[i]);
+                        }
+                    }
+                    result = this.block.evaluate(environment);
+                    if (result instanceof ValueControlBreak) {
+                        result = ValueBoolean.TRUE;
+                        break;
+                    } else if (result instanceof ValueControlContinue) {
+                        result = ValueBoolean.TRUE;
+                        // continue
+                    } else if (result instanceof ValueControlReturn) {
+                        break;
+                    }
                     line = input.readLine();
+                }
+                if (this.identifiers.length == 1) {
+                    environment.remove(this.identifiers[0]);
+                } else {
+                    for (let i = 0; i < this.identifiers.length; i++) {
+                        environment.remove(this.identifiers[i]);
+                    }
                 }
             } catch (e) {
                 throw new RuntimeError("Cannot read from input", this.pos);
             }
-            list = lst;
+            return result;
         }
         if (list instanceof ValueList) {
             const values = list.value;

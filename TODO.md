@@ -23,7 +23,6 @@
 * js: maybe rename isEquals() to equals(), seems to be the canonical name for the equality function
 * parse_json should support fileinput values and read only as much as is needed.
 * destructuring assign should support more than just identifiers, also a->b, a[b], a(b)[c], a(b)->c and so on
-* optimize for loop in java/dotnet so that sets and maps are not first converted to lists and only then traversed
 * unfortunately, iterating over a map traverses the values, not the keys. This cannot be changed due to backwards compatibility, but maybe a more efficient way than for x in set(m) could be devised.
 * spreading works in funcalls and lists. What about sets and maps? Can we implement this?
 
@@ -48,9 +47,11 @@
     * for [x, y] in entries m do ... end;
   which directly iterates over keys, values and entries of a map or object
 
+* when calling a function that is a member of an object, provide self argument that points to object, i.e.
+  def o = <* f = fn(self, n) self->a + n, a = 12 *>; o->f(3) ==> 15
 
 * port modules string, type, predicate to java and dotnet including base/core/legacy implementation and fixes to tests
 * support <*...*> syntax for object literals (lexer, parser, node),  OK:js
-* remove should work with objects OK: js
-* support return without value OK: js
-* members with a leading _ are considered private and will not be included in toString, OK: js
+* remove should work with objects OK:js
+* support return without value OK:js
+* members with a leading _ are considered private and will not be included in toString, OK:js
