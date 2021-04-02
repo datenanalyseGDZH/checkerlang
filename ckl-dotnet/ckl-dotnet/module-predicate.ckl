@@ -54,7 +54,7 @@ def is_positive(obj) is_numeric(obj) and obj > 0;
 
 
 "
-is_alphanumerical(str, min = 0, max = 99999)
+is_alphanumerical(str, min = 1, max = 99999)
 
 Returns TRUE if the string is alphanumerical, i.e. contains only a-z, A-Z and 0-9.
 It is possible to specify minimal and maximal length using the min and max optional
@@ -62,21 +62,23 @@ parameters.
 
 : is_alphanumerical('Ab12') ==> TRUE
 "
-def is_alphanumerical(str, min=0, max=99999) do
+def is_alphanumerical(str, min=1, max=99999) do
     require String import [matches];
     is_string(str) and matches(str, pattern('^[a-zA-Z0-9]{' + min + ',' + max + '}$'));
 end;
 
 
 "
-is_numerical(str, min = 0, max = 99999)
+is_numerical(str, min = 1, max = 99999)
 
 Returns TRUE if the string is numerical, i.e. contains only 0-9. It is possible to
 specify minimal and maximal length using the min and max optional parameters.
 
 : is_numerical('123') ==> TRUE
+: is_numerical('12b') ==> FALSE
+: is_numerical('') ==> FALSE
 "
-def is_numerical(str, min=0, max=99999) do
+def is_numerical(str, min=1, max=99999) do
     require String import [matches];
     is_string(str) and matches(str, pattern('^[0-9]{' + min + ',' + max + '}$'));
 end;

@@ -711,7 +711,8 @@ namespace CheckerLang
                     }
                     else if (token.value == "return")
                     {
-                        result = new NodeReturn(ParseExpression(lexer), token.pos);
+                        if (lexer.Peekn(1, ";", TokenType.Interpunction)) result = new NodeReturn(null, token.pos);
+                        else result = new NodeReturn(this.ParseExpression(lexer), token.pos);
                     }
                     else if (token.value == "error")
                     {

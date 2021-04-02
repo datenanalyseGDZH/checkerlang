@@ -616,7 +616,8 @@ public class Parser {
                 } else if (token.value.equals("continue") && token.type == TokenType.Keyword) {
                     result = new NodeContinue(token.pos);
                 } else if (token.value.equals("return") && token.type == TokenType.Keyword) {
-                    result = new NodeReturn(parseExpression(lexer), token.pos);
+                    if (lexer.peekn(1, ";", TokenType.Interpunction)) result = new NodeReturn(null, token.pos);
+                    else result = new NodeReturn(parseExpression(lexer), token.pos);
                 } else if (token.value.equals("error") && token.type == TokenType.Keyword) {
                     result = new NodeError(parseExpression(lexer), token.pos);
                 } else if (token.value.equals("do") && token.type == TokenType.Keyword) {
