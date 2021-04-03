@@ -126,6 +126,29 @@ require Math import [
 
 
 "
+new(obj, args...)
+
+Creates a new instance of an object. This makes a copy of
+the original object and afterwards calls the constructor
+_init_, if it exists.
+
+: def o = <* a = 2, f = fn(self, x) self->a * x, _init_ = fn(self, a) self->a = a *>; def n = new(o, 3); [o->f(2), n->f(2)] ==> [4, 6]
+" 
+def new(obj, args...) do
+  if type(obj) != "object" then error "Expected object but got " + type(obj);
+  def result = object();
+  def members = set(obj);
+  for member in members do 
+    result[member] = obj[member];
+  end;
+  if "_init_" in members then do
+    result->_init_(...args...);
+  end;
+  result;
+end;
+
+
+"
 non_zero(a, b)
 
 Returns the value a, if a is a non-zero integer, otherwise returns b.
