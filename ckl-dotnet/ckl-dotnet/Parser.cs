@@ -918,9 +918,17 @@ namespace CheckerLang
             var obj = new NodeObject(token.pos);
             while (!lexer.Peekn(1, "*>", TokenType.Interpunction)) {
                 var key = lexer.MatchIdentifier();
-                lexer.Match("=", TokenType.Operator);
-                var value = ParseIfExpr(lexer);
-                obj.AddKeyValue(key, value);
+                if (lexer.Peekn(1, "(", TokenType.Interpunction)) {
+                    var fn = this.ParseFn(lexer, lexer.GetPos());
+                    obj.AddKeyValue(key, fn);
+                }
+                else
+                {
+                    lexer.Match("=", TokenType.Operator);
+                    var value = ParseIfExpr(lexer);
+                    obj.AddKeyValue(key, value);
+                }
+
                 if (!lexer.Peekn(1, "*>", TokenType.Interpunction)) {
                     lexer.Match(",", TokenType.Interpunction);
                 }

@@ -781,9 +781,14 @@ public class Parser {
         NodeObject obj = new NodeObject(token.pos);
         while (!lexer.peekn(1, "*>", TokenType.Interpunction)) {
             String key = lexer.matchIdentifier();
-            lexer.match("=", TokenType.Operator);
-            Node value = this.parseIfExpr(lexer);
-            obj.addKeyValue(key, value);
+            if (lexer.peekn(1, "(", TokenType.Interpunction)) {
+                NodeLambda fn = this.parseFn(lexer, lexer.getPos());
+                obj.addKeyValue(key, fn);
+            } else {
+                lexer.match("=", TokenType.Operator);
+                Node value = this.parseIfExpr(lexer);
+                obj.addKeyValue(key, value);
+            }
             if (!lexer.peekn(1, "*>", TokenType.Interpunction)) {
                 lexer.match(",", TokenType.Interpunction);
             }

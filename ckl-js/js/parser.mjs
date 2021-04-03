@@ -781,9 +781,14 @@ export class Parser {
         const obj = new NodeObject(token.pos);
         while (!lexer.peekn(1, "*>", "interpunction")) {
             const key = lexer.matchIdentifier();
-            lexer.match("=", "operator");
-            const value = this.parseIfExpr(lexer);
-            obj.addKeyValue(key, value);
+            if (lexer.peekn(1, "(", "interpunction")) {
+                const fn = this.parseFn(lexer, lexer.getPos());
+                obj.addKeyValue(key, fn);
+            } else {
+                lexer.match("=", "operator");
+                const value = this.parseIfExpr(lexer);
+                obj.addKeyValue(key, value);
+            }
             if (!lexer.peekn(1, "*>", "interpunction")) {
                 lexer.match(",", "interpunction");
             }

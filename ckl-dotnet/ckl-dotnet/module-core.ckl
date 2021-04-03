@@ -133,6 +133,7 @@ the original object and afterwards calls the constructor
 _init_, if it exists.
 
 : def o = <* a = 2, f = fn(self, x) self->a * x, _init_ = fn(self, a) self->a = a *>; def n = new(o, 3); [o->f(2), n->f(2)] ==> [4, 6]
+: def o = <* _init_(self, n) self->_data = interval(1, n), get(self) sum(self->_data) *>; def a = new(o, 100); a->get() ==> 5050
 " 
 def new(obj, args...) do
   if type(obj) != "object" then error "Expected object but got " + type(obj);

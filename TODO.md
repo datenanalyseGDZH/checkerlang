@@ -42,14 +42,6 @@
     * for [x, y] in entries m do ... end;
   which directly iterates over keys, values and entries of a map or object
 
-* In objects, provide an abbreviated syntax for member functions:
-  instead of <* f = fn(self, x) 2 * x *>
-  better use <* f(self, x) 2 * x *>
-  The parser can detect this when checking for '='. If instead a '(' is
-  found, then we have a function definition. It cannot be a function call,
-  since we are still in the member-name detection and not yet in the member-value
-  parsing.
-
 * provide custom printing support in objects, by adding a _str_ member
 
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
