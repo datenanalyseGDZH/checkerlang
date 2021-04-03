@@ -20,8 +20,11 @@
 */
 package ch.checkerlang.values;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.checkerlang.Args;
+import ch.checkerlang.ControlErrorException;
+import ch.checkerlang.SourcePos;
+
+import java.util.*;
 
 public class ValueObject extends Value {
     public Map<String, Value> value = new HashMap<>();
@@ -116,15 +119,32 @@ public class ValueObject extends Value {
     }
 
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<*");
-        for (String item : value.keySet()) {
-            if (item.startsWith("_")) continue;
-            builder.append(item).append("=").append(value.get(item)).append(", ");
+        if (value.containsKey("_str_")) {
+            ValueFunc fn = value.get("_str_").asFunc();
+            Args args_ = new Args(fn.getArgNames(), SourcePos.Unknown);
+            List<String> names = new ArrayList<>();
+            List<Value> values = new ArrayList<>();
+            names.add(null);
+            values.add(this);
+            args_.setArgs(names, values);
+
+            try {
+                return fn.asFunc().execute(args_, null, SourcePos.Unknown).asString().getValue();
+            } catch (ControlErrorException e) {
+                e.addStacktraceElement("_str_", SourcePos.Unknown);
+                throw e;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<*");
+            for (String item : value.keySet()) {
+                if (item.startsWith("_")) continue;
+                builder.append(item).append("=").append(value.get(item)).append(", ");
+            }
+            if (builder.length() > 2) builder.setLength(builder.length() - 2);
+            builder.append("*>");
+            return builder.toString();
         }
-        if (builder.length() > 2) builder.setLength(builder.length() - 2);
-        builder.append("*>");
-        return builder.toString();
     }
 
 }

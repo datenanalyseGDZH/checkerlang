@@ -21,7 +21,7 @@
 
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
-import { Args } from "./interpreter.mjs";
+import { Args } from "./args.mjs";
 import { system } from "./system.mjs";
 import { modulebase } from "./module_base.mjs";
 import { modulelegacy } from "./module_legacy.mjs";

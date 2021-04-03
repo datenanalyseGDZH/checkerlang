@@ -122,16 +122,36 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            var builder = new StringBuilder();
-            builder.Append("<*");
-            foreach (var item in value.Keys)
-            {
-                if (item.StartsWith("_")) continue;
-                builder.Append(item).Append("=").Append(value[item]).Append(", ");
+            if (value.ContainsKey("_str_")) {
+                var fn = value["_str_"].AsFunc();
+                var args_ = new Args(fn.GetArgNames(), SourcePos.Unknown);
+                var names = new List<string>();
+                var values = new List<Value>();
+                names.Add(null);
+                values.Add(this);
+                args_.SetArgs(names, values);
+
+                try {
+                    return fn.AsFunc().Execute(args_, null, SourcePos.Unknown).AsString().GetValue();
+                } catch (ControlErrorException e) {
+                    e.AddStacktraceElement("_str_", SourcePos.Unknown);
+                    throw e;
+                }
             }
-            if (builder.Length > 2) builder.Remove(builder.Length - ", ".Length, ", ".Length);
-            builder.Append("*>");
-            return builder.ToString();
+            else
+            {
+                var builder = new StringBuilder();
+                builder.Append("<*");
+                foreach (var item in value.Keys)
+                {
+                    if (item.StartsWith("_")) continue;
+                    builder.Append(item).Append("=").Append(value[item]).Append(", ");
+                }
+
+                if (builder.Length > 2) builder.Remove(builder.Length - ", ".Length, ", ".Length);
+                builder.Append("*>");
+                return builder.ToString();
+            }
         }
 
     }

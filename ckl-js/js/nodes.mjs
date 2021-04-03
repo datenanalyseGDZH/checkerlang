@@ -22,7 +22,7 @@
 import { RuntimeError } from "./errors.mjs";
 import { FuncLambda } from "./functions.mjs";
 import { Parser } from "./parser.mjs";
-import { Args } from "./interpreter.mjs";
+import { Args } from "./args.mjs";
 import { moduleloader } from "./moduleloader.mjs";
 
 import { 

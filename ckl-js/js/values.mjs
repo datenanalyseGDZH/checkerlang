@@ -22,6 +22,7 @@
 import { HashSet } from "./collections.mjs";
 import { HashMap } from "./collections.mjs";
 import { RuntimeError } from "./errors.mjs";
+import { Args } from "./args.mjs";
 
 const DAYS_PER_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const DAYS_EPOCH = 25569;
@@ -1281,13 +1282,27 @@ export class ValueObject extends Value {
     }
 
     toString() {
-        let result = "<*";
-        for (const key of this.value.keys()) {
-            if (key.startsWith("_")) continue;
-            result = result.concat(key, "=", this.value.get(key).toString(), ", ");
+        if (this.value.has("_str_")) {
+            const fn = this.value.get("_str_");
+            const args_ = new Args(null);
+            args_.addArgs(fn.getArgNames());
+            args_.setArgs([null], [this]);
+            try {
+                return fn.execute(args_).value;
+            } catch (e) {
+                if (!("stacktrace" in e)) e.stacktrace = [];
+                e.stacktrace.push("_str_");
+                throw e;
+            }
+        } else {
+            let result = "<*";
+            for (const key of this.value.keys()) {
+                if (key.startsWith("_")) continue;
+                result = result.concat(key, "=", this.value.get(key).toString(), ", ");
+            }
+            if (result.length > "<*".length) result = result.substr(0, result.length - 2);
+            return result.concat("*>");
         }
-        if (result.length > "<*".length) result = result.substr(0, result.length - 2);
-        return result.concat("*>");
     }
 }
 

@@ -63,7 +63,14 @@ public class REPL {
                 try {
                     Value value = interpreter.interpret(line, "{stdin}");
                     if (value.isReturn()) value = value.asReturn().value;
-                    if (value != ValueNull.NULL) stdout.println(value);
+                    if (value != ValueNull.NULL) {
+                        String str = value.toString();
+                        if (str != null) {
+                            stdout.println(str);
+                        } else {
+                            stdout.println("ERR: cannot convert object to string");
+                        }
+                    }
                 } catch (ControlErrorException e) {
                     stdout.println("ERR: " + e.getErrorValue().asString().getValue() + " (Line " + e.getPos() + ")");
                     stdout.println(e.getStacktrace().toString());
@@ -71,6 +78,7 @@ public class REPL {
                     stdout.println(e.getMessage() + (e.getPos() != null ? " (Line " + e.getPos() + ")" : ""));
                 } catch (Exception e) {
                     stdout.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
 

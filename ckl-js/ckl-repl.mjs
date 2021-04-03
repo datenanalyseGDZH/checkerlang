@@ -44,8 +44,13 @@ function interpretStatement(statement) {
     try {
         const result = interpreter.interpret(statement, "{repl}");
         if (!(result instanceof ValueNull)) {
-            process.stdout.write(result.toString());
-            process.stdout.write("\n");
+            const str = result.toString();
+            if (str !== null) {
+                process.stdout.write(str);
+                process.stdout.write("\n");
+            } else {
+                process.stdout.write("ERR: cannot convert object to string\n");
+            }
         }
         process.stdout.write("> ");
     } catch (e) {
