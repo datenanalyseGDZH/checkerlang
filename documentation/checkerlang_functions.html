@@ -163,6 +163,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#min'>min</a></li>
 <li><a href='#mod'>mod</a></li>
 <li><a href='#mul'>mul</a></li>
+<li><a href='#new'>new</a></li>
 <li><a href='#non_empty'>non_empty</a></li>
 <li><a href='#non_zero'>non_zero</a></li>
 <li><a href='#not_equals'>not_equals</a></li>
@@ -3040,6 +3041,28 @@ Core
 <div class='example'>mul('2', 3) ==&gt; '222'</div>
 <div class='example'>mul([1, 2], 3) ==&gt; [1, 2, 1, 2, 1, 2]</div>
 </div>
+<h2 id='new'>new</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+new(obj, args...)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Creates a new instance of an object. This makes a copy of
+the original object and afterwards calls the constructor
+_init_, if it exists.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>def o = &lt;* a = 2, f = fn(self, x) self-&gt;a * x, _init_ = fn(self, a) self-&gt;a = a *&gt;; def n = new(o, 3); [o-&gt;f(2), n-&gt;f(2)] ==&gt; [4, 6]</div>
+<div class='example'>def o = &lt;* _init_(self, n) self-&gt;_data = interval(1, n), get(self) sum(self-&gt;_data) *&gt;; def a = new(o, 100); a-&gt;get() ==&gt; 5050</div>
+</div>
 <h2 id='non_empty'>non_empty</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -3137,9 +3160,9 @@ Core
 </div>
 <div class='examples'>
 <div class='examples_title'>Examples</div>
-<div class='example'>object() ==&gt; &lt;!!&gt;</div>
-<div class='example'>object(&lt;&lt;&lt;a =&gt; 1&gt;&gt;&gt;) ==&gt; &lt;!a=1!&gt;</div>
-<div class='example'>object([['a', 1]]) ==&gt; &lt;!a=1!&gt;</div>
+<div class='example'>object() ==&gt; &lt;**&gt;</div>
+<div class='example'>object(&lt;&lt;&lt;a =&gt; 1&gt;&gt;&gt;) ==&gt; &lt;*a=1*&gt;</div>
+<div class='example'>object([['a', 1]]) ==&gt; &lt;*a=1*&gt;</div>
 </div>
 <h2 id='pairs'>pairs</h2>
 <div class='header'>
@@ -3606,6 +3629,7 @@ Core
 <div class='example'>remove([1, 2, 3, 4], 3) ==&gt; [1, 2, 4]</div>
 <div class='example'>remove(&lt;&lt;1, 2, 3, 4&gt;&gt;, 3) ==&gt; &lt;&lt;1, 2, 4&gt;&gt;</div>
 <div class='example'>remove(&lt;&lt;&lt;a =&gt; 1, b =&gt; 2, c =&gt; 3, d =&gt; 4&gt;&gt;&gt;, 'c') ==&gt; &lt;&lt;&lt;'a' =&gt; 1, 'b' =&gt; 2, 'd' =&gt; 4&gt;&gt;&gt;</div>
+<div class='example'>remove(&lt;*a=1, b=2*&gt;, 'b') ==&gt; &lt;*a=1*&gt;</div>
 </div>
 <h2 id='replace'>replace</h2>
 <div class='header'>
