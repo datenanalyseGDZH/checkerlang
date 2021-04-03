@@ -24,6 +24,7 @@ import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueNull;
 import ch.checkerlang.values.ValueString;
 
 import java.util.Collection;
@@ -45,6 +46,7 @@ public class NodeDeref implements Node {
     public Value evaluate(Environment environment) {
         Value idx = index.evaluate(environment);
         Value value = expression.evaluate(environment);
+        if (value.isNull()) return ValueNull.NULL;
         if (value.isString()) {
             String s = value.asString().getValue();
             int i = (int) idx.asInt().getValue();
@@ -70,8 +72,7 @@ public class NodeDeref implements Node {
         if (value.isObject()) {
             Map<String, Value> map = value.asObject().value;
             String member = idx.asString().getValue();
-            if (!map.containsKey(member))
-                throw new ControlErrorException("Object does not contain member " + member, pos);
+            if (!map.containsKey(member)) return ValueNull.NULL;
             return map.get(member);
         }
         throw new ControlErrorException("Cannot dereference value " + value, pos);

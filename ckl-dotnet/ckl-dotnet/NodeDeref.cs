@@ -38,6 +38,7 @@ namespace CheckerLang
         public Value Evaluate(Environment environment) {
             var idx = index.Evaluate(environment);
             var value = expression.Evaluate(environment);
+            if (value.IsNull()) return ValueNull.NULL;
             if (value.IsString())
             {
                 var s = value.AsString().GetValue();
@@ -64,7 +65,7 @@ namespace CheckerLang
             {
                 var map = value.AsObject().value;
                 var member = idx.AsString().GetValue();
-                if (!map.ContainsKey(member)) throw new ControlErrorException("Object does not contain member " + member, pos);
+                if (!map.ContainsKey(member)) return ValueNull.NULL;
                 return map[member];
             }
             throw new ControlErrorException("Cannot dereference value " + value, pos);

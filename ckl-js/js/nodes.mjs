@@ -410,6 +410,7 @@ export class NodeDeref {
     evaluate(environment) {
         const idx = this.index.evaluate(environment);
         const value = this.expression.evaluate(environment);
+        if (value == ValueNull.NULL) return ValueNull.NULL;
         if (value instanceof ValueString) {
             const s = value.value;
             let i = Number(idx.value);
@@ -430,7 +431,7 @@ export class NodeDeref {
         }
         if (value instanceof ValueObject) {
             const member = idx.asString().value;
-            if (!value.hasItem(member)) throw new RuntimeError("Object does not contain member " + member, this.pos);
+            if (!value.hasItem(member)) return ValueNull.NULL;
             return value.getItem(member);
         }
         throw new RuntimeError("Cannot dereference value " + value, this.pos);
