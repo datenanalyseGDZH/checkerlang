@@ -66,68 +66,8 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             var fn = func.Evaluate(environment);
-            if (!fn.IsFunc()) throw new ControlErrorException(fn + " is not a function", pos);
-            
-            var values = new List<Value>();
-            var names = new List<string>();
-            for (var i = 0; i < args.Count; i++) 
-            {
-                var arg = args[i];
-                if (arg is NodeSpread) 
-                {
-                    var argvalue = arg.Evaluate(environment);
-                    if (argvalue.IsMap()) 
-                    {
-                        ValueMap map = argvalue.AsMap();
-                        foreach (var entry in map.GetValue()) {
-                            values.Add(entry.Value);
-                            if (entry.Key.IsString()) 
-                            {
-                                names.Add(entry.Key.AsString().GetValue());
-                            } 
-                            else 
-                            {
-                                names.Add(null);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ValueList list = arg.Evaluate(environment).AsList();
-                        foreach (var value in list.GetValue())
-                        {
-                            values.Add(value);
-                            names.Add(null);
-                        }
-                    }
-                } 
-                else 
-                {
-                    values.Add(arg.Evaluate(environment));
-                    names.Add(this.names[i]);
-                }
-            }
-            this.names = names;
-            
-            var args_ = new Args(fn.AsFunc().GetArgNames(), pos);
-            args_.SetArgs(this.names, values);
-
-            try
-            {
-                return fn.AsFunc().Execute(args_, environment, pos);
-            }
-            catch (ControlErrorException e)
-            {
-                e.AddStacktraceElement(GetFuncallString(fn.AsFunc(), args_), pos);
-                throw;
-            }
-        }
-
-        private string GetFuncallString(ValueFunc fn, Args args)
-        {
-            var result = new StringBuilder();
-            result.Append(fn.GetName()).Append("(").Append(args.ToStringAbbrev()).Append(")");
-            return result.ToString();
+            if (!fn.IsFunc()) throw new ControlErrorException("Expected function but got " + fn.Type(), pos);
+            return Function.invoke(fn.AsFunc(), this.names, this.args, environment, this.pos);
         }
 
         public override string ToString()

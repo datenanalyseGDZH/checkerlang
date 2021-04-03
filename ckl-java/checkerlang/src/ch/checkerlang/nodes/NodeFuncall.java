@@ -20,10 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
-import ch.checkerlang.Args;
-import ch.checkerlang.ControlErrorException;
-import ch.checkerlang.Environment;
-import ch.checkerlang.SourcePos;
+import ch.checkerlang.*;
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueFunc;
 import ch.checkerlang.values.ValueList;
@@ -59,51 +56,8 @@ public class NodeFuncall implements Node {
 
     public Value evaluate(Environment environment) {
         Value fn = func.evaluate(environment);
-        if (!fn.isFunc()) throw new ControlErrorException(fn + " is not a function", pos);
-
-        List<Value> values = new ArrayList<>();
-        List<String> names = new ArrayList<>();
-        for (int i = 0; i < args.size(); i++) {
-            Node arg = args.get(i);
-            if (arg instanceof NodeSpread) {
-                Value argvalue = arg.evaluate(environment);
-                if (argvalue.isMap()) {
-                    ValueMap map = argvalue.asMap();
-                    for (Map.Entry<Value, Value> entry : map.getValue().entrySet()) {
-                        values.add(entry.getValue());
-                        if (entry.getKey().isString()) {
-                            names.add(entry.getKey().asString().getValue());
-                        } else {
-                            names.add(null);
-                        }
-                    }
-                } else {
-                    ValueList list = argvalue.asList();
-                    for (Value value : list.getValue()) {
-                        values.add(value);
-                        names.add(null);
-                    }
-                }
-            } else {
-                values.add(arg.evaluate(environment));
-                names.add(this.names.get(i));
-            }
-        }
-        this.names = names;
-
-        Args args_ = new Args(fn.asFunc().getArgNames(), pos);
-        args_.setArgs(this.names, values);
-
-        try {
-            return fn.asFunc().execute(args_, environment, pos);
-        } catch (ControlErrorException e) {
-            e.addStacktraceElement(getFuncallString(fn.asFunc(), args_), pos);
-            throw e;
-        }
-    }
-
-    private String getFuncallString(ValueFunc fn, Args args) {
-        return fn.getName() + "(" + args.toStringAbbrev() + ")";
+        if (!fn.isFunc()) throw new ControlErrorException("Expected function but got " + fn.type(), pos);
+        return Function.invoke(fn.asFunc(), this.names, this.args, environment, pos);
     }
 
     public String toString() {

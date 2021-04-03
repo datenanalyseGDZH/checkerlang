@@ -18,10 +18,49 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
+using System.Collections.Generic;
+
 namespace CheckerLang
 {
-    public interface NodeLiteral : Node
+    public class NodeLiteral : Node
     {
-        Value GetLiteralValue();
+        private Value value;
+        private SourcePos pos;
+
+        public NodeLiteral(Value value, SourcePos pos) 
+        {
+            this.value = value;
+            this.pos = pos;
+        }
+
+        public Value GetLiteralValue()
+        {
+            return value;
+        }
+
+        public Value Evaluate(Environment environment) 
+        {
+            return value;
+        }
+
+        public override string ToString() 
+        {
+            return value.ToString();
+        }
+
+        public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)
+        {
+            // empty
+        }
+
+        public SourcePos GetSourcePos() 
+        {
+            return pos;
+        }
+
+        public bool IsLiteral() {
+            return true;
+        }
     }
 }

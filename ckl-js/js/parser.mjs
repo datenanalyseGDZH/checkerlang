@@ -40,6 +40,7 @@ import {
     NodeDef,
     NodeDeref,
     NodeDerefAssign,
+    NodeDerefInvoke,
     NodeDefDestructuring,
     NodeError,
     NodeFor,
@@ -877,6 +878,19 @@ export class Parser {
                 const value = this.parseExpression(lexer);
                 node = new NodeDerefAssign(node, index, value, pos);
                 interrupt = true;
+            } else if (lexer.matchIf("(", "interpunction")) {
+                node = new NodeDerefInvoke(node, identifier, pos);
+                while (!lexer.peekn(1, ")", "interpunction")) {
+                    if (lexer.peek().type === "identifier" && lexer.peekn(2, "=", "operator")) {
+                        const name = lexer.matchIdentifier();
+                        lexer.match("=", "operator");
+                        node.addArg(name, this.parseExpression(lexer));
+                    } else {
+                        node.addArg(null, this.parseExpression(lexer));
+                    }
+                    if (!lexer.peekn(1, ")", "interpunction")) lexer.match(",", "interpunction");
+                }
+                lexer.eat(1);
             } else if (lexer.matchIf("+=", "operator")) {
                 const value = this.parseExpression(lexer);
                 node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);

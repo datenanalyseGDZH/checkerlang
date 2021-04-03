@@ -21,7 +21,7 @@
 package ch.checkerlang;
 
 import ch.checkerlang.nodes.*;
-import ch.checkerlang.values.ValueString;
+import ch.checkerlang.values.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -387,7 +387,7 @@ public class Parser {
                 return parsePredExpr(lexer, true);
             }
             NodeFuncall call = new NodeFuncall(new NodeIdentifier("sub", pos), pos);
-            call.addArg("a", new NodeLiteralInt(0, pos));
+            call.addArg("a", new NodeLiteral(new ValueInt(0), pos));
             call.addArg("b", parsePredExpr(lexer, false));
             return call;
         }
@@ -461,37 +461,37 @@ public class Parser {
         if (lexer.matchIf("is", "not", "date", "with", "hour")) {
             return new NodeNot(funcCall("is_valid_date", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("yyyyMMddHH", pos), pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
         }
 
         if (lexer.matchIf("is", "date", "with", "hour")) {
             return funcCall("is_valid_date", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("yyyyMMddHH", pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
         }
 
         if (lexer.matchIf("is", "not", "date")) {
             return new NodeNot(funcCall("is_valid_date", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("yyyyMMdd", pos), pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
         }
 
         if (lexer.matchIf("is", "date")) {
             return funcCall("is_valid_date", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("yyyyMMdd", pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
         }
 
         if (lexer.matchIf("is", "not", "time")) {
             return new NodeNot(funcCall("is_valid_time", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("HHmm", pos), pos), pos);
+                    new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
         }
 
         if (lexer.matchIf("is", "time")) {
             return funcCall("is_valid_time", "str",
                     funcCall("string", expr, pos), "fmt",
-                    new NodeLiteralString("HHmm", pos), pos);
+                    new NodeLiteral(new ValueString("HHmm"), pos), pos);
         }
 
         if (lexer.matchIf("starts", "not", "with")) {
@@ -530,8 +530,8 @@ public class Parser {
     }
 
     private Node collectPredicateMinMaxExact(String fn, Node expr, Lexer lexer, SourcePos pos) {
-        Node min_len = new NodeLiteralInt(0, pos);
-        Node max_len = new NodeLiteralInt(9999, pos);
+        Node min_len = new NodeLiteral(new ValueInt(1), pos);
+        Node max_len = new NodeLiteral(new ValueInt(9999), pos);
         if (lexer.matchIf("min_len", TokenType.Identifier)) {
             min_len = parsePrimaryExpr(lexer, false);
         }
@@ -589,23 +589,23 @@ public class Parser {
                 }
                 break;
             case String:
-                result = new NodeLiteralString(token.value, token.pos);
+                result = new NodeLiteral(new ValueString(token.value), token.pos);
                 result = derefOrInvoke(lexer, result);
                 break;
             case Int:
-                result = new NodeLiteralInt(Long.parseLong(token.value) * (unaryMinus ? -1 : 1), token.pos);
+                result = new NodeLiteral(new ValueInt(Long.parseLong(token.value) * (unaryMinus ? -1 : 1)), token.pos);
                 result = invoke(lexer, result);
                 break;
             case Decimal:
-                result = new NodeLiteralDecimal(Double.parseDouble(token.value) * (unaryMinus ? -1 : 1), token.pos);
+                result = new NodeLiteral(new ValueDecimal(Double.parseDouble(token.value) * (unaryMinus ? -1 : 1)), token.pos);
                 result = invoke(lexer, result);
                 break;
             case Boolean:
-                result = new NodeLiteralBoolean(token.value.equals("TRUE"), token.pos);
+                result = new NodeLiteral(ValueBoolean.from(token.value.equals("TRUE")), token.pos);
                 result = invoke(lexer, result);
                 break;
             case Pattern:
-                result = new NodeLiteralPattern(token.value.substring(2, token.value.length() - 2), token.pos);
+                result = new NodeLiteral(new ValuePattern(token.value.substring(2, token.value.length() - 2)), token.pos);
                 result = invoke(lexer, result);
                 break;
             default:
@@ -753,7 +753,7 @@ public class Parser {
             } else {
                 NodeMap map = new NodeMap(token.pos);
                 if (key instanceof NodeIdentifier) {
-                    key = new NodeLiteralString(((NodeIdentifier) key).getValue(), key.getSourcePos());
+                    key = new NodeLiteral(new ValueString(((NodeIdentifier) key).getValue()), key.getSourcePos());
                 }
                 map.addKeyValue(key, value);
                 if (!lexer.peek(">>>", TokenType.Interpunction)) {
@@ -762,7 +762,7 @@ public class Parser {
                 while (!lexer.peek(">>>", TokenType.Interpunction)) {
                     key = parseIfExpr(lexer);
                     if (key instanceof NodeIdentifier) {
-                        key = new NodeLiteralString(((NodeIdentifier) key).getValue(), key.getSourcePos());
+                        key = new NodeLiteral(new ValueString(((NodeIdentifier) key).getValue()), key.getSourcePos());
                     }
                     lexer.match("=>", TokenType.Interpunction);
                     value = parseIfExpr(lexer);
@@ -830,7 +830,7 @@ public class Parser {
             } else {
                 fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
                 while (lexer.matchIf("->", TokenType.Operator)) {
-                    fn = new NodeDeref(fn, new NodeLiteralString(lexer.matchIdentifier(), lexer.getPos()), lexer.getPos());
+                    fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.matchIdentifier()), lexer.getPos()), lexer.getPos());
                 }
             }
             NodeFuncall call = new NodeFuncall(fn, lexer.getPos());
@@ -881,11 +881,25 @@ public class Parser {
         if (lexer.matchIf("->", TokenType.Operator)) {
             SourcePos pos = lexer.getPos();
             String identifier = lexer.matchIdentifier();
-            Node index = new NodeLiteralString(identifier, pos);
+            Node index = new NodeLiteral(new ValueString(identifier), pos);
             if (lexer.matchIf("=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
                 result.node = new NodeDerefAssign(node, index, value, pos);
                 result.interrupt = true;
+            } else if (lexer.matchIf("(", TokenType.Interpunction)) {
+                NodeDerefInvoke n = new NodeDerefInvoke(node, identifier, pos);
+                while (!lexer.peekn(1, ")", TokenType.Interpunction)) {
+                    if (lexer.peek().type == TokenType.Identifier && lexer.peekn(2, "=", TokenType.Operator)) {
+                        String name = lexer.matchIdentifier();
+                        lexer.match("=", TokenType.Operator);
+                        n.addArg(name, this.parseExpression(lexer));
+                    } else {
+                        n.addArg(null, this.parseExpression(lexer));
+                    }
+                    if (!lexer.peekn(1, ")", TokenType.Interpunction)) lexer.match(",", TokenType.Interpunction);
+                }
+                lexer.eat(1);
+                result.node = n;
             } else if (lexer.matchIf("+=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
                 result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);

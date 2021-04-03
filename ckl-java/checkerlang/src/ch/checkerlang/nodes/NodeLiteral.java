@@ -20,10 +20,40 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.Environment;
+import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
 
-public interface NodeLiteral extends Node {
+import java.util.Collection;
 
-    Value getLiteralValue();
-    
+public class NodeLiteral implements Node {
+    private Value value;
+    private SourcePos pos;
+
+    public NodeLiteral(Value value, SourcePos pos) {
+        this.value = value;
+        this.pos = pos;
+    }
+
+    public Value getLiteralValue() { return value; }
+
+    public Value evaluate(Environment environment) {
+        return value;
+    }
+
+    public String toString() {
+        return value.toString();
+    }
+
+    public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
+        // empty
+    }
+
+    public SourcePos getSourcePos() {
+        return pos;
+    }
+
+    public boolean isLiteral() {
+        return true;
+    }
 }

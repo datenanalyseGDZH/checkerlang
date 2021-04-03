@@ -24,6 +24,7 @@ import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueBoolean;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +39,7 @@ public class NodeIf implements Node {
 
     public NodeIf(SourcePos pos) {
         this.pos = pos;
-        elseExpression = new NodeLiteralBoolean(true, pos);
+        elseExpression = new NodeLiteral(ValueBoolean.TRUE, pos);
     }
 
     public void addIf(Node condition, Node expression) {

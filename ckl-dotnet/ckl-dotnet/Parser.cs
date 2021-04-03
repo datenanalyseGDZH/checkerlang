@@ -444,7 +444,7 @@ namespace CheckerLang
                     return ParsePredExpr(lexer, true);
                 }
                 var call = new NodeFuncall(new NodeIdentifier("sub", pos), pos);
-                call.AddArg("a", new NodeLiteralInt(0, pos));
+                call.AddArg("a", new NodeLiteral(new ValueInt(0), pos));
                 call.AddArg("b", ParsePredExpr(lexer));
                 return call;
             }
@@ -514,42 +514,42 @@ namespace CheckerLang
             {
                 return new NodeNot(FuncCall("is_valid_date", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("yyyyMMddHH", pos), pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
             }
 
             if (lexer.MatchIf("is", "date", "with", "hour"))
             {
                 return FuncCall("is_valid_date", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("yyyyMMddHH", pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
             }
 
             if (lexer.MatchIf("is", "not", "date"))
             {
                 return new NodeNot(FuncCall("is_valid_date", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("yyyyMMdd", pos), pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
             }
 
             if (lexer.MatchIf("is", "date"))
             {
                 return FuncCall("is_valid_date", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("yyyyMMdd", pos), pos);
+                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
             }
 
             if (lexer.MatchIf("is", "not", "time"))
             {
                 return new NodeNot(FuncCall("is_valid_time", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("HHmm", pos), pos), pos);
+                    new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
             }
 
             if (lexer.MatchIf("is", "time"))
             {
                 return FuncCall("is_valid_time", "str", 
                     FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteralString("HHmm", pos), pos);
+                    new NodeLiteral(new ValueString("HHmm"), pos), pos);
             }
 
             if (lexer.MatchIf("is", "not", "in"))
@@ -617,8 +617,8 @@ namespace CheckerLang
 
         private Node CollectPredicateMinMaxExact(string fn, Node expr, Lexer lexer, SourcePos pos)
         {
-            Node min_len = new NodeLiteralInt(0, pos);
-            Node max_len = new NodeLiteralInt(9999, pos);
+            Node min_len = new NodeLiteral(new ValueInt(1), pos);
+            Node max_len = new NodeLiteral(new ValueInt(9999), pos);
             if (lexer.MatchIf("min_len", TokenType.Identifier))
             {
                 min_len = ParsePrimaryExpr(lexer);
@@ -677,23 +677,23 @@ namespace CheckerLang
                     }
                     break;
                 case TokenType.String:
-                    result = new NodeLiteralString(token.value, token.pos);
+                    result = new NodeLiteral(new ValueString(token.value), token.pos);
                     result = DerefOrInvoke(lexer, result);
                     break;
                 case TokenType.Int:
-                    result = new NodeLiteralInt(Convert.ToInt64(token.value) * (unary_minus ? -1 : 1), token.pos);
+                    result = new NodeLiteral(new ValueInt(Convert.ToInt64(token.value) * (unary_minus ? -1 : 1)), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 case TokenType.Decimal:
-                    result = new NodeLiteralDecimal(Convert.ToDecimal(token.value) * (unary_minus ? -1 : 1), token.pos);
+                    result = new NodeLiteral(new ValueDecimal(Convert.ToDecimal(token.value) * (unary_minus ? -1 : 1)), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 case TokenType.Boolean:
-                    result = new NodeLiteralBoolean(token.value == "TRUE", token.pos);
+                    result = new NodeLiteral(ValueBoolean.From(token.value == "TRUE"), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 case TokenType.Pattern:
-                    result = new NodeLiteralPattern(token.value.Substring(2, token.value.Length - 4), token.pos);
+                    result = new NodeLiteral(new ValuePattern(token.value.Substring(2, token.value.Length - 4)), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 default:
@@ -888,7 +888,7 @@ namespace CheckerLang
             }
             var map = new NodeMap(token.pos);
             if (key is NodeIdentifier) {
-                key = new NodeLiteralString(((NodeIdentifier) key).GetValue(), key.GetSourcePos());
+                key = new NodeLiteral(new ValueString(((NodeIdentifier) key).GetValue()), key.GetSourcePos());
             }
             map.AddKeyValue(key, value);
             if (!lexer.Peek(">>>", TokenType.Interpunction))
@@ -899,7 +899,7 @@ namespace CheckerLang
             {
                 key = ParseIfExpr(lexer);
                 if (key is NodeIdentifier) {
-                    key = new NodeLiteralString(((NodeIdentifier) key).GetValue(), key.GetSourcePos());
+                    key = new NodeLiteral(new ValueString(((NodeIdentifier) key).GetValue()), key.GetSourcePos());
                 }
                 lexer.Match("=>", TokenType.Interpunction);
                 value = ParseIfExpr(lexer);
@@ -975,7 +975,7 @@ namespace CheckerLang
                 } else {
                     fn = new NodeIdentifier(lexer.MatchIdentifier(), lexer.GetPos());
                     while (lexer.MatchIf("->", TokenType.Operator)) {
-                        fn = new NodeDeref(fn, new NodeLiteralString(lexer.MatchIdentifier(), lexer.GetPos()), lexer.GetPos());
+                        fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.MatchIdentifier()), lexer.GetPos()), lexer.GetPos());
                     }
                 }
                 var call = new NodeFuncall(fn, lexer.GetPos());
@@ -1038,12 +1038,28 @@ namespace CheckerLang
             {
                 var pos = lexer.GetPos();
                 var identifier = lexer.MatchIdentifier();
-                var index = new NodeLiteralString(identifier, pos);
+                var index = new NodeLiteral(new ValueString(identifier), pos);
                 if (lexer.MatchIf("=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
                     result.node = new NodeDerefAssign(node, index, value, pos);
                     result.interrupt = true;
+                } 
+                else if (lexer.MatchIf("(", TokenType.Interpunction)) 
+                {
+                    var n = new NodeDerefInvoke(node, identifier, pos);
+                    while (!lexer.Peekn(1, ")", TokenType.Interpunction)) {
+                        if (lexer.Peek().type == TokenType.Identifier && lexer.Peekn(2, "=", TokenType.Operator)) {
+                            var name = lexer.MatchIdentifier();
+                            lexer.Match("=", TokenType.Operator);
+                            n.AddArg(name, this.ParseExpression(lexer));
+                        } else {
+                            n.AddArg(null, this.ParseExpression(lexer));
+                        }
+                        if (!lexer.Peekn(1, ")", TokenType.Interpunction)) lexer.Match(",", TokenType.Interpunction);
+                    }
+                    lexer.Eat(1);
+                    result.node = n;
                 } 
                 else if (lexer.MatchIf("+=", TokenType.Operator)) 
                 {

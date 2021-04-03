@@ -34,7 +34,7 @@ namespace CheckerLang
         public NodeIf(SourcePos pos)
         {
             this.pos = pos;
-            elseExpression = new NodeLiteralBoolean(true, pos);
+            elseExpression = new NodeLiteral(ValueBoolean.TRUE, pos);
         }
         
         public void AddIf(Node condition, Node expression) 

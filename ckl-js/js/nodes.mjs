@@ -39,6 +39,53 @@ import {
     ValueString 
 } from "./values.mjs";
 
+function getFuncallString(fn, args) {
+    return fn.name + "(" + args.toStringAbbrev() + ")";
+}
+
+export function invoke(fn, names_, args, environment, pos) {
+    const values = [];
+    const names = [];
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+        if (arg instanceof NodeSpread) {
+            const argvalue = arg.evaluate(environment);
+            if (argvalue instanceof ValueMap) {
+                const map = argvalue;
+                for (const [key, value] of map.value.entries()) {
+                    values.push(value);
+                    if (key instanceof ValueString) {
+                        names.push(key.value);
+                    } else {
+                        names.push(null);
+                    }
+                }
+            } else {
+                const list = argvalue;
+                for (const value of list.value) {
+                    values.push(value);
+                    names.push(null);
+                }
+            }
+        } else {
+            values.push(arg.evaluate(environment));
+            names.push(names_[i]);
+        }
+    }
+
+    const args_ = new Args(pos);
+    args_.addArgs(fn.getArgNames());
+    args_.setArgs(names, values);
+
+    try {
+        return fn.execute(args_, environment, pos);
+    } catch (e) {
+        if (!("stacktrace" in e)) e.stacktrace = [];
+        e.stacktrace.push(getFuncallString(fn, args_) + " " + pos.toString());
+        throw e;
+    }
+};
+
 export class NodeAnd {
     constructor(expression, pos) {
         this.expressions = expression === null ? [] : [expression];
@@ -436,7 +483,7 @@ export class NodeDerefAssign {
             container.value.set(member, value);
             return container;
         }
-        throw new RuntimeError("Cannot deref-assign " + this.value, this.pos);
+        throw new RuntimeError("Cannot deref-assign " + this.value.type(), this.pos);
     }
 
     toString() {
@@ -447,6 +494,63 @@ export class NodeDerefAssign {
         this.expression.collectVars(freeVars, boundVars, additionalBoundVars);
         this.index.collectVars(freeVars, boundVars, additionalBoundVars);
         this.value.collectVars(freeVars, boundVars, additionalBoundVars);
+    }
+}
+
+export class NodeDerefInvoke {
+    constructor(objectExpr, member, pos) {
+        this.objectExpr = objectExpr;
+        this.member = member;
+        this.names = [];
+        this.args = [];
+        this.pos = pos;
+    }
+
+    addArg(name, arg) {
+        this.names.push(name);
+        this.args.push(arg);
+    }
+
+    evaluate(environment) {
+        const object = this.objectExpr.evaluate(environment);
+        if (object.isObject()) {
+            if (!object.hasItem(this.member)) throw new RuntimeError("Member " + this.member + " not found", this.pos);
+            const fn = object.getItem(this.member);
+            if (!fn.isFunc()) throw new RuntimeError("Member " + this.member + " is not a function", this.pos);
+            let names;
+            let args;
+            if (object.isModule) {
+                names = this.names;
+                args = this.args;
+            } else {
+                names = [null].concat(this.names);
+                args = [new NodeLiteral(object, this.pos)].concat(this.args);
+            }
+            return invoke(fn, names, args, environment, this.pos);
+        }
+        if (object instanceof ValueMap) {
+            const map = object.value;
+            const fn = map.get(new ValueString(this.member));
+            if (!fn.isFunc()) throw new RuntimeError(this.member + " is not a function", this.pos);
+            return invoke(fn, this.names, this.args, environment, this.pos);
+        }
+        throw new RuntimeError("Cannot deref-invoke " + object.type(), this.pos);
+    }
+
+    toString() {
+        let result = "";
+        for (let i = 0; i < this.args.length; i++) {
+            result = result.concat(this.names[i], "=", this.args[i], ", ");
+        }
+        if (result.length > 1) result = result.substr(0, result.length - 2);
+        return "(" + this.objectExpr + "->" + this.member + "(" + result + ")";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        this.objectExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        for (const arg of this.args) {
+            arg.collectVars(freeVars, boundVars, additionalBoundVars);
+        }
     }
 }
 
@@ -705,53 +809,8 @@ export class NodeFuncall {
 
     evaluate(environment) {
         const fn = this.func.evaluate(environment);
-        if (!fn.isFunc()) throw new RuntimeError(fn.type() + " is not a function", this.pos);
-
-        const values = [];
-        const names = [];
-        for (let i = 0; i < this.args.length; i++) {
-            const arg = this.args[i];
-            if (arg instanceof NodeSpread) {
-                const argvalue = arg.evaluate(environment);
-                if (argvalue instanceof ValueMap) {
-                    const map = argvalue;
-                    for (const [key, value] of map.value.entries()) {
-                        values.push(value);
-                        if (key instanceof ValueString) {
-                            names.push(key.value);
-                        } else {
-                            names.push(null);
-                        }
-                    }
-                } else {
-                    const list = argvalue;
-                    for (const value of list.value) {
-                        values.push(value);
-                        names.push(null);
-                    }
-                }
-            } else {
-                values.push(arg.evaluate(environment));
-                names.push(this.names[i]);
-            }
-        }
-        this.names = names;
-
-        const args_ = new Args(this.pos);
-        args_.addArgs(fn.getArgNames());
-        args_.setArgs(this.names, values);
-
-        try {
-            return fn.asFunc().execute(args_, environment, this.pos);
-        } catch (e) {
-            if (!("stacktrace" in e)) e.stacktrace = [];
-            e.stacktrace.push(this.getFuncallString(fn.asFunc(), args_) + " " + this.pos.toString());
-            throw e;
-        }
-    }
-
-    getFuncallString(fn, args) {
-        return fn.name + "(" + args.toStringAbbrev() + ")";
+        if (!fn.isFunc()) throw new RuntimeError("Expected function but got " + fn.type(), this.pos);
+        return invoke(fn, this.names, this.args, environment, this.pos);
     }
 
     toString() {

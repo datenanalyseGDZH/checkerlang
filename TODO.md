@@ -31,15 +31,10 @@
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
-* expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
-
-* provide custom printing support in objects, by adding a _str_ member
-* Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
-* deref of objects should return NULL if missing member
-* deref of NULL should return NULL, then we could do something like a->b->c->d and if b is missing, we get no error but NULL instead.
-
 * rework unittests to run per module (without legacy!)
 * add much more unit tests and unify them across all plattforms
+
+* expand list comprehensions to include more than one for-loop, e.g. [[x, y] for x in xs for y in ys if x < y]
 
 * extend for-syntax:
     * for x in keys m do ... end;
@@ -47,5 +42,33 @@
     * for [x, y] in entries m do ... end;
   which directly iterates over keys, values and entries of a map or object
 
-* when calling a function that is a member of an object, provide self argument that points to object, i.e.
-  def o = <* f = fn(self, n) self->a + n, a = 12 *>; o->f(3) ==> 15
+* Provide some mechanism to create new instances. I think something like this:
+  def MyObj = <* a = 2, b = [], f = fn(self, x) self->b !> append(x) *>;
+  def obj1 = new(MyObj);
+  def obj2 = new(MyObj);
+  new would be a function which copies the object completely. As we do not have
+  any class or prototype mechanism, this would work, provided we also copy any
+  non-function values. In the example, the value of b would need to be copied
+  otherwise the to instances obj1 and obj2 would share the values. On the other
+  hand, maybe it would be better to provide a constructor function 'init', which
+  is called on the copied instance. Then, a and b would be "global" and thus potentially
+  shared by the instances, but members allocated in the constructor would be separate:
+  def MyObj = <* _init_ = fn(self) do self->a = 2; self->b = []; end,
+                 f = fn(self, x) do self->b !> append(x) *>;
+  ...
+
+* In objects, provide an abbreviated syntax for member functions:
+  instead of <* f = fn(self, x) 2 * x *>
+  better use <* f(self, x) 2 * x *>
+  The parser can detect this when checking for '='. If instead a '(' is
+  found, then we have a function definition. It cannot be a function call,
+  since we are still in the member-name detection and not yet in the member-value
+  parsing.
+
+* provide custom printing support in objects, by adding a _str_ member
+
+* Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
+
+* deref of objects should return NULL if missing member
+* deref of NULL should return NULL, then we could do something like a->b->c->d and if b is missing, we get no error but NULL instead.
+
