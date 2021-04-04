@@ -198,11 +198,15 @@ public class Parser {
                 identifiers.add(token.value);
             }
             lexer.match("in", TokenType.Keyword);
+            String what = "values";
+            if (lexer.matchIf("keys", TokenType.Identifier)) what = "keys";
+            else if (lexer.matchIf("values", TokenType.Identifier)) what = "values";
+            else if (lexer.matchIf("entries", TokenType.Identifier)) what = "entries";
             Node expression = parseExpression(lexer);
             if (lexer.peek("do", TokenType.Keyword)) {
-                return new NodeFor(identifiers, expression, parseBlock(lexer), pos);
+                return new NodeFor(identifiers, expression, parseBlock(lexer), what, pos);
             }
-            return new NodeFor(identifiers, expression, parseExpression(lexer), pos);
+            return new NodeFor(identifiers, expression, parseExpression(lexer), what, pos);
         }
 
         if (lexer.matchIf("while", TokenType.Keyword)) {

@@ -575,11 +575,12 @@ export class NodeError {
 }
 
 export class NodeFor {
-    constructor(identifiers, expression, block, pos) {
+    constructor(identifiers, expression, block, what, pos) {
         this.identifiers = identifiers;
         this.expression = expression;
         this.block = block;
         this.pos = pos;
+        this.what = what;
     }
 
     evaluate(environment) {
@@ -698,12 +699,20 @@ export class NodeFor {
             const values = list.value.sortedEntries();
             let result = ValueBoolean.TRUE;
             for (const [key, value] of values) {
+                let val = value;
+                if (this.what === "keys") val = key;
+                else if (this.what === "values") val = value;
+                else if (this.what === "entries") {
+                    val = new ValueList();
+                    val.addItem(key);
+                    val.addItem(value);
+                }
                 if (this.identifiers.length == 1) {
-                    environment.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], val);
                 } else {
                     let vals;
-                    if (value.isList()) vals = value.value;
-                    else if (value.isSet()) vals = value.value.sortedValues();
+                    if (val.isList()) vals = val.value;
+                    else if (val.isSet()) vals = val.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
                         environment.put(this.identifiers[i], vals[i]);
                     }
@@ -732,12 +741,20 @@ export class NodeFor {
             const values = list.value;
             let result = ValueBoolean.TRUE;
             for (const [key, value] of values) {
+                let val = value;
+                if (this.what === "keys") val = new ValueString(key);
+                else if (this.what === "values") val = value;
+                else if (this.what === "entries") {
+                    val = new ValueList();
+                    val.addItem(new ValueString(key));
+                    val.addItem(value);
+                }
                 if (this.identifiers.length == 1) {
-                    environment.put(this.identifiers[0], value);
+                    environment.put(this.identifiers[0], val);
                 } else {
                     let vals;
-                    if (value.isList()) vals = value.value;
-                    else if (value.isSet()) vals = value.value.sortedValues();
+                    if (val.isList()) vals = val.value;
+                    else if (val.isSet()) vals = val.value.sortedValues();
                     for (let i = 0; i < this.identifiers.length; i++) {
                         environment.put(this.identifiers[i], vals[i]);
                     }
@@ -785,7 +802,7 @@ export class NodeFor {
     }
 
     toString() {
-        return "(for " + (this.identifiers.length == 1 ? this.identifiers[0] : "[" + this.identifiers + "]") + " in " + this.expression + " do " + this.block + ")";
+        return "(for " + (this.identifiers.length == 1 ? this.identifiers[0] : "[" + this.identifiers + "]") + " in " + this.what + " " + this.expression + " do " + this.block + ")";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {

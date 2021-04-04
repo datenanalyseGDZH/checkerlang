@@ -228,11 +228,15 @@ export class Parser {
                 identifiers.push(token.value);
             }
             lexer.match("in", "keyword");
+            let what = "values";
+            if (lexer.matchIf("keys", "identifier")) what = "keys";
+            else if (lexer.matchIf("values", "identifier")) what = "values";
+            else if (lexer.matchIf("entries", "identifier")) what = "entries";
             const expression = this.parseExpression(lexer);
             if (lexer.peekn(1, "do", "keyword")) {
-                return new NodeFor(identifiers, expression, this.parseBlock(lexer), pos);
+                return new NodeFor(identifiers, expression, this.parseBlock(lexer), what, pos);
             }
-            return new NodeFor(identifiers, expression, this.parseExpression(lexer), pos);
+            return new NodeFor(identifiers, expression, this.parseExpression(lexer), what, pos);
         }
 
         if (lexer.matchIf("while", "keyword")) {

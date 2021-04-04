@@ -688,6 +688,54 @@ public class TestInterpreter {
         verify("21", "def a = 0; for [x, y, z] in << <<1, 2, 3>>, <<4, 5, 6>> >> do a += x + y + z; end; a;");
     }
 
+    @Test
+    public void TestForMapValues() {
+        verify("[1, 2, 3]",
+                "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in values obj do append(result, o) end; result;");
+    }
+
+    @Test
+    public void TestForMapDefault() {
+        verify("[1, 2, 3]",
+                "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in obj do append(result, o); end; result;");
+    }
+
+    @Test
+    public void TestForMapKeys() {
+        verify("['a', 'b', 'c']",
+                "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in keys obj do append(result, o); end; result;");
+    }
+
+    @Test
+    public void TestForMapEntries() {
+        verify("[['a', 1], ['b', 2], ['c', 3]]",
+                "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in entries obj do append(result, o); end; result;");
+    }
+
+    @Test
+    public void TestForObjectValues() {
+        verify("[1, 2, 3]",
+                "def result = []; def obj = <*a=1, b=2, c=3*>; for o in values obj append(result, o); result;");
+    }
+
+    @Test
+    public void TestForObjectDefault() {
+        verify("[1, 2, 3]",
+                "def result = []; def obj = <*a=1, b=2, c=3*>; for o in obj append(result, o); result;");
+    }
+
+    @Test
+    public void TestForObjectKeys() {
+        verify("['a', 'b', 'c']",
+                "def result = []; def obj = <*a=1, b=2, c=3*>; for o in keys obj append(result, o); result;");
+    }
+
+    @Test
+    public void TestForObjectEntries() {
+        verify("[['a', 1], ['b', 2], ['c', 3]]",
+                "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;");
+    }    
+    
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {

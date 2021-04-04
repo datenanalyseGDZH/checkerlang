@@ -375,6 +375,14 @@ interpreter_test("MapAsBool2", "boolean(<<<>>>)", "FALSE");
 interpreter_test("ObjectBasics1", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o->a", "12");
 interpreter_test("ObjectBasics2", "def o = object(); o->a = 12; o->b = fn(x) 2 * x; o", "<*a=12, b=<#lambda>*>");
 interpreter_test("ObjectLiteral", "def o = <*a = 2, b=3, c=2*3*>; o->c", "6");
+interpreter_test("TestForMapValues","def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in values obj do append(result, o) end; result;", "[1, 2, 3]");
+interpreter_test("TestForMapDefault", "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in obj do append(result, o); end; result;", "[1, 2, 3]");
+interpreter_test("TestForMapKeys", "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in keys obj do append(result, o); end; result;", "['a', 'b', 'c']");
+interpreter_test("TestForMapEntries", "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in entries obj do append(result, o); end; result;", "[['a', 1], ['b', 2], ['c', 3]]");
+interpreter_test("TestForObjectValues", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in values obj append(result, o); result;", "[1, 2, 3]");
+interpreter_test("TestForObjectDefault", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in obj append(result, o); result;", "[1, 2, 3]");
+interpreter_test("TestForObjectKeys", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in keys obj append(result, o); result;", "['a', 'b', 'c']");
+interpreter_test("TestForObjectEntries", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;", "[['a', 1], ['b', 2], ['c', 3]]");
 
 
 function collectvars_test(description, code, expected) {

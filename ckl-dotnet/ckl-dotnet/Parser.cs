@@ -213,12 +213,16 @@ namespace CheckerLang
                 }
 
                 lexer.Match("in", TokenType.Keyword);
+                var what = "values";
+                if (lexer.MatchIf("keys", TokenType.Identifier)) what = "keys";
+                else if (lexer.MatchIf("values", TokenType.Identifier)) what = "values";
+                else if (lexer.MatchIf("entries", TokenType.Identifier)) what = "entries";
                 var expression = ParseExpression(lexer);
                 if (lexer.Peek("do", TokenType.Keyword))
                 {
-                    return new NodeFor(identifiers, expression, ParseBlock(lexer), pos);
+                    return new NodeFor(identifiers, expression, ParseBlock(lexer), what, pos);
                 }
-                return new NodeFor(identifiers, expression, ParseExpression(lexer), pos);
+                return new NodeFor(identifiers, expression, ParseExpression(lexer), what, pos);
             }
 
             if (lexer.MatchIf("while", TokenType.Keyword))

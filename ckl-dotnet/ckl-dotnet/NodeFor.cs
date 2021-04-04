@@ -30,14 +30,16 @@ namespace CheckerLang
         private List<string> identifiers = new List<string>();
         private Node expression;
         private Node block;
+        private string what;
 
         private SourcePos pos;
 
-        public NodeFor(List<string> identifiers, Node expression, Node block, SourcePos pos)
+        public NodeFor(List<string> identifiers, Node expression, Node block, string what, SourcePos pos)
         {
             this.identifiers.AddRange(identifiers);
             this.expression = expression;
             this.block = block;
+            this.what = what;
             this.pos = pos;
         }
 
@@ -191,15 +193,24 @@ namespace CheckerLang
             if (list.IsMap())
             {
                 Value result = ValueBoolean.TRUE;
-                foreach (var value in list.AsMap().GetValue().Values)
+                foreach (var entry in list.AsMap().GetValue())
                 {
+                    Value val = null;
+                    if (what == "keys") val = entry.Key;
+                    else if (what == "values") val = entry.Value;
+                    else if (what == "entries") {
+                        var vallist = new ValueList();
+                        vallist.AddItem(entry.Key);
+                        vallist.AddItem(entry.Value);
+                        val = vallist;
+                    }
                     if (identifiers.Count == 1) 
                     {
-                        environment.Put(identifiers[0], value);
+                        environment.Put(identifiers[0], val);
                     } 
                     else 
                     {
-                        var vals = value.AsList().GetValue();
+                        var vals = val.AsList().GetValue();
                         for (int i = 0; i < identifiers.Count; i++) 
                         {
                             environment.Put(identifiers[i], vals[i]);
@@ -235,15 +246,24 @@ namespace CheckerLang
             if (list.IsObject())
             {
                 Value result = ValueBoolean.TRUE;
-                foreach (var value in list.AsObject().value.Values)
+                foreach (var entry in list.AsObject().value)
                 {
+                    Value val = null;
+                    if (what == "keys") val = new ValueString(entry.Key);
+                    else if (what == "values") val = entry.Value;
+                    else if (what == "entries") {
+                        var vallist = new ValueList();
+                        vallist.AddItem(new ValueString(entry.Key));
+                        vallist.AddItem(entry.Value);
+                        val = vallist;
+                    }
                     if (identifiers.Count == 1) 
                     {
-                        environment.Put(identifiers[0], value);
+                        environment.Put(identifiers[0], val);
                     } 
                     else 
                     {
-                        var vals = value.AsList().GetValue();
+                        var vals = val.AsList().GetValue();
                         for (int i = 0; i < identifiers.Count; i++) 
                         {
                             environment.Put(identifiers[i], vals[i]);

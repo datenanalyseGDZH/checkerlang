@@ -32,13 +32,15 @@ public class NodeFor implements Node {
     private List<String> identifiers = new ArrayList<>();
     private Node expression;
     private Node block;
+    private String what;
 
     private SourcePos pos;
 
-    public NodeFor(List<String> identifiers, Node expression, Node block, SourcePos pos) {
+    public NodeFor(List<String> identifiers, Node expression, Node block, String what, SourcePos pos) {
         this.identifiers.addAll(identifiers);
         this.expression = expression;
         this.block = block;
+        this.what = what;
         this.pos = pos;
     }
 
@@ -148,11 +150,20 @@ public class NodeFor implements Node {
         }
         if (list.isMap()) {
             Value result = ValueBoolean.TRUE;
-            for (Value value : list.asMap().getValue().values()) {
+            for (Map.Entry<Value, Value> entry : list.asMap().getValue().entrySet()) {
+                Value val = null;
+                if (this.what.equals("keys")) val = entry.getKey();
+                else if (this.what.equals("values")) val = entry.getValue();
+                else if (this.what.equals("entries")) {
+                    ValueList vallist = new ValueList();
+                    vallist.addItem(entry.getKey());
+                    vallist.addItem(entry.getValue());
+                    val = vallist;
+                }
                 if (identifiers.size() == 1) {
-                    environment.put(identifiers.get(0), value);
+                    environment.put(identifiers.get(0), val);
                 } else {
-                    List<Value> vals = value.asList().getValue();
+                    List<Value> vals = val.asList().getValue();
                     for (int i = 0; i < identifiers.size(); i++) {
                         environment.put(identifiers.get(i), vals.get(i));
                     }
@@ -179,11 +190,20 @@ public class NodeFor implements Node {
         }
         if (list.isObject()) {
             Value result = ValueBoolean.TRUE;
-            for (Value value : list.asObject().value.values()) {
+            for (Map.Entry<String, Value> entry : list.asObject().value.entrySet()) {
+                Value val = null;
+                if (this.what.equals("keys")) val = new ValueString(entry.getKey());
+                else if (this.what.equals("values")) val = entry.getValue();
+                else if (this.what.equals("entries")) {
+                    ValueList vallist = new ValueList();
+                    vallist.addItem(new ValueString(entry.getKey()));
+                    vallist.addItem(entry.getValue());
+                    val = vallist;
+                }
                 if (identifiers.size() == 1) {
-                    environment.put(identifiers.get(0), value);
+                    environment.put(identifiers.get(0), val);
                 } else {
-                    List<Value> vals = value.asList().getValue();
+                    List<Value> vals = val.asList().getValue();
                     for (int i = 0; i < identifiers.size(); i++) {
                         environment.put(identifiers.get(i), vals.get(i));
                     }
