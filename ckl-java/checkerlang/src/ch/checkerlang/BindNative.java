@@ -30,6 +30,9 @@ public class BindNative {
             case "eval": bindNative(env, new FuncEval(), nativeAlias); break;
             case "exp": bindNative(env, new FuncExp(), nativeAlias); break;
             case "file_input": bindNative(env, new FuncFileInput(), nativeAlias); break;
+            case "file_delete": bindNative(env, new FuncFileDelete(), nativeAlias); break;
+            case "file_exists": bindNative(env, new FuncFileExists(), nativeAlias); break;
+            case "file_info": bindNative(env, new FuncFileInfo(), nativeAlias); break;
             case "file_output": bindNative(env, new FuncFileOutput(), nativeAlias); break;
             case "find": bindNative(env, new FuncFind(), nativeAlias); break;
             case "floor": bindNative(env, new FuncFloor(), nativeAlias); break;
@@ -52,9 +55,11 @@ public class BindNative {
             case "less": bindNative(env, new FuncLess(), nativeAlias); break;
             case "less_equals": bindNative(env, new FuncLessEquals(), nativeAlias); break;
             case "list": bindNative(env, new FuncList(), nativeAlias); break;
+            case "list_dir": bindNative(env, new FuncListDir(), nativeAlias); break;
             case "log": bindNative(env, new FuncLog(), nativeAlias); break;
             case "lower": bindNative(env, new FuncLower(), nativeAlias); break;
             case "ls": bindNative(env, new FuncLs(), nativeAlias); break;
+            case "make_dir": bindNative(env, new FuncMakeDir(), nativeAlias); break;
             case "map": bindNative(env, new FuncMap(), nativeAlias); break;
             case "matches": bindNative(env, new FuncMatches(), nativeAlias); break;
             case "mod": bindNative(env, new FuncMod(), nativeAlias); break;

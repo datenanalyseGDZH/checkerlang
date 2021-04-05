@@ -83,6 +83,9 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#escape_pattern'>escape_pattern</a></li>
 <li><a href='#eval'>eval</a></li>
 <li><a href='#exp'>exp</a></li>
+<li><a href='#file_delete'>file_delete</a></li>
+<li><a href='#file_exists'>file_exists</a></li>
+<li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_input'>file_input</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#filter'>filter</a></li>
@@ -145,11 +148,13 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#less_equals'>less_equals</a></li>
 <li><a href='#lines'>lines</a></li>
 <li><a href='#list'>list</a></li>
+<li><a href='#list_dir'>list_dir</a></li>
 <li><a href='#log'>log</a></li>
 <li><a href='#log10'>log10</a></li>
 <li><a href='#log2'>log2</a></li>
 <li><a href='#lower'>lower</a></li>
 <li><a href='#ls'>ls</a></li>
+<li><a href='#make_dir'>make_dir</a></li>
 <li><a href='#map'>map</a></li>
 <li><a href='#map_get'>map_get</a></li>
 <li><a href='#map_get_pattern'>map_get_pattern</a></li>
@@ -249,9 +254,14 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <h2 id='module_IO'>Module IO</h2>
 <ul class='toc'>
 <li><a href='#close'>close</a></li>
+<li><a href='#file_delete'>file_delete</a></li>
+<li><a href='#file_exists'>file_exists</a></li>
+<li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_input'>file_input</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#get_output_string'>get_output_string</a></li>
+<li><a href='#list_dir'>list_dir</a></li>
+<li><a href='#make_dir'>make_dir</a></li>
 <li><a href='#print'>print</a></li>
 <li><a href='#printf'>printf</a></li>
 <li><a href='#println'>println</a></li>
@@ -1372,6 +1382,51 @@ Math
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>exp(0) ==&gt; 1</div>
+</div>
+<h2 id='file_delete'>file_delete</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_delete(filename)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Deletes the specified file.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+IO
+</div>
+</div>
+<h2 id='file_exists'>file_exists</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_exists(filename)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns TRUE if the specified file exists.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+IO
+</div>
+</div>
+<h2 id='file_info'>file_info</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_info(filename)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns information about the specified file (e.g. modification date, size).
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+IO
+</div>
 </div>
 <h2 id='file_input'>file_input</h2>
 <div class='header'>
@@ -2651,6 +2706,22 @@ Core
 <div class='examples_title'>Examples</div>
 <div class='example'>list(1) ==&gt; [1]</div>
 </div>
+<h2 id='list_dir'>list_dir</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+list_dir(dir, recursive = FALSE, include_path = FALSE, include_dirs = FALSE)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Enumerates the files and directories in the specified directory and
+returns a list of filename or paths.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+IO
+</div>
+</div>
 <h2 id='log'>log</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -2741,6 +2812,21 @@ the current environment or in the specified module.
 <div class='module'>
 <div class='module_title'>Modules</div>
 Core
+</div>
+</div>
+<h2 id='make_dir'>make_dir</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+make_dir(dir, with_parents = FALSE)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Creates a new directory.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+IO
 </div>
 </div>
 <h2 id='map'>map</h2>

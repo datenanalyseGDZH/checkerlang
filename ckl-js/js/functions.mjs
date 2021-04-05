@@ -160,7 +160,8 @@ export class Environment {
             if (value instanceof Value) {
                 return value;
             } else if (value instanceof Number) {
-                return new ValueDecimal(value); // TODO how to differentiate between floats and ints?
+                if (Math.trunc(value) == value) return new ValueInt(value);
+                return new ValueDecimal(value);
             } else if (value instanceof BigInt) {
                 return new ValueInt(Number(value));
             } else if (value instanceof Boolean) {
@@ -204,6 +205,9 @@ const bind_native = function(environment, native, alias = null) {
         case "eval": Environment.add(environment, new FuncEval(), alias); break;
         case "exp": Environment.add(environment, new FuncExp(), alias); break;
         case "file_input": Environment.add(environment, new FuncFileInput(system.fs)); break;
+        case "file_delete": Environment.add(environment, new FuncFileDelete(system)); break;
+        case "file_exists": Environment.add(environment, new FuncFileExists(system)); break;
+        case "file_info": Environment.add(environment, new FuncFileInfo(system)); break;
         case "file_output": Environment.add(environment, new FuncFileOutput(system.fs)); break;
         case "find": Environment.add(environment, new FuncFind(), alias); break;
         case "floor": Environment.add(environment, new FuncFloor(), alias); break;
@@ -226,9 +230,11 @@ const bind_native = function(environment, native, alias = null) {
         case "less": Environment.add(environment, new FuncLess(), alias); break;
         case "less_equals": Environment.add(environment, new FuncLessEquals(), alias); break;
         case "list": Environment.add(environment, new FuncList(), alias); break;
+        case "list_dir": Environment.add(environment, new FuncListDir(system)); break;
         case "log": Environment.add(environment, new FuncLog(), alias); break;
         case "lower": Environment.add(environment, new FuncLower(), alias); break;
         case "ls": Environment.add(environment, new FuncLs(), alias); break;
+        case "make_dir": Environment.add(environment, new FuncMakeDir(system)); break;
         case "map": Environment.add(environment, new FuncMap(), alias); break;
         case "matches": Environment.add(environment, new FuncMatches(), alias); break;
         case "mod": Environment.add(environment, new FuncMod(), alias); break;
@@ -950,6 +956,76 @@ export class FuncFileInput extends ValueFunc {
     }
 }
 
+export class FuncFileDelete extends ValueFunc {
+    constructor(system) {
+        super("file_delete");
+        this.info = "file_delete(filename)\r\n" +
+                "\r\n" +
+                "Deletes the specified file.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["filename"];
+    }
+
+    execute(args, environment, pos) {
+        const filename = args.getString("filename").value;
+        try {
+            this.fs.rmSync(filename);
+        } catch {
+            throw new RuntimeError("Cannot delete file " + filename, pos);
+        }
+        return ValueNull.NULL;
+    }
+}
+
+export class FuncFileExists extends ValueFunc {
+    constructor(system) {
+        super("file_exists");
+        this.info = "file_exists(filename)\r\n" +
+                "\r\n" +
+                "Returns TRUE if the specified file exists.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["filename"];
+    }
+
+    execute(args, environment, pos) {
+        const filename = args.getString("filename").value;
+        return ValueBoolean.from(this.fs.existsSync(filename));
+    }
+}
+
+export class FuncFileInfo extends ValueFunc {
+    constructor(system) {
+        super("file_info");
+        this.info = "file_info(filename)\r\n" +
+                "\r\n" +
+                "Returns information about the specified file (e.g. modification date, size).\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["filename"];
+    }
+
+    execute(args, environment, pos) {
+        const filename = args.getString("filename").value;
+        const result = new ValueObject();
+        const stats = this.fs.lstatSync(filename);
+        result.addItem("size", new ValueInt(stats.size));
+        result.addItem("modified", new ValueDate(stats.mtime));
+        result.addItem("created", new ValueDate(stats.ctime));
+        return result;
+    }
+}
+
 export class FuncFileOutput extends ValueFunc {
     constructor(fs) {
         super("file_output");
@@ -1566,6 +1642,49 @@ export class FuncList extends ValueFunc {
     }
 }
 
+export class FuncListDir extends ValueFunc {
+    constructor(system) {
+        super("list_dir");
+        this.info = "list_dir(dir, recursive = FALSE, include_path = FALSE, include_dirs = FALSE)\r\n" +
+                "\r\n" +
+                "Enumerates the files and directories in the specified directory and\r\n" +
+                "returns a list of filename or paths.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["dir", "recursive", "include_path", "include_dirs"];
+    }
+
+    execute(args, environment, pos) {
+        const directory = args.getString("dir").value;
+        let recursive = false;
+        if (args.hasArg("recursive")) recursive = args.getBoolean("recursive").value;
+        let include_path = recursive;
+        if (args.hasArg("include_path")) include_path = args.getBoolean("include_path").value;
+        let include_dirs = false;
+        if (args.hasArg("include_dirs")) include_dirs = args.getBoolean("include_dirs").value;
+        const result = new ValueList();
+        this.collectFiles(directory, recursive, include_path, include_dirs, result);
+        return result;
+    }
+
+    collectFiles(dir, recursive, include_path, include_dirs, result) {
+        const files = this.fs.readdirSync(dir, {withFileTypes: true});
+        files.forEach(dirent => {
+            if (include_dirs || !dirent.isDirectory()) {
+                let path = dirent.name;
+                if (include_path) path = this.path.join(dir, path);
+                result.addItem(new ValueString(path));
+            }
+            if (recursive && dirent.isDirectory()) {
+                this.collectFiles(this.path.join(dir, dirent.name), recursive, include_path, include_dirs, result);
+            }
+        });
+    }
+}
+
 export class FuncLog extends ValueFunc {
     constructor() {
         super("log");
@@ -1636,6 +1755,37 @@ export class FuncLs extends ValueFunc {
             }
         }
         return result;
+    }
+}
+
+export class FuncMakeDir extends ValueFunc {
+    constructor(system) {
+        super("make_dir");
+        this.info = "make_dir(dir, with_parents = FALSE)\r\n" +
+                "\r\n" +
+                "Creates a new directory.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["dir", "with_parents"];
+    }
+
+    execute(args, environment, pos) {
+        const dir = args.getString("dir").value;
+        let with_parents = false;
+        if (args.hasArg("with_parents")) with_parents = args.getBoolean("with_parents").value;
+        try {
+            if (with_parents) {
+                this.fs.mkdirSync(dir, {recursive: true});
+            } else {
+                this.fs.mkdirSync(dir);
+            }
+        } catch {
+            throw new RuntimeError("Cannot create directory " + dir, pos);
+        }
+        return ValueNull.NULL;
     }
 }
 

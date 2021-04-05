@@ -32,6 +32,9 @@ namespace CheckerLang
                 case "eval": BindNativeFunc(env, new FuncEval(), nativeAlias); break;
                 case "exp": BindNativeFunc(env, new FuncExp(), nativeAlias); break;
                 case "file_input": BindNativeFunc(env, new FuncFileInput(), nativeAlias); break;
+                case "file_delete": BindNativeFunc(env, new FuncFileDelete(), nativeAlias); break;
+                case "file_exists": BindNativeFunc(env, new FuncFileExists(), nativeAlias); break;
+                case "file_info": BindNativeFunc(env, new FuncFileInfo(), nativeAlias); break;
                 case "file_output": BindNativeFunc(env, new FuncFileOutput(), nativeAlias); break;
                 case "find": BindNativeFunc(env, new FuncFind(), nativeAlias); break;
                 case "floor": BindNativeFunc(env, new FuncFloor(), nativeAlias); break;
@@ -54,9 +57,11 @@ namespace CheckerLang
                 case "less": BindNativeFunc(env, new FuncLess(), nativeAlias); break;
                 case "less_equals": BindNativeFunc(env, new FuncLessEquals(), nativeAlias); break;
                 case "list": BindNativeFunc(env, new FuncList(), nativeAlias); break;
+                case "list_dir": BindNativeFunc(env, new FuncListDir(), nativeAlias); break;
                 case "log": BindNativeFunc(env, new FuncLog(), nativeAlias); break;
                 case "lower": BindNativeFunc(env, new FuncLower(), nativeAlias); break;
                 case "ls": BindNativeFunc(env, new FuncLs(), nativeAlias); break;
+                case "make_dir": BindNativeFunc(env, new FuncMakeDir(), nativeAlias); break;
                 case "map": BindNativeFunc(env, new FuncMap(), nativeAlias); break;
                 case "matches": BindNativeFunc(env, new FuncMatches(), nativeAlias); break;
                 case "mod": BindNativeFunc(env, new FuncMod(), nativeAlias); break;

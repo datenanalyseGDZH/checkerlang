@@ -122,6 +122,12 @@ namespace CheckerLang
             return value.AsString();
         }
 
+        public ValueBoolean GetBoolean(string name) {
+            var value = Get(name);
+            if (!value.IsBoolean()) throw new ControlErrorException("Boolean required but got " + value.Type(), pos);
+            return value.AsBoolean();
+        }
+
         public ValueString GetString(string name, string defaultValue) {
             if (!HasArg(name)) return new ValueString(defaultValue);
             var value = Get(name);

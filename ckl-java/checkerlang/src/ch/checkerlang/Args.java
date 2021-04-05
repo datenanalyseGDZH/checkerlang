@@ -148,6 +148,12 @@ public class Args {
         return value.asString();
     }
 
+    public ValueBoolean getBoolean(String name) {
+        Value value = get(name);
+        if (!value.isBoolean()) throw new ControlErrorException("Boolean required but got " + value.type(), pos);
+        return value.asBoolean();
+    }
+
     public ValueString getString(String name, String defaultValue) {
         if (!hasArg(name)) return new ValueString(defaultValue);
         Value value = get(name);

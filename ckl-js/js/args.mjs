@@ -20,6 +20,7 @@
 */
 
 import { RuntimeError } from "./errors.mjs";
+import { ValueBoolean } from "./values.mjs";
 
 import { 
     ValueDecimal,
@@ -133,6 +134,13 @@ export class Args {
         if (!this.hasArg(name) && defaultValue !== null) return new ValueString(defaultValue);
         const value = this.get(name);
         if (!value.isString()) throw new RuntimeError("String required but got " + value.type(), this.pos);
+        return value;
+    }
+
+    getBoolean(name, defaultValue = null) {
+        if (!this.hasArg(name) && defaultValue !== null) return ValueBoolean.from(defaultValue);
+        const value = this.get(name);
+        if (!value.isBoolean()) throw new RuntimeError("Boolean required but got " + value.type(), this.pos);
         return value;
     }
 
