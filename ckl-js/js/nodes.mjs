@@ -552,8 +552,14 @@ export class NodeDerefInvoke {
     evaluate(environment) {
         const object = this.objectExpr.evaluate(environment);
         if (object.isObject()) {
-            if (!object.hasItem(this.member)) throw new RuntimeError("ERROR", "Member " + this.member + " not found", this.pos);
-            const fn = object.getItem(this.member);
+            let obj = object;
+            let exists = obj.hasItem(this.member);
+            while (!exists && obj.hasItem("_proto_")) {
+                obj = obj.getItem("_proto_");
+                exists = obj.hasItem(this.member);
+            }
+            if (!exists) throw new RuntimeError("ERROR", "Member " + this.member + " not found", this.pos);
+            const fn = obj.getItem(this.member);
             if (!fn.isFunc()) throw new RuntimeError("ERROR", "Member " + this.member + " is not a function", this.pos);
             let names;
             let args;
