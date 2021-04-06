@@ -105,7 +105,7 @@ export class NodeAnd {
     evaluate(environment) {
         for (let expression of this.expressions) {
             const value = expression.evaluate(environment);
-            if (!value.isBoolean()) throw RuntimeError("Expected boolean but got " + value.type(), this.pos);
+            if (!value.isBoolean()) throw RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
             if (!value.value) {
                 return ValueBoolean.FALSE;
             }
@@ -139,7 +139,7 @@ export class NodeAssign {
     }
 
     evaluate(environment) {
-        if (!environment.isDefined(this.identifier)) throw new RuntimeError("Variable " + this.identifier + " is not defined", this.pos);
+        if (!environment.isDefined(this.identifier)) throw new RuntimeError("ERROR", "Variable " + this.identifier + " is not defined", this.pos);
         environment.set(this.identifier, this.expression.evaluate(environment));
         return environment.get(this.identifier, this.pos);
     }
@@ -167,13 +167,13 @@ export class NodeAssignDestructuring {
         let values = this.expression.evaluate(environment);
         if (values.isList()) values = values.value;
         else if (values.isSet()) values = values.value.sortedValues();
-        else throw new RuntimeError("Destructuring assign expects list or set but got " + values.type(), this.pos);
+        else throw new RuntimeError("ERROR", "Destructuring assign expects list or set but got " + values.type(), this.pos);
         let result = ValueNull.NULL;
         for (let i = 0; i < this.identifiers.length; i++) {
             const identifier = this.identifiers[i];
             let value = ValueNull.NULL;
             if (i < values.length) value = values[i];
-            if (!environment.isDefined(identifier)) throw new RuntimeError("Variable " + identifier + " is not defined", this.pos);
+            if (!environment.isDefined(identifier)) throw new RuntimeError("ERROR", "Variable " + identifier + " is not defined", this.pos);
             environment.set(identifier, value);
             result = value;
         }
@@ -229,7 +229,7 @@ export class NodeBlock {
             }
         } catch (e) {
             for (let [err, expr] of this.catchexprs) {
-                if (e.msg.isEquals(err.evaluate(environment))) {
+                if (err === null || e.value.isEquals(err.evaluate(environment))) {
                     return expr.evaluate(environment);
                 }
             }
@@ -405,7 +405,7 @@ export class NodeDefDestructuring {
     evaluate(environment) {
         let value = this.expression.evaluate(environment);
         value.info = this.info;
-        if (!value.isList() && !value.isSet()) throw new RuntimeError("Desctructuring def expects list or set but got " + value.type(), this.pos);
+        if (!value.isList() && !value.isSet()) throw new RuntimeError("ERROR", "Desctructuring def expects list or set but got " + value.type(), this.pos);
         let values = null;
         if (value.isList()) values = value.value;
         if (value.isSet()) values = value.value.sortedValues();
@@ -452,18 +452,18 @@ export class NodeDeref {
             const s = value.value;
             let i = Number(idx.value);
             if (i < 0) i = i + s.length;
-            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
+            if (i < 0 || i >= s.length) throw new RuntimeError("ERROR", "Index out of bounds " + i, this.pos);
             return new ValueString(s.charAt(i));
         }
         if (value instanceof ValueList) {
             const list = value.value;
             let i = Number(idx.value);
             if (i < 0) i = i + list.length;
-            if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
+            if (i < 0 || i >= list.length) throw new RuntimeError("ERROR", "Index out of bounds " + i, this.pos);
             return list[i];
         }
         if (value instanceof ValueMap) {
-            if (!value.hasItem(idx)) throw new RuntimeError("Map does not contain key " + idx, this.pos);
+            if (!value.hasItem(idx)) throw new RuntimeError("ERROR", "Map does not contain key " + idx, this.pos);
             return value.getItem(idx);
         }
         if (value instanceof ValueObject) {
@@ -471,7 +471,7 @@ export class NodeDeref {
             if (!value.hasItem(member)) return ValueNull.NULL;
             return value.getItem(member);
         }
-        throw new RuntimeError("Cannot dereference value " + value, this.pos);
+        throw new RuntimeError("ERROR", "Cannot dereference value " + value, this.pos);
     }
 
     toString() {
@@ -500,14 +500,14 @@ export class NodeDerefAssign {
             const s = container.value;
             const i = Number(idx.value);
             if (i < 0) i = i + s.length;
-            if (i < 0 || i >= s.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
+            if (i < 0 || i >= s.length) throw new RuntimeError("ERROR", "Index out of bounds " + i, this.pos);
             return new ValueString(s.substring(0, i) + value.value + s.substring(i + 1));
         }
         if (container instanceof ValueList) {
             const list = container.value;
             const i = Number(idx.value);
             if (i < 0) i = i + list.length;
-            if (i < 0 || i >= list.length) throw new RuntimeError("Index out of bounds " + i, this.pos);
+            if (i < 0 || i >= list.length) throw new RuntimeError("ERROR", "Index out of bounds " + i, this.pos);
             list[i] = value;
             return container;
         }
@@ -521,7 +521,7 @@ export class NodeDerefAssign {
             container.value.set(member, value);
             return container;
         }
-        throw new RuntimeError("Cannot deref-assign " + this.value.type(), this.pos);
+        throw new RuntimeError("ERROR", "Cannot deref-assign " + this.value.type(), this.pos);
     }
 
     toString() {
@@ -552,9 +552,9 @@ export class NodeDerefInvoke {
     evaluate(environment) {
         const object = this.objectExpr.evaluate(environment);
         if (object.isObject()) {
-            if (!object.hasItem(this.member)) throw new RuntimeError("Member " + this.member + " not found", this.pos);
+            if (!object.hasItem(this.member)) throw new RuntimeError("ERROR", "Member " + this.member + " not found", this.pos);
             const fn = object.getItem(this.member);
-            if (!fn.isFunc()) throw new RuntimeError("Member " + this.member + " is not a function", this.pos);
+            if (!fn.isFunc()) throw new RuntimeError("ERROR", "Member " + this.member + " is not a function", this.pos);
             let names;
             let args;
             if (object.isModule) {
@@ -569,10 +569,10 @@ export class NodeDerefInvoke {
         if (object instanceof ValueMap) {
             const map = object.value;
             const fn = map.get(new ValueString(this.member));
-            if (!fn.isFunc()) throw new RuntimeError(this.member + " is not a function", this.pos);
+            if (!fn.isFunc()) throw new RuntimeError("ERROR", this.member + " is not a function", this.pos);
             return invoke(fn, this.names, this.args, environment, this.pos);
         }
-        throw new RuntimeError("Cannot deref-invoke " + object.type(), this.pos);
+        throw new RuntimeError("ERROR", "Cannot deref-invoke " + object.type(), this.pos);
     }
 
     toString() {
@@ -599,7 +599,8 @@ export class NodeError {
     }
 
     evaluate(environment) {
-        throw new RuntimeError(this.expression.evaluate(environment), this.pos);
+        const value = this.expression.evaluate(environment);
+        throw new RuntimeError(value, value, this.pos);
     }
 
     toString() {
@@ -660,7 +661,7 @@ export class NodeFor {
                     }
                 }
             } catch (e) {
-                throw new RuntimeError("Cannot read from input", this.pos);
+                throw new RuntimeError("ERROR", "Cannot read from input", this.pos);
             }
             return result;
         }
@@ -835,7 +836,7 @@ export class NodeFor {
             }
             return result;
         }
-        throw new RuntimeError("Cannot iterate over " + list.type(), this.pos);
+        throw new RuntimeError("ERROR", "Cannot iterate over " + list.type(), this.pos);
     }
 
     toString() {
@@ -864,7 +865,7 @@ export class NodeFuncall {
 
     evaluate(environment) {
         const fn = this.func.evaluate(environment);
-        if (!fn.isFunc()) throw new RuntimeError("Expected function but got " + fn.type(), this.pos);
+        if (!fn.isFunc()) throw new RuntimeError("ERROR", "Expected function but got " + fn.type(), this.pos);
         return invoke(fn, this.names, this.args, environment, this.pos);
     }
 
@@ -928,7 +929,7 @@ export class NodeIf {
     evaluate(environment) {
         for (let i = 0; i < this.conditions.length; i++) {
             const value = this.conditions[i].evaluate(environment);
-            if (!(value instanceof ValueBoolean)) throw new RuntimeError("Expected boolean condition value but got " + value.type(), this.pos);
+            if (!(value instanceof ValueBoolean)) throw new RuntimeError("ERROR", "Expected boolean condition value but got " + value.type(), this.pos);
             if (value.isTrue()) {
                 return this.expressions[i].evaluate(environment);
             }
@@ -1122,7 +1123,7 @@ export class NodeListComprehension {
             if (this.conditionExpr != null) {
                 const condition = this.conditionExpr.evaluate(localEnv);
                 if (!(condition instanceof ValueBoolean)) {
-                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
+                    throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
                 }
                 if (condition.value) {
                     result.addItem(value);
@@ -1235,7 +1236,7 @@ export class NodeMapComprehension {
             if (this.conditionExpr != null) {
                 const condition = this.conditionExpr.evaluate(localEnv);
                 if (!(condition instanceof ValueBoolean)) {
-                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
+                    throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
                 }
                 if (condition.value) {
                     result.addItem(key, value);
@@ -1269,7 +1270,7 @@ export class NodeNot {
 
     evaluate(environment) {
         const value = this.expression.evaluate(environment);
-        if (!value.isBoolean()) throw new RuntimeError("Expected boolean but got " + value.type(), this.pos);
+        if (!value.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
         return value.value ? ValueBoolean.FALSE : ValueBoolean.TRUE;
     }
 
@@ -1357,7 +1358,7 @@ export class NodeOr {
     evaluate(environment) {
         for (const expression of this.expressions) {
             const value = expression.evaluate(environment);
-            if (!value.isBoolean()) throw RuntimeError("Expected boolean but got " + value.type(), this.pos);
+            if (!value.isBoolean()) throw RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
             if (value.value) {
                 return ValueBoolean.TRUE;
             }
@@ -1411,13 +1412,13 @@ export class NodeRequire {
             if (environment.isDefined(modulespec)) {
                 const val = environment.get(modulespec, this.pos);
                 if (!(val.isObject() && val.isModule)) {
-                    if (!val.isString()) throw new RuntimeError("Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
+                    if (!val.isString()) throw new RuntimeError("ERROR", "Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
                     modulespec = val.value;
                 }
             }
         } else {
             modulespec = this.modulespec.evaluate(environment);
-            if (!modulespec.isString()) throw new RuntimeError("Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
+            if (!modulespec.isString()) throw new RuntimeError("ERROR", "Expected string or identifier modulespec but got " + modulespec.type(), this.pos);
             modulespec = modulespec.value;
         }
         let modulefile = modulespec;
@@ -1562,7 +1563,7 @@ export class NodeSetComprehension {
             if (this.conditionExpr != null) {
                 const condition = this.conditionExpr.evaluate(localEnv);
                 if (!(condition instanceof ValueBoolean)) {
-                    throw new RuntimeError("Condition must be boolean but got " + condition.type(), this.pos);
+                    throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
                 }
                 if (condition.value) {
                     result.addItem(value);
@@ -1615,7 +1616,7 @@ export class NodeWhile {
 
     evaluate(environment) {
         let condition = this.expression.evaluate(environment);
-        if (!condition.isBoolean()) throw new RuntimeError("Expected boolean condition but got " + condition.type(), this.pos);
+        if (!condition.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean condition but got " + condition.type(), this.pos);
         let result = ValueBoolean.TRUE;
         while (condition.value) {
             result = this.block.evaluate(environment);
@@ -1629,7 +1630,7 @@ export class NodeWhile {
                 break;
             }
             condition = this.expression.evaluate(environment);
-            if (!condition.isBoolean()) throw new RuntimeError("Expected boolean condition but got " + condition.type(), this.pos);
+            if (!condition.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean condition but got " + condition.type(), this.pos);
         }
         return result;
     }

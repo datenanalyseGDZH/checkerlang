@@ -19,6 +19,8 @@
     SOFTWARE.
 */
 
+import { Value, ValueString } from "./values.mjs";
+
 export class SyntaxError {
     constructor(msg, pos) {
         this.msg = msg;
@@ -35,7 +37,8 @@ export class SyntaxError {
 }
 
 export class RuntimeError {
-    constructor(msg, pos) {
+    constructor(value, msg, pos) {
+        this.value = value instanceof Value ? value : new ValueString(value);
         this.msg = msg;
         this.pos = pos;
         this.stacktrace = [];
@@ -43,9 +46,9 @@ export class RuntimeError {
 
     toString() {
         if (this.pos !== undefined) {
-            return `ERROR: ${this.msg}  (${this.pos})`
+            return `${this.value}: ${this.msg}  (${this.pos})`
         } else {
-            return `ERROR: ${this.msg}`
+            return `${this.value}: ${this.msg}`
         }
     }
 }

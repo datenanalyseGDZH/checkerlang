@@ -133,7 +133,12 @@ export class Parser {
             if (lexer.peekn(1, "end", "keyword") || lexer.peekn(1, "catch", "keyword") || lexer.peekn(1, "finally", "keyword")) break;
         }
         while (lexer.matchIf("catch", "keyword")) {
-            const err = this.parseExpression(lexer);
+            let err;
+            if (lexer.matchIf("all", "identifier")) {
+                err = null;
+            } else {
+                err = this.parseExpression(lexer);
+            }
             let expr;
             if (lexer.peekn(1, "do", "keyword")) {
                 expr = this.parseBlock(lexer);

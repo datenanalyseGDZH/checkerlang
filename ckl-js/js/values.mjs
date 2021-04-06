@@ -234,79 +234,79 @@ export class Value {
     }
 
     asString() {
-        throw new RuntimeError("Cannot convert to String");
+        throw new RuntimeError("ERROR", "Cannot convert to String");
     }
 
     asInt() {
-        throw new RuntimeError("Cannot convert to int");
+        throw new RuntimeError("ERROR", "Cannot convert to int");
     }
 
     asDecimal() {
-        throw new RuntimeError("Cannot convert to decimal");
+        throw new RuntimeError("ERROR", "Cannot convert to decimal");
     }
 
     asBoolean() {
-        throw new RuntimeError("Cannot convert to booleanean");
+        throw new RuntimeError("ERROR", "Cannot convert to booleanean");
     }
 
     asPattern() {
-        throw new RuntimeError("Cannot convert to pattern");
+        throw new RuntimeError("ERROR", "Cannot convert to pattern");
     }
 
     asDate() {
-        throw new RuntimeError("Cannot convert to date");
+        throw new RuntimeError("ERROR", "Cannot convert to date");
     }
 
     asList() {
-        throw new RuntimeError("Cannot convert to list");
+        throw new RuntimeError("ERROR", "Cannot convert to list");
     }
 
     asSet() {
-        throw new RuntimeError("Cannot convert to set");
+        throw new RuntimeError("ERROR", "Cannot convert to set");
     }
 
     asMap() {
-        throw new RuntimeError("Cannot convert to map");
+        throw new RuntimeError("ERROR", "Cannot convert to map");
     }
 
     asFunc() {
-        throw new RuntimeError("Cannot convert to func");
+        throw new RuntimeError("ERROR", "Cannot convert to func");
     }
 
     asError() {
-        throw new RuntimeError("Cannot convert to error");
+        throw new RuntimeError("ERROR", "Cannot convert to error");
     }
 
     asInput() {
-        throw new RuntimeError("Cannot convert to input");
+        throw new RuntimeError("ERROR", "Cannot convert to input");
     }
 
     asOutput() {
-        throw new RuntimeError("Cannot convert to output");
+        throw new RuntimeError("ERROR", "Cannot convert to output");
     }
 
     asNull() {
-        throw new RuntimeError("Cannot convert to NULL");
+        throw new RuntimeError("ERROR", "Cannot convert to NULL");
     }
 
     asNode() {
-        throw new RuntimeError("Cannot convert to Node");
+        throw new RuntimeError("ERROR", "Cannot convert to Node");
     }
 
     asObject() {
-        throw new RuntimeError("Cannot convert to Object");
+        throw new RuntimeError("ERROR", "Cannot convert to Object");
     }
 
     asBreak() {
-        throw new RuntimeError("Cannot convert to break");
+        throw new RuntimeError("ERROR", "Cannot convert to break");
     }
 
     asContinue() {
-        throw new RuntimeError("Cannot convert to continue");
+        throw new RuntimeError("ERROR", "Cannot convert to continue");
     }
 
     asReturn() {
-        throw new RuntimeError("Cannot convert to return");
+        throw new RuntimeError("ERROR", "Cannot convert to return");
     }
 
     isString() {
@@ -1517,14 +1517,14 @@ export class ValueString extends Value {
 
     asInt() {
         const n = Number(this.value);
-        if (isNaN(n)) throw new RuntimeError("Cannot convert " + this.value  + " to int");
-        if (n !== Math.trunc(n)) throw new RuntimeError("Cannot convert " + this.value  + " to int");
+        if (isNaN(n)) throw new RuntimeError("ERROR", "Cannot convert " + this.value  + " to int");
+        if (n !== Math.trunc(n)) throw new RuntimeError("ERROR", "Cannot convert " + this.value  + " to int");
         return new ValueInt(Math.trunc(n));
     }
 
     asDecimal() {
         const n = Number(this.value);
-        if (isNaN(n)) throw new RuntimeError("Cannot convert " + this.value  + " to decimal");
+        if (isNaN(n)) throw new RuntimeError("ERROR", "Cannot convert " + this.value  + " to decimal");
         return new ValueDecimal(n);
     }
 
@@ -1536,14 +1536,14 @@ export class ValueString extends Value {
 
     asDate() {
         // handle yyyyMMddHHmmss, yyyyMMddHH and yyyyMMdd, throw exception if not matching
-        if (this.value.length < 8) throw new RuntimeError("Cannot convert " + this.value + " to date");
+        if (this.value.length < 8) throw new RuntimeError("ERROR", "Cannot convert " + this.value + " to date");
         const year = Number(this.value.substr(0, 4));
         const month = Number(this.value.substr(4, 2));
         const day = Number(this.value.substr(6, 2));
         const hours = this.value.length >= 10 ? Number(this.value.substr(8, 2)) : 0;
         const minutes = this.value.length == 14 ? Number(this.value.substr(10, 2)) : 0;
         const seconds = this.value.length == 14 ? Number(this.value.substr(12, 2)) : 0;
-        if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) throw new RuntimeError("Cannot convert " + this.value + " to date");
+        if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) throw new RuntimeError("ERROR", "Cannot convert " + this.value + " to date");
         return new ValueDate(new Date(year, month - 1, day, hours, minutes, seconds));
     }
 

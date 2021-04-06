@@ -78,7 +78,7 @@ export class Args {
         const rest = new ValueList();
         for (let i = 0; i < values.length; i++) {
             if (names[i] !== null) {
-                if (!this.argNames.includes(names[i])) throw new RuntimeError("Argument " + names[i] + " is unknown", this.pos);
+                if (!this.argNames.includes(names[i])) throw new RuntimeError("ERROR", "Argument " + names[i] + " is unknown", this.pos);
                 this.args.set(names[i], values[i]);
             }
         }
@@ -86,10 +86,10 @@ export class Args {
         let inKeywords = false;
         for (let i = 0; i < values.length; i++) {
             if (names[i] === null) {
-                if (inKeywords) throw new RuntimeError("Positional arguments need to be placed before named arguments", this.pos);
+                if (inKeywords) throw new RuntimeError("ERROR", "Positional arguments need to be placed before named arguments", this.pos);
                 const argName = this.getNextPositionalArgName();
                 if (argName === null) {
-                    if (this.restArgName === null) throw new RuntimeError("Too many arguments", this.pos);
+                    if (this.restArgName === null) throw new RuntimeError("ERROR", "Too many arguments", this.pos);
                     rest.addItem(values[i]);
                 } else if (!this.args.has(argName)) {
                     this.args.set(argName, values[i]);
@@ -98,7 +98,7 @@ export class Args {
                 }
             } else {
                 inKeywords = true;
-                if (!this.argNames.includes(names[i])) throw new RuntimeError("Argument " + names[i] + " is unknown", this.pos);
+                if (!this.argNames.includes(names[i])) throw new RuntimeError("ERROR", "Argument " + names[i] + " is unknown", this.pos);
                 this.args.set(names[i], values[i]);
             }
         }
@@ -121,7 +121,7 @@ export class Args {
     }
 
     get(name) {
-        if (!this.hasArg(name)) throw new RuntimeError("Missing argument " + name, this.pos);
+        if (!this.hasArg(name)) throw new RuntimeError("ERROR", "Missing argument " + name, this.pos);
         return this.args.get(name);
     }
 
@@ -133,73 +133,73 @@ export class Args {
     getString(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return new ValueString(defaultValue);
         const value = this.get(name);
-        if (!value.isString()) throw new RuntimeError("String required but got " + value.type(), this.pos);
+        if (!value.isString()) throw new RuntimeError("ERROR", "String required but got " + value.type(), this.pos);
         return value;
     }
 
     getBoolean(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return ValueBoolean.from(defaultValue);
         const value = this.get(name);
-        if (!value.isBoolean()) throw new RuntimeError("Boolean required but got " + value.type(), this.pos);
+        if (!value.isBoolean()) throw new RuntimeError("ERROR", "Boolean required but got " + value.type(), this.pos);
         return value;
     }
 
     getInt(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return new ValueInt(defaultValue);
         const value = this.get(name);
-        if (!value.isInt()) throw new RuntimeError("Int required but got " + value.type(), this.pos);
+        if (!value.isInt()) throw new RuntimeError("ERROR", "Int required but got " + value.type(), this.pos);
         return value;
     }
 
     getDecimal(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return new ValueDecimal(defaultValue);
         const value = this.get(name);
-        if (!value.isDecimal()) throw new RuntimeError("Decimal required but got " + value.type(), this.pos);
+        if (!value.isDecimal()) throw new RuntimeError("ERROR", "Decimal required but got " + value.type(), this.pos);
         return value;
     }
 
     getNumerical(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return new ValueDecimal(defaultValue);
         const value = this.get(name);
-        if (!value.isNumerical()) throw new RuntimeError("Numerical required but got " + value.type(), this.pos);
+        if (!value.isNumerical()) throw new RuntimeError("ERROR", "Numerical required but got " + value.type(), this.pos);
         return value;
     }
 
     getList(name) {
         const value = this.get(name);
-        if (!value.isList()) throw new RuntimeError("List required but got " + value.type(), this.pos);
+        if (!value.isList()) throw new RuntimeError("ERROR", "List required but got " + value.type(), this.pos);
         return value;
     }
 
     getMap(name) {
         const value = this.get(name);
-        if (!value.isMap()) throw new RuntimeError("Map required but got " + value.type(), this.pos);
+        if (!value.isMap()) throw new RuntimeError("ERROR", "Map required but got " + value.type(), this.pos);
         return value;
     }
 
     getInput(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return defaultValue;
         const value = this.get(name);
-        if (!value.isInput()) throw new RuntimeError("Input required but got " + value.type(), this.pos);
+        if (!value.isInput()) throw new RuntimeError("ERROR", "Input required but got " + value.type(), this.pos);
         return value;
     }
 
     getOutput(name, defaultValue = null) {
         if (!this.hasArg(name) && defaultValue !== null) return defaultValue;
         const value = this.get(name);
-        if (!value.isOutput()) throw new RuntimeError("Output required but got " + value.type(), this.pos);
+        if (!value.isOutput()) throw new RuntimeError("ERROR", "Output required but got " + value.type(), this.pos);
         return value;
     }
 
     getFunc(name) {
         const value = this.get(name);
-        if (!value.isFunc()) throw new RuntimeError("Func required but got " + value.type(), this.pos);
+        if (!value.isFunc()) throw new RuntimeError("ERROR", "Func required but got " + value.type(), this.pos);
         return value;
     }
 
     getDate(name) {
         const value = this.get(name);
-        if (!value.isDate()) throw new RuntimeError("Date required but got " + value.type(), this.pos);
+        if (!value.isDate()) throw new RuntimeError("ERROR", "Date required but got " + value.type(), this.pos);
         return value;
     }
 

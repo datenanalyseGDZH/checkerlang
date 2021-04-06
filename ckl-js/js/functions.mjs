@@ -121,7 +121,7 @@ export class Environment {
 
     pushModuleStack(moduleidentifier, pos) {
         let base = this.getBase();
-        if (base.modulestack.includes(moduleidentifier)) throw new RuntimeError("Found circular module dependency (" + moduleidentifier + ")", pos);
+        if (base.modulestack.includes(moduleidentifier)) throw new RuntimeError("ERROR", "Found circular module dependency (" + moduleidentifier + ")", pos);
         base.modulestack.push(moduleidentifier);
     }
 
@@ -136,7 +136,7 @@ export class Environment {
     set(name, value) {
         if (this.map.has(name)) this.map.set(name, value);
         else if (this.parent !== null) this.parent.set(name, value);
-        else throw new RuntimeError(name + " is not defined");
+        else throw new RuntimeError("ERROR", name + " is not defined");
     }
 
     remove(name) {
@@ -175,7 +175,7 @@ export class Environment {
             }
         }
         if (this.parent !== null) return this.parent.get(symbol, pos);
-        throw new RuntimeError("Symbol '" + symbol + "' not defined", pos);
+        throw new RuntimeError("ERROR", "Symbol '" + symbol + "' not defined", pos);
     }
 }
 
@@ -282,7 +282,7 @@ const bind_native = function(environment, native, alias = null) {
         case "zip_map": Environment.add(environment, new FuncZipMap(), alias); break;
         case "E": environment.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
         case "PI": environment.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
-        default: throw new RuntimeError("Unknown native " + native, this.pos);
+        default: throw new RuntimeError("ERROR", "Unknown native " + native, this.pos);
     }
 }
 
@@ -376,7 +376,7 @@ export class FuncAdd extends ValueFunc {
             return new ValueString(a.asString().value + b.asString().value);
         }
 
-        throw new RuntimeError("Cannot add " + a.type() + " and " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot add " + a.type() + " and " + b.type(), pos);
     }
 }
 
@@ -410,7 +410,7 @@ export class FuncAppend extends ValueFunc {
             return lst;
         }
 
-        throw new RuntimeError("Cannot append to " + lst.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot append to " + lst.type(), pos);
     }
 }
 
@@ -517,7 +517,7 @@ export class FuncBody extends ValueFunc {
         {
             return new ValueNode(f.body);
         }
-        throw new RuntimeError("f is not a lambda function", pos);
+        throw new RuntimeError("ERROR", "f is not a lambda function", pos);
     }
 
 }
@@ -579,11 +579,11 @@ export class FuncClose extends ValueFunc {
             try {
                 conn.close();
             } catch (e) {
-                throw new RuntimeError("Could not close connection", pos);
+                throw new RuntimeError("ERROR", "Could not close connection", pos);
             }
             return ValueNull.NULL;
         }
-        throw new RuntimeError("Cannot close " + conn.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot close " + conn.type(), pos);
     }
 }
 
@@ -750,7 +750,7 @@ export class FuncDeleteAt extends ValueFunc {
             return lst.deleteAt(index);
         }
 
-        throw new RuntimeError("Cannot delete from " + lst.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot delete from " + lst.type(), pos);
     }
 }
 
@@ -784,7 +784,7 @@ export class FuncDiv extends ValueFunc {
                         environment.get("DIV_0_VALUE", pos) != ValueNull.NULL) {
                     return environment.get("DIV_0_VALUE", pos);
                 }
-                throw new RuntimeError("divide by zero", pos);
+                throw new RuntimeError("ERROR", "divide by zero", pos);
             }
             return new ValueInt(Math.trunc(a.value / divisor));
         }
@@ -796,12 +796,12 @@ export class FuncDiv extends ValueFunc {
                         environment.get("DIV_0_VALUE", pos) != ValueNull.NULL) {
                     return environment.get("DIV_0_VALUE", pos);
                 }
-                throw new RuntimeError("divide by zero", pos);
+                throw new RuntimeError("ERROR", "divide by zero", pos);
             }
             return new ValueDecimal(a.asDecimal().value / divisor);
         }
 
-        throw new RuntimeError("Cannot divide " + a.type() + " by " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot divide " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -904,7 +904,7 @@ export class FuncEval extends ValueFunc {
             const node = Parser.parseScript(s, pos.filename);
             return node.evaluate(environment);
         } catch (e) {
-            throw new RuntimeError("Cannot evaluate expression", pos);
+            throw new RuntimeError("ERROR", "Cannot evaluate expression", pos);
         }
     }
 }
@@ -951,7 +951,7 @@ export class FuncFileInput extends ValueFunc {
         try {
             return new ValueInput(new FileInput(filename, encoding, this.fs));
         } catch (e) {
-            throw new RuntimeError("Cannot open file " + filename, pos);
+            throw new RuntimeError("ERROR", "Cannot open file " + filename, pos);
         }
     }
 }
@@ -975,7 +975,7 @@ export class FuncFileDelete extends ValueFunc {
         try {
             this.fs.rmSync(filename);
         } catch {
-            throw new RuntimeError("Cannot delete file " + filename, pos);
+            throw new RuntimeError("ERROR", "Cannot delete file " + filename, pos);
         }
         return ValueNull.NULL;
     }
@@ -1053,7 +1053,7 @@ export class FuncFileOutput extends ValueFunc {
         try {
             return new ValueOutput(new FileOutput(filename, encoding, append, this.fs));
         } catch (e) {
-            throw new RuntimeError("Cannot open file " + filename, pos);
+            throw new RuntimeError("ERROR", "Cannot open file " + filename, pos);
         }
     }
 }
@@ -1103,7 +1103,7 @@ export class FuncFind extends ValueFunc {
             }
             return new ValueInt(-1);
         }
-        throw new RuntimeError("Find only works with strings and lists", pos);
+        throw new RuntimeError("ERROR", "Find only works with strings and lists", pos);
     }
 }
 
@@ -1359,7 +1359,7 @@ export class FuncInsertAt extends ValueFunc {
     execute(args, environment, pos) {
         const lst = args.get("lst");
 
-        if (!lst.isList()) throw new RuntimeError("Cannot insert into " + lst.type(), pos);
+        if (!lst.isList()) throw new RuntimeError("ERROR", "Cannot insert into " + lst.type(), pos);
 
         let index = args.getInt("index").value;
         if (index < 0) index = lst.value.length + index + 1;
@@ -1534,16 +1534,16 @@ export class FuncLambda extends ValueFunc {
             } else if (this.defValues[i] != null) {
                 env.put(this.argNames[i], this.defValues[i].evaluate(env));
             } else {
-                throw new RuntimeError("Missing argument " + this.argNames[i], pos);
+                throw new RuntimeError("ERROR", "Missing argument " + this.argNames[i], pos);
             }
         }
         const result = this.body.evaluate(env);
         if (result instanceof ValueControlReturn) {
             return result.value;
         } else if (result instanceof ValueControlBreak) {
-            throw new RuntimeError("Cannot use break without surrounding loop", result.pos);
+            throw new RuntimeError("ERROR", "Cannot use break without surrounding loop", result.pos);
         } else if (result instanceof ValueControlContinue) {
-            throw new RuntimeError("Cannot use continue without surrounding loop", result.pos);
+            throw new RuntimeError("ERROR", "Cannot use continue without surrounding loop", result.pos);
         }
         return result;
     }
@@ -1783,7 +1783,7 @@ export class FuncMakeDir extends ValueFunc {
                 this.fs.mkdirSync(dir);
             }
         } catch {
-            throw new RuntimeError("Cannot create directory " + dir, pos);
+            throw new RuntimeError("ERROR", "Cannot create directory " + dir, pos);
         }
         return ValueNull.NULL;
     }
@@ -1863,7 +1863,7 @@ export class FuncMod extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value % b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot calculate modulus of " + a.type() + " by " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot calculate modulus of " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -1918,7 +1918,7 @@ export class FuncMul extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value * b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot multiply " + a.type() + " by " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot multiply " + a.type() + " by " + b.type(), pos);
     }
 }
 
@@ -1989,7 +1989,7 @@ export class FuncParse extends ValueFunc {
         try {
             return new ValueNode(Parser.parseScript(args.getString("s").value, pos.filename));
         } catch (e) {
-            throw new RuntimeError("Cannot parse expression " + args.getString("s"), pos);
+            throw new RuntimeError("ERROR", "Cannot parse expression " + args.getString("s"), pos);
         }
     }
 }
@@ -2128,7 +2128,7 @@ export class FuncParseJson extends ValueFunc {
             const json = JSON.parse(args.getString("s").value);
             return this.convertObj(json);
         } catch (e) {
-            throw new RuntimeError("Cannot parse string as JSON", pos);
+            throw new RuntimeError("ERROR", "Cannot parse string as JSON", pos);
         }
     }
 }
@@ -2219,7 +2219,7 @@ export class FuncPrint extends ValueFunc {
         try {
             output.write(obj.value);
         } catch (e) {
-            throw new RuntimeError("Cannot write to output", pos);
+            throw new RuntimeError("ERROR", "Cannot write to output", pos);
         }
         return ValueNull.NULL;
     }
@@ -2252,7 +2252,7 @@ export class FuncPrintln extends ValueFunc {
         try {
             output.writeLine(obj.value);
         } catch (e) {
-            throw new RuntimeError("Cannot write to output", pos);
+            throw new RuntimeError("ERROR", "Cannot write to output", pos);
         }
         return ValueNull.NULL;
     }
@@ -2299,7 +2299,7 @@ export class FuncProcessLines extends ValueFunc {
             };
             return new ValueInt(list.length);
         } else {
-            throw new RuntimeError("Cannot process lines from " + inparg.toString(), pos);
+            throw new RuntimeError("ERROR", "Cannot process lines from " + inparg.toString(), pos);
         }
     }
 }
@@ -2448,7 +2448,7 @@ export class FuncRead extends ValueFunc {
             if (str == null) return ValueNull.NULL;
             return new ValueString(str);
         } catch (e) {
-            throw new RuntimeError("Cannot read from input", pos);
+            throw new RuntimeError("ERROR", "Cannot read from input", pos);
         }
     }
 }
@@ -2474,7 +2474,7 @@ export class FuncReadall extends ValueFunc {
             if (str == null) return ValueNull.NULL;
             return new ValueString(str);
         } catch (e) {
-            throw new RuntimeError("Cannot read from input", pos);
+            throw new RuntimeError("ERROR", "Cannot read from input", pos);
         }
     }
 }
@@ -2500,7 +2500,7 @@ export class FuncReadln extends ValueFunc {
             if (line == null) return ValueNull.NULL;
             return new ValueString(line);
         } catch (e) {
-            throw new RuntimeError("Cannot read from input", pos);
+            throw new RuntimeError("ERROR", "Cannot read from input", pos);
         }
     }
 }
@@ -2535,7 +2535,7 @@ export class FuncRemove extends ValueFunc {
             return lst;
         }
 
-        throw new RuntimeError("Cannot remove from " + lst.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot remove from " + lst.type(), pos);
     }
 }
 
@@ -2594,7 +2594,7 @@ export class FuncRun extends ValueFunc {
         try {
             script = this.fs.readFileSync(path, {encoding: 'utf8', flag: 'r'});
         } catch (e) {
-            throw new RuntimeError("File " + path + " not found", pos);
+            throw new RuntimeError("ERROR", "File " + path + " not found", pos);
         }
         return this.interpreter.interpret(script, file);
     }
@@ -3036,7 +3036,7 @@ export class FuncSub extends ValueFunc {
             return new ValueDecimal(a.asDecimal().value - b.asDecimal().value);
         }
 
-        throw new RuntimeError("Cannot subtract " + b.type() + " from " + a.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot subtract " + b.type() + " from " + a.type(), pos);
     }
 }
 
@@ -3157,7 +3157,7 @@ export class FuncSum extends ValueFunc {
                 result += value.value;
                 decimalrequired = true;
             } else {
-                throw new RuntimeError("Cannot sum " + value.type(), pos);
+                throw new RuntimeError("ERROR", "Cannot sum " + value.type(), pos);
             }
         }
 
@@ -3303,7 +3303,7 @@ export class FuncZip extends ValueFunc {
             return result;
         }
 
-        throw new RuntimeError("Cannot zip " + a.type() + " and " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot zip " + a.type() + " and " + b.type(), pos);
     }
 }
 
@@ -3341,6 +3341,6 @@ export class FuncZipMap extends ValueFunc {
             return result;
         }
 
-        throw new RuntimeError("Cannot zip_map " + a.type() + " and " + b.type(), pos);
+        throw new RuntimeError("ERROR", "Cannot zip_map " + a.type() + " and " + b.type(), pos);
     }
 }

@@ -88,9 +88,9 @@ export class Interpreter {
             if (result.isReturn()) {
                 return result.value;
             } else if (result.isBreak()) {
-                throw new RuntimeError("Cannot use break without surrounding loop", result.asBreak().pos);
+                throw new RuntimeError("ERROR", "Cannot use break without surrounding loop", result.asBreak().pos);
             } else if (result.isContinue()) {
-                throw new RuntimeError("Cannot use continue without surrounding loop", result.asContinue().pos);
+                throw new RuntimeError("ERROR", "Cannot use continue without surrounding loop", result.asContinue().pos);
             }
             return result;
         } finally {

@@ -33,10 +33,10 @@ export const moduleloader = function(modulefile, pos) {
                 // TODO configure base module path
                 const path = modulefile.replace(/\\/g, "/").split("/");
                 const filename = path[path.length - 1];
-                if (!system.fs.existsSync(filename)) throw new RuntimeError("Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
+                if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {
-                throw new RuntimeError("Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
+                throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
             }
     }
 };
