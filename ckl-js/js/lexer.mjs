@@ -24,7 +24,7 @@ import { SyntaxError } from "./errors.mjs";
 export const Keywords = [
     "if", "then", "elif", "else", "and", "or", "not", 
     "is", "in", "def", "fn", "for", "while", 
-    "do", "end", "finally", "break", "continue", 
+    "do", "end", "finally", "catch", "break", "continue", 
     "return", "error", "require", "as"
 ];
 

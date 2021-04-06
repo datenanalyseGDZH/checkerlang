@@ -192,6 +192,7 @@ export class NodeAssignDestructuring {
 export class NodeBlock {
     constructor(pos, toplevel = false) {
         this.expressions = [];
+        this.catchexprs = [];
         this.finallyexprs = [];
         this.pos = pos;
         this.toplevel = toplevel;
@@ -209,6 +210,14 @@ export class NodeBlock {
         return this.finallyexprs.length > 0; 
     }
 
+    addCatch(err, expr) { 
+        this.catchexprs.push([err, expr]); 
+    }
+
+    hasCatch() { 
+        return this.catchexprs.length > 0; 
+    }
+
     evaluate(environment) {
         let result = ValueBoolean.TRUE;
         try {
@@ -219,13 +228,16 @@ export class NodeBlock {
                 if (result.isContinue()) break;
             }
         } catch (e) {
+            for (let [err, expr] of this.catchexprs) {
+                if (e.msg.isEquals(err.evaluate(environment))) {
+                    return expr.evaluate(environment);
+                }
+            }
+            throw e;
+        } finally {
             for (let expression of this.finallyexprs) {
                 expression.evaluate(environment);
             }
-            throw e;
-        }
-        for (let expression of this.finallyexprs) {
-            expression.evaluate(environment);
         }
         return result;
     }
@@ -236,6 +248,10 @@ export class NodeBlock {
             result = result.concat(expression.toString(), ", ");
         }
         if (this.expressions.length > 0) result = result.substr(0, result.length - 2);
+        for (let [err, expr] of this.catchexprs) {
+            result = result.concat(" catch ").concat(err.toString()).concat(" ").concat(expression.toString()).concat(" ");
+        }
+        if (this.catchexprs.length > 0) result = result.substr(0, result.length - 1);
         if (this.finallyexprs.length > 0) {
             result = result.concat(" finally ");
             for (let expression of this.finallyexprs) {
@@ -276,6 +292,20 @@ export class NodeBlock {
                 }
             }
         }
+        for (let expression of this.catchexprs) {
+            if (expression instanceof NodeDef) {
+                if (!additionalBoundVarsLocal.includes(expression.identifier)) {
+                    additionalBoundVarsLocal.push(expression.identifier);
+                }
+            }
+            if (expression instanceof NodeDefDestructuring) {
+                for (const identifier of expression.identifiers) {
+                    if (!additionalBoundVarsLocal.includes(identifier)) {
+                        additionalBoundVarsLocal.push(identifier);
+                    }
+                }
+            }
+        }
         for (let expression of this.expressions) {
             if (expression instanceof NodeDef || expression instanceof NodeDefDestructuring) {
                 expression.collectVars(freeVars, boundVars, additionalBoundVarsLocal);
@@ -284,6 +314,13 @@ export class NodeBlock {
             }
         }
         for (let expression of this.finallyexprs) {
+            if (expression instanceof NodeDef || expression instanceof NodeDefDestructuring) {
+                expression.collectVars(freeVars, boundVars, additionalBoundVarsLocal);
+            } else {
+                expression.collectVars(freeVars, boundVars, additionalBoundVars);
+            }
+        }
+        for (let expression of this.catchexprs) {
             if (expression instanceof NodeDef || expression instanceof NodeDefDestructuring) {
                 expression.collectVars(freeVars, boundVars, additionalBoundVarsLocal);
             } else {

@@ -110,7 +110,7 @@ export class Parser {
             }
             block.add(expression);
         }
-        if (block.expressions.length == 1 && !block.hasFinally()) {
+        if (block.expressions.length == 1 && !block.hasFinally() && !block.hasCatch()) {
             return block.expressions[0];
         }
         return block;
@@ -120,29 +120,45 @@ export class Parser {
         const block = new NodeBlock(lexer.getPosNext());
         lexer.match("do", "keyword");
         let infinally = false;
-        while (!lexer.peekn(1, "end", "keyword")) {
-            if (lexer.peekn(1, "finally", "keyword")) {
-                infinally = true;
-                lexer.eat(1);
-            }
-            if (lexer.peekn(1, "end", "keyword")) break;
+        while (!lexer.peekn(1, "end", "keyword") && !lexer.peekn(1, "catch", "keyword") && !lexer.peekn(1, "finally", "keyword")) {
             let expression;
             if (lexer.peekn(1, "do", "keyword")) {
                 expression = this.parseBlock(lexer);
             } else {
                 expression = this.parseExpression(lexer);
             }
-            if (infinally) {
-                block.addFinally(expression);
-            } else {
-                block.add(expression);
-            }
-            if (lexer.peekn(1, "end", "keyword")) break;
+            block.add(expression);
+            if (lexer.peekn(1, "end", "keyword") || lexer.peekn(1, "catch", "keyword") || lexer.peekn(1, "finally", "keyword")) break;
             lexer.match(";", "interpunction");
-            if (lexer.peekn(1, "end", "keyword")) break;
+            if (lexer.peekn(1, "end", "keyword") || lexer.peekn(1, "catch", "keyword") || lexer.peekn(1, "finally", "keyword")) break;
+        }
+        while (lexer.matchIf("catch", "keyword")) {
+            const err = this.parseExpression(lexer);
+            let expr;
+            if (lexer.peekn(1, "do", "keyword")) {
+                expr = this.parseBlock(lexer);
+            } else {
+                expr = this.parseExpression(lexer);
+            }
+            if (lexer.peekn(1, ";", "interpunction")) lexer.eat(1);
+            block.addCatch(err, expr);
+        }
+        if (lexer.matchIf("finally", "keyword")) {
+            while (!lexer.peekn(1, "end", "keyword")) {
+                let expression;
+                if (lexer.peekn(1, "do", "keyword")) {
+                    expression = this.parseBlock(lexer);
+                } else {
+                    expression = this.parseExpression(lexer);
+                }
+                block.addFinally(expression);
+                if (lexer.peekn(1, "end", "keyword")) break;
+                lexer.match(";", "interpunction");
+                if (lexer.peekn(1, "end", "keyword")) break;
+            }
         }
         lexer.match("end", "keyword");
-        if (block.expressions.length == 1 && !block.hasFinally()) {
+        if (block.expressions.length == 1 && !block.hasFinally() && !block.hasCatch()) {
             return block.expressions[0];
         }
         return block;
