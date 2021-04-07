@@ -51,13 +51,18 @@ public class NodeDerefInvoke implements Node {
         Value obj = this.objectExpr.evaluate(environment);
         if (obj.isObject()) {
             ValueObject object = obj.asObject();
-            if (!object.hasItem(this.member)) throw new ControlErrorException("Member " + this.member + " not found", this.pos);
+            boolean exists = object.hasItem(this.member);
+            while (!exists && object.hasItem("_proto_")) {
+                object = object.getItem("_proto_").asObject();
+                exists = object.hasItem(this.member);
+            }
+            if (!exists) throw new ControlErrorException("Member " + this.member + " not found", this.pos);
             Value fnval = object.getItem(this.member);
             if (!fnval.isFunc()) throw new ControlErrorException("Member " + this.member + " is not a function", this.pos);
             ValueFunc fn = fnval.asFunc();
             List<String> names;
             List<Node> args;
-            if (object.isModule) {
+            if (obj.asObject().isModule) {
                 names = this.names;
                 args = this.args;
             } else {
@@ -65,7 +70,7 @@ public class NodeDerefInvoke implements Node {
                 args = new ArrayList<>();
                 names.add(null);
                 names.addAll(this.names);
-                args.add(new NodeLiteral(object, this.pos));
+                args.add(new NodeLiteral(obj.asObject(), this.pos));
                 args.addAll(this.args);
             }
             return Function.invoke(fn, names, args, environment, this.pos);

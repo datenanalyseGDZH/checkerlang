@@ -72,7 +72,12 @@ public class NodeDeref implements Node {
         if (value.isObject()) {
             Map<String, Value> map = value.asObject().value;
             String member = idx.asString().getValue();
-            if (!map.containsKey(member)) return ValueNull.NULL;
+            boolean exists = map.containsKey(member);
+            while (!exists && map.containsKey("_proto_")) {
+                map = map.get("_proto_").asObject().value;
+                exists = map.containsKey(member);
+            }
+            if (!exists) return ValueNull.NULL;
             return map.get(member);
         }
         throw new ControlErrorException("Cannot dereference value " + value, pos);

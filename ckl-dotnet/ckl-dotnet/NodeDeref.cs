@@ -63,10 +63,15 @@ namespace CheckerLang
             }
             if (value.IsObject())
             {
-                var map = value.AsObject().value;
+                var obj = value.AsObject();
                 var member = idx.AsString().GetValue();
-                if (!map.ContainsKey(member)) return ValueNull.NULL;
-                return map[member];
+                var exists = obj.value.ContainsKey(member);
+                while (!exists && obj.value.ContainsKey("_proto_")) {
+                    obj = obj.value["_proto_"].AsObject();
+                    exists = obj.value.ContainsKey(member);
+                }
+                if (!exists) return ValueNull.NULL;
+                return obj.value[member];
             }
             throw new ControlErrorException("Cannot dereference value " + value, pos);
         }

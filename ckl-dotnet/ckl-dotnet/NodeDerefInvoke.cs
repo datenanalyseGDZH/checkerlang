@@ -50,13 +50,18 @@ namespace CheckerLang
             if (val.IsObject()) 
             {
                 var obj = val.AsObject();
-                if (!obj.value.ContainsKey(this.member)) throw new ControlErrorException("Member " + this.member + " not found", this.pos);
+                var exists = obj.value.ContainsKey(this.member);
+                while (!exists && obj.value.ContainsKey("_proto_")) {
+                    obj = obj.value["_proto_"].AsObject();
+                    exists = obj.value.ContainsKey(this.member);
+                }
+                if (!exists) throw new ControlErrorException("Member " + this.member + " not found", this.pos);
                 var fnval = obj.value[this.member];
                 if (!fnval.IsFunc()) throw new ControlErrorException("Member " + this.member + " is not a function", this.pos);
                 var fn = fnval.AsFunc();
                 List<string> names;
                 List<Node> args;
-                if (obj.isModule) 
+                if (val.AsObject().isModule) 
                 {
                     names = this.names;
                     args = this.args;
@@ -67,7 +72,7 @@ namespace CheckerLang
                     args = new List<Node>();
                     names.Add(null);
                     names.AddRange(this.names);
-                    args.Add(new NodeLiteral(obj, this.pos));
+                    args.Add(new NodeLiteral(val.AsObject(), this.pos));
                     args.AddRange(this.args);
                 }
                 return Function.invoke(fn, names, args, environment, this.pos);

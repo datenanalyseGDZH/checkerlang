@@ -33,7 +33,7 @@
 * rework unittests to run per module (without legacy!)
 * add much more unit tests and unify them across all plattforms
 
-* expand block to not only have "finally", but also "catch" which can be used to catch exceptions. OK:js
+* expand block to not only have "finally", but also "catch" which can be used to catch exceptions. Extend exception to include value. OK:js
 
 * expand list comprehensions to include more than one for-loop, e.g. 
   [[x, y] for x in xs for y in ys if x < y] which processes for each x all y (i.e. the cartesian product)
