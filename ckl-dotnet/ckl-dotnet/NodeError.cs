@@ -37,7 +37,7 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             var err = expression.Evaluate(environment);
-            throw new ControlErrorException(err, new ValueError(err), pos, new Stacktrace());
+            throw new ControlErrorException(err, err, pos, new Stacktrace());
         }
 
         public override string ToString() {

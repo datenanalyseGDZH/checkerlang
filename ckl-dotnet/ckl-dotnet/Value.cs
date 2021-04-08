@@ -87,11 +87,6 @@ namespace CheckerLang
             throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to func");
         }
 
-        public virtual ValueError AsError()
-        {
-            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to error");
-        }
-
         public virtual ValueInput AsInput()
         {
             throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to input");
@@ -178,11 +173,6 @@ namespace CheckerLang
         }
 
         public virtual bool IsFunc()
-        {
-            return false;
-        }
-
-        public virtual bool IsError()
         {
             return false;
         }

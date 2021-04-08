@@ -73,10 +73,6 @@ public abstract class Value implements Comparable<Value> {
         throw new ControlErrorException("Cannot convert to func");
     }
 
-    public ValueError asError() {
-        throw new ControlErrorException("Cannot convert to error");
-    }
-
     public ValueInput asInput() {
         throw new ControlErrorException("Cannot convert to input");
     }
@@ -146,10 +142,6 @@ public abstract class Value implements Comparable<Value> {
     }
 
     public boolean isFunc() {
-        return false;
-    }
-
-    public boolean isError() {
         return false;
     }
 

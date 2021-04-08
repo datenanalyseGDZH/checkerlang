@@ -25,7 +25,6 @@ import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.Stacktrace;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueError;
 
 import java.util.Collection;
 
@@ -40,7 +39,7 @@ public class NodeError implements Node {
     }
 
     public Value evaluate(Environment environment) {
-        throw new ControlErrorException(new ValueError(expression.evaluate(environment)), pos, new Stacktrace());
+        throw new ControlErrorException(expression.evaluate(environment), pos, new Stacktrace());
     }
 
     public String toString() {

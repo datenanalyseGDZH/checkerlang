@@ -612,7 +612,7 @@ export class NodeError {
 
     evaluate(environment) {
         const value = this.expression.evaluate(environment);
-        throw new RuntimeError(value, new ValueError(value), this.pos);
+        throw new RuntimeError(value, value, this.pos);
     }
 
     toString() {

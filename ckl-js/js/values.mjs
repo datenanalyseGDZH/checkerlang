@@ -273,10 +273,6 @@ export class Value {
         throw new RuntimeError("ERROR", "Cannot convert to func");
     }
 
-    asError() {
-        throw new RuntimeError("ERROR", "Cannot convert to error");
-    }
-
     asInput() {
         throw new RuntimeError("ERROR", "Cannot convert to input");
     }
@@ -350,10 +346,6 @@ export class Value {
     }
 
     isFunc() {
-        return false;
-    }
-
-    isError() {
         return false;
     }
 
@@ -681,42 +673,6 @@ export class ValueDecimal extends Value {
         return result;
     }
 
-}
-
-export class ValueError extends Value {
-    constructor(value) {
-        super();
-        this.value = value;
-    }
-
-    isEquals(other) {
-        return other === this;
-    }
-
-    compareTo(other) {
-        if (!(other instanceof ValueError)) return this.toString().localeCompare(other.toString());
-        return this.value.compareTo(other.value);
-    }
-
-    type() {
-        return "error";
-    }
-
-    asString() {
-        return new ValueString(this.toString());
-    }
-
-    asError() {
-        return this;
-    }
-
-    isError() {
-        return true;
-    }
-
-    toString() {
-        return "ERROR:" + this.value;
-    }
 }
 
 export class ValueFunc extends Value {
