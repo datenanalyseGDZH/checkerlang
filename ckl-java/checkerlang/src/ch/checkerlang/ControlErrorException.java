@@ -24,27 +24,39 @@ import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueString;
 
 public class ControlErrorException extends CheckerlangException {
+    private Value type;
     private Value value;
     private Stacktrace stacktrace;
 
     public ControlErrorException(String message) {
         super(SourcePos.Unknown);
+        type = new ValueString("ERROR");
         value = new ValueString(message);
         stacktrace = new Stacktrace();
     }
 
     public ControlErrorException(String message, SourcePos pos) {
         super(pos);
+        type = new ValueString("ERROR");
         value = new ValueString(message);
         stacktrace = new Stacktrace();
     }
 
     public ControlErrorException(Value value, SourcePos pos, Stacktrace stacktrace) {
         super(pos);
+        type = new ValueString("ERROR");
         this.value = value;
         this.stacktrace = stacktrace;
     }
 
+    public ControlErrorException(Value type, Value value, SourcePos pos, Stacktrace stacktrace) {
+        super(pos);
+        this.type = type;
+        this.value = value;
+        this.stacktrace = stacktrace;
+    }
+
+    public Value getErrorType() { return type; }
     public Value getErrorValue() {
         return value;
     }

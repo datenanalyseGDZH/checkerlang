@@ -39,7 +39,8 @@ public class NodeError implements Node {
     }
 
     public Value evaluate(Environment environment) {
-        throw new ControlErrorException(expression.evaluate(environment), pos, new Stacktrace());
+        Value err = expression.evaluate(environment);
+        throw new ControlErrorException(err, err, pos, new Stacktrace());
     }
 
     public String toString() {

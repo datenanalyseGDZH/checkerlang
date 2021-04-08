@@ -22,6 +22,7 @@ package ch.checkerlang;
 
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueNull;
+import ch.checkerlang.values.ValueString;
 
 public class CheckerlangException extends RuntimeException {
     protected SourcePos pos;
@@ -34,6 +35,9 @@ public class CheckerlangException extends RuntimeException {
         return pos;
     }
 
+    public Value getErrorType() {
+        return new ValueString("ERROR");
+    }
     public Value getErrorValue() {
         return ValueNull.NULL;
     }

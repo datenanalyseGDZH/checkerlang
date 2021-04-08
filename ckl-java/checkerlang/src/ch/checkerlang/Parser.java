@@ -78,7 +78,7 @@ public class Parser {
             }
             block.add(expression);
         }
-        if (block.getExpressions().size() == 1 && !block.hasFinally()) {
+        if (block.getExpressions().size() == 1 && !block.hasFinally() && !block.hasCatch()) {
             return block.getExpressions().get(0);
         }
         return block;
@@ -87,30 +87,49 @@ public class Parser {
     public Node parseBlock(Lexer lexer) {
         NodeBlock block = new NodeBlock(lexer.getPosNext());
         lexer.match("do", TokenType.Keyword);
-        boolean infinally = false;
-        while (!lexer.peek("end", TokenType.Keyword)) {
-            if (lexer.peek("finally", TokenType.Keyword)) {
-                infinally = true;
-                lexer.eat(1);
-            }
-            if (lexer.peek("end", TokenType.Keyword)) break;
-            Node expression;
+        while (!lexer.peekOne("catch", "finally", "end", TokenType.Keyword)) {
             if (lexer.peek("do", TokenType.Keyword)) {
-                expression = parseBlock(lexer);
+                block.add(parseBlock(lexer));
             } else {
-                expression = parseExpression(lexer);
+                block.add(parseExpression(lexer));
             }
-            if (infinally) {
-                block.addFinally(expression);
-            } else {
-                block.add(expression);
-            }
-            if (lexer.peek("end", TokenType.Keyword)) break;
+            if (lexer.peekOne("catch", "finally", "end", TokenType.Keyword)) break;
             lexer.match(";", TokenType.Interpunction);
-            if (lexer.peek("end", TokenType.Keyword)) break;
+            if (lexer.peekOne("catch", "finally", "end", TokenType.Keyword)) break;
+        }
+
+        while (lexer.matchIf("catch", TokenType.Keyword)) {
+            Node err;
+            if (lexer.matchIf("all", TokenType.Identifier)) {
+                err = null;
+            } else {
+                err = parseExpression(lexer);
+            }
+
+            Node expr;
+            if (lexer.peek("do", TokenType.Keyword)) {
+                expr = parseBlock(lexer);
+            } else {
+                expr = parseExpression(lexer);
+            }
+
+            block.addCatch(err, expr);
+            if (lexer.peek(";", TokenType.Interpunction)) lexer.eat(1);
+        }
+
+        if (lexer.matchIf("finally", TokenType.Keyword)) {
+            while (!lexer.peek("end", TokenType.Keyword)) {
+                if (lexer.peek("do", TokenType.Keyword)) {
+                    block.addFinally(parseBlock(lexer));
+                } else {
+                    block.addFinally(parseExpression(lexer));
+                }
+                if (lexer.peek("end", TokenType.Keyword)) break;
+                lexer.match(";", TokenType.Interpunction);
+            }
         }
         lexer.match("end", TokenType.Keyword);
-        if (block.getExpressions().size() == 1 && !block.hasFinally()) {
+        if (block.getExpressions().size() == 1 && !block.hasFinally() && !block.hasCatch()) {
             return block.getExpressions().get(0);
         }
         return block;

@@ -20,6 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.CheckerlangException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
@@ -29,6 +30,8 @@ import java.util.*;
 
 public class NodeBlock implements Node {
     private List<Node> expressions = new ArrayList<>();
+    private List<Node> catchtypes = new ArrayList<>();
+    private List<Node> catchexprs = new ArrayList<>();
     private List<Node> finallyexprs = new ArrayList<>();
 
     private SourcePos pos;
@@ -41,9 +44,16 @@ public class NodeBlock implements Node {
         expressions.add(expression);
     }
 
+    public void addCatch(Node type, Node expression) {
+        catchtypes.add(type);
+        catchexprs.add(expression);
+    }
+
     public void addFinally(Node expression) { finallyexprs.add(expression); }
 
     public List<Node> getExpressions() { return expressions; }
+
+    public boolean hasCatch() { return !catchtypes.isEmpty(); }
 
     public boolean hasFinally() { return !finallyexprs.isEmpty(); }
 
@@ -56,14 +66,18 @@ public class NodeBlock implements Node {
                 if (result.isBreak()) break;
                 if (result.isContinue()) break;
             }
-        } catch (Exception e) {
+        } catch (CheckerlangException e) {
+            for (int i = 0; i < catchtypes.size(); i++) {
+                Node err = catchtypes.get(i);
+                if (err == null || e.getErrorType().isEquals(err.evaluate(environment))) {
+                    return catchexprs.get(i).evaluate(environment);
+                }
+            }
+            throw e;
+        } finally {
             for (Node expression : finallyexprs) {
                 expression.evaluate(environment);
             }
-            throw e;
-        }
-        for (Node expression : finallyexprs) {
-            expression.evaluate(environment);
         }
         return result;
     }

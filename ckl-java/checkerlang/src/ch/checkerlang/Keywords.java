@@ -42,6 +42,7 @@ public class Keywords {
         keywords.add("while");
         keywords.add("do");
         keywords.add("end");
+        keywords.add("catch");
         keywords.add("finally");
         keywords.add("break");
         keywords.add("continue");

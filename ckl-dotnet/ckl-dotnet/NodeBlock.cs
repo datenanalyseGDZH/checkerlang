@@ -99,7 +99,8 @@ namespace CheckerLang
                 for (var i = 0; i < catchtypes.Count; i++)
                 {
                     var err = catchtypes[i];
-                    if (err == null || e.GetErrorType().IsEquals(err.Evaluate(environment))) {
+                    if (err == null || e.GetErrorType().IsEquals(err.Evaluate(environment))) 
+                    {
                         return catchexprs[i].Evaluate(environment);
                     }
                 }
