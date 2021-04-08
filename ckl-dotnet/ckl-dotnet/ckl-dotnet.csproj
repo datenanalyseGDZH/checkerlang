@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.25</RuntimeFrameworkVersion>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ApplicationIcon />
     <Win32Resource />
     <AssemblyVersion>3.4.0.0</AssemblyVersion>
@@ -11,6 +10,7 @@
     <Company>Damian Brunold / Gesundheitsdirektion Zürich</Company>
     <Product>ckl-dotnet</Product>
     <RootNamespace>checkerlang</RootNamespace>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
