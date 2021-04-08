@@ -122,4 +122,11 @@ Returns TRUE if the object is of type func.
 "
 def is_func(obj) type(obj) == 'func';
 
+"
+is_node(obj) 
+
+Returns TRUE if the object is of type node.
+"
+def is_node(obj) type(obj) == 'node';
+
 `;

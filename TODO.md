@@ -41,3 +41,4 @@
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
 
+* support check for data types with the syntax "a is decimal" and "a is not decimal" instead of "is_decimal(a)"? OK:js
