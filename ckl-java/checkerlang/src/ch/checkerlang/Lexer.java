@@ -199,6 +199,21 @@ public class Lexer {
         return false;
     }
 
+    public boolean matchIf(String a, String b, TokenType ta, TokenType tb) {
+        if (peekn(1, a, ta) && peekn(2, b, tb)) {
+            eat(2);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean matchIf(String a, String b, String c, TokenType ta, TokenType tb, TokenType tc) {
+        if (peekn(1, a, ta) && peekn(2, b, tb) && peekn(3, c, tc)) {
+            eat(3);
+            return true;
+        }
+        return false;
+    }
 
     public void eat(int n) {
         nextToken += n;

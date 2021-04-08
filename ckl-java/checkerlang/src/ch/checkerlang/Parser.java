@@ -421,132 +421,132 @@ public class Parser {
     private Node parsePredExpr(Lexer lexer, boolean unaryMinus) {
         Node expr = parsePrimaryExpr(lexer, unaryMinus);
         SourcePos pos = lexer.getPosNext();
-        if (lexer.matchIf("is", "not", "in")) {
-            return new NodeNot(new NodeIn(expr, parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("not", "in")) {
-            return new NodeNot(new NodeIn(expr, parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "in")) {
-            return new NodeIn(expr, parsePrimaryExpr(lexer, false), pos);
-        }
-
-        if (lexer.matchIf("in")) {
-            return new NodeIn(expr, parsePrimaryExpr(lexer, false), pos);
-        }
-
-        if (lexer.matchIf("is", "empty")) {
-            return funcCall("is_empty", expr, pos);
-        }
-
-        if (lexer.matchIf("is", "not", "empty")) {
-            return new NodeNot(funcCall("is_empty", expr, pos), pos);
-        }
-
-        if (lexer.matchIf("is", "not", "zero")) {
-            return new NodeNot(funcCall("is_zero", expr, pos), pos);
-        }
-
-        if (lexer.matchIf("is", "zero")) {
-            return funcCall("is_zero", expr, pos);
-        }
-
-        if (lexer.matchIf("is", "not", "negative")) {
-            return new NodeNot(funcCall("is_negative", expr, pos), pos);
-        }
-
-        if (lexer.matchIf("is", "negative")) {
-            return funcCall("is_negative", expr, pos);
-        }
-
-        if (lexer.matchIf("is", "not", "numerical")) {
-            return new NodeNot(collectPredicateMinMaxExact("is_numerical",
-                    funcCall("string", expr, pos), lexer, pos), pos);
-        }
-
-        if (lexer.matchIf("is", "numerical")) {
-            return collectPredicateMinMaxExact("is_numerical",
-                    funcCall("string", expr, pos), lexer, pos);
-        }
-
-        if (lexer.matchIf("is", "not", "alphanumerical")) {
-            return new NodeNot(collectPredicateMinMaxExact("is_alphanumerical",
-                    funcCall("string", expr, pos), lexer, pos), pos);
-        }
-
-        if (lexer.matchIf("is", "alphanumerical")) {
-            return collectPredicateMinMaxExact("is_alphanumerical",
-                    funcCall("string", expr, pos), lexer, pos);
-        }
-
-        if (lexer.matchIf("is", "not", "date", "with", "hour")) {
-            return new NodeNot(funcCall("is_valid_date", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "date", "with", "hour")) {
-            return funcCall("is_valid_date", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "not", "date")) {
-            return new NodeNot(funcCall("is_valid_date", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "date")) {
-            return funcCall("is_valid_date", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "not", "time")) {
-            return new NodeNot(funcCall("is_valid_time", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
-        }
-
-        if (lexer.matchIf("is", "time")) {
-            return funcCall("is_valid_time", "str",
-                    funcCall("string", expr, pos), "fmt",
-                    new NodeLiteral(new ValueString("HHmm"), pos), pos);
-        }
-
-        if (lexer.matchIf("starts", "not", "with")) {
-            return new NodeNot(funcCall("starts_with", "str", expr, "part", parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("starts", "with")) {
-            return funcCall("starts_with", "str", expr, "part", parsePrimaryExpr(lexer, false), pos);
-        }
-
-        if (lexer.matchIf("ends", "not", "with")) {
-            return new NodeNot(funcCall("ends_with", "str", expr, "part", parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("ends", "with")) {
-            return funcCall("ends_with", "str", expr, "part", parsePrimaryExpr(lexer, false), pos);
-        }
-
-        if (lexer.matchIf("contains", "not")) {
-            return new NodeNot(funcCall("contains", "obj", expr, "part", parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("contains")) {
-            return funcCall("contains", "obj", expr, "part", parsePrimaryExpr(lexer, false), pos);
-        }
-
-        if (lexer.matchIf("matches", "not")) {
-            return new NodeNot(funcCall("matches", "str", expr, "pattern", parsePrimaryExpr(lexer, false), pos), pos);
-        }
-
-        if (lexer.matchIf("matches")) {
-            return funcCall("matches", "str", expr, "pattern", parsePrimaryExpr(lexer, false), pos);
+        if (lexer.matchIf("is", TokenType.Keyword)) {
+            if (lexer.matchIf("not", TokenType.Keyword)) {
+                if (lexer.matchIf("in")) {
+                    return new NodeNot(new NodeIn(expr, this.parsePrimaryExpr(lexer, false), pos), pos);
+                } else if (lexer.matchIf("empty", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_empty", expr, pos), pos);
+                } else if (lexer.matchIf("zero", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_zero", expr, pos), pos);
+                } else if (lexer.matchIf("negative", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_negative", expr, pos), pos);
+                } else if (lexer.matchIf("numerical", TokenType.Identifier)) {
+                    return new NodeNot(this.collectPredicateMinMaxExact("is_numerical", this.funcCall("string", expr, pos), lexer, pos), pos);
+                } else if (lexer.matchIf("alphanumerical", TokenType.Identifier)) {
+                    return new NodeNot(this.collectPredicateMinMaxExact("is_alphanumerical", this.funcCall("string", expr, pos), lexer, pos), pos);
+                } else if (lexer.matchIf("date", "with", "hour", TokenType.Identifier, TokenType.Identifier, TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_valid_date", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
+                } else if (lexer.matchIf("date", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_valid_date", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
+                } else if (lexer.matchIf("time", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("is_valid_time", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
+                } else if (lexer.matchIf("string", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("string"), pos), pos), pos);
+                } else if (lexer.matchIf("int", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("int"), pos), pos), pos);
+                } else if (lexer.matchIf("decimal", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("decimal"), pos), pos), pos);
+                } else if (lexer.matchIf("boolean", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("boolean"), pos), pos), pos);
+                } else if (lexer.matchIf("pattern", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("pattern"), pos), pos), pos);
+                } else if (lexer.matchIf("date", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("date"), pos), pos), pos);
+                } else if (lexer.matchIf("null", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("null"), pos), pos), pos);
+                } else if (lexer.matchIf("func", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("func"), pos), pos), pos);
+                } else if (lexer.matchIf("input", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("input"), pos), pos), pos);
+                } else if (lexer.matchIf("output", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("output"), pos), pos), pos);
+                } else if (lexer.matchIf("list", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("lsit"), pos), pos), pos);
+                } else if (lexer.matchIf("set", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("set"), pos), pos), pos);
+                } else if (lexer.matchIf("map", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("map"), pos), pos), pos);
+                } else if (lexer.matchIf("object", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("object"), pos), pos), pos);
+                } else if (lexer.matchIf("node", TokenType.Identifier)) {
+                    return new NodeNot(this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("node"), pos), pos), pos);
+                } else {
+                    lexer.putback(); // not
+                    lexer.putback(); // is
+                    return expr;
+                }
+            } else if (lexer.matchIf("in", TokenType.Keyword)) {
+                return new NodeIn(expr, this.parsePrimaryExpr(lexer, false), pos);
+            } else if (lexer.matchIf("empty", TokenType.Identifier)) {
+                return this.funcCall("is_empty", expr, pos);
+            } else if (lexer.matchIf("zero", TokenType.Identifier)) {
+                return this.funcCall("is_zero", expr, pos);
+            } else if (lexer.matchIf("negative", TokenType.Identifier)) {
+                return this.funcCall("is_negative", expr, pos);
+            } else if (lexer.matchIf("numerical", TokenType.Identifier)) {
+                return this.collectPredicateMinMaxExact("is_numerical", this.funcCall("string", expr, pos), lexer, pos);
+            } else if (lexer.matchIf("alphanumerical", TokenType.Identifier)) {
+                return this.collectPredicateMinMaxExact("is_alphanumerical", this.funcCall("string", expr, pos), lexer, pos);
+            } else if (lexer.matchIf("date", "with", "hour", TokenType.Identifier, TokenType.Identifier, TokenType.Identifier)) {
+                return this.funcCall("is_valid_date", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
+            } else if (lexer.matchIf("date", TokenType.Identifier)) {
+                return this.funcCall("is_valid_date", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
+            } else if (lexer.matchIf("time", TokenType.Identifier)) {
+                return this.funcCall("is_valid_time", "str", this.funcCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("HHmm"), pos), pos);
+            } else if (lexer.matchIf("string", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("string"), pos), pos);
+            } else if (lexer.matchIf("int", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("int"), pos), pos);
+            } else if (lexer.matchIf("decimal", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("decimal"), pos), pos);
+            } else if (lexer.matchIf("boolean", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("boolean"), pos), pos);
+            } else if (lexer.matchIf("pattern", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("pattern"), pos), pos);
+            } else if (lexer.matchIf("date", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("date"), pos), pos);
+            } else if (lexer.matchIf("null", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("null"), pos), pos);
+            } else if (lexer.matchIf("func", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("func"), pos), pos);
+            } else if (lexer.matchIf("input", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("input"), pos), pos);
+            } else if (lexer.matchIf("output", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("output"), pos), pos);
+            } else if (lexer.matchIf("list", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("list"), pos), pos);
+            } else if (lexer.matchIf("set", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("set"), pos), pos);
+            } else if (lexer.matchIf("map", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("map"), pos), pos);
+            } else if (lexer.matchIf("object", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("object"), pos), pos);
+            } else if (lexer.matchIf("node", TokenType.Identifier)) {
+                return this.funcCall("equals", this.funcCall("type", expr, pos), new NodeLiteral(new ValueString("node"), pos), pos);
+            }
+            lexer.putback(); // is
+            return expr;
+        } else if (lexer.matchIf("not", "in", TokenType.Keyword, TokenType.Keyword)) {
+            return new NodeNot(new NodeIn(expr, this.parsePrimaryExpr(lexer, false), pos), pos);
+        } else if (lexer.matchIf("in", TokenType.Keyword)) {
+            return new NodeIn(expr, this.parsePrimaryExpr(lexer, false), pos);
+        } else if (lexer.matchIf("starts", "not", "with", TokenType.Identifier, TokenType.Keyword, TokenType.Identifier)) {
+            return new NodeNot(this.funcCall("starts_with", "str", expr, "part", this.parsePrimaryExpr(lexer, false), pos), pos);
+        } else if (lexer.matchIf("starts", "with", TokenType.Identifier, TokenType.Identifier)) {
+            return this.funcCall("starts_with", "str", expr, "part", this.parsePrimaryExpr(lexer, false), pos);
+        } else if (lexer.matchIf("ends", "not", "with", TokenType.Identifier, TokenType.Keyword, TokenType.Identifier)) {
+            return new NodeNot(this.funcCall("ends_with", "str", expr, "part", this.parsePrimaryExpr(lexer, false), pos), pos);
+        } else if (lexer.matchIf("ends", "with", TokenType.Identifier, TokenType.Identifier)) {
+            return this.funcCall("ends_with", "str", expr, "part", this.parsePrimaryExpr(lexer, false), pos);
+        } else if (lexer.matchIf("contains", "not", TokenType.Identifier, TokenType.Keyword)) {
+            return new NodeNot(this.funcCall("contains", "obj", expr, "part", this.parsePrimaryExpr(lexer, false), pos), pos);
+        } else if (lexer.matchIf("contains", TokenType.Identifier)) {
+            return this.funcCall("contains", "obj", expr, "part", this.parsePrimaryExpr(lexer, false), pos);
+        } else if (lexer.matchIf("matches", "not", TokenType.Identifier, TokenType.Keyword)) {
+            return new NodeNot(this.funcCall("matches", "str", expr, "pattern", this.parsePrimaryExpr(lexer, false), pos), pos);
+        } else if (lexer.matchIf("matches", TokenType.Identifier)) {
+            return this.funcCall("matches", "str", expr, "pattern", this.parsePrimaryExpr(lexer, false), pos);
         }
 
         return expr;

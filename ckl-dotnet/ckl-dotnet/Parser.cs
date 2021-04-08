@@ -499,160 +499,132 @@ namespace CheckerLang
         {
             var expr = ParsePrimaryExpr(lexer, unary_minus);
             var pos = lexer.GetPosNext();
-            if (lexer.MatchIf("is", "not", "empty"))
-            {
-                return FuncCall("is_not_empty", "obj", expr, pos);
-            }
-
-            if (lexer.MatchIf("is", "empty"))
-            {
-                return FuncCall("is_empty", "obj", expr, pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "zero"))
-            {
-                return new NodeNot(FuncCall("is_zero", "obj", expr, pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "zero"))
-            {
-                return FuncCall("is_zero", "obj", expr, pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "negative"))
-            {
-                return new NodeNot(FuncCall("is_negative", "obj", expr, pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "negative"))
-            {
-                return FuncCall("is_negative", "obj", expr, pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "numerical"))
-            {
-                return new NodeNot(CollectPredicateMinMaxExact("is_numerical", 
-                    FuncCall("string", "obj", expr, pos), lexer, pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "numerical"))
-            {
-                return CollectPredicateMinMaxExact("is_numerical", 
-                    FuncCall("string", "obj", expr, pos), lexer, pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "alphanumerical"))
-            {
-                return new NodeNot(CollectPredicateMinMaxExact("is_alphanumerical", 
-                    FuncCall("string", "obj", expr, pos), lexer, pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "alphanumerical"))
-            {
-                return CollectPredicateMinMaxExact("is_alphanumerical", 
-                    FuncCall("string", "obj", expr, pos), lexer, pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "date", "with", "hour"))
-            {
-                return new NodeNot(FuncCall("is_valid_date", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "date", "with", "hour"))
-            {
-                return FuncCall("is_valid_date", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "date"))
-            {
-                return new NodeNot(FuncCall("is_valid_date", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "date"))
-            {
-                return FuncCall("is_valid_date", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "time"))
-            {
-                return new NodeNot(FuncCall("is_valid_time", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "time"))
-            {
-                return FuncCall("is_valid_time", "str", 
-                    FuncCall("string", "obj", expr, pos), "fmt", 
-                    new NodeLiteral(new ValueString("HHmm"), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "not", "in"))
-            {
-                return new NodeNot(new NodeIn(expr, ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("not", "in"))
-            {
-                return new NodeNot(new NodeIn(expr, ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("is", "in"))
-            {
-                return new NodeIn(expr, ParsePrimaryExpr(lexer), pos);
-            }
-
-            if (lexer.MatchIf("in"))
-            {
-                return new NodeIn(expr, ParsePrimaryExpr(lexer), pos);
-            }
-
-            if (lexer.MatchIf("starts", "not", "with"))
-            {
-                return new NodeNot(FuncCall("starts_with", "str", expr, "part", ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("starts", "with"))
-            {
-                return FuncCall("starts_with", "str", expr, "part", ParsePrimaryExpr(lexer), pos);
-            }
-
-            if (lexer.MatchIf("ends", "not", "with"))
-            {
-                return new NodeNot(FuncCall("ends_with", "str", expr, "part", ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("ends", "with"))
-            {
-                return FuncCall("ends_with", "str", expr, "part", ParsePrimaryExpr(lexer), pos);
-            }
-
-            if (lexer.MatchIf("contains", "not"))
-            {
-                return new NodeNot(FuncCall("contains", "str", expr, "part", ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("contains"))
-            {
-                return FuncCall("contains", "str", expr, "part", ParsePrimaryExpr(lexer), pos);
-            }
-
-            if (lexer.MatchIf("matches", "not"))
-            {
-                return new NodeNot(FuncCall("matches", "str", expr, "pattern", ParsePrimaryExpr(lexer), pos), pos);
-            }
-
-            if (lexer.MatchIf("matches"))
-            {
-                return FuncCall("matches", "str", expr, "pattern", ParsePrimaryExpr(lexer), pos);
+            if (lexer.MatchIf("is", TokenType.Keyword)) {
+                if (lexer.MatchIf("not", TokenType.Keyword)) {
+                    if (lexer.MatchIf("in")) {
+                        return new NodeNot(new NodeIn(expr, this.ParsePrimaryExpr(lexer, false), pos), pos);
+                    } else if (lexer.MatchIf("empty", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_empty", "obj", expr, pos), pos);
+                    } else if (lexer.MatchIf("zero", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_zero", "obj", expr, pos), pos);
+                    } else if (lexer.MatchIf("negative", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_negative", "obj", expr, pos), pos);
+                    } else if (lexer.MatchIf("numerical", TokenType.Identifier)) {
+                        return new NodeNot(this.CollectPredicateMinMaxExact("is_numerical", this.FuncCall("string", "obj", expr, pos), lexer, pos), pos);
+                    } else if (lexer.MatchIf("alphanumerical", TokenType.Identifier)) {
+                        return new NodeNot(this.CollectPredicateMinMaxExact("is_alphanumerical", this.FuncCall("string", "obj", expr, pos), lexer, pos), pos);
+                    } else if (lexer.MatchIf("date", "with", "hour", TokenType.Identifier, TokenType.Identifier, TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_valid_date", "str", this.FuncCall("string", "obj", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos), pos);
+                    } else if (lexer.MatchIf("date", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_valid_date", "str", this.FuncCall("string", "obj", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos), pos);
+                    } else if (lexer.MatchIf("time", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("is_valid_time", "str", this.FuncCall("string", "obj", expr, pos), "fmt", new NodeLiteral(new ValueString("HHmm"), pos), pos), pos);
+                    } else if (lexer.MatchIf("string", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("string"), pos), pos), pos);
+                    } else if (lexer.MatchIf("int", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("int"), pos), pos), pos);
+                    } else if (lexer.MatchIf("decimal", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("decimal"), pos), pos), pos);
+                    } else if (lexer.MatchIf("boolean", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("boolean"), pos), pos), pos);
+                    } else if (lexer.MatchIf("pattern", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("pattern"), pos), pos), pos);
+                    } else if (lexer.MatchIf("date", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("date"), pos), pos), pos);
+                    } else if (lexer.MatchIf("null", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("null"), pos), pos), pos);
+                    } else if (lexer.MatchIf("func", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("func"), pos), pos), pos);
+                    } else if (lexer.MatchIf("input", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("input"), pos), pos), pos);
+                    } else if (lexer.MatchIf("output", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("output"), pos), pos), pos);
+                    } else if (lexer.MatchIf("list", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("lsit"), pos), pos), pos);
+                    } else if (lexer.MatchIf("set", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("set"), pos), pos), pos);
+                    } else if (lexer.MatchIf("map", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("map"), pos), pos), pos);
+                    } else if (lexer.MatchIf("object", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("object"), pos), pos), pos);
+                    } else if (lexer.MatchIf("node", TokenType.Identifier)) {
+                        return new NodeNot(this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("node"), pos), pos), pos);
+                    } else {
+                        lexer.Putback(); // not
+                        lexer.Putback(); // is
+                        return expr;
+                    }
+                } else if (lexer.MatchIf("in", TokenType.Keyword)) {
+                    return new NodeIn(expr, this.ParsePrimaryExpr(lexer, false), pos);
+                } else if (lexer.MatchIf("empty", TokenType.Identifier)) {
+                    return this.FuncCall("is_empty", expr, pos);
+                } else if (lexer.MatchIf("zero", TokenType.Identifier)) {
+                    return this.FuncCall("is_zero", expr, pos);
+                } else if (lexer.MatchIf("negative", TokenType.Identifier)) {
+                    return this.FuncCall("is_negative", expr, pos);
+                } else if (lexer.MatchIf("numerical", TokenType.Identifier)) {
+                    return this.CollectPredicateMinMaxExact("is_numerical", this.FuncCall("string", expr, pos), lexer, pos);
+                } else if (lexer.MatchIf("alphanumerical", TokenType.Identifier)) {
+                    return this.CollectPredicateMinMaxExact("is_alphanumerical", this.FuncCall("string", expr, pos), lexer, pos);
+                } else if (lexer.MatchIf("date", "with", "hour", TokenType.Identifier, TokenType.Identifier, TokenType.Identifier)) {
+                    return this.FuncCall("is_valid_date", "str", this.FuncCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMddHH"), pos), pos);
+                } else if (lexer.MatchIf("date", TokenType.Identifier)) {
+                    return this.FuncCall("is_valid_date", "str", this.FuncCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("yyyyMMdd"), pos), pos);
+                } else if (lexer.MatchIf("time", TokenType.Identifier)) {
+                    return this.FuncCall("is_valid_time", "str", this.FuncCall("string", expr, pos), "fmt", new NodeLiteral(new ValueString("HHmm"), pos), pos);
+                } else if (lexer.MatchIf("string", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("string"), pos), pos);
+                } else if (lexer.MatchIf("int", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("int"), pos), pos);
+                } else if (lexer.MatchIf("decimal", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("decimal"), pos), pos);
+                } else if (lexer.MatchIf("boolean", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("boolean"), pos), pos);
+                } else if (lexer.MatchIf("pattern", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("pattern"), pos), pos);
+                } else if (lexer.MatchIf("date", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("date"), pos), pos);
+                } else if (lexer.MatchIf("null", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("null"), pos), pos);
+                } else if (lexer.MatchIf("func", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("func"), pos), pos);
+                } else if (lexer.MatchIf("input", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("input"), pos), pos);
+                } else if (lexer.MatchIf("output", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("output"), pos), pos);
+                } else if (lexer.MatchIf("list", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("list"), pos), pos);
+                } else if (lexer.MatchIf("set", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("set"), pos), pos);
+                } else if (lexer.MatchIf("map", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("map"), pos), pos);
+                } else if (lexer.MatchIf("object", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("object"), pos), pos);
+                } else if (lexer.MatchIf("node", TokenType.Identifier)) {
+                    return this.FuncCall("equals", this.FuncCall("type", expr, pos), new NodeLiteral(new ValueString("node"), pos), pos);
+                }
+                lexer.Putback(); // is
+                return expr;
+            } else if (lexer.MatchIf("not", "in", TokenType.Keyword, TokenType.Keyword)) {
+                return new NodeNot(new NodeIn(expr, this.ParsePrimaryExpr(lexer, false), pos), pos);
+            } else if (lexer.MatchIf("in", TokenType.Keyword)) {
+                return new NodeIn(expr, this.ParsePrimaryExpr(lexer, false), pos);
+            } else if (lexer.MatchIf("starts", "not", "with", TokenType.Identifier, TokenType.Keyword, TokenType.Identifier)) {
+                return new NodeNot(this.FuncCall("starts_with", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos), pos);
+            } else if (lexer.MatchIf("starts", "with", TokenType.Identifier, TokenType.Identifier)) {
+                return this.FuncCall("starts_with", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos);
+            } else if (lexer.MatchIf("ends", "not", "with", TokenType.Identifier, TokenType.Keyword, TokenType.Identifier)) {
+                return new NodeNot(this.FuncCall("ends_with", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos), pos);
+            } else if (lexer.MatchIf("ends", "with", TokenType.Identifier, TokenType.Identifier)) {
+                return this.FuncCall("ends_with", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos);
+            } else if (lexer.MatchIf("contains", "not", TokenType.Identifier, TokenType.Keyword)) {
+                return new NodeNot(this.FuncCall("contains", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos), pos);
+            } else if (lexer.MatchIf("contains", TokenType.Identifier)) {
+                return this.FuncCall("contains", "str", expr, "part", this.ParsePrimaryExpr(lexer, false), pos);
+            } else if (lexer.MatchIf("matches", "not", TokenType.Identifier, TokenType.Keyword)) {
+                return new NodeNot(this.FuncCall("matches", "str", expr, "pattern", this.ParsePrimaryExpr(lexer, false), pos), pos);
+            } else if (lexer.MatchIf("matches", TokenType.Identifier)) {
+                return this.FuncCall("matches", "str", expr, "pattern", this.ParsePrimaryExpr(lexer, false), pos);
             }
 
             return expr;
@@ -1250,11 +1222,26 @@ namespace CheckerLang
             return result;
         }
         
+        private Node FuncCall(string fn, Node exprA, SourcePos pos)
+        {
+            var result = new NodeFuncall(new NodeIdentifier(fn, pos), pos);
+            result.AddArg("obj", exprA);
+            return result;
+        }
+        
         private Node FuncCall(string fn, string a, Node exprA, string b, Node exprB, SourcePos pos)
         {
             var result = new NodeFuncall(new NodeIdentifier(fn, pos), pos);
             result.AddArg(a, exprA);
             result.AddArg(b, exprB);
+            return result;
+        }
+        
+        private Node FuncCall(string fn, Node exprA, Node exprB, SourcePos pos)
+        {
+            var result = new NodeFuncall(new NodeIdentifier(fn, pos), pos);
+            result.AddArg("a", exprA);
+            result.AddArg("b", exprB);
             return result;
         }
         

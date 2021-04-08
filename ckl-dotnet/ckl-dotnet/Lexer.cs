@@ -145,6 +145,28 @@ namespace CheckerLang
             return false;
         }
 
+        public bool MatchIf(string a, string b, TokenType typea, TokenType typeb)
+        {
+            if (Peekn(1, a, typea) && Peekn(2, b, typeb))
+            {
+                Eat(2);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool MatchIf(string a, string b, string c, TokenType typea, TokenType typeb, TokenType typec)
+        {
+            if (Peekn(1, a, typea) && Peekn(2, b, typeb) && Peekn(3, c, typec))
+            {
+                Eat(3);
+                return true;
+            }
+
+            return false;
+        }
+
         public bool MatchIf(string a, string b, string c, TokenType type)
         {
             if (Peekn(1, a, type) && Peekn(2, b, type) && Peekn(3, c, type))
