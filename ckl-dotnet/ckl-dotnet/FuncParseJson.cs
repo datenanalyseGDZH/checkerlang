@@ -46,7 +46,7 @@ namespace CheckerLang
             try {
                 return JSON.Parse(args.GetString("s").GetValue());
             } catch (Exception) {
-                throw new ControlErrorException("Cannot parse string as JSON", pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Cannot parse string as JSON", pos);
             }
         }
     }

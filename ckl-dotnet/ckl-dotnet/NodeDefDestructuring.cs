@@ -63,7 +63,7 @@ namespace CheckerLang
                 }
                 return result;
             }
-            throw new ControlErrorException("Destructuring def expected list or set but got " + value.Type(), pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Destructuring def expected list or set but got " + value.Type(), pos);
         }
 
         public override string ToString()

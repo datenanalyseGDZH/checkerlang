@@ -55,9 +55,9 @@ namespace CheckerLang
                     obj = obj.value["_proto_"].AsObject();
                     exists = obj.value.ContainsKey(this.member);
                 }
-                if (!exists) throw new ControlErrorException("Member " + this.member + " not found", this.pos);
+                if (!exists) throw new ControlErrorException(new ValueString("ERROR"),"Member " + this.member + " not found", this.pos);
                 var fnval = obj.value[this.member];
-                if (!fnval.IsFunc()) throw new ControlErrorException("Member " + this.member + " is not a function", this.pos);
+                if (!fnval.IsFunc()) throw new ControlErrorException(new ValueString("ERROR"),"Member " + this.member + " is not a function", this.pos);
                 var fn = fnval.AsFunc();
                 List<string> names;
                 List<Node> args;
@@ -81,10 +81,10 @@ namespace CheckerLang
             {
                 var map = val.AsMap().GetValue();
                 var fnval = map[new ValueString(this.member)];
-                if (!fnval.IsFunc()) throw new ControlErrorException(this.member + " is not a function", this.pos);
+                if (!fnval.IsFunc()) throw new ControlErrorException(new ValueString("ERROR"),this.member + " is not a function", this.pos);
                 return Function.invoke(fnval.AsFunc(), this.names, this.args, environment, this.pos);
             }
-            throw new ControlErrorException("Cannot deref-invoke " + val.Type(), this.pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot deref-invoke " + val.Type(), this.pos);
         }
 
         public override string ToString() 

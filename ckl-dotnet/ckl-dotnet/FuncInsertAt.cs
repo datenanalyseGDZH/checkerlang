@@ -49,7 +49,7 @@ namespace CheckerLang
         {
             var lst = args.Get("lst");
             
-            if (!lst.IsList()) throw new ControlErrorException("Cannot insert into object of type " + lst.Type(), pos);
+            if (!lst.IsList()) throw new ControlErrorException(new ValueString("ERROR"),"Cannot insert into object of type " + lst.Type(), pos);
             
             var index = (int) args.GetInt("index").GetValue();
             if (index < 0) index = lst.AsList().GetValue().Count + index + 1;

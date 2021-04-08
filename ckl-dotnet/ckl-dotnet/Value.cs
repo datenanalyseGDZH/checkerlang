@@ -34,97 +34,97 @@ namespace CheckerLang
 
         public virtual ValueString AsString()
         {
-            throw new ControlErrorException("Cannot convert to string");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to string");
         }
 
         public virtual ValueInt AsInt()
         {
-            throw new ControlErrorException("Cannot convert to int");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to int");
         }
 
         public virtual ValueDecimal AsDecimal()
         {
-            throw new ControlErrorException("Cannot convert to decimal");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to decimal");
         }
 
         public virtual ValueBoolean AsBoolean()
         {
-            throw new ControlErrorException("Cannot convert to boolean");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to boolean");
         }
 
         public virtual ValuePattern AsPattern()
         {
-            throw new ControlErrorException("Cannot convert to pattern");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to pattern");
         }
 
         public virtual ValueDate AsDate()
         {
-            throw new ControlErrorException("Cannot convert to date");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to date");
         }
 
         public virtual ValueList AsList()
         {
-            throw new ControlErrorException("Cannot convert to list");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to list");
         }
 
         public virtual ValueSet AsSet()
         {
-            throw new ControlErrorException("Cannot convert to set");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to set");
         }
 
         public virtual ValueMap AsMap()
         {
-            throw new ControlErrorException("Cannot convert to map");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to map");
         }
 
         public virtual ValueObject AsObject()
         {
-            throw new ControlErrorException("Cannot convert to object");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to object");
         }
 
         public virtual ValueFunc AsFunc()
         {
-            throw new ControlErrorException("Cannot convert to func");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to func");
         }
 
         public virtual ValueError AsError()
         {
-            throw new ControlErrorException("Cannot convert to error");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to error");
         }
 
         public virtual ValueInput AsInput()
         {
-            throw new ControlErrorException("Cannot convert to input");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to input");
         }
 
         public virtual ValueOutput AsOutput()
         {
-            throw new ControlErrorException("Cannot convert to output");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to output");
         }
 
         public virtual ValueNode AsNode()
         {
-            throw new ControlErrorException("Cannot convert to node");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to node");
         }
         
         public virtual ValueNull AsNull()
         {
-            throw new ControlErrorException("Cannot convert to NULL");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to NULL");
         }
 
         public virtual ValueControlReturn AsReturn()
         {
-            throw new ControlErrorException("Cannot convert to return");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to return");
         }
 
         public virtual ValueControlBreak AsBreak()
         {
-            throw new ControlErrorException("Cannot convert to break");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to break");
         }
 
         public virtual ValueControlContinue AsContinue()
         {
-            throw new ControlErrorException("Cannot convert to continue");
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert to continue");
         }
 
         public virtual bool IsString()

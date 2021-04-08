@@ -98,7 +98,7 @@ namespace CheckerLang
                 } 
                 catch (IOException) 
                 {
-                    throw new ControlErrorException("Cannot read from input", pos);
+                    throw new ControlErrorException(new ValueString("ERROR"), "Cannot read from input", pos);
                 }
                 return result;
             }
@@ -324,7 +324,7 @@ namespace CheckerLang
                 environment.Remove(identifiers[0]);
                 return result;
             }
-            throw new ControlErrorException("Cannot iterate over " + list, pos);
+            throw new ControlErrorException(new ValueString("ERROR"), "Cannot iterate over " + list, pos);
         }
 
         public override string ToString() {

@@ -45,7 +45,7 @@ namespace CheckerLang
             {
                 return new ValueNode(((FuncLambda) f).GetBody());                
             }
-            throw new ControlErrorException("f is not a lambda function", pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"f is not a lambda function", pos);
         }
     }
 }

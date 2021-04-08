@@ -50,7 +50,7 @@ namespace CheckerLang
             if (arg.IsSet()) return new ValueInt(arg.AsSet().GetValue().Count);
             if (arg.IsMap()) return new ValueInt(arg.AsMap().GetValue().Count);
             if (arg.IsObject()) return new ValueInt(arg.AsObject().value.Count);
-            throw new ControlErrorException("Cannot determine length of " + arg, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot determine length of " + arg, pos);
         }
     }
 }

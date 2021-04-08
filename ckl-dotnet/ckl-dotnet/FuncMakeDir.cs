@@ -50,11 +50,11 @@ namespace CheckerLang
                 }
                 catch
                 {
-                    throw new ControlErrorException("Cannot create directory " + dir, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"), "Cannot create directory " + dir, pos);
                 }
             } else {
                 if (!Directory.GetParent(dir).Exists) {
-                    throw new ControlErrorException("Cannot create directory " + dir, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
                 }
 
                 try
@@ -63,7 +63,7 @@ namespace CheckerLang
                 }
                 catch
                 {
-                    throw new ControlErrorException("Cannot create directory " + dir, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
                 }
             }
             return ValueNull.NULL;

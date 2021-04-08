@@ -46,7 +46,7 @@ namespace CheckerLang
                 var s = container.AsString().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + s.Length;
-                if (i < 0 || i >= s.Length) throw new ControlErrorException("Index out of bounds " + s + "[" + i + "]", pos);
+                if (i < 0 || i >= s.Length) throw new ControlErrorException(new ValueString("ERROR"),"Index out of bounds " + s + "[" + i + "]", pos);
                 return new ValueString(s.Substring(0, i) + value.AsString().GetValue() + s.Substring(i + 1));
             } 
             if (container.IsList())
@@ -54,7 +54,7 @@ namespace CheckerLang
                 var list = container.AsList().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + list.Count;
-                if (i < 0 || i >= list.Count) throw new ControlErrorException("Index out of bounds" + container + "[" + i + "]", pos);
+                if (i < 0 || i >= list.Count) throw new ControlErrorException(new ValueString("ERROR"),"Index out of bounds" + container + "[" + i + "]", pos);
                 list[i] = value;
                 return container;
             }
@@ -71,7 +71,7 @@ namespace CheckerLang
                 map[member] = value;
                 return container;
             }
-            throw new ControlErrorException("Cannot dereference value " + container, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot dereference value " + container, pos);
         }
 
         public override string ToString() {

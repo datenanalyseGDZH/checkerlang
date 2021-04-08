@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Win32.SafeHandles;
 
 namespace CheckerLang
 {
@@ -76,7 +77,7 @@ namespace CheckerLang
                 if (!lexer.HasNext()) break;
                 block.Add(ParseExpression(lexer));
             }
-            if (block.GetExpressions().Count == 1 && !block.HasFinally())
+            if (block.GetExpressions().Count == 1 && !block.HasFinally() && !block.HasCatch())
             {
                 return block.GetExpressions()[0];
             }
@@ -87,29 +88,67 @@ namespace CheckerLang
         {
             var block = new NodeBlock(lexer.GetPosNext());
             lexer.Match("do", TokenType.Keyword);
-            var infinally = false;
-            while (!lexer.Peek("end", TokenType.Keyword))
+            while (!lexer.PeekOne("catch", "finally", "end", TokenType.Keyword))
             {
-                if (lexer.Peek("finally", TokenType.Keyword))
+                if (lexer.Peek("do", TokenType.Keyword))
                 {
-                    infinally = true;
-                    lexer.Eat(1);
-                }
-                if (lexer.Peek("end", TokenType.Keyword)) break;
-                if (infinally)
-                {
-                    block.AddFinally(ParseExpression(lexer));
+                    block.Add(ParseBlock(lexer));
                 }
                 else
                 {
                     block.Add(ParseExpression(lexer));
                 }
-                if (lexer.Peek("end", TokenType.Keyword)) break;
+                if (lexer.PeekOne("catch", "finally", "end", TokenType.Keyword)) break;
                 lexer.Match(";", TokenType.Interpunction);
-                if (lexer.Peek("end", TokenType.Keyword)) break;
+                if (lexer.PeekOne("catch", "finally", "end", TokenType.Keyword)) break;
             }
+
+            while (lexer.MatchIf("catch", TokenType.Keyword))
+            {
+                Node err;
+                if (lexer.MatchIf("all", TokenType.Identifier))
+                {
+                    err = null;
+                }
+                else
+                {
+                    err = ParseExpression(lexer);
+                }
+                
+                Node expr;
+                if (lexer.Peek("do", TokenType.Keyword))
+                {
+                    expr = ParseBlock(lexer);
+                }
+                else
+                {
+                    expr = ParseExpression(lexer);
+                }
+
+                block.AddCatch(err, expr);
+                if (lexer.Peek(";", TokenType.Interpunction)) lexer.Eat(1);
+            }
+
+            if (lexer.MatchIf("finally", TokenType.Keyword))
+            {
+                while (!lexer.Peek("end", TokenType.Keyword))
+                {
+                    if (lexer.Peek("do", TokenType.Keyword))
+                    {
+                        block.AddFinally(ParseBlock(lexer));
+                    }
+                    else
+                    {
+                        block.AddFinally(ParseExpression(lexer));
+                    }
+                    if (lexer.Peek("end", TokenType.Keyword)) break;
+                    lexer.Match(";", TokenType.Interpunction);
+                }
+            }
+
             lexer.Match("end", TokenType.Keyword);
-            if (block.GetExpressions().Count == 1 && !block.HasFinally())
+            
+            if (block.GetExpressions().Count == 1 && !block.HasFinally() && !block.HasCatch())
             {
                 return block.GetExpressions()[0];
             }

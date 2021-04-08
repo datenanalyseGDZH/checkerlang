@@ -19,9 +19,9 @@ namespace CheckerLang
                     return File.ReadAllText("./" + new FileInfo(moduleidentifier).Name);
                 }
                     
-                throw new ControlErrorException("Module " + new FileInfo(moduleidentifier).Name + " not found", pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Module " + new FileInfo(moduleidentifier).Name + " not found", pos);
             } catch (IOException) {
-                throw new ControlErrorException("Module " + new FileInfo(moduleidentifier).Name + " not found", pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Module " + new FileInfo(moduleidentifier).Name + " not found", pos);
             }
         }
     }

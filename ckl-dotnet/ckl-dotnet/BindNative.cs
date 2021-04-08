@@ -111,7 +111,7 @@ namespace CheckerLang
                 case "E": env.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
                 case "PI": env.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("PI\n\nThe mathematical constant PI")); break;
                 default:
-                    throw new ControlErrorException("Unknown native " + nativeName, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Unknown native " + nativeName, pos);
             }
         }
 

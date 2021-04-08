@@ -76,7 +76,7 @@ namespace CheckerLang
             }
             catch (Exception)
             {
-                throw new ControlErrorException("Cannot convert '" + value + "' to int");
+                throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert '" + value + "' to int");
             }
         }
 
@@ -88,7 +88,7 @@ namespace CheckerLang
             }
             catch (Exception)
             {
-                throw new ControlErrorException("Cannot convert '" + value + "' to decimal");
+                throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert '" + value + "' to decimal");
             }
         }
 
@@ -110,7 +110,7 @@ namespace CheckerLang
             try {
                 return new ValueDate(DateTime.ParseExact(value, fmt, DateTimeFormatInfo.InvariantInfo));
             } catch (Exception) {
-                throw new ControlErrorException("Cannot convert '" + value + "' to date");
+                throw new ControlErrorException(new ValueString("ERROR"), "Cannot convert '" + value + "' to date");
             }
         }
 

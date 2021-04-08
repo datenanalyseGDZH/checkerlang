@@ -66,7 +66,7 @@ namespace CheckerLang
                 };
                 return new ValueInt(list.Count);
             }
-            throw new ControlErrorException("Cannot process lines from " + inparg, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot process lines from " + inparg, pos);
         }
     }
 }

@@ -22,30 +22,46 @@ namespace CheckerLang
 {
     public class ControlErrorException : CheckerlangException
     {
-        private Value value;
+        private Value type;
+        private Value msg;
         private Stacktrace stacktrace;
 
-        public ControlErrorException(string message) : base(SourcePos.Unknown)
+        public ControlErrorException(Value type, string message) : base(SourcePos.Unknown)
         {
-            value = new ValueString(message);
+            this.type = type;
+            msg = new ValueString(message);
             stacktrace = new Stacktrace();
         }
         
-        public ControlErrorException(string message, SourcePos pos) : base(pos)
+        public ControlErrorException(Value type, string message, SourcePos pos) : base(pos)
         {
-            value = new ValueString(message);
+            this.type = type;
+            msg = new ValueString(message);
             stacktrace = new Stacktrace();
         }
         
-        public ControlErrorException(Value value, SourcePos pos, Stacktrace stacktrace) : base(pos)
+        public ControlErrorException(Value type, string msg, SourcePos pos, Stacktrace stacktrace) : base(pos)
         {
-            this.value = value;
+            this.type = type;
+            this.msg = new ValueString(msg);
+            this.stacktrace = stacktrace;
+        }
+
+        public ControlErrorException(Value type, Value msg, SourcePos pos, Stacktrace stacktrace) : base(pos)
+        {
+            this.type = type;
+            this.msg = msg;
             this.stacktrace = stacktrace;
         }
 
         public override Value GetErrorValue()
         {
-            return value;
+            return msg;
+        }
+
+        public override Value GetErrorType()
+        {
+            return type;
         }
         
         public override Stacktrace GetStacktrace()

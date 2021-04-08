@@ -51,7 +51,7 @@ namespace CheckerLang
             {
                 if (names[i] != null)
                 {
-                    if (!argNames.Contains(names[i])) throw new ControlErrorException("Argument " + names[i] + " is unknown", pos);
+                    if (!argNames.Contains(names[i])) throw new ControlErrorException(new ValueString("ERROR"),"Argument " + names[i] + " is unknown", pos);
                     args[names[i]] = values[i];
                 }
             }
@@ -61,11 +61,11 @@ namespace CheckerLang
             {
                 if (names[i] == null)
                 {
-                    if (inKeywords) throw new ControlErrorException("Positional arguments need to be placed before named arguments", pos);
+                    if (inKeywords) throw new ControlErrorException(new ValueString("ERROR"),"Positional arguments need to be placed before named arguments", pos);
                     var argName = GetNextPositionalArgName();
                     if (argName == null)
                     {
-                        if (restArgName == null) throw new ControlErrorException("Too many arguments", pos);
+                        if (restArgName == null) throw new ControlErrorException(new ValueString("ERROR"),"Too many arguments", pos);
                         rest.AddItem(values[i]);
                     }
                     else if (!args.ContainsKey(argName))
@@ -80,7 +80,7 @@ namespace CheckerLang
                 else
                 {
                     inKeywords = true;
-                    if (!argNames.Contains(names[i])) throw new ControlErrorException("Argument " + names[i] + " is unknown", pos);
+                    if (!argNames.Contains(names[i])) throw new ControlErrorException(new ValueString("ERROR"),"Argument " + names[i] + " is unknown", pos);
                     args[names[i]] = values[i];
                 }
             }
@@ -107,7 +107,7 @@ namespace CheckerLang
         
         public Value Get(string name)
         {
-            if (!HasArg(name)) throw new ControlErrorException("Missing argument " + name, pos);
+            if (!HasArg(name)) throw new ControlErrorException(new ValueString("ERROR"), "Missing argument " + name, pos);
             return args?[name];
         }
 
@@ -118,77 +118,77 @@ namespace CheckerLang
 
         public ValueString GetString(string name) {
             var value = Get(name);
-            if (!value.IsString()) throw new ControlErrorException("String required but got " + value.Type(), pos);
+            if (!value.IsString()) throw new ControlErrorException(new ValueString("ERROR"),"String required but got " + value.Type(), pos);
             return value.AsString();
         }
 
         public ValueBoolean GetBoolean(string name) {
             var value = Get(name);
-            if (!value.IsBoolean()) throw new ControlErrorException("Boolean required but got " + value.Type(), pos);
+            if (!value.IsBoolean()) throw new ControlErrorException(new ValueString("ERROR"),"Boolean required but got " + value.Type(), pos);
             return value.AsBoolean();
         }
 
         public ValueString GetString(string name, string defaultValue) {
             if (!HasArg(name)) return new ValueString(defaultValue);
             var value = Get(name);
-            if (!value.IsString()) throw new ControlErrorException("String required but got " + value.Type(), pos);
+            if (!value.IsString()) throw new ControlErrorException(new ValueString("ERROR"),"String required but got " + value.Type(), pos);
             return value.AsString();
         }
 
         public ValueInt GetInt(string name) {
             var value = Get(name);
-            if (!value.IsInt()) throw new ControlErrorException("Int required but got " + value.Type(), pos);
+            if (!value.IsInt()) throw new ControlErrorException(new ValueString("ERROR"),"Int required but got " + value.Type(), pos);
             return value.AsInt();
         }
 
         public ValueInt GetInt(string name, long defaultValue) {
             if (!HasArg(name)) return new ValueInt(defaultValue);
             var value = Get(name);
-            if (!value.IsInt()) throw new ControlErrorException("Int required but got " + value.Type(), pos);
+            if (!value.IsInt()) throw new ControlErrorException(new ValueString("ERROR"),"Int required but got " + value.Type(), pos);
             return value.AsInt();
         }
 
         public ValueDecimal GetDecimal(string name) {
             var value = Get(name);
-            if (!value.IsDecimal()) throw new ControlErrorException("Decimal required but got " + value.Type(), pos);
+            if (!value.IsDecimal()) throw new ControlErrorException(new ValueString("ERROR"),"Decimal required but got " + value.Type(), pos);
             return value.AsDecimal();
         }
 
         public ValueDecimal GetDecimal(string name, decimal defaultValue) {
             if (!HasArg(name)) return new ValueDecimal(defaultValue);
             var value = Get(name);
-            if (!value.IsDecimal()) throw new ControlErrorException("Decimal required but got " + value.Type(), pos);
+            if (!value.IsDecimal()) throw new ControlErrorException(new ValueString("ERROR"),"Decimal required but got " + value.Type(), pos);
             return value.AsDecimal();
         }
 
         public ValueDecimal GetNumerical(string name) {
             var value = Get(name);
-            if (!value.IsDecimal() && !value.IsInt()) throw new ControlErrorException("Numerical required but got " + value.Type(), pos);
+            if (!value.IsDecimal() && !value.IsInt()) throw new ControlErrorException(new ValueString("ERROR"),"Numerical required but got " + value.Type(), pos);
             return value.AsDecimal();
         }
 
         public ValueDecimal GetNumerical(string name, decimal defaultValue) {
             if (!HasArg(name)) return new ValueDecimal(defaultValue);
             var value = Get(name);
-            if (!value.IsDecimal() && !value.IsInt()) throw new ControlErrorException("Numerical required but got " + value.Type(), pos);
+            if (!value.IsDecimal() && !value.IsInt()) throw new ControlErrorException(new ValueString("ERROR"),"Numerical required but got " + value.Type(), pos);
             return value.AsDecimal();
         }
 
         public ValueList GetList(string name) {
             var value = Get(name);
-            if (!value.IsList()) throw new ControlErrorException("List required but got " + value.Type(), pos);
+            if (!value.IsList()) throw new ControlErrorException(new ValueString("ERROR"),"List required but got " + value.Type(), pos);
             return value.AsList();
         }
 
         public ValueMap GetMap(string name) {
             var value = Get(name);
-            if (!value.IsMap()) throw new ControlErrorException("Map required but got " + value.Type(), pos);
+            if (!value.IsMap()) throw new ControlErrorException(new ValueString("ERROR"),"Map required but got " + value.Type(), pos);
             return value.AsMap();
         }
 
         public ValueInput GetInput(string name) {
             var value = Get(name);
-            if (!value.IsInput()) throw new ControlErrorException("Input required but got " + value.Type(), pos);
+            if (!value.IsInput()) throw new ControlErrorException(new ValueString("ERROR"),"Input required but got " + value.Type(), pos);
             return value.AsInput();
         }
 
@@ -199,7 +199,7 @@ namespace CheckerLang
 
         public ValueOutput GetOutput(string name) {
             var value = Get(name);
-            if (!value.IsOutput()) throw new ControlErrorException("Output required but got " + value.Type(), pos);
+            if (!value.IsOutput()) throw new ControlErrorException(new ValueString("ERROR"),"Output required but got " + value.Type(), pos);
             return value.AsOutput();
         }
 
@@ -210,13 +210,13 @@ namespace CheckerLang
 
         public ValueFunc GetFunc(string name) {
             var value = Get(name);
-            if (!value.IsFunc()) throw new ControlErrorException("Func required but got " + value.Type(), pos);
+            if (!value.IsFunc()) throw new ControlErrorException(new ValueString("ERROR"),"Func required but got " + value.Type(), pos);
             return value.AsFunc();
         }
 
         public ValueDate GetDate(string name) {
             var value = Get(name);
-            if (!value.IsDate()) throw new ControlErrorException("Date required but got " + value.Type(), pos);
+            if (!value.IsDate()) throw new ControlErrorException(new ValueString("ERROR"),"Date required but got " + value.Type(), pos);
             return value.AsDate();
         }
 

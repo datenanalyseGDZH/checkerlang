@@ -84,7 +84,7 @@ namespace CheckerLang
                 }
                 else
                 {
-                    throw new ControlErrorException("Missing argument " + argNames[i], pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Missing argument " + argNames[i], pos);
                 }
             }
 
@@ -95,11 +95,11 @@ namespace CheckerLang
             }
             if (result.IsBreak())
             {
-                throw new ControlErrorException("Cannot use break without surrounding for loop", result.AsBreak().pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Cannot use break without surrounding for loop", result.AsBreak().pos);
             }
             if (result.IsContinue())
             {
-                throw new ControlErrorException("Cannot use continue without surrounding for loop", result.AsContinue().pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Cannot use continue without surrounding for loop", result.AsContinue().pos);
             }
             return result;
         }

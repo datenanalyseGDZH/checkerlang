@@ -50,13 +50,13 @@ namespace CheckerLang
                 if (environment.IsDefined(spec)) {
                     var val = environment.Get(spec, this.pos);
                     if (!(val.IsObject() && val.AsObject().isModule)) {
-                        if (!val.IsString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + val.Type(), pos);
+                        if (!val.IsString()) throw new ControlErrorException(new ValueString("ERROR"), "Expected string or identifier modulespec but got " + val.Type(), pos);
                         spec = val.AsString().GetValue();
                     }
                 }
             } else {
                 var specval = this.modulespec.Evaluate(environment);
-                if (!specval.IsString()) throw new ControlErrorException("Expected string or identifier modulespec but got " + specval.Type(), pos);
+                if (!specval.IsString()) throw new ControlErrorException(new ValueString("ERROR"), "Expected string or identifier modulespec but got " + specval.Type(), pos);
                 spec = specval.AsString().GetValue();
             }
             var modulefile = spec;
@@ -81,7 +81,7 @@ namespace CheckerLang
                 try {
                     node = Parser.Parse(modulesrc, modulefile);
                 } catch (Exception) {
-                    throw new ControlErrorException("Cannot parse module " + moduleidentifier, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"), "Cannot parse module " + moduleidentifier, pos);
                 }
                 node.Evaluate(moduleEnv);
                 modules[moduleidentifier] = moduleEnv;

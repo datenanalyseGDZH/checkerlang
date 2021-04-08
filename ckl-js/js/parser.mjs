@@ -119,7 +119,6 @@ export class Parser {
     parseBlock(lexer) {
         const block = new NodeBlock(lexer.getPosNext());
         lexer.match("do", "keyword");
-        let infinally = false;
         while (!lexer.peekn(1, "end", "keyword") && !lexer.peekn(1, "catch", "keyword") && !lexer.peekn(1, "finally", "keyword")) {
             let expression;
             if (lexer.peekn(1, "do", "keyword")) {
@@ -159,7 +158,6 @@ export class Parser {
                 block.addFinally(expression);
                 if (lexer.peekn(1, "end", "keyword")) break;
                 lexer.match(";", "interpunction");
-                if (lexer.peekn(1, "end", "keyword")) break;
             }
         }
         lexer.match("end", "keyword");

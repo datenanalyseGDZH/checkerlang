@@ -49,7 +49,7 @@ namespace CheckerLang
             }
             catch (FileNotFoundException)
             {
-                throw new ControlErrorException("File " + file + " not found", pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"File " + file + " not found", pos);
             }
         }
     }

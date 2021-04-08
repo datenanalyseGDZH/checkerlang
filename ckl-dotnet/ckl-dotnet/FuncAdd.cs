@@ -106,7 +106,7 @@ namespace CheckerLang
                 return new ValueString(a.AsString().GetValue() + b.AsString().GetValue());
             }
 
-            throw new ControlErrorException("Cannot add " + a + " and " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot add " + a + " and " + b, pos);
         }
     }
 }

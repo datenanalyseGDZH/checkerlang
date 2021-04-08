@@ -40,7 +40,7 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             var condition = expression.Evaluate(environment);
-            if (!condition.IsBoolean()) throw new ControlErrorException("Expected boolean condition but got " + condition.Type(), pos);
+            if (!condition.IsBoolean()) throw new ControlErrorException(new ValueString("ERROR"), "Expected boolean condition but got " + condition.Type(), pos);
             Value result = ValueBoolean.TRUE;
             while (condition.AsBoolean() == ValueBoolean.TRUE)
             {
@@ -64,7 +64,7 @@ namespace CheckerLang
                 }
                 
                 condition = expression.Evaluate(environment);
-                if (!condition.IsBoolean()) throw new ControlErrorException("Expected boolean condition but got " + condition.Type(), pos);
+                if (!condition.IsBoolean()) throw new ControlErrorException(new ValueString("ERROR"), "Expected boolean condition but got " + condition.Type(), pos);
             }
             return result;
         }

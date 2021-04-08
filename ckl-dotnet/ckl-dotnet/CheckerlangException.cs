@@ -41,6 +41,11 @@ namespace CheckerLang
             return ValueNull.NULL;
         }
         
+        public virtual Value GetErrorType()
+        {
+            return new ValueString("ERROR");
+        }
+        
         public virtual Stacktrace GetStacktrace()
         {
             return new Stacktrace();

@@ -97,7 +97,7 @@ namespace CheckerLang
         public void PushModuleStack(string moduleidentifier, SourcePos pos) {
             var current = this;
             while (current.parent != null) current = current.parent;
-            if (current.modulestack.Contains(moduleidentifier)) throw new ControlErrorException("Found circular module dependency (" + moduleidentifier + ")", pos);
+            if (current.modulestack.Contains(moduleidentifier)) throw new ControlErrorException(new ValueString("ERROR"),"Found circular module dependency (" + moduleidentifier + ")", pos);
             current.modulestack.Add(moduleidentifier);
         }
 
@@ -116,7 +116,7 @@ namespace CheckerLang
         {
             if (map.ContainsKey(name)) map[name] = value;
             else if (parent != null) parent.Set(name, value);
-            else throw new ControlErrorException(name + " is not defined");
+            else throw new ControlErrorException(new ValueString("ERROR"),name + " is not defined");
         }
 
         public void Remove(string name)
@@ -187,7 +187,7 @@ namespace CheckerLang
                 }
             }
             if (parent != null) return parent.Get(symbol, pos);
-            throw new ControlErrorException(new ValueString("Symbol '" + symbol + "' not defined"), pos, new Stacktrace());
+            throw new ControlErrorException(new ValueString("ERROR"), "Symbol '" + symbol + "' not defined", pos, new Stacktrace());
         }
 
         public static Environment GetNullEnvironment()

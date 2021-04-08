@@ -73,7 +73,7 @@ namespace CheckerLang
                 return lst;
             }
 
-            throw new ControlErrorException("Cannot remove from " + lst.Type(), pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot remove from " + lst.Type(), pos);
         }
     }
 }

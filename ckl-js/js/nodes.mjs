@@ -292,7 +292,7 @@ export class NodeBlock {
                 }
             }
         }
-        for (let expression of this.catchexprs) {
+        for (let [err, expression] of this.catchexprs) {
             if (expression instanceof NodeDef) {
                 if (!additionalBoundVarsLocal.includes(expression.identifier)) {
                     additionalBoundVarsLocal.push(expression.identifier);
@@ -320,12 +320,13 @@ export class NodeBlock {
                 expression.collectVars(freeVars, boundVars, additionalBoundVars);
             }
         }
-        for (let expression of this.catchexprs) {
+        for (let [err, expression] of this.catchexprs) {
             if (expression instanceof NodeDef || expression instanceof NodeDefDestructuring) {
                 expression.collectVars(freeVars, boundVars, additionalBoundVarsLocal);
             } else {
                 expression.collectVars(freeVars, boundVars, additionalBoundVars);
             }
+            err.collectVars(freeVars, boundVars, additionalBoundVars);
         }
     }
 }
@@ -611,7 +612,7 @@ export class NodeError {
 
     evaluate(environment) {
         const value = this.expression.evaluate(environment);
-        throw new RuntimeError(value, value, this.pos);
+        throw new RuntimeError(value, new ValueError(value), this.pos);
     }
 
     toString() {

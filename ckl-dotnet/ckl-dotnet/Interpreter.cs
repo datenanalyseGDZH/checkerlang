@@ -115,11 +115,11 @@ namespace CheckerLang
                 }
                 else if (result.IsBreak())
                 {
-                    throw new ControlErrorException("Cannot use break without surrounding for loop", result.AsBreak().pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot use break without surrounding for loop", result.AsBreak().pos);
                 }
                 else if (result.IsContinue())
                 {
-                    throw new ControlErrorException("Cannot use continue without surrounding for loop", result.AsContinue().pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot use continue without surrounding for loop", result.AsContinue().pos);
                 }
 
                 return result;

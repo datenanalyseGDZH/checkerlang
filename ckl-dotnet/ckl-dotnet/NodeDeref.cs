@@ -44,7 +44,7 @@ namespace CheckerLang
                 var s = value.AsString().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + s.Length;
-                if (i < 0 || i >= s.Length) throw new ControlErrorException("Index out of bounds " + i, pos);
+                if (i < 0 || i >= s.Length) throw new ControlErrorException(new ValueString("ERROR"),"Index out of bounds " + i, pos);
                 return new ValueString(s.Substring(i, 1));
             } 
             if (value.IsList())
@@ -52,13 +52,13 @@ namespace CheckerLang
                 var list = value.AsList().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + list.Count;
-                if (i < 0 || i >= list.Count) throw new ControlErrorException("Index out of bounds " + i, pos);
+                if (i < 0 || i >= list.Count) throw new ControlErrorException(new ValueString("ERROR"),"Index out of bounds " + i, pos);
                 return list[i];
             }
             if (value.IsMap())
             {
                 var map = value.AsMap().GetValue();
-                if (!map.ContainsKey(idx)) throw new ControlErrorException("Map does not contain key " + idx, pos);
+                if (!map.ContainsKey(idx)) throw new ControlErrorException(new ValueString("ERROR"),"Map does not contain key " + idx, pos);
                 return map[idx];
             }
             if (value.IsObject())
@@ -73,7 +73,7 @@ namespace CheckerLang
                 if (!exists) return ValueNull.NULL;
                 return obj.value[member];
             }
-            throw new ControlErrorException("Cannot dereference value " + value, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot dereference value " + value, pos);
         }
 
         public override string ToString() {

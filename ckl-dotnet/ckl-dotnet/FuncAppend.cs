@@ -57,7 +57,7 @@ namespace CheckerLang
                 return lst;
             }
             
-            throw new ControlErrorException("Cannot append to " + lst, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot append to " + lst, pos);
         }
     }
 }

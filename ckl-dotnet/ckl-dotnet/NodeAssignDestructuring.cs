@@ -50,7 +50,7 @@ namespace CheckerLang
                 Value result = ValueNull.NULL;
                 for (var i = 0; i < identifiers.Count; i++)
                 {
-                    if (!environment.IsDefined(identifiers[i])) throw new ControlErrorException("Variable '" + identifiers[i] + "' is not defined", pos);
+                    if (!environment.IsDefined(identifiers[i])) throw new ControlErrorException(new ValueString("ERROR"),"Variable '" + identifiers[i] + "' is not defined", pos);
                     if (i < list.Count)
                     {
                         environment.Set(identifiers[i], list[i]);
@@ -65,7 +65,7 @@ namespace CheckerLang
                 return result;
 
             }
-            throw new ControlErrorException("Destructuring assign expected list or set but got " + value.Type(), pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Destructuring assign expected list or set but got " + value.Type(), pos);
         }
 
         public override string ToString()

@@ -64,7 +64,7 @@ namespace CheckerLang
                 return result;
             }
 
-            throw new ControlErrorException("Cannot zip_map " + a + " and " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot zip_map " + a + " and " + b, pos);
         }
     }
 }

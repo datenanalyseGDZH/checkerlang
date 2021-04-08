@@ -68,7 +68,7 @@ namespace CheckerLang
                 return new ValueList(result);
             }
 
-            throw new ControlErrorException("Cannot zip " + a + " and " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot zip " + a + " and " + b, pos);
         }
     }
 }

@@ -28,6 +28,8 @@ namespace CheckerLang
     public class NodeBlock : Node
     {
         private List<Node> expressions = new List<Node>();
+        private List<Node> catchtypes = new List<Node>();
+        private List<Node> catchexprs = new List<Node>();
         private List<Node> finallyexprs = new List<Node>();
 
         private SourcePos pos;
@@ -52,11 +54,22 @@ namespace CheckerLang
             finallyexprs.Add(expression);
         }
 
+        public void AddCatch(Node type, Node expression)
+        {
+            catchtypes.Add(type);
+            catchexprs.Add(expression);
+        }
+
         public bool HasFinally()
         {
             return finallyexprs.Count > 0;
         }
 
+        public bool HasCatch()
+        {
+            return catchexprs.Count > 0;
+        }
+        
         public Value Evaluate(Environment environment)
         {
             Value result = ValueBoolean.TRUE;
@@ -69,27 +82,36 @@ namespace CheckerLang
                     {
                         break;
                     }
+
                     if (result.IsContinue())
                     {
                         break;
                     }
+
                     if (result.IsBreak())
                     {
                         break;
                     }
                 }
             }
-            catch (Exception)
+            catch (CheckerlangException e)
+            {
+                for (var i = 0; i < catchtypes.Count; i++)
+                {
+                    var err = catchtypes[i];
+                    if (err == null || e.GetErrorType().IsEquals(err.Evaluate(environment))) {
+                        return catchexprs[i].Evaluate(environment);
+                    }
+                }
+
+                throw;
+            }
+            finally
             {
                 foreach (var expression in finallyexprs)
                 {
                     expression.Evaluate(environment);
                 }
-                throw;
-            }
-            foreach (var expression in finallyexprs)
-            {
-                expression.Evaluate(environment);
             }
             return result;
         }
@@ -103,9 +125,13 @@ namespace CheckerLang
                 result.Append(expression).Append(", ");
             }
             if (expressions.Count > 0) result.Remove(result.Length - 2, 2);
+            for (var i = 0; i < catchtypes.Count; i++) {
+                result = result.Append(" catch ").Append(catchtypes[i]).Append(" ").Append(catchexprs[i]).Append(" ");
+            }
+            if (catchtypes.Count > 0) result.Remove(result.Length - 1, 1);
             if (finallyexprs.Count > 0)
             {
-                result.Append("finally ");
+                result.Append(" finally ");
                 foreach (var expression in finallyexprs)
                 {
                     result.Append(expression).Append(", ");
@@ -147,6 +173,20 @@ namespace CheckerLang
                     }
                 }
             }
+            foreach (var expression in catchexprs)
+            {
+                if (expression is NodeDef def)
+                {
+                    additionalBoundVarsLocal.Add(def.GetIdentifier());
+                }
+                if (expression is NodeDefDestructuring defdest)
+                {
+                    foreach (var identifier in defdest.GetIdentifiers())
+                    {
+                        additionalBoundVarsLocal.Add(identifier);
+                    }
+                }
+            }
             foreach (var expression in expressions)
             {
                 if (expression is NodeDef || expression is NodeDefDestructuring)
@@ -168,6 +208,23 @@ namespace CheckerLang
                 {
                     expression.CollectVars(freeVars, boundVars, additionalBoundVars);
                 }
+            }
+
+            for (var i = 0; i < catchtypes.Count; i++)
+            {
+                var err = catchtypes[i];
+                var expression = catchexprs[i];
+                
+                if (expression is NodeDef || expression is NodeDefDestructuring)
+                {
+                    expression.CollectVars(freeVars, boundVars, additionalBoundVarsLocal);
+                }
+                else
+                {
+                    expression.CollectVars(freeVars, boundVars, additionalBoundVars);
+                }
+
+                err.CollectVars(freeVars, boundVars, additionalBoundVars);
             }
         }
         

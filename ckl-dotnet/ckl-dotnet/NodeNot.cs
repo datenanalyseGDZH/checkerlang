@@ -35,7 +35,7 @@ namespace CheckerLang
 
         public Value Evaluate(Environment environment) {
             var value = expression.Evaluate(environment);
-            if (!value.IsBoolean()) throw new ControlErrorException("Expected boolean but got " + value.Type(), pos);
+            if (!value.IsBoolean()) throw new ControlErrorException(new ValueString("ERROR"), "Expected boolean but got " + value.Type(), pos);
             return value.AsBoolean().IsTrue() ? ValueBoolean.FALSE : ValueBoolean.TRUE;
         }
 

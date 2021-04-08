@@ -71,7 +71,7 @@ namespace CheckerLang
                         var condition = conditionExpr.Evaluate(localEnv);
                         if (!condition.IsBoolean()) 
                         {
-                            throw new ControlErrorException("Condition must be boolean but got " + condition.Type(), pos);
+                            throw new ControlErrorException(new ValueString("ERROR"), "Condition must be boolean but got " + condition.Type(), pos);
                         }
                         if (condition.AsBoolean().GetValue()) 
                         {
@@ -95,7 +95,7 @@ namespace CheckerLang
                         var condition = conditionExpr.Evaluate(localEnv);
                         if (!condition.IsBoolean())
                         {
-                            throw new ControlErrorException("Condition must be boolean but got " + condition.Type(),
+                            throw new ControlErrorException(new ValueString("ERROR"), "Condition must be boolean but got " + condition.Type(),
                                 pos);
                         }
 

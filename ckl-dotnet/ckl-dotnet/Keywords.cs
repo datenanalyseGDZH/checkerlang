@@ -41,6 +41,7 @@ namespace CheckerLang
             "while",
             "do",
             "end",
+            "catch",
             "finally",
             "break",
             "continue",

@@ -84,7 +84,7 @@ namespace CheckerLang
                 return new ValueList(result);
             }
             
-            throw new ControlErrorException("Cannot multiply " + a + " by " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot multiply " + a + " by " + b, pos);
         }
     }
 }

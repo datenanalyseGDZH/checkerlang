@@ -23,17 +23,17 @@ namespace CheckerLang
     public class ControlDivideByZeroException : ControlErrorException
     {
         public ControlDivideByZeroException(string message)
-        : base(message)
+        : base(new ValueString("ERROR"), message)
         {
         }
         
         public ControlDivideByZeroException(string message, SourcePos pos)
-        : base(message, pos)
+        : base(new ValueString("ERROR"), message, pos)
         {
         }
         
-        public ControlDivideByZeroException(Value value, SourcePos pos, Stacktrace stacktrace)
-        : base(value, pos, stacktrace)
+        public ControlDivideByZeroException(string msg, SourcePos pos, Stacktrace stacktrace)
+        : base(new ValueString("ERROR"), msg, pos, stacktrace)
         {
         }
 

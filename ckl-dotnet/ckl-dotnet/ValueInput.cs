@@ -44,7 +44,7 @@ namespace CheckerLang
                 }
                 return count;
             } catch (IOException) {
-                throw new ControlErrorException("Cannot process file", SourcePos.Unknown);
+                throw new ControlErrorException(new ValueString("ERROR"), "Cannot process file", SourcePos.Unknown);
             }
         }
 

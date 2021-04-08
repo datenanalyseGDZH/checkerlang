@@ -120,7 +120,7 @@ namespace CheckerLang
                 return result;
             }
 
-            throw new ControlErrorException("Cannot subtract " + b + " from " + a, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot subtract " + b + " from " + a, pos);
         }
     }
 }

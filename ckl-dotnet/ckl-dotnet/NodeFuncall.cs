@@ -66,7 +66,7 @@ namespace CheckerLang
         public Value Evaluate(Environment environment)
         {
             var fn = func.Evaluate(environment);
-            if (!fn.IsFunc()) throw new ControlErrorException("Expected function but got " + fn.Type(), pos);
+            if (!fn.IsFunc()) throw new ControlErrorException(new ValueString("ERROR"), "Expected function but got " + fn.Type(), pos);
             return Function.invoke(fn.AsFunc(), this.names, this.args, environment, this.pos);
         }
 

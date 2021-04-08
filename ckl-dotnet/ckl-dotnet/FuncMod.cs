@@ -58,7 +58,7 @@ namespace CheckerLang
                 return new ValueDecimal(a.AsDecimal().GetValue() % b.AsDecimal().GetValue());
             }
             
-            throw new ControlErrorException("Cannot calculate modulus of " + a + " by " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot calculate modulus of " + a + " by " + b, pos);
         }
     }
 }

@@ -99,7 +99,7 @@ namespace CheckerLang
                 }
                 else
                 {
-                    throw new ControlErrorException("Cannot sum " + value, pos);
+                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot sum " + value, pos);
                 }
             }
 

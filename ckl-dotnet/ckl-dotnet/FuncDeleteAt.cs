@@ -58,7 +58,7 @@ namespace CheckerLang
                 return result;
             }
 
-            throw new ControlErrorException("Cannot delete from " + lst.Type(), pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot delete from " + lst.Type(), pos);
         }
     }
 }

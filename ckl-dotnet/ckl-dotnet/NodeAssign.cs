@@ -39,7 +39,7 @@ namespace CheckerLang
 
         public Value Evaluate(Environment environment)
         {
-            if (!environment.IsDefined(identifier)) throw new ControlErrorException("Variable '" + identifier + "' is not defined", pos);
+            if (!environment.IsDefined(identifier)) throw new ControlErrorException(new ValueString("ERROR"),"Variable '" + identifier + "' is not defined", pos);
             environment.Set(identifier, expression.Evaluate(environment));
             return environment.Get(identifier, pos);
         }

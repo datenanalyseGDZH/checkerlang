@@ -47,7 +47,7 @@ namespace CheckerLang
             }
             catch 
             {
-                throw new ControlErrorException("Cannot delete file " + filename, pos);
+                throw new ControlErrorException(new ValueString("ERROR"),"Cannot delete file " + filename, pos);
             }
             return ValueNull.NULL;
         }

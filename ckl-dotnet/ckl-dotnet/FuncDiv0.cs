@@ -79,7 +79,7 @@ namespace CheckerLang
                 return new ValueDecimal(a.AsDecimal().GetValue() / divisor);
             }
             
-            throw new ControlErrorException("Cannot div0 " + a + " by " + b, pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Cannot div0 " + a + " by " + b, pos);
         }
     }
     

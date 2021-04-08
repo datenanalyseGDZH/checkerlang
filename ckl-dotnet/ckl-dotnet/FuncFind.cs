@@ -69,7 +69,7 @@ namespace CheckerLang
                 }
                 return new ValueInt(-1);
             }
-            throw new ControlErrorException("Find only works with strings and lists", pos);
+            throw new ControlErrorException(new ValueString("ERROR"),"Find only works with strings and lists", pos);
         }
     }
     

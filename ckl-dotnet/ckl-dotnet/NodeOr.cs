@@ -58,7 +58,7 @@ namespace CheckerLang
         {
             foreach (var expression in expressions) {
                 var value = expression.Evaluate(environment);
-                if (!value.IsBoolean()) throw new ControlErrorException("Expected boolean but got " + value.Type(), pos);
+                if (!value.IsBoolean()) throw new ControlErrorException(new ValueString("ERROR"), "Expected boolean but got " + value.Type(), pos);
                 if (value.AsBoolean().IsTrue())
                 {
                     return ValueBoolean.TRUE;
