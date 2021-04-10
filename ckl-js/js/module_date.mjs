@@ -139,22 +139,26 @@ end;
 
 
 "
+iso_date()
 iso_date(value)
 
 Formats the date value as an ISO date (i.e. using format yyyy-MM-dd).
+If no date value is provided, the current date is used.
 
 : iso_date(date('20200203')) ==> '2020-02-03'
 "
-def iso_date(value) format_date(value, fmt = 'yyyy-MM-dd');
+def iso_date(value = now()) format_date(value, fmt = 'yyyy-MM-dd');
 
 
 "
+iso_datetime()
 iso_datetime(value)
 
 Formats the datetime value as an ISO datetime (i.e. using format yyyy-MM-dd'T'HH:mm:ss).
+If no datetime value is provided, the current datetime is used.
 
 : iso_datetime(date('20200203201544')) ==> '2020-02-03T20:15:44'
 "
-def iso_datetime(value) format_date(value, fmt = 'yyyy-MM-ddTHH:mm:ss');
+def iso_datetime(value = now()) format_date(value, fmt = 'yyyy-MM-ddTHH:mm:ss');
 
 `;

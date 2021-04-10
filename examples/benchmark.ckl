@@ -20,7 +20,7 @@ def benchmark_escape_pattern() do escape_pattern('|'); escape_pattern('|.|'); en
 def benchmark_replace() replace('123a456a789', 'a', 'b');
 def benchmark_sum_lessequals() do def a = 1; sum([a, a, a, a, a, a, a, a, a, a]) <= 12; end;
 def benchmark_create_pairs() pairs(range(50));
-def benchmark_literal_set() 5 in set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+def benchmark_literal_set() 5 in <<1, 2, 3, 4, 5, 6, 7, 8, 9, 10>>;
 
 def repeat(code, times=40000) do
     def start_ts = timestamp();

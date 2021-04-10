@@ -507,7 +507,8 @@ export class NodeDerefAssign {
             const i = Number(idx.value);
             if (i < 0) i = i + s.length;
             if (i < 0 || i >= s.length) throw new RuntimeError("ERROR", "Index out of bounds " + i, this.pos);
-            return new ValueString(s.substring(0, i) + value.value + s.substring(i + 1));
+            container.value = s.substring(0, i) + value.value + s.substring(i + 1);
+            return container;
         }
         if (container instanceof ValueList) {
             const list = container.value;

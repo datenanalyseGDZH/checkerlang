@@ -1516,7 +1516,7 @@ export class ValueString extends Value {
     }
 
     toString() {
-        let result = this.value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        let result = this.value.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\r/g, "\\r").replace(/\n/g, "\\n").replace(/\t/g, "\\t");
         return "'" + result + "'";
     }
 }
