@@ -48,7 +48,7 @@ end;
 
 def collect_module_information(result, module) do
     require module;
-    result->modules[module] = <**>;
+    result->modules[module] = <<<>>>;
     for symbol in ls(module) do
         def infos = get_info_parts(symbol, module);
         if is_empty(infos->header) then continue;
@@ -68,7 +68,7 @@ def collect_module_information(result, module) do
 end;
 
 def collect_information() do
-    def result = <* entries = <**>, modules = <**> *>;
+    def result = <* entries = <<<>>>, modules = <<<>>> *>;
     for symbol in ls() do
         def infos = get_info_parts(symbol);
         if infos->header is not empty then result->entries[symbol] = [infos];
@@ -134,7 +134,7 @@ for module in keys information->modules do
     println("</ul>", out);
 end;
 
-for symbol in set(information->entries) do
+for symbol in keys information->entries do
     def infos = information->entries[symbol];
     for info in infos do
         println("<h2 id='" + symbol + "'>" + symbol + "</h2>", out);
