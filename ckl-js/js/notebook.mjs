@@ -19,8 +19,10 @@
     SOFTWARE.
 */
 
-import {  StringOutput, ValueOutput } from "./values.mjs";
+import { StringOutput, ValueOutput } from "./values.mjs";
 import { Interpreter } from "./interpreter.mjs";
+
+let interpreter = null;
 
 function createCell(inputContents = "", outputContents = "", editable = true) {
     const cell = document.createElement("div");
@@ -96,8 +98,8 @@ function saveState() {
     [...document.getElementById("contents").querySelectorAll(".cell")].forEach(function (cell) {
         state.push(getCellState(cell))
     });
-    const name = document.getElementById("name").innerText;
-    window.localStorage.setItem("scriptlang_notebook_cells_" + name, JSON.stringify(state));
+    const name = document.getElementById("name").innerText.substr("Script: ".length);
+    window.localStorage.setItem("checkerlang_notebook_cells_" + name, JSON.stringify(state));
 }
 
 function loadState() {
@@ -105,9 +107,10 @@ function loadState() {
     while (contents.firstChild) {
         contents.removeChild(contents.lastChild);
     }    
-    const name = document.getElementById("name").innerText;
-    const data = window.localStorage.getItem("scriptlang_notebook_cells_" + name);
-    if (data == null) {
+    const name = document.getElementById("name").innerText.substr("Script: ".length);
+    let data = window.localStorage.getItem("checkerlang_notebook_cells_" + name);
+    if (data === null) data = window.localStorage.getItem("scriptlang_notebook_cells_" + name);
+    if (data === null) {
         contents.appendChild(createCell());
         contents.querySelector(".input").focus();
     } else {
@@ -115,11 +118,37 @@ function loadState() {
         for (let cell of state) {
             contents.appendChild(createCellFromState(cell));
         }
+        clearOutput();
     }
     contents.querySelector("textarea").focus();
+    interpreter = new Interpreter(true, getMode() === "Legacy");
 }
 
-const interpreter = new Interpreter(true, true);
+function clearOutput() {
+    [...document.querySelectorAll("div.output")].forEach(d => d.innerText = '');
+}
+
+function getMode() {
+    return document.getElementById("mode").innerText.substr("Mode: ".length)
+}
+
+function setMode(mode) {
+    document.getElementById("mode").innerText = "Mode: " + mode;
+    window.localStorage.setItem("checkerlang_notebook_mode", mode);
+}
+
+function changeMode(mode) {
+    if (mode === "Modern" && getMode !== "Modern") {
+        setMode(mode);
+        interpreter = new Interpreter(true, false);
+        clearOutput();
+    } else if (mode === "Legacy" && getMode !== "Legacy") {
+        setMode(mode);
+        interpreter = new Interpreter(true, true);
+        clearOutput();
+    }
+}
+
 
 const keypress = function(event) {
     if (event.ctrlKey && event.code === "Enter") {
@@ -198,10 +227,19 @@ const cellclick = function(event) {
 
 const loadclick = function(event) {
     if (event.target.tagName.toLowerCase() === 'p') {
-        document.querySelector(".dropdown-content").style.display = '';
+        document.querySelector(".ddname .dropdown-content").style.display = '';
         const name = event.srcElement.innerText;
-        document.getElementById("name").innerText = name;
+        document.getElementById("name").innerText = "Script: " + name;
+        window.localStorage.setItem("checkerlang_notebook_script", name);
         loadState();
+    }
+}
+
+const modeclick = function(event) {
+    if (event.target.tagName.toLowerCase() === 'p') {
+        document.querySelector(".ddmode .dropdown-content").style.display = '';
+        const mode = event.srcElement.innerText;
+        changeMode(mode);
     }
 }
 
@@ -209,19 +247,25 @@ document.addEventListener("keypress", keypress);
 document.addEventListener("keydown", keydown);
 document.addEventListener("click", cellclick);
 
-document.getElementById("load").addEventListener("click", function(event) {
-    if (event.target.id === "load") {
-        const list = document.querySelector(".dropdown-content");
+document.getElementById("name").addEventListener("click", function(event) {
+    if (event.target.id === "name") {
+        const list = document.querySelector(".ddname .dropdown-content");
         if (list.style.display === 'none' || list.style.display === '') list.style.display = 'block';
         else list.style.display = 'none';
     }
 });
 
-document.querySelector(".dropdown-content").addEventListener("click", loadclick);
+document.querySelector(".ddname .dropdown-content").addEventListener("click", loadclick);
 
-document.getElementById("saveas").addEventListener("click", function(event) {
-
+document.getElementById("mode").addEventListener("click", function(event) {
+    if (event.target.id === "mode") {
+        const list = document.querySelector(".ddmode .dropdown-content");
+        if (list.style.display === 'none' || list.style.display === '') list.style.display = 'block';
+        else list.style.display = 'none';
+    }
 });
+
+document.querySelector(".ddmode .dropdown-content").addEventListener("click", modeclick);
 
 document.getElementById("clear").addEventListener("click", function(event) {
     const contents = document.getElementById("contents");
@@ -233,4 +277,13 @@ document.getElementById("clear").addEventListener("click", function(event) {
     saveState();
 });
 
+let mode = window.localStorage.getItem("checkerlang_notebook_mode") || "Legacy";
+document.getElementById("mode").innerText = "Mode: " + mode;
+
+let name = window.localStorage.getItem("checkerlang_notebook_script") || "A";
+document.getElementById("name").innerText = "Script: " + name;
+
 loadState();
+
+interpreter = new Interpreter(true, mode === "Legacy");
+
