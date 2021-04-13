@@ -83,7 +83,6 @@ try {
         process.stdout.write("\n");
     }
 } catch (e) {
-    console.log(e);
     if (e.msg !== undefined) {
         let errortext = e.msg + (e.pos !== undefined ? " " + e.pos.toString() : "");
         if ("stacktrace" in e) {
@@ -92,6 +91,6 @@ try {
         process.stdout.write(errortext);
         process.stdout.write("\n");
     } else {
-        throw e;
+        console.log(e);
     }
 }
