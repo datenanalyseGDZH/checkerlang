@@ -37,19 +37,9 @@ export class Interpreter {
         this.baseEnvironment = Environment.getBaseEnvironment(secure, legacy);
         this.environment = this.baseEnvironment.newEnv();
         this.baseEnvironment.put("console", new ValueOutput(new ConsoleOutput()));
-        if (!secure) {
-            this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput())); // TODO in case of node.js use actual stdout
-            this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));  // TODO in case of node.js use actual stdin
-        }
-    }
-
-    makeSecure() {
-        this.baseEnvironment.remove("stdout");
-        this.baseEnvironment.remove("stdin");
-        this.baseEnvironment.remove("run");
-        this.baseEnvironment.remove("file_input");
-        this.baseEnvironment.remove("file_output");
-        this.baseEnvironment.remove("close");
+        this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput()));
+        this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));
+        if (secure) this.baseEnvironment.remove("bind_native");
     }
 
     setStandardOutput(stdout) {

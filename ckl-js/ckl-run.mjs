@@ -30,13 +30,40 @@ import * as path from "path";
 system.fs = fs;
 system.path = path;
 
-const interpreter = new Interpreter(false, false);
+let secure = false;
+let legacy = false;
+let scriptname = null;
+let scriptargs = [];
+
+if (process.argv.length <= 2) {
+    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] scriptname [scriptargs...]\n");
+    exit(1);
+}
+
+let in_options = true;
+for (let arg of process.argv.slice(2)) {
+    if (in_options) {
+        if (arg === "--secure") secure = true;
+        else if (arg === "--legacy") legacy = true;
+        else if (arg.startsWith("--")) {
+            process.stderr.write(`Unknown option ${arg}\n`);
+            exit(1);
+        } else {
+            in_options = false;
+            scriptname = arg;
+        }
+    } else {
+        scriptargs.push(arg);
+    }
+}
+
+if (scriptname === null) {
+    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] scriptname [scriptargs...]\n");
+    exit(1);
+}
+
+const interpreter = new Interpreter(secure, legacy);
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
-
-if (process.argv.length <= 2) exit(0);
-
-const scriptname = process.argv[2];
-const scriptargs = process.argv.slice(3);
 
 if (!fs.existsSync(scriptname)) {
     process.stderr.write(`File not found '${scriptname}'\n`);

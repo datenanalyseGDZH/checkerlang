@@ -40,3 +40,10 @@
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
+
+* secure mode
+  * remove switch to secure mode since it is difficult to achieve correctly OK:js
+  * in secure mode, bind_native must not be available OK:js
+  * add --secure flag to ckl-repl and ckl-run to trigger secure mode OK:js
+  * add --legacy flag to ckl-repl and ckl-run to trigger legacy mode OK:js
+

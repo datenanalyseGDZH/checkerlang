@@ -31,13 +31,22 @@ import * as path from "path";
 system.fs = fs;
 system.path = path;
 
-const interpreter = new Interpreter(false, false);
+let secure = false;
+let legacy = false;
+
+for (let arg of process.argv.slice(2)) {
+    if (arg === "--secure") secure = true;
+    else if (arg === "--legacy") legacy = true;
+}
+
+const interpreter = new Interpreter(secure, legacy);
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.environment.put("args", new ValueList());
 
-for (let scriptname of process.argv.slice(2)) {
-    const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'});
-    interpreter.interpret(script, scriptname); // TODO better error handling/reporting
+for (let arg of process.argv.slice(2)) {
+    if (arg.startsWith("--")) continue;
+    const script = fs.readFileSync(arg, {encoding: 'utf8', flag: 'r'});
+    interpreter.interpret(script, arg); // TODO better error handling/reporting
 }
 
 function interpretStatement(statement) {
