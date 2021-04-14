@@ -185,7 +185,7 @@ export class FileInput {
         const data = fs.readFileSync(filename, {encoding: this.encoding, flag: 'r'});
         this.buffer = new StringInput(data);
     }
-    process(callback) { this.buffer.process(callback); }
+    process(callback) { return this.buffer.process(callback); }
     read() { return this.buffer.read(); }
     readAll() { return this.buffer.readAll(); }
     readLine() { return this.buffer.readLine(); }
