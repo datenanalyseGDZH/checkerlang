@@ -1,6 +1,5 @@
 # notebook
 
-* provide switch between default and legacy mode (where default means, modules must be used)
 * number the cells?
 * store the last value in a variable (LAST)
 * delete, insert, copy cells
@@ -13,9 +12,6 @@
 * export cells as one consolidated program text
 * run calculation in async
 * syntax highlighting in div and textarea! at least keywords.
-* implement save as
-* provide means to remove a script
-* maybe add daily script, i.e. each day a default script is created with the current date as name this results in a track of all interactions with scriptlang. of course, it must be possible to remove such scripts!
 * notebook should have offline and online mode. In offline mode, everything is saved in the browser (as it is currently). In online mode, reached after logging in, the notebooks are saved on the server. It is possible to choose per notebook whether it should be online or offline.
 
 # language
