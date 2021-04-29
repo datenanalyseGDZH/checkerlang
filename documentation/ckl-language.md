@@ -19,8 +19,56 @@
 ### Null
 ### Node
 
+
 ## Boolean algebra
+
+### or
+
+```
+<boolean> or <boolean>
+```
+
+Returns TRUE, if either of the booleans is TRUE.
+
+### and
+
+```
+<boolean> and <boolean>
+```
+
+Returns TRUE, if both booleans are TRUE.
+
+### not
+
+```
+not <boolean>
+```
+
+Returns TRUE, if the boolean is FALSE.
+
+
 ## Comparison operations
+
+```
+<value> < <value>
+<value> <= <value>
+<value> > <value>
+<value> >= <value>
+<value> == <value>
+<value> <> <value>
+<value> != <value>
+```
+
+Compares two values and returns either TRUE or FALSE.
+
+It is possible to concatenate multiple comparisons, even with
+different operators:
+
+```
+1 < x <> y <= 100
+```
+
+
 ## Arithmetic
 ## Predicate expressions
 ## Assignment
@@ -30,12 +78,33 @@
 
 ## Variables
 
+### Syntax
+
+```
+def <identifier> = <expression>
+def [ <identifier>, ... ] = <expression>
+```
+
+### Description
+
 Variable definitions bind a variable name to a value. Any variable
 can be bound to values of any data type. It is thus possible, to
 have a variable point to a number and then change it to point to
 a string.
 
-The `def` statement defines a variable and assigns it a value:
+The bindings are stored in an environment. There is a global environment
+and each function introduces its own environment. Thus, it is possible
+to redefine a global variable in a function without changing the
+global binding.
+
+In addition to the simple definition which assigns a value to an identifier,
+there exists a more complex definition statement, which assigns values to
+multiple identifiers simultaneously. In this case, the expression has to
+be of type list or set. The values of the list (or set) are then assigned
+to the variables. If there are not enough values, the remaining variables
+are assigned NULL.
+
+### Examples
 
 ```
 > def num = 12;
@@ -63,10 +132,10 @@ You can redefine a variable as often as you wish:
 
 Be aware that `def` always defines a variable in the current
 environment. Should a variable already exist in a parent environment,
-then it is not replaced, but shadowed:
+then it is shadowed, but not replaced:
 
 ```
-> def a = 1; # define a in the top environment
+> def a = 1; # define a in the root environment
 1
 > def f() do def a = 2; println(a); def a = 3; println(a); end;
 <#f>
@@ -112,6 +181,10 @@ it a new value:
 
 We see that in this case, the original variable definition is updated.
 
+```
+> def [a, b, c] = [1, 2, 3]; println(a + b + c);
+6
+```
 
 ## Blocks
 
@@ -119,16 +192,16 @@ We see that in this case, the original variable definition is updated.
 
 ```
 do
-    [ <statement> ; ]
+    { <statement> ; }
     ...
-[ catch <expression> ]
-    [ <statement> ; ]
+{ catch <expression> }
+    { <statement> ; }
     ...
-[ catch all ]
-    [ <statement> ; ]
+{ catch all }
+    { <statement> ; }
     ...
-[ finally ]
-    [ <statement> ; ]
+{ finally }
+    { <statement> ; }
     ...
 end
 ```
@@ -194,9 +267,9 @@ end;
 
 ```
 if <condition> then <block_or_expression>
-[ elif <condition> then <block_or_expression> ]
+{ elif <condition> then <block_or_expression> }
 ...
-[ else <block_or_expression> ]
+{ else <block_or_expression> }
 ```
 
 ### Description
@@ -231,10 +304,73 @@ end;
 
 ## For loop statmeent
 
+### Syntax
 
+```
+for <identifier> in <expression> <block_or_expression>
 
+for [ <identifier>, ... ] in <expression> <block_or_expression>
+```
+
+### Description
+
+The expression has to evaluate to one of list, set, map, object, string or input.
+
+The statement iterates over the values of the expression and assigns each value
+successively to the identifier and then executes the block or expression.
+
+In case of a string, `for` iterates over the characters.
+
+In case of an input, `for` iterates over text lines.
+
+The more complex variant allows to assign values to multiple variables in each
+iteration. In this case, the values of the expression must be of type list or set.
+
+### Examples
+
+```
+> for i in interval(1, 5) println(i)
+1
+2
+3
+4
+5
+```
+
+```
+> def x = [[1, 2], [3, 4]];
+[[1, 2], [3, 4]]
+> for [a, b] in x do def y = a * b; println(y - a - b); end
+-1
+5
+```
 
 ## While loop statement
+
+### Syntax
+
+```
+while <condition> <block>
+```
+
+### Description
+
+The `while` statement evaluates a block repeatedly, until the
+condition returns FALSE.
+
+The value of the block of the last iteration is the result of
+the statement.
+
+### Examples
+
+```
+def i = 1;
+while i < 100 do
+    println(i);
+    i *= 2;
+end;
+```
+
 
 ## List, set and map comprehension
 
