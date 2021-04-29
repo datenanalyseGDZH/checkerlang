@@ -105,7 +105,7 @@ export class NodeAnd {
     evaluate(environment) {
         for (let expression of this.expressions) {
             const value = expression.evaluate(environment);
-            if (!value.isBoolean()) throw RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
+            if (!value.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
             if (!value.value) {
                 return ValueBoolean.FALSE;
             }
@@ -1371,7 +1371,7 @@ export class NodeOr {
     evaluate(environment) {
         for (const expression of this.expressions) {
             const value = expression.evaluate(environment);
-            if (!value.isBoolean()) throw RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
+            if (!value.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean but got " + value.type(), this.pos);
             if (value.value) {
                 return ValueBoolean.TRUE;
             }
