@@ -63,7 +63,7 @@ public class Parser {
         if (lexer.peek("do", TokenType.Keyword)) {
             expression = parseBlock(lexer);
         } else {
-            expression = parseExpression(lexer);
+            expression = parseStatement(lexer);
         }
         if (!lexer.hasNext()) {
             return expression;
@@ -74,7 +74,7 @@ public class Parser {
             if (lexer.peek("do", TokenType.Keyword)) {
                 expression = parseBlock(lexer);
             } else {
-                expression = parseExpression(lexer);
+                expression = parseStatement(lexer);
             }
             block.add(expression);
         }
@@ -91,7 +91,7 @@ public class Parser {
             if (lexer.peek("do", TokenType.Keyword)) {
                 block.add(parseBlock(lexer));
             } else {
-                block.add(parseExpression(lexer));
+                block.add(parseStatement(lexer));
             }
             if (lexer.peekOne("catch", "finally", "end", TokenType.Keyword)) break;
             lexer.match(";", TokenType.Interpunction);
@@ -110,7 +110,7 @@ public class Parser {
             if (lexer.peek("do", TokenType.Keyword)) {
                 expr = parseBlock(lexer);
             } else {
-                expr = parseExpression(lexer);
+                expr = parseStatement(lexer);
             }
 
             block.addCatch(err, expr);
@@ -122,7 +122,7 @@ public class Parser {
                 if (lexer.peek("do", TokenType.Keyword)) {
                     block.addFinally(parseBlock(lexer));
                 } else {
-                    block.addFinally(parseExpression(lexer));
+                    block.addFinally(parseStatement(lexer));
                 }
                 if (lexer.peek("end", TokenType.Keyword)) break;
                 lexer.match(";", TokenType.Interpunction);
@@ -135,14 +135,14 @@ public class Parser {
         return block;
     }
 
-    public Node parseExpression(Lexer lexer) {
+    public Node parseStatement(Lexer lexer) {
         String comment = "";
         if (lexer.peek().type == TokenType.String && lexer.peekn(2, "def")) {
             comment = lexer.next().value;
         }
         if (lexer.matchIf("require", TokenType.Keyword)) {
             SourcePos pos = lexer.getPos();
-            Node modulespec = parseIfExpr(lexer);
+            Node modulespec = parseExpression(lexer);
             boolean unqualified = false;
             Map<String, String> symbols = null;
             String name = null;
@@ -183,7 +183,7 @@ public class Parser {
                 }
                 lexer.match("]", TokenType.Interpunction);
                 lexer.match("=", TokenType.Operator);
-                return new NodeDefDestructuring(identifiers, parseIfExpr(lexer), comment, pos);
+                return new NodeDefDestructuring(identifiers, parseExpression(lexer), comment, pos);
             }
             // handle single var def
             token = lexer.next();
@@ -195,7 +195,7 @@ public class Parser {
                 return new NodeDef(token.value, parseFn(lexer, pos), comment, pos);
             } else {
                 lexer.match("=", TokenType.Operator);
-                return new NodeDef(token.value, parseIfExpr(lexer), comment, pos);
+                return new NodeDef(token.value, parseExpression(lexer), comment, pos);
             }
         }
 
@@ -235,10 +235,10 @@ public class Parser {
             return new NodeWhile(expr, block, pos);
         }
 
-        return parseIfExpr(lexer);
+        return parseExpression(lexer);
     }
 
-    private Node parseIfExpr(Lexer lexer) {
+    private Node parseExpression(Lexer lexer) {
         if (lexer.peek("if", TokenType.Keyword)) {
             NodeIf result = new NodeIf(lexer.getPos());
             while (lexer.matchIf("if", TokenType.Keyword) || lexer.matchIf("elif", TokenType.Keyword)) {
@@ -655,7 +655,7 @@ public class Parser {
                             identifiers.add(((NodeIdentifier) item).getValue());
                         }
                         lexer.match("=", TokenType.Operator);
-                        result = new NodeAssignDestructuring(identifiers, parseIfExpr(lexer), token.pos);
+                        result = new NodeAssignDestructuring(identifiers, parseExpression(lexer), token.pos);
                     }
                 } else if (token.value.equals("<<") && token.type == TokenType.Interpunction) {
                     result = parseSetLiteral(lexer, token);
@@ -688,12 +688,7 @@ public class Parser {
         if (lexer.matchIf("]", TokenType.Interpunction)) {
             return derefOrInvoke(lexer, new NodeList(token.pos));
         } else {
-            Node expr;
-            if (lexer.peek("if", TokenType.Keyword)) {
-                expr = parseIfExpr(lexer);
-            } else {
-                expr = parseOrExpr(lexer);
-            }
+            Node expr = parseExpression(lexer);
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
@@ -712,7 +707,7 @@ public class Parser {
                     if (!lexer.peek("]", TokenType.Interpunction)) {
                         lexer.match(",", TokenType.Interpunction);
                         if (!lexer.peek("]", TokenType.Interpunction)) {
-                            expr = parseIfExpr(lexer);
+                            expr = parseExpression(lexer);
                         }
                     }
                 }
@@ -727,7 +722,7 @@ public class Parser {
         if (lexer.matchIf(">>", TokenType.Interpunction)) {
             return derefOrInvoke(lexer, new NodeSet(token.pos));
         } else {
-            Node expr = parseIfExpr(lexer);
+            Node expr = parseExpression(lexer);
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
@@ -745,7 +740,7 @@ public class Parser {
                     lexer.match(",", TokenType.Interpunction);
                 }
                 while (!lexer.peek(">>", TokenType.Interpunction)) {
-                    set.addItem(parseIfExpr(lexer));
+                    set.addItem(parseExpression(lexer));
                     if (!lexer.peek(">>", TokenType.Interpunction)) {
                         lexer.match(",", TokenType.Interpunction);
                     }
@@ -760,9 +755,9 @@ public class Parser {
         if (lexer.matchIf(">>>", TokenType.Interpunction)) {
             return derefOrInvoke(lexer, new NodeMap(token.pos));
         } else {
-            Node key = parseIfExpr(lexer);
+            Node key = parseExpression(lexer);
             lexer.match("=>", TokenType.Interpunction);
-            Node value = parseIfExpr(lexer);
+            Node value = parseExpression(lexer);
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
@@ -783,12 +778,12 @@ public class Parser {
                     lexer.match(",", TokenType.Interpunction);
                 }
                 while (!lexer.peek(">>>", TokenType.Interpunction)) {
-                    key = parseIfExpr(lexer);
+                    key = parseExpression(lexer);
                     if (key instanceof NodeIdentifier) {
                         key = new NodeLiteral(new ValueString(((NodeIdentifier) key).getValue()), key.getSourcePos());
                     }
                     lexer.match("=>", TokenType.Interpunction);
-                    value = parseIfExpr(lexer);
+                    value = parseExpression(lexer);
                     map.addKeyValue(key, value);
                     if (!lexer.peek(">>>", TokenType.Interpunction)) {
                         lexer.match(",", TokenType.Interpunction);
@@ -809,7 +804,7 @@ public class Parser {
                 obj.addKeyValue(key, fn);
             } else {
                 lexer.match("=", TokenType.Operator);
-                Node value = this.parseIfExpr(lexer);
+                Node value = this.parseExpression(lexer);
                 obj.addKeyValue(key, value);
             }
             if (!lexer.peekn(1, "*>", TokenType.Interpunction)) {
@@ -844,7 +839,7 @@ public class Parser {
         if (lexer.peek("do", TokenType.Keyword)) {
             lambda.setBody(parseBlock(lexer));
         } else {
-            lambda.setBody(parseIfExpr(lexer));
+            lambda.setBody(parseExpression(lexer));
         }
         return lambda;
     }

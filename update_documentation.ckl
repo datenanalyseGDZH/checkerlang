@@ -38,7 +38,7 @@ def get_info_parts(symbol, module = "Core") do
         def in_header = TRUE;
         for line in infos do
             if line !> starts_with(":") then result->examples !> append(line !> substr(1) !> trim())
-            elif in_header and line == "" then in_header = FALSE
+            elif in_header and trim(line) == "" then in_header = FALSE
             elif in_header then result->header !> append(line)
             else result->text !> append(line);
         end;

@@ -66,7 +66,7 @@ namespace CheckerLang
         public Node ParseBareBlock(Lexer lexer)
         {
             var block = new NodeBlock(lexer.GetPosNext());
-            var expression = ParseExpression(lexer);
+            var expression = ParseStatement(lexer);
             if (!lexer.HasNext())
             {
                 return expression;
@@ -75,7 +75,7 @@ namespace CheckerLang
             while (lexer.MatchIf(";", TokenType.Interpunction))
             {
                 if (!lexer.HasNext()) break;
-                block.Add(ParseExpression(lexer));
+                block.Add(ParseStatement(lexer));
             }
             if (block.GetExpressions().Count == 1 && !block.HasFinally() && !block.HasCatch())
             {
@@ -96,7 +96,7 @@ namespace CheckerLang
                 }
                 else
                 {
-                    block.Add(ParseExpression(lexer));
+                    block.Add(ParseStatement(lexer));
                 }
                 if (lexer.PeekOne("catch", "finally", "end", TokenType.Keyword)) break;
                 lexer.Match(";", TokenType.Interpunction);
@@ -122,7 +122,7 @@ namespace CheckerLang
                 }
                 else
                 {
-                    expr = ParseExpression(lexer);
+                    expr = ParseStatement(lexer);
                 }
 
                 block.AddCatch(err, expr);
@@ -139,7 +139,7 @@ namespace CheckerLang
                     }
                     else
                     {
-                        block.AddFinally(ParseExpression(lexer));
+                        block.AddFinally(ParseStatement(lexer));
                     }
                     if (lexer.Peek("end", TokenType.Keyword)) break;
                     lexer.Match(";", TokenType.Interpunction);
@@ -155,7 +155,7 @@ namespace CheckerLang
             return block;
         }
 
-        public Node ParseExpression(Lexer lexer)
+        public Node ParseStatement(Lexer lexer)
         {
             var comment = "";
             if (lexer.Peek().type == TokenType.String && lexer.Peekn(2, "def"))
@@ -165,7 +165,7 @@ namespace CheckerLang
             if (lexer.MatchIf("require", TokenType.Keyword)) 
             {
                 var pos = lexer.GetPos();
-                var modulespec = ParseIfExpr(lexer);
+                var modulespec = ParseExpression(lexer);
                 var unqualified = false;
                 Dictionary<string, string> symbols = null;
                 string name = null;
@@ -213,7 +213,7 @@ namespace CheckerLang
                     }
                     lexer.Match("]", TokenType.Interpunction);
                     lexer.Match("=", TokenType.Operator);
-                    return new NodeDefDestructuring(identifiers, ParseIfExpr(lexer), comment, pos);
+                    return new NodeDefDestructuring(identifiers, ParseExpression(lexer), comment, pos);
                 }
                 // handle single var def
                 token = lexer.Next();
@@ -227,7 +227,7 @@ namespace CheckerLang
                 }
 
                 lexer.Match("=", TokenType.Operator);
-                return new NodeDef(token.value, ParseIfExpr(lexer), comment, pos);
+                return new NodeDef(token.value, ParseExpression(lexer), comment, pos);
             }
             
             if (lexer.MatchIf("for", TokenType.Keyword))
@@ -272,10 +272,10 @@ namespace CheckerLang
                 return new NodeWhile(expr, block, pos);
             }
 
-            return ParseIfExpr(lexer);
+            return ParseExpression(lexer);
         }
 
-        private Node ParseIfExpr(Lexer lexer)
+        private Node ParseExpression(Lexer lexer)
         {
             if (lexer.Peek("if", TokenType.Keyword))
             {
@@ -749,7 +749,7 @@ namespace CheckerLang
                                 identifiers.Add(((NodeIdentifier) item).GetValue());
                             }
                             lexer.Match("=", TokenType.Operator);
-                            result = new NodeAssignDestructuring(identifiers, ParseIfExpr(lexer), token.pos);
+                            result = new NodeAssignDestructuring(identifiers, ParseExpression(lexer), token.pos);
                         }
                     }
                     else if (token.value == "<<") // set literal
@@ -802,15 +802,7 @@ namespace CheckerLang
                 return DerefOrInvoke(lexer, new NodeList(token.pos));
             }
             
-            Node expr;
-            if (lexer.Peek("if", TokenType.Keyword))
-            {
-                expr = ParseIfExpr(lexer);
-            }
-            else
-            {
-                expr = ParseOrExpr(lexer);
-            }
+            var expr = ParseExpression(lexer);
             if (lexer.MatchIf("for", TokenType.Keyword))
             {
                 var identifier = lexer.MatchIdentifier();
@@ -835,7 +827,7 @@ namespace CheckerLang
                     lexer.Match(",", TokenType.Interpunction);
                     if (!lexer.Peek("]", TokenType.Interpunction))
                     {
-                        expr = ParseIfExpr(lexer);
+                        expr = ParseExpression(lexer);
                     }
                 }
             }
@@ -851,7 +843,7 @@ namespace CheckerLang
                 return DerefOrInvoke(lexer, new NodeSet(token.pos));
             }
             
-            var expr = ParseIfExpr(lexer);
+            var expr = ParseExpression(lexer);
             if (lexer.MatchIf("for", TokenType.Keyword)) {
                 var identifier = lexer.MatchIdentifier();
                 lexer.Match("in", TokenType.Keyword);
@@ -870,7 +862,7 @@ namespace CheckerLang
                 lexer.Match(",", TokenType.Interpunction);
             }
             while (!lexer.Peek(">>", TokenType.Interpunction)) {
-                set.AddItem(ParseIfExpr(lexer));
+                set.AddItem(ParseExpression(lexer));
                 if (!lexer.Peek(">>", TokenType.Interpunction)) {
                     lexer.Match(",", TokenType.Interpunction);
                 }
@@ -885,9 +877,9 @@ namespace CheckerLang
             {
                 return DerefOrInvoke(lexer, new NodeMap(token.pos));
             }
-            var key = ParseIfExpr(lexer);
+            var key = ParseExpression(lexer);
             lexer.Match("=>", TokenType.Interpunction);
-            var value = ParseIfExpr(lexer);
+            var value = ParseExpression(lexer);
             if (lexer.MatchIf("for", TokenType.Keyword))
             {
                 var identifier = lexer.MatchIdentifier();
@@ -912,12 +904,12 @@ namespace CheckerLang
             }
             while (!lexer.Peek(">>>", TokenType.Interpunction))
             {
-                key = ParseIfExpr(lexer);
+                key = ParseExpression(lexer);
                 if (key is NodeIdentifier) {
                     key = new NodeLiteral(new ValueString(((NodeIdentifier) key).GetValue()), key.GetSourcePos());
                 }
                 lexer.Match("=>", TokenType.Interpunction);
-                value = ParseIfExpr(lexer);
+                value = ParseExpression(lexer);
                 map.AddKeyValue(key, value);
                 if (!lexer.Peek(">>>", TokenType.Interpunction))
                 {
@@ -940,7 +932,7 @@ namespace CheckerLang
                 else
                 {
                     lexer.Match("=", TokenType.Operator);
-                    var value = ParseIfExpr(lexer);
+                    var value = ParseExpression(lexer);
                     obj.AddKeyValue(key, value);
                 }
 
@@ -981,7 +973,7 @@ namespace CheckerLang
             }
             else
             {
-                lambda.SetBody(ParseIfExpr(lexer));
+                lambda.SetBody(ParseExpression(lexer));
             }
 
             return lambda;

@@ -95,7 +95,7 @@ export class Parser {
         if (lexer.peekn(1, "do", "keyword")) {
             expression = this.parseBlock(lexer);
         } else {
-            expression = this.parseExpression(lexer, toplevel);
+            expression = this.parseStatement(lexer, toplevel);
         }
         if (!lexer.hasNext()) {
             return expression;
@@ -106,7 +106,7 @@ export class Parser {
             if (lexer.peekn(1, "do", "keyword")) {
                 expression = this.parseBlock(lexer);
             } else {
-                expression = this.parseExpression(lexer, toplevel);
+                expression = this.parseStatement(lexer, toplevel);
             }
             block.add(expression);
         }
@@ -124,7 +124,7 @@ export class Parser {
             if (lexer.peekn(1, "do", "keyword")) {
                 expression = this.parseBlock(lexer);
             } else {
-                expression = this.parseExpression(lexer);
+                expression = this.parseStatement(lexer);
             }
             block.add(expression);
             if (lexer.peekn(1, "end", "keyword") || lexer.peekn(1, "catch", "keyword") || lexer.peekn(1, "finally", "keyword")) break;
@@ -142,7 +142,7 @@ export class Parser {
             if (lexer.peekn(1, "do", "keyword")) {
                 expr = this.parseBlock(lexer);
             } else {
-                expr = this.parseExpression(lexer);
+                expr = this.parseStatement(lexer);
             }
             if (lexer.peekn(1, ";", "interpunction")) lexer.eat(1);
             block.addCatch(err, expr);
@@ -153,7 +153,7 @@ export class Parser {
                 if (lexer.peekn(1, "do", "keyword")) {
                     expression = this.parseBlock(lexer);
                 } else {
-                    expression = this.parseExpression(lexer);
+                    expression = this.parseStatement(lexer);
                 }
                 block.addFinally(expression);
                 if (lexer.peekn(1, "end", "keyword")) break;
@@ -167,7 +167,7 @@ export class Parser {
         return block;
     }
 
-    parseExpression(lexer, toplevel = false) {
+    parseStatement(lexer, toplevel = false) {
         let comment = "";
         if (!lexer.hasNext()) throw new SyntaxError("Unexpected end of input", lexer.getPos());
         if (lexer.peek().type === "string" && lexer.peekn(2, "def", "keyword")) {
@@ -175,7 +175,7 @@ export class Parser {
         }
         if (lexer.matchIf("require", "keyword")) {
             const pos = lexer.getPos();
-            const modulespec = this.parseIfExpr(lexer);
+            const modulespec = this.parseExpression(lexer);
             let unqualified = false;
             let symbols = null;
             let name = null;
@@ -215,7 +215,7 @@ export class Parser {
                 }
                 lexer.match("]", "interpunction");
                 lexer.match("=", "operator");
-                return new NodeDefDestructuring(identifiers, this.parseIfExpr(lexer), comment, pos);
+                return new NodeDefDestructuring(identifiers, this.parseExpression(lexer), comment, pos);
             } else {
                 // handle single var def
                 const token = lexer.next();
@@ -225,7 +225,7 @@ export class Parser {
                     return new NodeDef(token.value, this.parseFn(lexer, pos), comment, pos);
                 } else {
                     lexer.match("=", "operator");
-                    return new NodeDef(token.value, this.parseIfExpr(lexer), comment, pos);
+                    return new NodeDef(token.value, this.parseExpression(lexer), comment, pos);
                 }
             }
         }
@@ -265,10 +265,10 @@ export class Parser {
             return new NodeWhile(expr, block, pos);
         }
 
-        return this.parseIfExpr(lexer);
+        return this.parseExpression(lexer);
     }
 
-    parseIfExpr(lexer) {
+    parseExpression(lexer) {
         if (lexer.peekn(1, "if", "keyword")) {
             const result = new NodeIf(lexer.getPos());
             while (lexer.matchIf("if", "keyword") || lexer.matchIf("elif", "keyword")) {
@@ -673,7 +673,7 @@ export class Parser {
                             identifiers.push(item.value);
                         }
                         lexer.match("=", "operator");
-                        result = new NodeAssignDestructuring(identifiers, this.parseIfExpr(lexer), token.pos);
+                        result = new NodeAssignDestructuring(identifiers, this.parseExpression(lexer), token.pos);
                     }
                 } else if (token.value === "<<" && token.type == "interpunction") {
                     result = this.parseSetLiteral(lexer, token);
@@ -705,12 +705,7 @@ export class Parser {
         if (lexer.matchIf("]", "interpunction")) {
             return this.derefOrInvoke(lexer, new NodeList(token.pos));
         } else {
-            let expr;
-            if (lexer.peekn(1, "if", "keyword")) {
-                expr = this.parseIfExpr(lexer);
-            } else {
-                expr = this.parseOrExpr(lexer);
-            }
+            let expr = this.parseExpression(lexer);
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
@@ -729,7 +724,7 @@ export class Parser {
                     if (!lexer.peekn(1, "]", "interpunction")) {
                         lexer.match(",", "interpunction");
                         if (!lexer.peekn(1, "]", "interpunction")) {
-                            expr = this.parseIfExpr(lexer);
+                            expr = this.parseExpression(lexer);
                         }
                     }
                 }
@@ -744,7 +739,7 @@ export class Parser {
         if (lexer.matchIf(">>", "interpunction")) {
             return this.derefOrInvoke(lexer, new NodeSet(token.pos));
         } else {
-            const expr = this.parseIfExpr(lexer);
+            const expr = this.parseExpression(lexer);
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
@@ -762,7 +757,7 @@ export class Parser {
                     lexer.match(",", "interpunction");
                 }
                 while (!lexer.peekn(1, ">>", "interpunction")) {
-                    set.addItem(this.parseIfExpr(lexer));
+                    set.addItem(this.parseExpression(lexer));
                     if (!lexer.peekn(1, ">>", "interpunction")) {
                         lexer.match(",", "interpunction");
                     }
@@ -777,9 +772,9 @@ export class Parser {
         if (lexer.matchIf(">>>", "interpunction")) {
             return this.derefOrInvoke(lexer, new NodeMap(token.pos));
         } else {
-            let key = this.parseIfExpr(lexer);
+            let key = this.parseExpression(lexer);
             lexer.match("=>", "interpunction");
-            let value = this.parseIfExpr(lexer);
+            let value = this.parseExpression(lexer);
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
@@ -800,12 +795,12 @@ export class Parser {
                     lexer.match(",", "interpunction");
                 }
                 while (!lexer.peekn(1, ">>>", "interpunction")) {
-                    key = this.parseIfExpr(lexer);
+                    key = this.parseExpression(lexer);
                     if (key instanceof NodeIdentifier) {
                         key = new NodeLiteral(new ValueString(key.value), key.pos);
                     }
                     lexer.match("=>", "interpunction");
-                    value = this.parseIfExpr(lexer);
+                    value = this.parseExpression(lexer);
                     map.addKeyValue(key, value);
                     if (!lexer.peekn(1, ">>>", "interpunction")) {
                         lexer.match(",", "interpunction");
@@ -826,7 +821,7 @@ export class Parser {
                 obj.addKeyValue(key, fn);
             } else {
                 lexer.match("=", "operator");
-                const value = this.parseIfExpr(lexer);
+                const value = this.parseExpression(lexer);
                 obj.addKeyValue(key, value);
             }
             if (!lexer.peekn(1, "*>", "interpunction")) {
@@ -858,7 +853,7 @@ export class Parser {
         if (lexer.peekn(1, "do", "keyword")) {
             lambda.setBody(this.parseBlock(lexer));
         } else {
-            lambda.setBody(this.parseIfExpr(lexer));
+            lambda.setBody(this.parseExpression(lexer));
         }
         return lambda;
     }
