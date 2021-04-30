@@ -40,6 +40,7 @@ if not checkerlang_secure_mode then do
     bind_native("make_dir");
     bind_native("file_info");
     bind_native("execute");
+    bind_native("get_env");
 end;
 
 "

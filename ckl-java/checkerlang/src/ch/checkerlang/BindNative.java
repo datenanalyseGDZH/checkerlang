@@ -40,6 +40,7 @@ public class BindNative {
             case "find": bindNative(env, new FuncFind(), nativeAlias); break;
             case "floor": bindNative(env, new FuncFloor(), nativeAlias); break;
             case "format_date": bindNative(env, new FuncFormatDate(), nativeAlias); break;
+            case "get_env": bindNative(env, new FuncGetEnv(), nativeAlias); break;
             case "get_output_string": bindNative(env, new FuncGetOutputString(), nativeAlias); break;
             case "greater": bindNative(env, new FuncGreater(), nativeAlias); break;
             case "greater_equals": bindNative(env, new FuncGreaterEquals(), nativeAlias); break;

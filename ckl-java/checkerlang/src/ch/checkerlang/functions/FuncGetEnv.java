@@ -34,36 +34,21 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static ch.checkerlang.values.ValueNull.NULL;
-
-public class FuncFileInfo extends FuncBase {
-    public FuncFileInfo() {
-        super("file_info");
-        info = "file_info(filename)\r\n" +
+public class FuncGetEnv extends FuncBase {
+    public FuncGetEnv() {
+        super("get_env");
+        info = "get_env(var)\r\n" +
                 "\r\n" +
-                "Returns information about the specified file (e.g. modification date, size).\r\n";
+                "Returns the value of the specified environment variable.\r\n";
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("filename");
+        return Arrays.asList("var");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
-        String filename = args.getString("filename").getValue();
-        ValueObject result = new ValueObject();
-        File file = new File(filename);
-        if (!file.exists()) return NULL;
-        result.addItem("size", new ValueInt(file.length()));
-        result.addItem("is_dir", ValueBoolean.from(file.isDirectory()));
-        result.addItem("modified", new ValueDate(new Date(file.lastModified())));
-        try {
-            BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            FileTime time = attrs.creationTime();
-            result.addItem("created", new ValueDate(new Date(time.toMillis())));
-        } catch (IOException e) {
-            result.addItem("created", NULL);
-        }
-        return result;
-    }
+        String var = args.getString("var").getValue();
+        return new ValueString(System.getenv(var));
+   }
 
 }

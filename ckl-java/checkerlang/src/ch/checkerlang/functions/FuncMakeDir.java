@@ -44,15 +44,16 @@ public class FuncMakeDir extends FuncBase {
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
-        String dir = args.getString("dir").getValue();
+        File dir = new File(args.getString("dir").getValue());
+        if (dir.exists() && dir.isDirectory()) return ValueNull.NULL;
         boolean with_parents = false;
         if (args.hasArg("with_parents")) with_parents = args.getBoolean("with_parents").getValue();
         if (with_parents) {
-            if (!new File(dir).mkdirs()) {
+            if (!dir.mkdirs()) {
                 throw new ControlErrorException("Cannot create directory " + dir, pos);
             }
         } else {
-            if (!new File(dir).mkdir()) {
+            if (!dir.mkdir()) {
                 throw new ControlErrorException("Cannot create directory " + dir, pos);
             }
         }

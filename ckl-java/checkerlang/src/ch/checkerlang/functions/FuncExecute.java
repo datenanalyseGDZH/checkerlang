@@ -45,14 +45,16 @@ public class FuncExecute extends FuncBase {
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("program", "args", "work_dir");
+        return Arrays.asList("program", "args", "work_dir", "echo");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
         String program = args.getString("program").getValue();
-        List<Value> arguments = args.getList("dest").getValue();
+        List<Value> arguments = args.getList("args").getValue();
         String work_dir = null;
         if (args.hasArg("work_dir")) work_dir = args.getString("work_dir").getValue();
+        boolean echo = false;
+        if (args.hasArg("echo")) echo = args.getBoolean("echo").getValue();
         try {
             List<String> list = new ArrayList<>();
             list.add(program);
@@ -60,7 +62,9 @@ public class FuncExecute extends FuncBase {
                 list.add(argument.asString().getValue());
             }
             ProcessBuilder proc = new ProcessBuilder(list);
+            proc.inheritIO();
             proc.directory(work_dir == null ? null : new File(work_dir));
+            if (echo) System.out.println(proc.command());
             Process process = proc.start();
             process.waitFor();
             return new ValueInt(process.exitValue());
