@@ -19,6 +19,6 @@
 # SOFTWARE.
 
 def checkerlang_version = "3.4.0";
-def checkerlang_platform = "js";
+def checkerlang_platform = "dotnet";
 
 def checkerlang_modules = ["Core", "Date", "IO", "List", "Math", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
