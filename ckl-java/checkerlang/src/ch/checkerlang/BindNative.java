@@ -28,11 +28,14 @@ public class BindNative {
             case "equals": bindNative(env, new FuncEquals(), nativeAlias); break;
             case "escape_pattern": bindNative(env, new FuncEscapePattern(), nativeAlias); break;
             case "eval": bindNative(env, new FuncEval(), nativeAlias); break;
+            case "execute": bindNative(env, new FuncExecute(), nativeAlias); break;
             case "exp": bindNative(env, new FuncExp(), nativeAlias); break;
             case "file_input": bindNative(env, new FuncFileInput(), nativeAlias); break;
+            case "file_copy": bindNative(env, new FuncFileCopy(), nativeAlias); break;
             case "file_delete": bindNative(env, new FuncFileDelete(), nativeAlias); break;
             case "file_exists": bindNative(env, new FuncFileExists(), nativeAlias); break;
             case "file_info": bindNative(env, new FuncFileInfo(), nativeAlias); break;
+            case "file_move": bindNative(env, new FuncFileMove(), nativeAlias); break;
             case "file_output": bindNative(env, new FuncFileOutput(), nativeAlias); break;
             case "find": bindNative(env, new FuncFind(), nativeAlias); break;
             case "floor": bindNative(env, new FuncFloor(), nativeAlias); break;
