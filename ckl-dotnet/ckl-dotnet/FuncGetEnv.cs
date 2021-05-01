@@ -20,55 +20,29 @@
 */
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace CheckerLang
 {
-    public class FuncMakeDir : FuncBase
+    public class FuncGetEnv : FuncBase
     {
-        public FuncMakeDir() : base("make_dir")
+        public FuncGetEnv() : base("get_env")
         {
-            this.info = "make_dir(dir, with_parents = FALSE)\r\n" +
-                        "\r\n" +
-                        "Creates a new directory.\r\n";
+            info = "get_env(var)\r\n" +
+                   "\r\n" +
+                   "Returns the value of the environment variable var.\r\n";
         }
         
         public override List<string> GetArgNames()
         {
-            return new List<string> {"dir", "with_parents"};
+            return new List<string> {"var"};
         }
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
-            var dir = args.GetString("dir").GetValue();
-            if (Directory.Exists(dir)) return ValueNull.NULL;
-            var with_parents = false;
-            if (args.HasArg("with_parents")) with_parents = args.GetBoolean("with_parents").GetValue();
-            if (with_parents)
-            {
-                try
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                catch
-                {
-                    throw new ControlErrorException(new ValueString("ERROR"), "Cannot create directory " + dir, pos);
-                }
-            } else {
-                if (!Directory.GetParent(dir).Exists) {
-                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
-                }
-
-                try
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                catch
-                {
-                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
-                }
-            }
-            return ValueNull.NULL;
+            var var = args.GetString("var").GetValue();
+            return new ValueString(System.Environment.GetEnvironmentVariable(var));
         }
-   }
+    }
     
 }

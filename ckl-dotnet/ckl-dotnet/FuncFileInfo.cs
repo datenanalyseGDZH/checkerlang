@@ -41,11 +41,29 @@ namespace CheckerLang
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
             var filename = args.GetString("filename").GetValue();
-            var result = new ValueObject();
-            result.AddItem("size", new ValueInt(new FileInfo(filename).Length));
-            result.AddItem("modified", new ValueDate(File.GetLastWriteTime(filename)));
-            result.AddItem("created", new ValueDate(File.GetCreationTime(filename)));
-            return result;
+            
+            if (File.Exists(filename))
+            {
+                var result = new ValueObject();
+                var info = new FileInfo(filename);
+                result.AddItem("size", new ValueInt(info.Length));
+                result.AddItem("is_dir", ValueBoolean.FALSE);
+                result.AddItem("modified", new ValueDate(info.LastWriteTime));
+                result.AddItem("created", new ValueDate(info.CreationTime));
+                return result;
+            }
+            
+            if (Directory.Exists(filename))
+            {
+                var result = new ValueObject();
+                var info = new DirectoryInfo(filename);
+                result.AddItem("is_dir", ValueBoolean.TRUE);
+                result.AddItem("modified", new ValueDate(info.LastWriteTime));
+                result.AddItem("created", new ValueDate(info.CreationTime));
+                return result;
+            }
+
+            return ValueNull.NULL;
         }
     }
     

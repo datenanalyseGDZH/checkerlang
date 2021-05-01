@@ -41,7 +41,7 @@ namespace CheckerLang
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
             var filename = args.GetString("filename").GetValue();
-            return ValueBoolean.From(File.Exists(filename));
+            return ValueBoolean.From(File.Exists(filename) || Directory.Exists(filename));
         }
     }
     

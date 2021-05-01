@@ -20,55 +20,38 @@
 */
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace CheckerLang
 {
-    public class FuncMakeDir : FuncBase
+    public class FuncFileCopy : FuncBase
     {
-        public FuncMakeDir() : base("make_dir")
+        public FuncFileCopy() : base("file_copy")
         {
-            this.info = "make_dir(dir, with_parents = FALSE)\r\n" +
-                        "\r\n" +
-                        "Creates a new directory.\r\n";
+            info = "file_copy(src, dest)\r\n" +
+                   "\r\n" +
+                   "Copies the specified file.\r\n";
         }
         
         public override List<string> GetArgNames()
         {
-            return new List<string> {"dir", "with_parents"};
+            return new List<string> {"src", "dest"};
         }
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
         {
-            var dir = args.GetString("dir").GetValue();
-            if (Directory.Exists(dir)) return ValueNull.NULL;
-            var with_parents = false;
-            if (args.HasArg("with_parents")) with_parents = args.GetBoolean("with_parents").GetValue();
-            if (with_parents)
+            var src = args.GetString("src").GetValue();
+            var dest = args.GetString("dest").GetValue();
+            try
             {
-                try
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                catch
-                {
-                    throw new ControlErrorException(new ValueString("ERROR"), "Cannot create directory " + dir, pos);
-                }
-            } else {
-                if (!Directory.GetParent(dir).Exists) {
-                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
-                }
-
-                try
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                catch
-                {
-                    throw new ControlErrorException(new ValueString("ERROR"),"Cannot create directory " + dir, pos);
-                }
+                File.Copy(src, dest, true);
+            }
+            catch 
+            {
+                throw new ControlErrorException(new ValueString("ERROR"),"Cannot copy " + src + " to " + dest, pos);
             }
             return ValueNull.NULL;
         }
-   }
+    }
     
 }
