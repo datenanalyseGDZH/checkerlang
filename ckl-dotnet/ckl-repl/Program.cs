@@ -20,6 +20,7 @@
 */
 using System;
 using System.IO;
+using System.Text;
 using CheckerLang;
 
 namespace repl
@@ -28,18 +29,23 @@ namespace repl
     {
         static void Main(string[] args)
         {
-            var interpreter = new Interpreter(false, false);
+            var secure = false;
+            var legacy = false;
+            foreach (var arg in args)
+            {
+                if (arg == "--secure") secure = true;
+                if (arg == "--legacy") legacy = true;
+            }
+            var interpreter = new Interpreter(secure, legacy);
             interpreter.SetStandardInput(Console.In);
             interpreter.SetStandardOutput(Console.Out);
+            foreach (var arg in args)
+            {
+                if (arg.StartsWith("--")) continue;
+                interpreter.Interpret(File.ReadAllText(arg, Encoding.UTF8), arg);
+            }
             Console.Write("> ");
             var line = Console.ReadLine();
-            if (line != null && line == "secure")
-            {
-                interpreter.MakeSecure();
-                Console.WriteLine("Switched to secure mode");
-                Console.Write("> ");
-                line = Console.ReadLine();
-            }
             while (line != "exit")
             {
                 try

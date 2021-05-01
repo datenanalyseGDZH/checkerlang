@@ -29,24 +29,63 @@ namespace run
     {
         static void Main(string[] args)
         {
-            try {
-                var interpreter = new Interpreter(false, false);
+            try
+            {
+                if (args.Length == 0)
+                {
+                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] scriptname [scriptargs...]");
+                    System.Environment.Exit(1);
+                }
+                
+                var secure = false;
+                var legacy = false;
+                string scriptname = null;
+                var scriptargs = new ValueList();
+
+                var in_options = true;
+                foreach (var arg in args)
+                {
+                    if (in_options)
+                    {
+                        if (arg == "--secure") secure = true;
+                        else if (arg == "--legacy") legacy = true;
+                        else if (arg.StartsWith("--"))
+                        {
+                            Console.Error.WriteLine("Unknown option " + arg);
+                            System.Environment.Exit(1);
+                        }
+                        else
+                        {
+                            in_options = false;
+                            scriptname = arg;
+                        }
+                    }
+                    else
+                    {
+                        scriptargs.AddItem(new ValueString(arg));
+                    }
+                }
+                
+                if (scriptname == null)
+                {
+                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] scriptname [scriptargs...]");
+                    System.Environment.Exit(1);
+                }
+                
+                if (!File.Exists(scriptname))
+                {
+                    Console.Error.WriteLine("File not found " + scriptname);
+                    System.Environment.Exit(1);
+                }
+                
+                var interpreter = new Interpreter(secure, legacy);
                 interpreter.SetStandardInput(Console.In);
                 interpreter.SetStandardOutput(Console.Out);
-                
-                // TODO handle options places before the scriptname, e.g. -i for include path!
-                if (args.Length > 0) {
-                    interpreter.GetEnvironment().Put("scriptname", new ValueString(args[0]));
-                    var arglist = new ValueList();
-                    for (var i = 1; i < args.Length; i++) {
-                        arglist.AddItem(new ValueString(args[i]));
-                    }
-                    interpreter.GetEnvironment().Put("args", arglist);
-                    var input = new StreamReader(args[0], Encoding.UTF8);
-                    var value = interpreter.Interpret(input, args[0]);
-                    if (value.IsReturn()) value = value.AsReturn().value;
-                    if (value != ValueNull.NULL) Console.Out.WriteLine(value);
-                }
+                interpreter.GetEnvironment().Put("scriptname", new ValueString(scriptname));
+                interpreter.GetEnvironment().Put("args", scriptargs);
+                var value = interpreter.Interpret(File.ReadAllText(scriptname, Encoding.UTF8), scriptname);
+                if (value.IsReturn()) value = value.AsReturn().value;
+                if (value != ValueNull.NULL) Console.Out.WriteLine(value);
             } catch (ControlErrorException e) {
                 Console.Out.WriteLine("ERR: " + e.GetErrorValue().AsString().GetValue() + " (Line " + e.GetPos() + ")");
                 Console.Out.WriteLine(e.GetStacktrace().ToString());

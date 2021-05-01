@@ -73,8 +73,9 @@ if (!fs.existsSync(scriptname)) {
 const args = new ValueList();
 for (const scriptarg of scriptargs) args.addItem(new ValueString(scriptarg));
 interpreter.environment.put("args", args);
+interpreter.envrionment.put("scriptname", new ValueString(scriptname));
 
-const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'}); // TODO specify encoding and other stuff with flags?
+const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'});
 
 try {
     const result = interpreter.interpret(script, scriptname);

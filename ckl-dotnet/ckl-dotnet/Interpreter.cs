@@ -32,12 +32,10 @@ namespace CheckerLang
         {
             baseEnvironment = Environment.GetBaseEnvironment(secure, legacy);
             environment = baseEnvironment.NewEnv();
-            if (!secure)
-            {
-                baseEnvironment.Put("stdout", new ValueOutput(new StringWriter()));
-                baseEnvironment.Put("stdin", new ValueInput(new StringReader("")));
-                baseEnvironment.Put("run", new FuncRun(this));
-            }
+            baseEnvironment.Put("stdout", new ValueOutput(new StringWriter()));
+            baseEnvironment.Put("stdin", new ValueInput(new StringReader("")));
+            if (!secure) baseEnvironment.Put("run", new FuncRun(this));
+            if (secure) baseEnvironment.Remove("bind_native");
         }
 
         public Environment GetBaseEnvironment()

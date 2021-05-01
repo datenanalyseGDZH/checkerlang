@@ -31,10 +31,10 @@ namespace CheckerLang
 {
     public class Environment
     {
-        private Dictionary<string, object> map = new Dictionary<string, object>();
+        private Dictionary<string, object> map = new();
         private Environment parent;
 
-        public Dictionary<string, Environment> modules = null;
+        public Dictionary<string, Environment> modules;
         public List<string> modulestack = null;
 
         public Environment()
@@ -85,7 +85,7 @@ namespace CheckerLang
         }
         
         public List<string> GetLocalSymbols() {
-            return new List<string>(map.Keys);
+            return new(map.Keys);
         }
 
         public Dictionary<string, Environment> GetModules() {
@@ -126,7 +126,7 @@ namespace CheckerLang
         
         public Environment NewEnv()
         {
-            return new Environment(this);
+            return new(this);
         }
         
         public bool IsDefined(string symbol)
@@ -192,7 +192,7 @@ namespace CheckerLang
 
         public static Environment GetNullEnvironment()
         {
-            return new Environment();
+            return new();
         }
         
         public static Environment GetBaseEnvironment(bool secure = true, bool legacy = true)

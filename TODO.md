@@ -37,9 +37,14 @@
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
 
-* secure mode
-  * remove switch to secure mode since it is difficult to achieve correctly OK:js
-  * in secure mode, bind_native must not be available OK:js
-  * add --secure flag to ckl-repl and ckl-run to trigger secure mode OK:js
-  * add --legacy flag to ckl-repl and ckl-run to trigger legacy mode OK:js
-
+* add new function file_copy, file_move, get_env, execute to js
+* create new module OS and move get_env, execute and file handling function there
+* add information about the operating system in the OS module
+  * operating system name (windows, ...)
+  * operating system version
+  * PS (path separator, /, \)
+  * LS (line separator, \n, \r\n)
+  * FS (field separator, :, ;)
+* add function which to OS module, which searches for an executable in the OS path and
+  optionally in additional locations. This should handle os differences gracefully,
+  i.e. which("javac") should find javac.exe on windows and javac on linux/mac.

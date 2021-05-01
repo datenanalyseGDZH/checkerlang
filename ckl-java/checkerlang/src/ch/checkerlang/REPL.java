@@ -24,14 +24,26 @@ import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueNull;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class REPL {
     public static void main(String[] args) throws Exception {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter stdout = new PrintWriter(new OutputStreamWriter(System.out));
-        Interpreter interpreter = new Interpreter(false, false);
+        boolean secure = false;
+        boolean legacy = false;
+        for (String arg : args) {
+            if (arg.equals("--secure")) secure = true;
+            if (arg.equals("--legacy")) legacy = true;
+        }
+        Interpreter interpreter = new Interpreter(secure, legacy);
         interpreter.setStandardInput(stdin);
         interpreter.setStandardOutput(stdout);
+        for (String arg : args) {
+            if (arg.startsWith("--")) continue;
+            interpreter.interpret(new String(Files.readAllBytes(new File(arg).toPath()), StandardCharsets.UTF_8), arg);
+        }
         stdout.print("> ");
         stdout.flush();
         String line = stdin.readLine();
@@ -61,7 +73,7 @@ public class REPL {
                         if (str != null) {
                             stdout.println(str);
                         } else {
-                            stdout.println("ERR: cannot convert object to string");
+                            stdout.println("ERR: cannot convert value to string");
                         }
                     }
                 } catch (ControlErrorException e) {

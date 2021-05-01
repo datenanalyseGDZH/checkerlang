@@ -41,11 +41,10 @@ public class Interpreter {
     public Interpreter(boolean secure, boolean legacy) {
         baseEnvironment = Environment.getBaseEnvironment(secure, legacy);
         environment = baseEnvironment.newEnv();
-        if (!secure) {
-            baseEnvironment.put("stdout", new ValueOutput(new StringWriter()));
-            baseEnvironment.put("stdin", new ValueInput(new BufferedReader(new StringReader(""))));
-            baseEnvironment.put("run", new FuncRun(this));
-        }
+        baseEnvironment.put("stdout", new ValueOutput(new StringWriter()));
+        baseEnvironment.put("stdin", new ValueInput(new BufferedReader(new StringReader(""))));
+        if (!secure) baseEnvironment.put("run", new FuncRun(this));
+        if (secure) baseEnvironment.remove("bind_native");
     }
 
     public Environment getBaseEnvironment() {
