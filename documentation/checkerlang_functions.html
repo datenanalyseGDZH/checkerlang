@@ -28,6 +28,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#module_IO'>Module IO</a></li>
 <li><a href='#module_List'>Module List</a></li>
 <li><a href='#module_Math'>Module Math</a></li>
+<li><a href='#module_OS'>Module OS</a></li>
 <li><a href='#module_Predicate'>Module Predicate</a></li>
 <li><a href='#module_Random'>Module Random</a></li>
 <li><a href='#module_Set'>Module Set</a></li>
@@ -36,9 +37,15 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#module_Sys'>Module Sys</a></li>
 <li><a href='#module_Type'>Module Type</a></li>
 <li><a href='#E'>E</a></li>
+<li><a href='#FS'>FS</a></li>
+<li><a href='#LS'>LS</a></li>
 <li><a href='#MAXINT'>MAXINT</a></li>
 <li><a href='#MININT'>MININT</a></li>
+<li><a href='#OS_ARCH'>OS_ARCH</a></li>
+<li><a href='#OS_NAME'>OS_NAME</a></li>
+<li><a href='#OS_VERSION'>OS_VERSION</a></li>
 <li><a href='#PI'>PI</a></li>
+<li><a href='#PS'>PS</a></li>
 <li><a href='#abs'>abs</a></li>
 <li><a href='#acos'>acos</a></li>
 <li><a href='#add'>add</a></li>
@@ -82,11 +89,14 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#esc'>esc</a></li>
 <li><a href='#escape_pattern'>escape_pattern</a></li>
 <li><a href='#eval'>eval</a></li>
+<li><a href='#execute'>execute</a></li>
 <li><a href='#exp'>exp</a></li>
+<li><a href='#file_copy'>file_copy</a></li>
 <li><a href='#file_delete'>file_delete</a></li>
 <li><a href='#file_exists'>file_exists</a></li>
 <li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_input'>file_input</a></li>
+<li><a href='#file_move'>file_move</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#filter'>filter</a></li>
 <li><a href='#find'>find</a></li>
@@ -98,6 +108,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#format_date'>format_date</a></li>
 <li><a href='#gcd'>gcd</a></li>
 <li><a href='#geometric_mean'>geometric_mean</a></li>
+<li><a href='#get_env'>get_env</a></li>
 <li><a href='#get_output_string'>get_output_string</a></li>
 <li><a href='#greater'>greater</a></li>
 <li><a href='#greater_equals'>greater_equals</a></li>
@@ -255,14 +266,9 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <h2 id='module_IO'>Module IO</h2>
 <ul class='toc'>
 <li><a href='#close'>close</a></li>
-<li><a href='#file_delete'>file_delete</a></li>
-<li><a href='#file_exists'>file_exists</a></li>
-<li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_input'>file_input</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#get_output_string'>get_output_string</a></li>
-<li><a href='#list_dir'>list_dir</a></li>
-<li><a href='#make_dir'>make_dir</a></li>
 <li><a href='#print'>print</a></li>
 <li><a href='#printf'>printf</a></li>
 <li><a href='#println'>println</a></li>
@@ -320,6 +326,24 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#sin'>sin</a></li>
 <li><a href='#sqrt'>sqrt</a></li>
 <li><a href='#tan'>tan</a></li>
+</ul>
+<h2 id='module_OS'>Module OS</h2>
+<ul class='toc'>
+<li><a href='#FS'>FS</a></li>
+<li><a href='#LS'>LS</a></li>
+<li><a href='#OS_ARCH'>OS_ARCH</a></li>
+<li><a href='#OS_NAME'>OS_NAME</a></li>
+<li><a href='#OS_VERSION'>OS_VERSION</a></li>
+<li><a href='#PS'>PS</a></li>
+<li><a href='#execute'>execute</a></li>
+<li><a href='#file_copy'>file_copy</a></li>
+<li><a href='#file_delete'>file_delete</a></li>
+<li><a href='#file_exists'>file_exists</a></li>
+<li><a href='#file_info'>file_info</a></li>
+<li><a href='#file_move'>file_move</a></li>
+<li><a href='#get_env'>get_env</a></li>
+<li><a href='#list_dir'>list_dir</a></li>
+<li><a href='#make_dir'>make_dir</a></li>
 </ul>
 <h2 id='module_Predicate'>Module Predicate</h2>
 <ul class='toc'>
@@ -408,6 +432,34 @@ The mathematical constant E (Eulers number)
 Math
 </div>
 </div>
+<h2 id='FS'>FS</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+FS
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The OS field separator (posix: :, windows: ;).
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
+<h2 id='LS'>LS</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+PS
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The OS line separator (posix: \n, windows: \r\n).
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
 <h2 id='MAXINT'>MAXINT</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -436,6 +488,48 @@ The minimal int value
 Core
 </div>
 </div>
+<h2 id='OS_ARCH'>OS_ARCH</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+OS_ARCH
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The architecture of the operating system, one of x86, amd64.
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
+<h2 id='OS_NAME'>OS_NAME</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+OS_NAME
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The name of the operating system, one of Windows, Linux, macOS
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
+<h2 id='OS_VERSION'>OS_VERSION</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+OS_VERSION
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The version of the operating system.
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
 <h2 id='PI'>PI</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -448,6 +542,20 @@ The mathematical constant PI
 <div class='module'>
 <div class='module_title'>Modules</div>
 Math
+</div>
+</div>
+<h2 id='PS'>PS</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+PS
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+The OS path separator (posix: /, windows: \).
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
 </div>
 </div>
 <h2 id='abs'>abs</h2>
@@ -1366,6 +1474,21 @@ Core
 <div class='examples_title'>Examples</div>
 <div class='example'>eval('1+1') ==&gt; 2</div>
 </div>
+<h2 id='execute'>execute</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+execute(program, args, work_dir = NULL, echo = FALSE)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Executes the program an provides the specified arguments in the list args.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
 <h2 id='exp'>exp</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -1385,6 +1508,21 @@ Math
 <div class='examples_title'>Examples</div>
 <div class='example'>exp(0) ==&gt; 1</div>
 </div>
+<h2 id='file_copy'>file_copy</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_copy(src, dest)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Copies the specified file.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
 <h2 id='file_delete'>file_delete</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -1397,7 +1535,7 @@ Deletes the specified file.
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
-IO
+OS
 </div>
 </div>
 <h2 id='file_exists'>file_exists</h2>
@@ -1412,7 +1550,7 @@ Returns TRUE if the specified file exists.
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
-IO
+OS
 </div>
 </div>
 <h2 id='file_info'>file_info</h2>
@@ -1427,7 +1565,7 @@ Returns information about the specified file (e.g. modification date, size).
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
-IO
+OS
 </div>
 </div>
 <h2 id='file_input'>file_input</h2>
@@ -1443,6 +1581,21 @@ Returns an input object, that reads the characters from the given file.
 <div class='module'>
 <div class='module_title'>Modules</div>
 IO
+</div>
+</div>
+<h2 id='file_move'>file_move</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_move(src, dest)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Moves the specified file.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
 </div>
 </div>
 <h2 id='file_output'>file_output</h2>
@@ -1672,6 +1825,21 @@ Stat
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>round(geometric_mean([54, 24, 36]), 1) ==&gt; 36.0</div>
+</div>
+<h2 id='get_env'>get_env</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+get_env(var)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the value of the environment variable var.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
 </div>
 <h2 id='get_output_string'>get_output_string</h2>
 <div class='header'>
@@ -2740,7 +2908,7 @@ returns a list of filename or paths.
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
-IO
+OS
 </div>
 </div>
 <h2 id='log'>log</h2>
@@ -2847,7 +3015,7 @@ Creates a new directory.
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
-IO
+OS
 </div>
 </div>
 <h2 id='map'>map</h2>
