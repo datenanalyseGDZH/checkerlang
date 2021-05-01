@@ -27,9 +27,12 @@ import { system } from "./js/system.mjs";
 import * as readline from "readline";
 import * as fs from "fs";
 import * as path from "path";
+import * as child_process from "child_process";
 
 system.fs = fs;
 system.path = path;
+system.process = process;
+system.child_process = child_process;
 
 let secure = false;
 let legacy = false;

@@ -38,6 +38,11 @@ if not checkerlang_secure_mode then do
     bind_native("file_delete");
     bind_native("make_dir");
     bind_native("file_info");
+    bind_native("file_copy");
+    bind_native("file_move");
+    bind_native("get_env");
+    bind_native("execute");
+end;
 
 "
 read_file(filename, encoding = 'utf-8')
@@ -45,13 +50,12 @@ read_file(filename, encoding = 'utf-8')
 Opens a file, reads the contents as a single
 string, closes the file and returns the string.
 "
-    def read_file(filename, encoding = 'utf-8') do
-      def infile = file_input(filename, encoding);
-      do
-          read_all(infile);
-      finally
-          close(infile);
-      end;
+def read_file(filename, encoding = 'utf-8') do
+    def infile = file_input(filename, encoding);
+    do
+        read_all(infile);
+    finally
+        close(infile);
     end;
 end;
 

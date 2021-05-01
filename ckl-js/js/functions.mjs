@@ -203,15 +203,19 @@ const bind_native = function(environment, native, alias = null) {
         case "equals": Environment.add(environment, new FuncEquals(), alias); break;
         case "escape_pattern": Environment.add(environment, new FuncEscapePattern(), alias); break;
         case "eval": Environment.add(environment, new FuncEval(), alias); break;
+        case "execute": Environment.add(environment, new FuncExecute(system), alias); break;
         case "exp": Environment.add(environment, new FuncExp(), alias); break;
         case "file_input": Environment.add(environment, new FuncFileInput(system.fs)); break;
+        case "file_copy": Environment.add(environment, new FuncFileCopy(system), alias); break;
         case "file_delete": Environment.add(environment, new FuncFileDelete(system)); break;
         case "file_exists": Environment.add(environment, new FuncFileExists(system)); break;
         case "file_info": Environment.add(environment, new FuncFileInfo(system)); break;
+        case "file_move": Environment.add(environment, new FuncFileMove(system), alias); break;
         case "file_output": Environment.add(environment, new FuncFileOutput(system.fs)); break;
         case "find": Environment.add(environment, new FuncFind(), alias); break;
         case "floor": Environment.add(environment, new FuncFloor(), alias); break;
         case "format_date": Environment.add(environment, new FuncFormatDate(), alias); break;
+        case "get_env": Environment.add(environment, new FuncGetEnv(system), alias); break;
         case "get_output_string": Environment.add(environment, new FuncGetOutputString(), alias); break;
         case "greater": Environment.add(environment, new FuncGreater(), alias); break;
         case "greater_equals": Environment.add(environment, new FuncGreaterEquals(), alias); break;
@@ -909,6 +913,37 @@ export class FuncEval extends ValueFunc {
     }
 }
 
+export class FuncExecute extends ValueFunc {
+    constructor(system) {
+        super("execute");
+        this.info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
+                "\r\n" +
+                "Executes the program an provides the specified arguments in the list args.\r\n";
+        this.system = system;
+    }
+
+    getArgNames() {
+        return ["program", "args", "work_dir", "echo"];
+    }
+
+    execute(args, environment, pos) {
+        const program = args.getString("program").value;
+        const arglist = [];
+        if (!args.get("args").isList()) throw new RuntimeError("ERROR", "Expected argument list but got " + args.get("args").type());
+        for (let arg of args.get("args").value) {
+            arglist.push(arg.asString().value);
+        }
+        let work_dir = null;
+        if (args.hasArg("work_dir")) work_dir = args.getString("work_dir").value;
+        let echo = false;
+        if (args.hasArg("echo")) echo = args.getBoolean("echo").value;
+        const options = { cwd: work_dir === null ? undefined : work_dir, stdio: 'inherit' };
+        if (echo) console.log(program + " " + arglist.join(" "));
+        const result = system.child_process.spawnSync(program, arglist, options);
+        return result.status === null ? ValueNull.NULL : new ValueInt(result.status);
+    }
+}
+
 export class FuncExp extends ValueFunc {
     constructor() {
         super("exp");
@@ -953,6 +988,28 @@ export class FuncFileInput extends ValueFunc {
         } catch (e) {
             throw new RuntimeError("ERROR", "Cannot open file " + filename, pos);
         }
+    }
+}
+
+export class FuncFileCopy extends ValueFunc {
+    constructor(system) {
+        super("file_copy");
+        this.info = "file_copy(src, dest)\r\n" +
+                "\r\n" +
+                "Copies the specified file.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["src", "dest"];
+    }
+
+    execute(args, environment, pos) {
+        const src = args.getString("src").value;
+        const dest = args.getString("dest").value;
+        this.fs.copyFileSync(src, dest);
+        return ValueNull.NULL;
     }
 }
 
@@ -1018,11 +1075,38 @@ export class FuncFileInfo extends ValueFunc {
     execute(args, environment, pos) {
         const filename = args.getString("filename").value;
         const result = new ValueObject();
-        const stats = this.fs.lstatSync(filename);
-        result.addItem("size", new ValueInt(stats.size));
-        result.addItem("modified", new ValueDate(stats.mtime));
-        result.addItem("created", new ValueDate(stats.ctime));
-        return result;
+        try {
+            const stats = this.fs.lstatSync(filename);
+            result.addItem("size", new ValueInt(stats.size));
+            result.addItem("is_dir", ValueBoolean.from(stats.isDirectory()));
+            result.addItem("modified", new ValueDate(stats.mtime));
+            result.addItem("created", new ValueDate(stats.ctime));
+            return result;
+        } catch {
+            return ValueNull.NULL;
+        }
+    }
+}
+
+export class FuncFileMove extends ValueFunc {
+    constructor(system) {
+        super("file_move");
+        this.info = "file_move(src, dest)\r\n" +
+                "\r\n" +
+                "Moves the specified file.\r\n";
+        this.fs = system.fs;
+        this.path = system.path;
+    }
+
+    getArgNames() {
+        return ["src", "dest"];
+    }
+
+    execute(args, environment, pos) {
+        const src = args.getString("src").value;
+        const dest = args.getString("dest").value;
+        this.fs.renameSync(src, dest);
+        return ValueNull.NULL;
     }
 }
 
@@ -1161,6 +1245,24 @@ export class FuncFormatDate extends ValueFunc {
         let result = val.toString();
         while (result.length < len) result = "0" + result;
         return result;
+    }
+}
+
+export class FuncGetEnv extends ValueFunc {
+    constructor(system) {
+        super("get_env");
+        this.info = "get_env(var)\r\n" +
+                "\r\n" +
+                "Returns the value of the environment variable var.\r\n";
+        this.system = system;
+    }
+
+    getArgNames() {
+        return ["var"];
+    }
+
+    execute(args, environment, pos) {
+        return new ValueString(system.process.env[args.getString("var").value] || "");
     }
 }
 

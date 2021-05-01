@@ -14,6 +14,26 @@
 * syntax highlighting in div and textarea! at least keywords.
 * notebook should have offline and online mode. In offline mode, everything is saved in the browser (as it is currently). In online mode, reached after logging in, the notebooks are saved on the server. It is possible to choose per notebook whether it should be online or offline.
 
+# collab
+
+A webpage useable for collaboration between two persons. Basically
+it looks like a notebook, but with two notebook panes. One for us
+and one for the collaboration partner. Both participants see both
+notebooks but can only edit their own. It is possible to snatch cells
+from the other notebook into our own (with e.g. :<12 to fetch the
+twelfth cell from the other notebook).
+
+All this implies that a shared state exists on the server. Thus, one
+participant opens a session, this generates a random session id. The
+other participant enters this session id to join the session. Then, whenever
+anyone edits anything, the changes are transmitted to the server and from
+there to the other participant. Thus, the notebook contents is always keep
+synchronized. Also, the execution of a cell and its results has to be
+communicated. Never will code from the other person be executed in our
+own session! We also have only one interperter instance per participant.
+This is important for security reasons: it should not be possible for
+the other participant to execute code on our machine/browser.
+
 # language
 
 * js: maybe rename isEquals() to equals(), seems to be the canonical name for the equality function
@@ -37,7 +57,6 @@
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
 
-* add new function file_copy, file_move, get_env, execute to js
 * create new module OS and move get_env, execute and file handling function there
 * add information about the operating system in the OS module
   * operating system name (windows, ...)

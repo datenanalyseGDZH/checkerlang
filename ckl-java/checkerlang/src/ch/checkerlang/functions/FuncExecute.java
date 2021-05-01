@@ -39,7 +39,7 @@ import java.util.List;
 public class FuncExecute extends FuncBase {
     public FuncExecute() {
         super("execute");
-        info = "execute(program, args, work_dir = NULL)\r\n" +
+        info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
                 "\r\n" +
                 "Executed the program and provides the specified arguments in the list args.\r\n";
     }

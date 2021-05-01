@@ -30,7 +30,7 @@ namespace CheckerLang
     {
         public FuncExecute() : base("execute")
         {
-             info = "execute(program, args, work_dir = NULL)\r\n" +
+             info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
                  "\r\n" +
                  "Executed the program and provides the specified arguments in the list args.\r\n";
         }
