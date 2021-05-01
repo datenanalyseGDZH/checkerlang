@@ -5,6 +5,7 @@ import { moduledate } from "./module_date.mjs";
 import { moduleio } from "./module_io.mjs";
 import { modulelist } from "./module_list.mjs";
 import { modulemath } from "./module_math.mjs";
+import { moduleos } from "./module_os.mjs";
 import { modulepredicate } from "./module_predicate.mjs";
 import { modulerandom } from "./module_random.mjs";
 import { moduleset } from "./module_set.mjs";
@@ -20,6 +21,7 @@ export const moduleloader = function(modulefile, pos) {
         case "IO.ckl": return moduleio;
         case "List.ckl": return modulelist;
         case "Math.ckl": return modulemath;
+        case "OS.ckl": return moduleos;
         case "Predicate.ckl": return modulepredicate;
         case "Random.ckl": return modulerandom;
         case "Set.ckl": return moduleset;

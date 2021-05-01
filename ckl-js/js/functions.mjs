@@ -286,9 +286,30 @@ const bind_native = function(environment, native, alias = null) {
         case "zip_map": Environment.add(environment, new FuncZipMap(), alias); break;
         case "E": environment.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
         case "PI": environment.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
+        case "PS": environment.put("PS", new ValueString(system.path.sep).withInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
+        case "LS": environment.put("LS", new ValueString(system.os.EOL).withInfo("PS\n\nThe OS line separator (posix: \\n, windows: \\r\\n).")); break;
+        case "FS": environment.put("FS", new ValueString(system.path.delimiter).withInfo("FS\n\nThe OS field separator (posix: :, windows: ;).")); break;
+        case "OS_NAME": environment.put("OS_NAME", new ValueString(get_os_name()).withInfo("OS_NAME\n\nThe name of the operating system, one of Windows, Linux, macOS")); break;
+        case "OS_VERSION": environment.put("OS_VERSION", new ValueString(system.os.release() + " " + system.os.version()).withInfo("OS_VERSION\n\nThe version of the operating system.")); break;
+        case "OS_ARCH": environment.put("OS_ARCH", new ValueString(get_os_arch()).withInfo("OS_ARCH\n\nThe architecture of the operating system, one of x86, amd64.")); break;
         default: throw new RuntimeError("ERROR", "Unknown native " + native, this.pos);
     }
 }
+
+const get_os_name = function() {
+    const type = system.os.type();
+    if (type === "Linux") return "Linux";
+    if (type === "Darwin") return "macOS";
+    if (type === "Windows_NT") return "Windows";
+    return "Unknown";
+};
+
+const get_os_arch = function() {
+    const arch = system.os.arch();
+    if (arch == "x32" || arch == "ia32") return "x86";
+    if (arch == "x64") return "amd64";
+    return "Unknown";
+};
 
 export class FuncAcos extends ValueFunc {
     constructor() {
@@ -1030,7 +1051,11 @@ export class FuncFileDelete extends ValueFunc {
     execute(args, environment, pos) {
         const filename = args.getString("filename").value;
         try {
-            this.fs.rmSync(filename);
+            if (this.fs.lstatSync(filename).isDirectory()) {
+                this.fs.rmdirSync(filename);
+            } else {
+                this.fs.rmSync(filename);
+            }
         } catch {
             throw new RuntimeError("ERROR", "Cannot delete file " + filename, pos);
         }

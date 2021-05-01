@@ -33,15 +33,6 @@ bind_native("str_output");
 if not checkerlang_secure_mode then do
     bind_native("file_input");
     bind_native("file_output");
-    bind_native("list_dir");
-    bind_native("file_exists");
-    bind_native("file_delete");
-    bind_native("make_dir");
-    bind_native("file_info");
-    bind_native("file_copy");
-    bind_native("file_move");
-    bind_native("get_env");
-    bind_native("execute");
 end;
 
 "

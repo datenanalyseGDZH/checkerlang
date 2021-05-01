@@ -28,11 +28,13 @@ import * as readline from "readline";
 import * as fs from "fs";
 import * as path from "path";
 import * as child_process from "child_process";
+import * as os from "os";
 
 system.fs = fs;
 system.path = path;
 system.process = process;
 system.child_process = child_process;
+system.os = os;
 
 let secure = false;
 let legacy = false;

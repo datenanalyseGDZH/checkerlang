@@ -27,11 +27,13 @@ import { exit } from "process";
 import * as fs from "fs";
 import * as path from "path";
 import * as child_process from "child_process";
+import * as os from "os";
 
 system.fs = fs;
 system.path = path;
 system.process = process;
 system.child_process = child_process;
+system.os = os;
 
 let secure = false;
 let legacy = false;
@@ -76,7 +78,7 @@ if (!fs.existsSync(scriptname)) {
 const args = new ValueList();
 for (const scriptarg of scriptargs) args.addItem(new ValueString(scriptarg));
 interpreter.environment.put("args", args);
-interpreter.envrionment.put("scriptname", new ValueString(scriptname));
+interpreter.environment.put("scriptname", new ValueString(scriptname));
 
 const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'});
 

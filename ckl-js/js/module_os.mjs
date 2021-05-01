@@ -1,4 +1,4 @@
-export const modulesys = `
+export const moduleos = `
 # Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,9 +19,23 @@ export const modulesys = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-def checkerlang_version = "3.4.0";
-def checkerlang_platform = "js";
+bind_native("PS");
+bind_native("LS");
+bind_native("FS");
+bind_native("OS_NAME");
+bind_native("OS_VERSION");
+bind_native("OS_ARCH");
 
-def checkerlang_modules = ["Core", "Date", "IO", "List", "Math", "OS", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
+if not checkerlang_secure_mode then do
+    bind_native("file_exists");
+    bind_native("file_copy");
+    bind_native("file_delete");
+    bind_native("file_info");
+    bind_native("file_move");
+    bind_native("list_dir");
+    bind_native("make_dir");
+    bind_native("get_env");
+    bind_native("execute");
+end;
 
 `;
