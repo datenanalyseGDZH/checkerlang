@@ -32,6 +32,11 @@ namespace CheckerLang
                         "Creates a new directory.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"dir", "with_parents"};

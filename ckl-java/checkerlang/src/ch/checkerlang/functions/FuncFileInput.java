@@ -44,6 +44,10 @@ public class FuncFileInput extends FuncBase {
                 "Returns an input object, that reads the characters from the given file.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("filename", "encoding");
     }

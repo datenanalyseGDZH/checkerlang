@@ -42,6 +42,10 @@ public class FuncGetEnv extends FuncBase {
                 "Returns the value of the specified environment variable.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("var");
     }

@@ -39,6 +39,10 @@ public class FuncMakeDir extends FuncBase {
                 "Creates a new directory.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("dir", "with_parents");
     }

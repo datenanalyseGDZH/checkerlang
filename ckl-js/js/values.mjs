@@ -679,6 +679,7 @@ export class ValueFunc extends Value {
     constructor(name) {
         super();
         this.name = name;
+        this.secure = true;
     }
 
     isEquals(other) {

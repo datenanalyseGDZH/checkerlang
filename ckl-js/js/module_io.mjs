@@ -29,11 +29,10 @@ bind_native("read_all");
 bind_native("readln");
 bind_native("str_input");
 bind_native("str_output");
+bind_native("file_input");
+bind_native("file_output");
 
 if not checkerlang_secure_mode then do
-    bind_native("file_input");
-    bind_native("file_output");
-end;
 
 "
 read_file(filename, encoding = 'utf-8')
@@ -50,6 +49,7 @@ def read_file(filename, encoding = 'utf-8') do
     end;
 end;
 
+end;
 
 "
 printf(fmt, args...)

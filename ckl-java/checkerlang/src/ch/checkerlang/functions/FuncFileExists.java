@@ -38,6 +38,10 @@ public class FuncFileExists extends FuncBase {
                 "Returns TRUE if the specified file exists.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("filename");
     }

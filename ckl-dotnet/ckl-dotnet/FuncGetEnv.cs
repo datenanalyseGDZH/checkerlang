@@ -33,6 +33,11 @@ namespace CheckerLang
                    "Returns the value of the environment variable var.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"var"};

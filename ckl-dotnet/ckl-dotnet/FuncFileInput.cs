@@ -33,6 +33,11 @@ namespace CheckerLang
                    "Returns an input object, that reads the characters from the given file.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"filename", "encoding"};

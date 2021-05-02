@@ -35,6 +35,11 @@ namespace CheckerLang
                    "Loads and interprets the file.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"file"};

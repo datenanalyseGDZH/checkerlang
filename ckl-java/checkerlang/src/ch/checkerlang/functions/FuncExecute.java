@@ -44,6 +44,10 @@ public class FuncExecute extends FuncBase {
                 "Executed the program and provides the specified arguments in the list args.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("program", "args", "work_dir", "echo");
     }

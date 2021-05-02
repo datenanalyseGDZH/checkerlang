@@ -42,6 +42,10 @@ public class FuncFileMove extends FuncBase {
                 "Moves the specified file.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("src", "dest");
     }

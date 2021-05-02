@@ -45,6 +45,10 @@ public class FuncFileOutput extends FuncBase {
                 "the file exists it is overwritten.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("filename", "encoding", "append");
     }

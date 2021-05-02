@@ -22,6 +22,7 @@
 import { RuntimeError } from "./errors.mjs";
 import { Parser } from "./parser.mjs";
 import { Environment } from "./functions.mjs";
+import { FuncRun } from "./functions.mjs";
 import { system } from "./system.mjs";
 
 import { 
@@ -39,7 +40,7 @@ export class Interpreter {
         this.baseEnvironment.put("console", new ValueOutput(new ConsoleOutput()));
         this.baseEnvironment.put("stdout", new ValueOutput(new StringOutput()));
         this.baseEnvironment.put("stdin", new ValueInput(new StringInput("")));
-        if (secure) this.baseEnvironment.remove("bind_native");
+        if (!secure) this.baseEnvironment.put("run", new FuncRun(this, system.fs));
     }
 
     setStandardOutput(stdout) {

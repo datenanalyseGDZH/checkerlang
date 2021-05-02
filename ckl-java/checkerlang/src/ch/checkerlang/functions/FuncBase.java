@@ -31,6 +31,10 @@ public abstract class FuncBase extends ValueFunc {
         this.name = name;
     }
 
+    public boolean isSecure() {
+        return true;
+    }
+
     public String getName() {
         return name;
     }

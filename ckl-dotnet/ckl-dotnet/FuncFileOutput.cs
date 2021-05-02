@@ -34,6 +34,11 @@ namespace CheckerLang
                    "the file exists it is overwritten, unless append is TRUE.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"filename", "encoding", "append"};

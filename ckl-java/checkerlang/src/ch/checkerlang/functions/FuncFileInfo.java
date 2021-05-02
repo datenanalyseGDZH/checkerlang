@@ -44,6 +44,10 @@ public class FuncFileInfo extends FuncBase {
                 "Returns information about the specified file (e.g. modification date, size).\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("filename");
     }

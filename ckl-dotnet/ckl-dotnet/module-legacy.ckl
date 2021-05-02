@@ -37,4 +37,5 @@ require String import [
     contains as str_contains,
     find as str_find,
     matches as str_matches,
-    trim as str_trim];
+    trim as str_trim
+];

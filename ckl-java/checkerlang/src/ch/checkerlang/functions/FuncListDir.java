@@ -40,6 +40,10 @@ public class FuncListDir extends FuncBase {
                 "returns a list of filename or paths.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("dir", "recursive", "include_path", "include_dirs");
     }

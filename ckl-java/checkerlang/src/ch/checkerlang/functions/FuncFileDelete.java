@@ -40,6 +40,10 @@ public class FuncFileDelete extends FuncBase {
                 "Deletes the specified file.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("filename");
     }

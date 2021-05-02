@@ -147,6 +147,7 @@ public class BindNative {
     }
 
     private static void bindNative(Environment env, FuncBase func, String alias) {
+        if (env.getBase().get("checkerlang_secure_mode", SourcePos.Unknown).asBoolean().getValue() && !func.isSecure()) return;
         env.put(func.getName(), func);
         if (alias != null) env.put(alias, func);
     }

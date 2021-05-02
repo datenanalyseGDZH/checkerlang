@@ -44,7 +44,6 @@ public class Interpreter {
         baseEnvironment.put("stdout", new ValueOutput(new StringWriter()));
         baseEnvironment.put("stdin", new ValueInput(new BufferedReader(new StringReader(""))));
         if (!secure) baseEnvironment.put("run", new FuncRun(this));
-        if (secure) baseEnvironment.remove("bind_native");
     }
 
     public Environment getBaseEnvironment() {

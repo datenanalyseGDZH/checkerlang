@@ -70,8 +70,8 @@ export class Environment {
 
     static getBaseEnvironment(secure = true, legacy = true) {
         const result = Environment.getNullEnvironment();
-        bind_native(result, "bind_native");
         result.put("checkerlang_secure_mode", ValueBoolean.from(secure));
+        bind_native(result, "bind_native");
         result.put("NULL", ValueNull.NULL);
         result.put("MAXINT", new ValueInt(Number.MAX_SAFE_INTEGER).withInfo("MAXINT\n\nThe maximal int value"));
         result.put("MININT", new ValueInt(Number.MIN_SAFE_INTEGER).withInfo("MININT\n\nThe minimal int value"));
@@ -181,109 +181,109 @@ export class Environment {
 
 const bind_native = function(environment, native, alias = null) {
     switch (native) {
-        case "acos": Environment.add(environment, new FuncAcos(), alias); break;
-        case "add": Environment.add(environment, new FuncAdd(), alias); break;
-        case "append": Environment.add(environment, new FuncAppend(), alias); break;
-        case "asin": Environment.add(environment, new FuncAsin(), alias); break;
-        case "atan": Environment.add(environment, new FuncAtan(), alias); break;
-        case "atan2": Environment.add(environment, new FuncAtan2(), alias); break;
-        case "bind_native": Environment.add(environment, new FuncBindNative(), alias); break;
-        case "body": Environment.add(environment, new FuncBody(), alias); break;
-        case "boolean": Environment.add(environment, new FuncBoolean(), alias); break;
-        case "ceiling": Environment.add(environment, new FuncCeiling(), alias); break;
-        case "close": Environment.add(environment, new FuncClose(), alias); break;
-        case "compare": Environment.add(environment, new FuncCompare(), alias); break;
-        case "contains": Environment.add(environment, new FuncContains(), alias); break;
-        case "cos": Environment.add(environment, new FuncCos(), alias); break;
-        case "date": Environment.add(environment, new FuncDate(), alias); break;
-        case "decimal": Environment.add(environment, new FuncDecimal(), alias); break;
-        case "delete_at": Environment.add(environment, new FuncDeleteAt(), alias); break;
-        case "div": Environment.add(environment, new FuncDiv(), alias); break;
-        case "ends_with": Environment.add(environment, new FuncEndsWith(), alias); break;
-        case "equals": Environment.add(environment, new FuncEquals(), alias); break;
-        case "escape_pattern": Environment.add(environment, new FuncEscapePattern(), alias); break;
-        case "eval": Environment.add(environment, new FuncEval(), alias); break;
-        case "execute": Environment.add(environment, new FuncExecute(system), alias); break;
-        case "exp": Environment.add(environment, new FuncExp(), alias); break;
-        case "file_input": Environment.add(environment, new FuncFileInput(system.fs)); break;
-        case "file_copy": Environment.add(environment, new FuncFileCopy(system), alias); break;
-        case "file_delete": Environment.add(environment, new FuncFileDelete(system)); break;
-        case "file_exists": Environment.add(environment, new FuncFileExists(system)); break;
-        case "file_info": Environment.add(environment, new FuncFileInfo(system)); break;
-        case "file_move": Environment.add(environment, new FuncFileMove(system), alias); break;
-        case "file_output": Environment.add(environment, new FuncFileOutput(system.fs)); break;
-        case "find": Environment.add(environment, new FuncFind(), alias); break;
-        case "floor": Environment.add(environment, new FuncFloor(), alias); break;
-        case "format_date": Environment.add(environment, new FuncFormatDate(), alias); break;
-        case "get_env": Environment.add(environment, new FuncGetEnv(system), alias); break;
-        case "get_output_string": Environment.add(environment, new FuncGetOutputString(), alias); break;
-        case "greater": Environment.add(environment, new FuncGreater(), alias); break;
-        case "greater_equals": Environment.add(environment, new FuncGreaterEquals(), alias); break;
-        case "identity": Environment.add(environment, new FuncIdentity(), alias); break;
-        case "if_empty": Environment.add(environment, new FuncIfEmpty(), alias); break;
-        case "if_null": Environment.add(environment, new FuncIfNull(), alias); break;
-        case "if_null_or_empty": Environment.add(environment, new FuncIfNullOrEmpty(), alias); break;
-        case "info": Environment.add(environment, new FuncInfo(), alias); break;
-        case "insert_at": Environment.add(environment, new FuncInsertAt(), alias); break;
-        case "int": Environment.add(environment, new FuncInt(), alias); break;
-        case "is_empty": Environment.add(environment, new FuncIsEmpty(), alias); break;
-        case "is_not_empty": Environment.add(environment, new FuncIsNotEmpty(), alias); break;
-        case "is_not_null": Environment.add(environment, new FuncIsNotNull(), alias); break;
-        case "is_null": Environment.add(environment, new FuncIsNull(), alias); break;
-        case "length": Environment.add(environment, new FuncLength(), alias); break;
-        case "less": Environment.add(environment, new FuncLess(), alias); break;
-        case "less_equals": Environment.add(environment, new FuncLessEquals(), alias); break;
-        case "list": Environment.add(environment, new FuncList(), alias); break;
-        case "list_dir": Environment.add(environment, new FuncListDir(system)); break;
-        case "log": Environment.add(environment, new FuncLog(), alias); break;
-        case "lower": Environment.add(environment, new FuncLower(), alias); break;
-        case "ls": Environment.add(environment, new FuncLs(), alias); break;
-        case "make_dir": Environment.add(environment, new FuncMakeDir(system)); break;
-        case "map": Environment.add(environment, new FuncMap(), alias); break;
-        case "matches": Environment.add(environment, new FuncMatches(), alias); break;
-        case "mod": Environment.add(environment, new FuncMod(), alias); break;
-        case "mul": Environment.add(environment, new FuncMul(), alias); break;
-        case "not_equals": Environment.add(environment, new FuncNotEquals(), alias); break;
-        case "object": Environment.add(environment, new FuncObject(), alias); break;
-        case "parse": Environment.add(environment, new FuncParse(), alias); break;
-        case "parse_date": Environment.add(environment, new FuncParseDate(), alias); break;
-        case "parse_json": Environment.add(environment, new FuncParseJson(), alias); break;
-        case "pattern": Environment.add(environment, new FuncPattern(), alias); break;
-        case "pow": Environment.add(environment, new FuncPow(), alias); break;
-        case "print": Environment.add(environment, new FuncPrint(), alias); break;
-        case "println": Environment.add(environment, new FuncPrintln(), alias); break;
-        case "process_lines": Environment.add(environment, new FuncProcessLines(), alias); break;
-        case "put": Environment.add(environment, new FuncPut(), alias); break;
-        case "random": Environment.add(environment, new FuncRandom(), alias); break;
-        case "range": Environment.add(environment, new FuncRange(), alias); break;
-        case "read": Environment.add(environment, new FuncRead(), alias); break;
-        case "read_all": Environment.add(environment, new FuncReadall(), alias); break;
-        case "readln": Environment.add(environment, new FuncReadln(), alias); break;
-        case "remove": Environment.add(environment, new FuncRemove(), alias); break;
-        case "round": Environment.add(environment, new FuncRound(), alias); break;
-        case "s": Environment.add(environment, new FuncS(), alias); break;
-        case "set": Environment.add(environment, new FuncSet(), alias); break;
-        case "set_seed": Environment.add(environment, new FuncSetSeed(), alias); break;
-        case "sin": Environment.add(environment, new FuncSin(), alias); break;
-        case "sorted": Environment.add(environment, new FuncSorted(), alias); break;
-        case "split": Environment.add(environment, new FuncSplit(), alias); break;
-        case "split2": Environment.add(environment, new FuncSplit2(), alias); break;
-        case "sqrt": Environment.add(environment, new FuncSqrt(), alias); break;
-        case "str_input": Environment.add(environment, new FuncStrInput(), alias); break;
-        case "starts_with": Environment.add(environment, new FuncStartsWith(), alias); break;
-        case "str_output": Environment.add(environment, new FuncStrOutput(), alias); break;
-        case "string": Environment.add(environment, new FuncString(), alias); break;
-        case "sub": Environment.add(environment, new FuncSub(), alias); break;
-        case "sublist": Environment.add(environment, new FuncSublist(), alias); break;
-        case "substr": Environment.add(environment, new FuncSubstr(), alias); break;
-        case "sum": Environment.add(environment, new FuncSum(), alias); break;
-        case "tan": Environment.add(environment, new FuncTan(), alias); break;
-        case "timestamp": Environment.add(environment, new FuncTimestamp(), alias); break;
-        case "trim": Environment.add(environment, new FuncTrim(), alias); break;
-        case "type": Environment.add(environment, new FuncType(), alias); break;
-        case "upper": Environment.add(environment, new FuncUpper(), alias); break;
-        case "zip": Environment.add(environment, new FuncZip(), alias); break;
-        case "zip_map": Environment.add(environment, new FuncZipMap(), alias); break;
+        case "acos": bind_native_fun(environment, new FuncAcos(), alias); break;
+        case "add": bind_native_fun(environment, new FuncAdd(), alias); break;
+        case "append": bind_native_fun(environment, new FuncAppend(), alias); break;
+        case "asin": bind_native_fun(environment, new FuncAsin(), alias); break;
+        case "atan": bind_native_fun(environment, new FuncAtan(), alias); break;
+        case "atan2": bind_native_fun(environment, new FuncAtan2(), alias); break;
+        case "bind_native": bind_native_fun(environment, new FuncBindNative(), alias); break;
+        case "body": bind_native_fun(environment, new FuncBody(), alias); break;
+        case "boolean": bind_native_fun(environment, new FuncBoolean(), alias); break;
+        case "ceiling": bind_native_fun(environment, new FuncCeiling(), alias); break;
+        case "close": bind_native_fun(environment, new FuncClose(), alias); break;
+        case "compare": bind_native_fun(environment, new FuncCompare(), alias); break;
+        case "contains": bind_native_fun(environment, new FuncContains(), alias); break;
+        case "cos": bind_native_fun(environment, new FuncCos(), alias); break;
+        case "date": bind_native_fun(environment, new FuncDate(), alias); break;
+        case "decimal": bind_native_fun(environment, new FuncDecimal(), alias); break;
+        case "delete_at": bind_native_fun(environment, new FuncDeleteAt(), alias); break;
+        case "div": bind_native_fun(environment, new FuncDiv(), alias); break;
+        case "ends_with": bind_native_fun(environment, new FuncEndsWith(), alias); break;
+        case "equals": bind_native_fun(environment, new FuncEquals(), alias); break;
+        case "escape_pattern": bind_native_fun(environment, new FuncEscapePattern(), alias); break;
+        case "eval": bind_native_fun(environment, new FuncEval(), alias); break;
+        case "execute": bind_native_fun(environment, new FuncExecute(system), alias); break;
+        case "exp": bind_native_fun(environment, new FuncExp(), alias); break;
+        case "file_input": bind_native_fun(environment, new FuncFileInput(system.fs)); break;
+        case "file_copy": bind_native_fun(environment, new FuncFileCopy(system), alias); break;
+        case "file_delete": bind_native_fun(environment, new FuncFileDelete(system)); break;
+        case "file_exists": bind_native_fun(environment, new FuncFileExists(system)); break;
+        case "file_info": bind_native_fun(environment, new FuncFileInfo(system)); break;
+        case "file_move": bind_native_fun(environment, new FuncFileMove(system), alias); break;
+        case "file_output": bind_native_fun(environment, new FuncFileOutput(system.fs)); break;
+        case "find": bind_native_fun(environment, new FuncFind(), alias); break;
+        case "floor": bind_native_fun(environment, new FuncFloor(), alias); break;
+        case "format_date": bind_native_fun(environment, new FuncFormatDate(), alias); break;
+        case "get_env": bind_native_fun(environment, new FuncGetEnv(system), alias); break;
+        case "get_output_string": bind_native_fun(environment, new FuncGetOutputString(), alias); break;
+        case "greater": bind_native_fun(environment, new FuncGreater(), alias); break;
+        case "greater_equals": bind_native_fun(environment, new FuncGreaterEquals(), alias); break;
+        case "identity": bind_native_fun(environment, new FuncIdentity(), alias); break;
+        case "if_empty": bind_native_fun(environment, new FuncIfEmpty(), alias); break;
+        case "if_null": bind_native_fun(environment, new FuncIfNull(), alias); break;
+        case "if_null_or_empty": bind_native_fun(environment, new FuncIfNullOrEmpty(), alias); break;
+        case "info": bind_native_fun(environment, new FuncInfo(), alias); break;
+        case "insert_at": bind_native_fun(environment, new FuncInsertAt(), alias); break;
+        case "int": bind_native_fun(environment, new FuncInt(), alias); break;
+        case "is_empty": bind_native_fun(environment, new FuncIsEmpty(), alias); break;
+        case "is_not_empty": bind_native_fun(environment, new FuncIsNotEmpty(), alias); break;
+        case "is_not_null": bind_native_fun(environment, new FuncIsNotNull(), alias); break;
+        case "is_null": bind_native_fun(environment, new FuncIsNull(), alias); break;
+        case "length": bind_native_fun(environment, new FuncLength(), alias); break;
+        case "less": bind_native_fun(environment, new FuncLess(), alias); break;
+        case "less_equals": bind_native_fun(environment, new FuncLessEquals(), alias); break;
+        case "list": bind_native_fun(environment, new FuncList(), alias); break;
+        case "list_dir": bind_native_fun(environment, new FuncListDir(system)); break;
+        case "log": bind_native_fun(environment, new FuncLog(), alias); break;
+        case "lower": bind_native_fun(environment, new FuncLower(), alias); break;
+        case "ls": bind_native_fun(environment, new FuncLs(), alias); break;
+        case "make_dir": bind_native_fun(environment, new FuncMakeDir(system)); break;
+        case "map": bind_native_fun(environment, new FuncMap(), alias); break;
+        case "matches": bind_native_fun(environment, new FuncMatches(), alias); break;
+        case "mod": bind_native_fun(environment, new FuncMod(), alias); break;
+        case "mul": bind_native_fun(environment, new FuncMul(), alias); break;
+        case "not_equals": bind_native_fun(environment, new FuncNotEquals(), alias); break;
+        case "object": bind_native_fun(environment, new FuncObject(), alias); break;
+        case "parse": bind_native_fun(environment, new FuncParse(), alias); break;
+        case "parse_date": bind_native_fun(environment, new FuncParseDate(), alias); break;
+        case "parse_json": bind_native_fun(environment, new FuncParseJson(), alias); break;
+        case "pattern": bind_native_fun(environment, new FuncPattern(), alias); break;
+        case "pow": bind_native_fun(environment, new FuncPow(), alias); break;
+        case "print": bind_native_fun(environment, new FuncPrint(), alias); break;
+        case "println": bind_native_fun(environment, new FuncPrintln(), alias); break;
+        case "process_lines": bind_native_fun(environment, new FuncProcessLines(), alias); break;
+        case "put": bind_native_fun(environment, new FuncPut(), alias); break;
+        case "random": bind_native_fun(environment, new FuncRandom(), alias); break;
+        case "range": bind_native_fun(environment, new FuncRange(), alias); break;
+        case "read": bind_native_fun(environment, new FuncRead(), alias); break;
+        case "read_all": bind_native_fun(environment, new FuncReadall(), alias); break;
+        case "readln": bind_native_fun(environment, new FuncReadln(), alias); break;
+        case "remove": bind_native_fun(environment, new FuncRemove(), alias); break;
+        case "round": bind_native_fun(environment, new FuncRound(), alias); break;
+        case "s": bind_native_fun(environment, new FuncS(), alias); break;
+        case "set": bind_native_fun(environment, new FuncSet(), alias); break;
+        case "set_seed": bind_native_fun(environment, new FuncSetSeed(), alias); break;
+        case "sin": bind_native_fun(environment, new FuncSin(), alias); break;
+        case "sorted": bind_native_fun(environment, new FuncSorted(), alias); break;
+        case "split": bind_native_fun(environment, new FuncSplit(), alias); break;
+        case "split2": bind_native_fun(environment, new FuncSplit2(), alias); break;
+        case "sqrt": bind_native_fun(environment, new FuncSqrt(), alias); break;
+        case "str_input": bind_native_fun(environment, new FuncStrInput(), alias); break;
+        case "starts_with": bind_native_fun(environment, new FuncStartsWith(), alias); break;
+        case "str_output": bind_native_fun(environment, new FuncStrOutput(), alias); break;
+        case "string": bind_native_fun(environment, new FuncString(), alias); break;
+        case "sub": bind_native_fun(environment, new FuncSub(), alias); break;
+        case "sublist": bind_native_fun(environment, new FuncSublist(), alias); break;
+        case "substr": bind_native_fun(environment, new FuncSubstr(), alias); break;
+        case "sum": bind_native_fun(environment, new FuncSum(), alias); break;
+        case "tan": bind_native_fun(environment, new FuncTan(), alias); break;
+        case "timestamp": bind_native_fun(environment, new FuncTimestamp(), alias); break;
+        case "trim": bind_native_fun(environment, new FuncTrim(), alias); break;
+        case "type": bind_native_fun(environment, new FuncType(), alias); break;
+        case "upper": bind_native_fun(environment, new FuncUpper(), alias); break;
+        case "zip": bind_native_fun(environment, new FuncZip(), alias); break;
+        case "zip_map": bind_native_fun(environment, new FuncZipMap(), alias); break;
         case "E": environment.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
         case "PI": environment.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
         case "PS": environment.put("PS", new ValueString(system.path.sep).withInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
@@ -295,6 +295,11 @@ const bind_native = function(environment, native, alias = null) {
         default: throw new RuntimeError("ERROR", "Unknown native " + native, this.pos);
     }
 }
+
+const bind_native_fun = function(environment, func, alias) {
+    if (environment.getBase().get("checkerlang_secure_mode").value && !func.secure) return;
+    Environment.add(environment, func, alias);
+};
 
 const get_os_name = function() {
     const type = system.os.type();
@@ -941,6 +946,7 @@ export class FuncExecute extends ValueFunc {
                 "\r\n" +
                 "Executes the program an provides the specified arguments in the list args.\r\n";
         this.system = system;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -992,6 +998,7 @@ export class FuncFileInput extends ValueFunc {
                 "\r\n" +
                 "Returns an input object, that reads the characters from the given file.\r\n";
         this.fs = fs;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1020,6 +1027,7 @@ export class FuncFileCopy extends ValueFunc {
                 "Copies the specified file.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1042,6 +1050,7 @@ export class FuncFileDelete extends ValueFunc {
                 "Deletes the specified file.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1071,6 +1080,7 @@ export class FuncFileExists extends ValueFunc {
                 "Returns TRUE if the specified file exists.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1091,6 +1101,7 @@ export class FuncFileInfo extends ValueFunc {
                 "Returns information about the specified file (e.g. modification date, size).\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1121,6 +1132,7 @@ export class FuncFileMove extends ValueFunc {
                 "Moves the specified file.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1143,6 +1155,7 @@ export class FuncFileOutput extends ValueFunc {
                 "\r\n" +
                 "Returns an output object, that writes to the given file. If\r\n" +
                 "the file exists it is overwritten.\r\n";
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1280,6 +1293,7 @@ export class FuncGetEnv extends ValueFunc {
                 "\r\n" +
                 "Returns the value of the environment variable var.\r\n";
         this.system = system;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1778,6 +1792,7 @@ export class FuncListDir extends ValueFunc {
                 "returns a list of filename or paths.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -1893,6 +1908,7 @@ export class FuncMakeDir extends ValueFunc {
                 "Creates a new directory.\r\n";
         this.fs = system.fs;
         this.path = system.path;
+        this.secure = false;
     }
 
     getArgNames() {
@@ -2707,6 +2723,7 @@ export class FuncRun extends ValueFunc {
         this.info = "run(file)\r\n" +
                 "\r\n" +
                 "Loads and interprets the file.\r\n";
+        this.secure = false;
     }
 
     getArgNames() {

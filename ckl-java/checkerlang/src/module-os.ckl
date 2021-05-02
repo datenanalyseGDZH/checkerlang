@@ -25,14 +25,12 @@ bind_native("OS_NAME");
 bind_native("OS_VERSION");
 bind_native("OS_ARCH");
 
-if not checkerlang_secure_mode then do
-    bind_native("file_exists");
-    bind_native("file_copy");
-    bind_native("file_delete");
-    bind_native("file_info");
-    bind_native("file_move");
-    bind_native("list_dir");
-    bind_native("make_dir");
-    bind_native("get_env");
-    bind_native("execute");
-end;
+bind_native("file_exists");
+bind_native("file_copy");
+bind_native("file_delete");
+bind_native("file_info");
+bind_native("file_move");
+bind_native("list_dir");
+bind_native("make_dir");
+bind_native("get_env");
+bind_native("execute");

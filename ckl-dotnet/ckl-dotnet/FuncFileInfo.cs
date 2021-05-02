@@ -33,6 +33,11 @@ namespace CheckerLang
                    "Returns information about the specified file (e.g. modification date, size).\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"filename"};

@@ -39,6 +39,10 @@ public class FuncRun extends FuncBase {
                 "Loads and interprets the file.\r\n";
     }
 
+    public boolean isSecure() {
+        return false;
+    }
+
     public List<String> getArgNames() {
         return Arrays.asList("file");
     }

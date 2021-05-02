@@ -32,6 +32,11 @@ namespace CheckerLang
                    "Moves the specified file.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"src", "dest"};

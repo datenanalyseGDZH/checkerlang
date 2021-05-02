@@ -35,7 +35,6 @@ namespace CheckerLang
             baseEnvironment.Put("stdout", new ValueOutput(new StringWriter()));
             baseEnvironment.Put("stdin", new ValueInput(new StringReader("")));
             if (!secure) baseEnvironment.Put("run", new FuncRun(this));
-            if (secure) baseEnvironment.Remove("bind_native");
         }
 
         public Environment GetBaseEnvironment()
@@ -46,16 +45,6 @@ namespace CheckerLang
         public Environment GetEnvironment()
         {
             return environment;
-        }
-
-        public void MakeSecure()
-        {
-            baseEnvironment.Remove("stdout");
-            baseEnvironment.Remove("stdin");
-            baseEnvironment.Remove("run");
-            baseEnvironment.Remove("file_input");
-            baseEnvironment.Remove("file_output");
-            baseEnvironment.Remove("close");
         }
 
         public void SetStandardOutput(TextWriter stdout)

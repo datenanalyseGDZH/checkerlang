@@ -34,6 +34,11 @@ namespace CheckerLang
                    "returns a list of filename or paths.\r\n";
         }
         
+        public override bool IsSecure()
+        {
+            return false;
+        }
+        
         public override List<string> GetArgNames()
         {
             return new List<string> {"dir", "recursive", "include_path", "include_dirs"};

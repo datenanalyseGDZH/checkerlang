@@ -29,6 +29,11 @@ namespace CheckerLang
             this.name = name;
         }
 
+        public virtual bool IsSecure()
+        {
+            return true;
+        }
+
         public override string GetName()
         {
             return name;

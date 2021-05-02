@@ -34,6 +34,11 @@ namespace CheckerLang
                  "\r\n" +
                  "Executed the program and provides the specified arguments in the list args.\r\n";
         }
+
+        public override bool IsSecure()
+        {
+            return false;
+        }
         
         public override List<string> GetArgNames()
         {

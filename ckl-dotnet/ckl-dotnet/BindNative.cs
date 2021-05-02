@@ -148,8 +148,9 @@ namespace CheckerLang
             return "Unknown";
         }
         
-        private static void BindNativeFunc(Environment env, FuncBase func, string alias) 
+        private static void BindNativeFunc(Environment env, FuncBase func, string alias)
         {
+            if (env.GetBase().Get("checkerlang_secure_mode", SourcePos.Unknown).AsBoolean().GetValue() && !func.IsSecure()) return;
             env.Put(func.GetName(), func);
             if (alias != null) env.Put(alias, func);
         }
