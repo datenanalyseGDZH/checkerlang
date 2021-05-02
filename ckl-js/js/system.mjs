@@ -3,4 +3,5 @@ export const system = {
     path: null,
     process: null,
     child_process: null,
+    os: null,
 };

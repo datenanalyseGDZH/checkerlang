@@ -121,6 +121,7 @@ export class Environment {
 
     pushModuleStack(moduleidentifier, pos) {
         let base = this.getBase();
+        console.log(base.modulestack);
         if (base.modulestack.includes(moduleidentifier)) throw new RuntimeError("ERROR", "Found circular module dependency (" + moduleidentifier + ")", pos);
         base.modulestack.push(moduleidentifier);
     }
@@ -286,11 +287,11 @@ const bind_native = function(environment, native, alias = null) {
         case "zip_map": bind_native_fun(environment, new FuncZipMap(), alias); break;
         case "E": environment.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
         case "PI": environment.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
-        case "PS": environment.put("PS", new ValueString(system.path.sep).withInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
-        case "LS": environment.put("LS", new ValueString(system.os.EOL).withInfo("PS\n\nThe OS line separator (posix: \\n, windows: \\r\\n).")); break;
-        case "FS": environment.put("FS", new ValueString(system.path.delimiter).withInfo("FS\n\nThe OS field separator (posix: :, windows: ;).")); break;
+        case "PS": environment.put("PS", new ValueString(system.path !== null ? system.path.sep : "/").withInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
+        case "LS": environment.put("LS", new ValueString(system.os !== null ? system.os.EOL : "\n").withInfo("PS\n\nThe OS line separator (posix: \\n, windows: \\r\\n).")); break;
+        case "FS": environment.put("FS", new ValueString(system.path !== null ? system.path.delimiter : ":").withInfo("FS\n\nThe OS field separator (posix: :, windows: ;).")); break;
         case "OS_NAME": environment.put("OS_NAME", new ValueString(get_os_name()).withInfo("OS_NAME\n\nThe name of the operating system, one of Windows, Linux, macOS")); break;
-        case "OS_VERSION": environment.put("OS_VERSION", new ValueString(system.os.release() + " " + system.os.version()).withInfo("OS_VERSION\n\nThe version of the operating system.")); break;
+        case "OS_VERSION": environment.put("OS_VERSION", new ValueString(get_os_version()).withInfo("OS_VERSION\n\nThe version of the operating system.")); break;
         case "OS_ARCH": environment.put("OS_ARCH", new ValueString(get_os_arch()).withInfo("OS_ARCH\n\nThe architecture of the operating system, one of x86, amd64.")); break;
         default: throw new RuntimeError("ERROR", "Unknown native " + native, this.pos);
     }
@@ -301,7 +302,13 @@ const bind_native_fun = function(environment, func, alias) {
     Environment.add(environment, func, alias);
 };
 
+const get_os_version = function() {
+    if (system.os === null) return "Unknown";
+    return system.os.release() + " " + system.os.version();
+}
+
 const get_os_name = function() {
+    if (system.os === null) return "Unknown";
     const type = system.os.type();
     if (type === "Linux") return "Linux";
     if (type === "Darwin") return "macOS";
@@ -310,6 +317,7 @@ const get_os_name = function() {
 };
 
 const get_os_arch = function() {
+    if (system.os === null) return "Unkown";
     const arch = system.os.arch();
     if (arch == "x32" || arch == "ia32") return "x86";
     if (arch == "x64") return "amd64";
