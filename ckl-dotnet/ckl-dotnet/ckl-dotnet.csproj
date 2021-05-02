@@ -21,6 +21,7 @@
     <EmbeddedResource Include="module-legacy.ckl" />
     <EmbeddedResource Include="module-list.ckl" />
     <EmbeddedResource Include="module-math.ckl" />
+    <EmbeddedResource Include="module-os.ckl" />
     <EmbeddedResource Include="module-predicate.ckl" />
     <EmbeddedResource Include="module-random.ckl" />
     <EmbeddedResource Include="module-set.ckl" />

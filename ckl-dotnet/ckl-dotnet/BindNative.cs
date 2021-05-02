@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace CheckerLang
 {
@@ -114,11 +116,38 @@ namespace CheckerLang
                 case "zip_map": BindNativeFunc(env, new FuncZipMap(), nativeAlias); break;
                 case "E": env.Put("E", new ValueDecimal((decimal) Math.E).WithInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
                 case "PI": env.Put("PI", new ValueDecimal((decimal) Math.PI).WithInfo("PI\n\nThe mathematical constant PI")); break;
+                case "PS": env.Put("PS", new ValueString(Path.DirectorySeparatorChar.ToString()).WithInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
+                case "LS": env.Put("LS", new ValueString(System.Environment.NewLine).WithInfo("PS\n\nThe OS line separator (posix: \\n, windows: \\r\\n).")); break;
+                case "FS": env.Put("FS", new ValueString(Path.PathSeparator.ToString()).WithInfo("FS\n\nThe OS field separator (posix: :, windows: ;).")); break;
+                case "OS_NAME": env.Put("OS_NAME", new ValueString(GetOsName()).WithInfo("OS_NAME\n\nThe name of the operating system, one of Windows, Linux, macOS")); break;
+                case "OS_VERSION": env.Put("OS_VERSION", new ValueString(GetOsVersion()).WithInfo("OS_VERSION\n\nThe version of the operating system.")); break;
+                case "OS_ARCH": env.Put("OS_ARCH", new ValueString(GetOsArch()).WithInfo("OS_ARCH\n\nThe architecture of the operating system, one of x86, amd64.")); break;
                 default:
                     throw new ControlErrorException(new ValueString("ERROR"),"Unknown native " + nativeName, pos);
             }
         }
+ 
+        private static string GetOsName()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return "Windows";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return "Linux";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return "macOS";
+            return "Unknown";
+        }
 
+        private static string GetOsVersion()
+        {
+            return RuntimeInformation.OSDescription;
+        }
+
+        private static string GetOsArch()
+        {
+            var arch = RuntimeInformation.OSArchitecture;
+            if (arch == Architecture.X86) return "x86";
+            if (arch == Architecture.X64) return "amd64";
+            return "Unknown";
+        }
+        
         private static void BindNativeFunc(Environment env, FuncBase func, string alias) 
         {
             env.Put(func.GetName(), func);
