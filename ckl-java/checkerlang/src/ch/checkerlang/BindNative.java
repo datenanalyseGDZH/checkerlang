@@ -2,6 +2,9 @@ package ch.checkerlang;
 
 import ch.checkerlang.functions.*;
 import ch.checkerlang.values.ValueDecimal;
+import ch.checkerlang.values.ValueString;
+
+import java.util.Locale;
 
 public class BindNative {
     public static void bind(Environment env, String nativeName, String nativeAlias, SourcePos pos) {
@@ -112,10 +115,35 @@ public class BindNative {
             case "zip_map": bindNative(env, new FuncZipMap(), nativeAlias); break;
             case "E": env.put("E", new ValueDecimal(Math.E).withInfo("E\n\nThe mathematical constant E (Eulers number)")); break;
             case "PI": env.put("PI", new ValueDecimal(Math.PI).withInfo("PI\n\nThe mathematical constant PI")); break;
+            case "PS": env.put("PS", new ValueString(System.getProperty("file.separator")).withInfo("PS\n\nThe OS path separator (posix: /, windows: \\).")); break;
+            case "LS": env.put("LS", new ValueString(System.getProperty("line.separator")).withInfo("PS\n\nThe OS line separator (posix: \\n, windows: \\r\\n).")); break;
+            case "FS": env.put("FS", new ValueString(System.getProperty("path.separator")).withInfo("FS\n\nThe OS field separator (posix: :, windows: ;).")); break;
+            case "OS_NAME": env.put("OS_NAME", new ValueString(getOsName()).withInfo("OS_NAME\n\nThe name of the operating system, one of Windows, Linux, macOS")); break;
+            case "OS_VERSION": env.put("OS_VERSION", new ValueString(getOsVersion()).withInfo("OS_VERSION\n\nThe version of the operating system.")); break;
+            case "OS_ARCH": env.put("OS_ARCH", new ValueString(getOsArch()).withInfo("OS_ARCH\n\nThe architecture of the operating system, one of x86, amd64.")); break;
             default:
                 System.out.println(nativeName);
                 throw new ControlErrorException("Unknown native " + nativeName, pos);
         }
+    }
+
+    private static String getOsName() {
+        String name = System.getProperty("os.name").toLowerCase();
+        if (name.contains("windows")) return "Windows";
+        if (name.contains("linux")) return "Linux";
+        if (name.contains("mac") || name.contains("darwin")) return "macOS";
+        return "Unknown";
+    }
+
+    private static String getOsVersion() {
+        return System.getProperty("os.version");
+    }
+
+    private static String getOsArch() {
+        String arch = System.getProperty("os.arch").toLowerCase();
+        if (arch.equals("x86") || arch.equals("i386")) return "x86";
+        if (arch.equals("amd64") || arch.equals("x64")) return "amd64";
+        return "Unknown";
     }
 
     private static void bindNative(Environment env, FuncBase func, String alias) {

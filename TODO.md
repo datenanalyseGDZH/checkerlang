@@ -57,13 +57,15 @@ the other participant to execute code on our machine/browser.
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
 
-* create new module OS and move get_env, execute and file handling function there
+* create new module OS and move get_env, execute and file handling function there    ok:js,java
 * add information about the operating system in the OS module
-  * operating system name (windows, ...)
-  * operating system version
-  * PS (path separator, /, \)
-  * LS (line separator, \n, \r\n)
-  * FS (field separator, :, ;)
+  * operating system name (windows, ...) ok:js,java
+  * operating system version             ok:js,java
+  * operating system architecture        ok:js,java
+  * PS (path separator, /, \)            ok:js,java
+  * LS (line separator, \n, \r\n)        ok:js,java
+  * FS (field separator, :, ;)           ok:js,java
+
 * add function which to OS module, which searches for an executable in the OS path and
   optionally in additional locations. This should handle os differences gracefully,
   i.e. which("javac") should find javac.exe on windows and javac on linux/mac.

@@ -18,44 +18,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-bind_native("close");
-bind_native("get_output_string");
-bind_native("print");
-bind_native("println");
-bind_native("process_lines");
-bind_native("read");
-bind_native("read_all");
-bind_native("readln");
-bind_native("str_input");
-bind_native("str_output");
+bind_native("PS");
+bind_native("LS");
+bind_native("FS");
+bind_native("OS_NAME");
+bind_native("OS_VERSION");
+bind_native("OS_ARCH");
 
 if not checkerlang_secure_mode then do
-    bind_native("file_input");
-    bind_native("file_output");
+    bind_native("file_exists");
+    bind_native("file_copy");
+    bind_native("file_delete");
+    bind_native("file_info");
+    bind_native("file_move");
+    bind_native("list_dir");
+    bind_native("make_dir");
+    bind_native("get_env");
+    bind_native("execute");
 end;
-
-"
-read_file(filename, encoding = 'utf-8')
-
-Opens a file, reads the contents as a single
-string, closes the file and returns the string.
-"
-def read_file(filename, encoding = 'utf-8') do
-  def infile = file_input(filename, encoding);
-  do
-      read_all(infile);
-  finally
-      close(infile);
-  end;
-end;
-
-
-"
-printf(fmt, args...)
-
-Formats and prints a string format using the provided args.
-The string is printed to standard output.
-
-This is basically the combination of print and sprintf.
-"
-def printf(fmt, args...) print(sprintf(fmt, ...args...));

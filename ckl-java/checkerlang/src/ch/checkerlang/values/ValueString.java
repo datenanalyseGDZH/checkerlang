@@ -109,7 +109,7 @@ public class ValueString extends Value {
     }
 
     public String toString() {
-        return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'";
+        return "'" + value.replace("\\", "\\\\").replace("'", "\\'").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t") + "'";
     }
 
 }

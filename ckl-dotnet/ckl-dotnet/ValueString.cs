@@ -131,7 +131,7 @@ namespace CheckerLang
        
         public override string ToString()
         {
-            return "'" + value.Replace("\\", "\\\\").Replace("'", "\\'") + "'";
+            return "'" + value.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "'";
         }
 
     }
