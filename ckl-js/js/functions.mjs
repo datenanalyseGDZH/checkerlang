@@ -121,7 +121,6 @@ export class Environment {
 
     pushModuleStack(moduleidentifier, pos) {
         let base = this.getBase();
-        console.log(base.modulestack);
         if (base.modulestack.includes(moduleidentifier)) throw new RuntimeError("ERROR", "Found circular module dependency (" + moduleidentifier + ")", pos);
         base.modulestack.push(moduleidentifier);
     }
