@@ -46,6 +46,7 @@ def path(parts...) do
     PS !> join(parts...)
 end;
 
+
 "
 basename(path)
 
@@ -61,6 +62,7 @@ def basename(path) do
     else path !> substr(pos + 1);
 end;
 
+
 "
 dirname(path)
 
@@ -75,6 +77,7 @@ def dirname(path) do
     if pos == -1 then ''
     else path !> substr(0, pos);
 end;
+
 
 "
 file_extension(path)
