@@ -60,9 +60,3 @@ the other participant to execute code on our machine/browser.
 * add function which to OS module, which searches for an executable in the OS path and
   optionally in additional locations. This should handle os differences gracefully,
   i.e. which("javac") should find javac.exe on windows and javac on linux/mac.
-* add path functions to OS module:
-  * path(...) which combines all arguments to one path
-  * basename(path) which returns the filename of the path
-  * dirname(path) which returns the directory part of the path
-  * file_extension(path) which returns the file extension
-  * strip_extension(path) which removes the file extension (if any)
