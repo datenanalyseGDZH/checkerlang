@@ -34,3 +34,84 @@ bind_native("make_dir");
 bind_native("file_info");
 bind_native("execute");
 bind_native("get_env");
+
+
+"
+def path(parts...)
+
+Combines the path elements into a path by
+joining them with the PS path separator.
+"
+def path(parts...) do
+    PS !> join(parts...)
+end;
+
+
+"
+basename(path)
+
+Returns the filename portion of the path.
+
+: basename('dir/file.ext') ==> 'file.ext'
+: basename('file.ext') ==> 'file.ext'
+: basename('a/b/c\\\\d\\\\e\\\\file.ext') ==> 'file.ext'
+"
+def basename(path) do
+    def pos = path !> replace('\\', '/') !> find_last('/');
+    if pos == -1 then path
+    else path !> substr(pos + 1);
+end;
+
+
+"
+dirname(path)
+
+Returns the directory portion of the path.
+
+: dirname('dir/file.ext') ==> 'dir'
+: dirname('file.ext') ==> ''
+: dirname('a/b/c\\\\d\\\\e\\\\file.ext') ==> 'a/b/c\\\\d\\\\e'
+"
+def dirname(path) do
+    def pos = path !> replace('\\', '/') !> find_last('/');
+    if pos == -1 then ''
+    else path !> substr(0, pos);
+end;
+
+
+"
+file_extension(path)
+
+Returns the file extension of the file path.
+
+: file_extension('dir/file.ext') ==> '.ext'
+: file_extension('dir/file.a.b.c') ==> '.c'
+: file_extension('dir/file') ==> ''
+: file_extension('dir/.file') ==> ''
+: file_extension('dir/.file.cfg') ==> '.cfg'
+"
+def file_extension(path) do
+    def filename = basename(path);
+    def pos = path !> find_last('.');
+    def ext = path !> substr(pos);
+    if pos == -1 or filename == ext then ''
+    else ext;
+end;
+
+
+"
+strip_extension(path)
+
+Removes the file extension of the file path - if any exists.
+
+: strip_extension('dir/file.ext') ==> 'dir/file'
+: strip_extension('dir/file.a.b.c') ==> 'dir/file.a.b'
+: strip_extension('dir/file') ==> 'dir/file'
+: strip_extension('dir/.file') ==> 'dir/.file'
+: strip_extension('dir/.file.cfg') ==> 'dir/.file'
+"
+def strip_extension(path) do
+    def ext = file_extension(path);
+    if ext != '' then path !> substr(0, length(path) - length(ext))
+    else path
+end;

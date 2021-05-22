@@ -23,6 +23,7 @@ require Core unqualified;
 require Date unqualified;
 require List unqualified;
 require Math unqualified;
+require OS unqualified;
 require Predicate unqualified;
 require Random unqualified;
 require IO unqualified;
