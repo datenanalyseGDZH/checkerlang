@@ -107,6 +107,7 @@ require String import [
     ends_with,
     contains,
     find,
+    find_last,
     substr, 
     matches, 
     trim,

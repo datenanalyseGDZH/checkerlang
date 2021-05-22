@@ -41,6 +41,7 @@ public class BindNative {
             case "file_move": bindNative(env, new FuncFileMove(), nativeAlias); break;
             case "file_output": bindNative(env, new FuncFileOutput(), nativeAlias); break;
             case "find": bindNative(env, new FuncFind(), nativeAlias); break;
+            case "find_last": bindNative(env, new FuncFindLast(), nativeAlias); break;
             case "floor": bindNative(env, new FuncFloor(), nativeAlias); break;
             case "format_date": bindNative(env, new FuncFormatDate(), nativeAlias); break;
             case "get_env": bindNative(env, new FuncGetEnv(), nativeAlias); break;

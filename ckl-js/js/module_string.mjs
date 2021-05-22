@@ -23,6 +23,7 @@ bind_native("starts_with");
 bind_native("ends_with");
 bind_native("contains");
 bind_native("find");
+bind_native("find_last");
 bind_native("lower");
 bind_native("matches");
 bind_native("s");

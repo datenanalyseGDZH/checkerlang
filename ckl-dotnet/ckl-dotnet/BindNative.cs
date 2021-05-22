@@ -42,6 +42,7 @@ namespace CheckerLang
                 case "file_move": BindNativeFunc(env, new FuncFileMove(), nativeAlias); break;
                 case "file_output": BindNativeFunc(env, new FuncFileOutput(), nativeAlias); break;
                 case "find": BindNativeFunc(env, new FuncFind(), nativeAlias); break;
+                case "find_last": BindNativeFunc(env, new FuncFindLast(), nativeAlias); break;
                 case "floor": BindNativeFunc(env, new FuncFloor(), nativeAlias); break;
                 case "format_date": BindNativeFunc(env, new FuncFormatDate(), nativeAlias); break;
                 case "get_env": BindNativeFunc(env, new FuncGetEnv(), nativeAlias); break;

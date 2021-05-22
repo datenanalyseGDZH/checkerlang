@@ -213,6 +213,7 @@ const bind_native = function(environment, native, alias = null) {
         case "file_move": bind_native_fun(environment, new FuncFileMove(system), alias); break;
         case "file_output": bind_native_fun(environment, new FuncFileOutput(system.fs)); break;
         case "find": bind_native_fun(environment, new FuncFind(), alias); break;
+        case "find_last": bind_native_fun(environment, new FuncFindLast(), alias); break;
         case "floor": bind_native_fun(environment, new FuncFloor(), alias); break;
         case "format_date": bind_native_fun(environment, new FuncFormatDate(), alias); break;
         case "get_env": bind_native_fun(environment, new FuncGetEnv(system), alias); break;
@@ -1233,6 +1234,56 @@ export class FuncFind extends ValueFunc {
             return new ValueInt(-1);
         }
         throw new RuntimeError("ERROR", "Find only works with strings and lists", pos);
+    }
+}
+
+export class FuncFindLast extends ValueFunc {
+    constructor() {
+        super("find_last");
+        this.info = "find_last(obj, part, key = identity, start = length(obj) - 1)\r\n" +
+                "\r\n" +
+                "Returns the index of the last  occurence of part in obj.\r\n" +
+                "If part is not contained in obj, then -1 is returned. Start specifies\r\n" +
+                "the search start index. It defaults to length(obj) - 1.\r\n" +
+                "Obj can be a string or a list. In case of a string, part can be any\r\n" +
+                "substring, in case of a list, a single element.\r\n" +
+                "In case of lists, the elements can be accessed using the\r\n" +
+                "key function.\r\n" +
+                "\r\n" +
+                ": find_last('abcdefgcdexy', 'cde') ==> 7\r\n" +
+                ": find_last('abc|def|ghi|jkl', '|', start = 10) ==> 7\r\n" +
+                ": find_last('abcxyabc', 'abc', start = 4) ==> 0\r\n" +
+                ": find_last([1, 2, 3, 4, 3], 3) ==> 4\r\n" +
+                ": find_last(['abc', 'def'], 'e', key = fn(x) x[1]) ==> 1\r\n";
+    }
+
+    getArgNames() {
+        return ["obj", "part", "key", "start"];
+    }
+
+    execute(args, environment, pos) {
+        if (args.isNull("obj")) return ValueNull.NULL;
+        const obj = args.get("obj");
+        const key = args.hasArg("key") ? args.getFunc("key") : null;
+        if (obj.isString()) {
+            const str = obj.value;
+            const part = args.getString("part").value;
+            const start = args.getInt("start", str.length - 1).value;
+            return new ValueInt(obj.value.lastIndexOf(part, start));
+        } else if (obj.isList()) {
+            let env = environment;
+            if (key !== null) env = environment.newEnv();
+            const item = args.get("part");
+            const list = obj.value;
+            const start = args.getInt("start", list.length - 1).value;
+            for (let idx = start; idx >= 0; idx--) {
+                let elem = list[idx];
+                if (key !== null) elem = key.execute(new Args(pos).addArg(key.getArgNames()[0], elem), env, pos);
+                if (elem.isEquals(item)) return new ValueInt(idx);
+            }
+            return new ValueInt(-1);
+        }
+        throw new RuntimeError("ERROR", "Find_last only works with strings and lists", pos);
     }
 }
 

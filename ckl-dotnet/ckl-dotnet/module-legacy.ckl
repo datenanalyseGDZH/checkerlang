@@ -36,6 +36,7 @@ require String import [
     ends_with as str_ends_with,
     contains as str_contains,
     find as str_find,
+    find_last as str_find_last,
     matches as str_matches,
     trim as str_trim
 ];

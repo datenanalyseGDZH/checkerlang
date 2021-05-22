@@ -18,6 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+bind_native("contains");
+bind_native("find");
+bind_native("find_last");
+
 "
 first(lst) 
 

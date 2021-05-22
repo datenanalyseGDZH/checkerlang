@@ -21,6 +21,7 @@ export const modulelist = `
 
 bind_native("contains");
 bind_native("find");
+bind_native("find_last");
 
 "
 first(lst)
