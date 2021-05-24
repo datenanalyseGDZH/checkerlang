@@ -42,7 +42,6 @@ the other participant to execute code on our machine/browser.
 * spreading works in funcalls and lists. What about sets and maps? Can we implement this?
 
 * run unittests for modules, how? in a function, require the module, iterate over the object keys...
-* revisit all function names, make them more consistent, provide legacy module for older names
 * support relative paths (relative to the current module/script!)
 * set module import path using a command line argument (or interpreter parameter)
 
@@ -56,7 +55,3 @@ the other participant to execute code on our machine/browser.
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
-
-* add function which to OS module, which searches for an executable in the OS path and
-  optionally in additional locations. This should handle os differences gracefully,
-  i.e. which("javac") should find javac.exe on windows and javac on linux/mac.
