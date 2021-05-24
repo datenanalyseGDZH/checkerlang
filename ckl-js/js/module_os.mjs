@@ -115,4 +115,25 @@ def strip_extension(path) do
     else path
 end;
 
+
+"
+which(filename)
+which(filename, paths)
+
+Searches filename in either the system PATH (as
+defined by the environment variable PATH), or the
+specified list of directories. Returns either the
+full path or NULL, if not found.
+"
+def which(filename, paths = NULL) do
+    if paths == NULL then paths = get_env('PATH') !> split(FS);
+    for p in paths do
+        for name in list_dir(p) do
+            if name == filename then return path(p, name);
+            if OS_NAME == "Windows" and name == filename + ".exe" then return path(p, name);
+        end;
+    end;
+    return NULL;
+end;
+
 `;

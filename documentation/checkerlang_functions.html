@@ -57,6 +57,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#asin'>asin</a></li>
 <li><a href='#atan'>atan</a></li>
 <li><a href='#atan2'>atan2</a></li>
+<li><a href='#basename'>basename</a></li>
 <li><a href='#bind_native'>bind_native</a></li>
 <li><a href='#body'>body</a></li>
 <li><a href='#boolean'>boolean</a></li>
@@ -81,6 +82,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#decimal'>decimal</a></li>
 <li><a href='#delete_at'>delete_at</a></li>
 <li><a href='#diff'>diff</a></li>
+<li><a href='#dirname'>dirname</a></li>
 <li><a href='#div'>div</a></li>
 <li><a href='#div0'>div0</a></li>
 <li><a href='#ends_with'>ends_with</a></li>
@@ -94,12 +96,14 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#file_copy'>file_copy</a></li>
 <li><a href='#file_delete'>file_delete</a></li>
 <li><a href='#file_exists'>file_exists</a></li>
+<li><a href='#file_extension'>file_extension</a></li>
 <li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_input'>file_input</a></li>
 <li><a href='#file_move'>file_move</a></li>
 <li><a href='#file_output'>file_output</a></li>
 <li><a href='#filter'>filter</a></li>
 <li><a href='#find'>find</a></li>
+<li><a href='#find_last'>find_last</a></li>
 <li><a href='#first'>first</a></li>
 <li><a href='#first_n'>first_n</a></li>
 <li><a href='#flatten'>flatten</a></li>
@@ -190,6 +194,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#parse'>parse</a></li>
 <li><a href='#parse_date'>parse_date</a></li>
 <li><a href='#parse_json'>parse_json</a></li>
+<li><a href='#path'>path</a></li>
 <li><a href='#pattern'>pattern</a></li>
 <li><a href='#permutations'>permutations</a></li>
 <li><a href='#pow'>pow</a></li>
@@ -230,6 +235,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#str_input'>str_input</a></li>
 <li><a href='#str_output'>str_output</a></li>
 <li><a href='#string'>string</a></li>
+<li><a href='#strip_extension'>strip_extension</a></li>
 <li><a href='#sub'>sub</a></li>
 <li><a href='#sublist'>sublist</a></li>
 <li><a href='#substitute'>substitute</a></li>
@@ -245,6 +251,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#unlines'>unlines</a></li>
 <li><a href='#unwords'>unwords</a></li>
 <li><a href='#upper'>upper</a></li>
+<li><a href='#which'>which</a></li>
 <li><a href='#words'>words</a></li>
 <li><a href='#zip'>zip</a></li>
 <li><a href='#zip_map'>zip_map</a></li>
@@ -287,6 +294,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#contains'>contains</a></li>
 <li><a href='#filter'>filter</a></li>
 <li><a href='#find'>find</a></li>
+<li><a href='#find_last'>find_last</a></li>
 <li><a href='#first'>first</a></li>
 <li><a href='#first_n'>first_n</a></li>
 <li><a href='#flatten'>flatten</a></li>
@@ -336,15 +344,21 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#OS_NAME'>OS_NAME</a></li>
 <li><a href='#OS_VERSION'>OS_VERSION</a></li>
 <li><a href='#PS'>PS</a></li>
+<li><a href='#basename'>basename</a></li>
+<li><a href='#dirname'>dirname</a></li>
 <li><a href='#execute'>execute</a></li>
 <li><a href='#file_copy'>file_copy</a></li>
 <li><a href='#file_delete'>file_delete</a></li>
 <li><a href='#file_exists'>file_exists</a></li>
+<li><a href='#file_extension'>file_extension</a></li>
 <li><a href='#file_info'>file_info</a></li>
 <li><a href='#file_move'>file_move</a></li>
 <li><a href='#get_env'>get_env</a></li>
 <li><a href='#list_dir'>list_dir</a></li>
 <li><a href='#make_dir'>make_dir</a></li>
+<li><a href='#path'>path</a></li>
+<li><a href='#strip_extension'>strip_extension</a></li>
+<li><a href='#which'>which</a></li>
 </ul>
 <h2 id='module_Predicate'>Module Predicate</h2>
 <ul class='toc'>
@@ -388,6 +402,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#ends_with'>ends_with</a></li>
 <li><a href='#esc'>esc</a></li>
 <li><a href='#find'>find</a></li>
+<li><a href='#find_last'>find_last</a></li>
 <li><a href='#join'>join</a></li>
 <li><a href='#lower'>lower</a></li>
 <li><a href='#matches'>matches</a></li>
@@ -780,6 +795,27 @@ Math
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>atan2(0, 1) ==&gt; 0.0</div>
+</div>
+<h2 id='basename'>basename</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+basename(path)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the filename portion of the path.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>basename('dir/file.ext') ==&gt; 'file.ext'</div>
+<div class='example'>basename('file.ext') ==&gt; 'file.ext'</div>
+<div class='example'>basename('a/b/c/d/e/file.ext') ==&gt; 'file.ext'</div>
 </div>
 <h2 id='bind_native'>bind_native</h2>
 <div class='header'>
@@ -1282,6 +1318,27 @@ Set
 <div class='example'>diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;&gt;&gt;) ==&gt; &lt;&lt;1, 2, 3, 4&gt;&gt;</div>
 <div class='example'>diff(&lt;&lt;1, 2, 3, 4&gt;&gt;, &lt;&lt;1, 2, 3, 4&gt;&gt;) ==&gt; &lt;&lt;&gt;&gt;</div>
 </div>
+<h2 id='dirname'>dirname</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+dirname(path)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the directory portion of the path.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>dirname('dir/file.ext') ==&gt; 'dir'</div>
+<div class='example'>dirname('file.ext') ==&gt; ''</div>
+<div class='example'>dirname('a/b/c/d/e/file.ext') ==&gt; 'a/b/c/d/e'</div>
+</div>
 <h2 id='div'>div</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -1554,6 +1611,29 @@ Returns TRUE if the specified file exists.
 OS
 </div>
 </div>
+<h2 id='file_extension'>file_extension</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+file_extension(path)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the file extension of the file path.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>file_extension('dir/file.ext') ==&gt; '.ext'</div>
+<div class='example'>file_extension('dir/file.a.b.c') ==&gt; '.c'</div>
+<div class='example'>file_extension('dir/file') ==&gt; ''</div>
+<div class='example'>file_extension('dir/.file') ==&gt; ''</div>
+<div class='example'>file_extension('dir/.file.cfg') ==&gt; '.cfg'</div>
+</div>
 <h2 id='file_info'>file_info</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -1665,6 +1745,35 @@ Core, List, String
 <div class='example'>find('abcxyabc', 'abc', start = 5) ==&gt; 5</div>
 <div class='example'>find([1, 2, 3, 4], 3) ==&gt; 2</div>
 <div class='example'>find(['abc', 'def'], 'e', key = fn(x) x[1]) ==&gt; 1</div>
+</div>
+<h2 id='find_last'>find_last</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+find_last(obj, part, key = identity, start = length(obj) - 1)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the index of the last  occurence of part in obj.
+If part is not contained in obj, then -1 is returned. Start specifies
+the search start index. It defaults to length(obj) - 1.
+Obj can be a string or a list. In case of a string, part can be any
+substring, in case of a list, a single element.
+In case of lists, the elements can be accessed using the
+key function.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Core, List, String
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>find_last('abcdefgcdexy', 'cde') ==&gt; 7</div>
+<div class='example'>find_last('abc|def|ghi|jkl', '|', start = 10) ==&gt; 7</div>
+<div class='example'>find_last('abcxyabc', 'abc', start = 4) ==&gt; 0</div>
+<div class='example'>find_last([1, 2, 3, 4, 3], 3) ==&gt; 4</div>
+<div class='example'>find_last(['abc', 'def'], 'e', key = fn(x) x[1]) ==&gt; 1</div>
 </div>
 <h2 id='first'>first</h2>
 <div class='header'>
@@ -3532,6 +3641,22 @@ Core
 <div class='example'>parse_json('{"a": 12, "b": [1, 2, 3, 4]}') ==&gt; '&lt;&lt;&lt;\'a\' =&gt; 12, \'b\' =&gt; [1, 2, 3, 4]&gt;&gt;&gt;'</div>
 <div class='example'>parse_json('[1, 2.5, 3, 4]') ==&gt; '[1, 2.5, 3, 4]'</div>
 </div>
+<h2 id='path'>path</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+def path(parts...)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Combines the path elements into a path by
+joining them with the PS path separator.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+</div>
 <h2 id='pattern'>pattern</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -4398,6 +4523,29 @@ Core
 <div class='examples_title'>Examples</div>
 <div class='example'>string(123) ==&gt; '123'</div>
 </div>
+<h2 id='strip_extension'>strip_extension</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+strip_extension(path)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Removes the file extension of the file path - if any exists.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>strip_extension('dir/file.ext') ==&gt; 'dir/file'</div>
+<div class='example'>strip_extension('dir/file.a.b.c') ==&gt; 'dir/file.a.b'</div>
+<div class='example'>strip_extension('dir/file') ==&gt; 'dir/file'</div>
+<div class='example'>strip_extension('dir/.file') ==&gt; 'dir/.file'</div>
+<div class='example'>strip_extension('dir/.file.cfg') ==&gt; 'dir/.file'</div>
+</div>
 <h2 id='sub'>sub</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -4713,6 +4861,25 @@ String
 <div class='examples'>
 <div class='examples_title'>Examples</div>
 <div class='example'>upper('Hello') ==&gt; 'HELLO'</div>
+</div>
+<h2 id='which'>which</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+which(filename)
+which(filename, paths)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Searches filename in either the system PATH (as
+defined by the environment variable PATH), or the
+specified list of directories. Returns either the
+full path or NULL, if not found.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+OS
+</div>
 </div>
 <h2 id='words'>words</h2>
 <div class='header'>
