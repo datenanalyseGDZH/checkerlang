@@ -26,25 +26,29 @@ import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueList;
-import ch.checkerlang.values.ValueSet;
-import ch.checkerlang.values.ValueString;
+import ch.checkerlang.values.ValueNull;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class NodeSetComprehension implements Node {
+public class NodeListComprehensionParallel implements Node {
     private Node valueExpr;
-    private String identifier;
-    private Node listExpr;
+    private String identifier1;
+    private Node listExpr1;
+    private String identifier2;
+    private Node listExpr2;
     private Node conditionExpr;
 
     private SourcePos pos;
 
-    public NodeSetComprehension(Node valueExpr, String identifier, Node listExpr, SourcePos pos) {
+    public NodeListComprehensionParallel(Node valueExpr, String identifier1, Node listExpr1, String identifier2, Node listExpr2, SourcePos pos) {
         this.valueExpr = valueExpr;
-        this.identifier = identifier;
-        this.listExpr = listExpr;
+        this.identifier1 = identifier1;
+        this.listExpr1 = listExpr1;
+        this.identifier2 = identifier2;
+        this.listExpr2 = listExpr2;
         this.pos = pos;
     }
 
@@ -53,11 +57,13 @@ public class NodeSetComprehension implements Node {
     }
 
     public Value evaluate(Environment environment) {
-        ValueSet result = new ValueSet();
+        ValueList result = new ValueList();
         Environment localEnv = environment.newEnv();
-        ValueList list = AsList.from(listExpr.evaluate(environment));
-        for (Value listValue : list.getValue()) {
-            localEnv.put(identifier, listValue);
+        List<Value> list1 = AsList.from(listExpr1.evaluate(environment)).getValue();
+        List<Value> list2 = AsList.from(listExpr2.evaluate(environment)).getValue();
+        for (int i = 0; i < Math.max(list1.size(), list2.size()); i++) {
+            localEnv.put(identifier1, i < list1.size() ? list1.get(i) : ValueNull.NULL);
+            localEnv.put(identifier2, i < list2.size() ? list2.get(i) : ValueNull.NULL);
             Value value = valueExpr.evaluate(localEnv);
             if (conditionExpr != null) {
                 Value condition = conditionExpr.evaluate(localEnv);
@@ -75,14 +81,19 @@ public class NodeSetComprehension implements Node {
     }
 
     public String toString() {
-        return "<<" + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>";
+        return "[" + valueExpr +
+                " for " + identifier1 + " in " + listExpr1 +
+                " also for " + identifier2 + " in " + listExpr2 +
+                (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
         Set<String> boundVarsLocal = new HashSet<>(boundVars);
-        boundVarsLocal.add(identifier);
+        boundVarsLocal.add(identifier1);
+        boundVarsLocal.add(identifier2);
         valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
-        listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        listExpr1.collectVars(freeVars, boundVars, additionalBoundVars);
+        listExpr2.collectVars(freeVars, boundVars, additionalBoundVars);
         if (conditionExpr != null) conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
     }
 

@@ -693,12 +693,34 @@ public class Parser {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
                 Node listExpr = parseOrExpr(lexer);
-                NodeListComprehension comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.matchIf("if", TokenType.Keyword)) {
-                    comprehension.setCondition(parseOrExpr(lexer));
+                if (lexer.matchIf("for", TokenType.Keyword)) {
+                    String identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", TokenType.Keyword);
+                    Node listExpr2 = parseOrExpr(lexer);
+                    NodeListComprehensionProduct comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(parseOrExpr(lexer));
+                    }
+                    lexer.match("]", TokenType.Interpunction);
+                    return derefOrInvoke(lexer, comprehension);
+                } else if (lexer.matchIf("also", "for", TokenType.Keyword)) {
+                    String identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", TokenType.Keyword);
+                    Node listExpr2 = parseOrExpr(lexer);
+                    NodeListComprehensionParallel comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(parseOrExpr(lexer));
+                    }
+                    lexer.match("]", TokenType.Interpunction);
+                    return derefOrInvoke(lexer, comprehension);
+                } else {
+                    NodeListComprehension comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(parseOrExpr(lexer));
+                    }
+                    lexer.match("]", TokenType.Interpunction);
+                    return derefOrInvoke(lexer, comprehension);
                 }
-                lexer.match("]", TokenType.Interpunction);
-                return derefOrInvoke(lexer, comprehension);
             } else {
                 NodeList list = new NodeList(token.pos);
                 while (!lexer.peek("]", TokenType.Interpunction)) {
@@ -727,12 +749,34 @@ public class Parser {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
                 Node listExpr = parseOrExpr(lexer);
-                NodeSetComprehension comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.matchIf("if", TokenType.Keyword)) {
-                    comprehension.setCondition(this.parseOrExpr(lexer));
+                if (lexer.matchIf("for", TokenType.Keyword)) {
+                    String identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", TokenType.Keyword);
+                    Node listExpr2 = parseOrExpr(lexer);
+                    NodeSetComprehensionProduct comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", TokenType.Interpunction);
+                    return derefOrInvoke(lexer, comprehension);
+                } else if (lexer.matchIf("also", "for", TokenType.Keyword)) {
+                    String identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", TokenType.Keyword);
+                    Node listExpr2 = parseOrExpr(lexer);
+                    NodeSetComprehensionParallel comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", TokenType.Interpunction);
+                    return derefOrInvoke(lexer, comprehension);
+                } else {
+                    NodeSetComprehension comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.matchIf("if", TokenType.Keyword)) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", TokenType.Interpunction);
+                    return this.derefOrInvoke(lexer, comprehension);
                 }
-                lexer.match(">>", TokenType.Interpunction);
-                return this.derefOrInvoke(lexer, comprehension);
             } else {
                 NodeSet set = new NodeSet(token.pos);
                 set.addItem(expr);

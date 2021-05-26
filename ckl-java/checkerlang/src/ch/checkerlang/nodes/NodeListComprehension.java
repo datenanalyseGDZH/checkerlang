@@ -20,6 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.AsList;
 import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
@@ -53,46 +54,20 @@ public class NodeListComprehension implements Node {
     public Value evaluate(Environment environment) {
         ValueList result = new ValueList();
         Environment localEnv = environment.newEnv();
-        Value list = listExpr.evaluate(environment);
-        if (list.isString()) {
-            String s = list.asString().getValue();
-            ValueList slist = new ValueList();
-            for (int i = 0; i < s.length(); i++) {
-                slist.addItem(new ValueString(s.substring(i, i + 1)));
-            }
-            list = slist;
-        }
-        if (list.isObject()) {
-            for (String member : list.asObject().value.keySet()) {
-                localEnv.put(identifier, new ValueString(member));
-                Value value = valueExpr.evaluate(localEnv);
-                if (conditionExpr != null) {
-                    Value condition = conditionExpr.evaluate(localEnv);
-                    if (!condition.isBoolean()) {
-                        throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
-                    }
-                    if (condition.asBoolean().getValue()) {
-                        result.addItem(value);
-                    }
-                } else {
+        ValueList list = AsList.from(listExpr.evaluate(environment));
+        for (Value listValue : list.getValue()) {
+            localEnv.put(identifier, listValue);
+            Value value = valueExpr.evaluate(localEnv);
+            if (conditionExpr != null) {
+                Value condition = conditionExpr.evaluate(localEnv);
+                if (!condition.isBoolean()) {
+                    throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
+                }
+                if (condition.asBoolean().getValue()) {
                     result.addItem(value);
                 }
-            }
-        } else {
-            for (Value listValue : list.asList().getValue()) {
-                localEnv.put(identifier, listValue);
-                Value value = valueExpr.evaluate(localEnv);
-                if (conditionExpr != null) {
-                    Value condition = conditionExpr.evaluate(localEnv);
-                    if (!condition.isBoolean()) {
-                        throw new ControlErrorException("Condition must be boolean but got " + condition.type(), pos);
-                    }
-                    if (condition.asBoolean().getValue()) {
-                        result.addItem(value);
-                    }
-                } else {
-                    result.addItem(value);
-                }
+            } else {
+                result.addItem(value);
             }
         }
         return result;

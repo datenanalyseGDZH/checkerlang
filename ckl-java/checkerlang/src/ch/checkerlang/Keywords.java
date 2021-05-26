@@ -50,6 +50,7 @@ public class Keywords {
         keywords.add("error");
         keywords.add("require");
         keywords.add("as");
+        keywords.add("also");
     }
 
     public static boolean isKeyword(String s) {
