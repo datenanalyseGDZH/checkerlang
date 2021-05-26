@@ -1717,6 +1717,122 @@ export class NodeSetComprehension {
     }
 }
 
+export class NodeSetComprehensionParallel {
+    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+        this.valueExpr = valueExpr;
+        this.identifier1 = identifier1;
+        this.listExpr1 = listExpr1;
+        this.identifier2 = identifier2;
+        this.listExpr2 = listExpr2;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueSet();
+        const localEnv = environment.newEnv();
+        const list1 = this.listExpr1.evaluate(environment);
+        const list2 = this.listExpr2.evaluate(environment);
+        const values1 = getCollectionValue(list1);
+        const values2 = getCollectionValue(list2);
+        for (let i = 0; i < Math.max(values1.length, values2.length); i++) {
+            localEnv.put(this.identifier1, i < values1.length ? values1[i] : ValueNull.NULL);
+            localEnv.put(this.identifier2, i < values2.length ? values2[i] : ValueNull.NULL);
+            const value = this.valueExpr.evaluate(localEnv);
+            if (this.conditionExpr != null) {
+                const condition = this.conditionExpr.evaluate(localEnv);
+                if (!(condition instanceof ValueBoolean)) {
+                    throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
+                }
+                if (condition.value) {
+                    result.addItem(value);
+                }
+            } else {
+                result.addItem(value);
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "<<" + this.valueExpr + 
+        " for " + this.identifier1 + " in " + this.listExpr1 + 
+        " also for " + this.identifier2 + " in " + this.listExpr2 +
+        (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier);
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
+export class NodeSetComprehensionProduct {
+    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+        this.valueExpr = valueExpr;
+        this.identifier1 = identifier1;
+        this.listExpr1 = listExpr1;
+        this.identifier2 = identifier2;
+        this.listExpr2 = listExpr2;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueSet();
+        const localEnv = environment.newEnv();
+        const list1 = this.listExpr1.evaluate(environment);
+        const list2 = this.listExpr2.evaluate(environment);
+        const values1 = getCollectionValue(list1);
+        const values2 = getCollectionValue(list2);
+        for (const value1 of values1) {
+            localEnv.put(this.identifier1, value1);
+            for (const value2 of values2) {
+                localEnv.put(this.identifier2, value2);
+                const value = this.valueExpr.evaluate(localEnv);
+                if (this.conditionExpr != null) {
+                    const condition = this.conditionExpr.evaluate(localEnv);
+                    if (!(condition instanceof ValueBoolean)) {
+                        throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
+                    }
+                    if (condition.value) {
+                        result.addItem(value);
+                    }
+                } else {
+                    result.addItem(value);
+                }
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "<<" + this.valueExpr + 
+        " for " + this.identifier1 + " in " + this.listExpr1 + 
+        " also for " + this.identifier2 + " in " + this.listExpr2 +
+        (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier);
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
 export class NodeSpread {
     constructor(expression, pos) {
         this.expression = expression;

@@ -53,12 +53,9 @@ the other participant to execute code on our machine/browser.
 * add ListComprehensionParallel             OK:js
 * add ListComprehensionProduct              OK:js
 * parse list comprehension variants         OK:js
-* add SetComprehensionParallel              OK:
-* add SetComprehensionProduct               OK:
-* parse set comprehension variants          OK:
-* add MapComprehensionParallel              OK:
-* add MapComprehensionProduct               OK:
-* parse map comprehension variants          OK:
+* add SetComprehensionParallel              OK:js
+* add SetComprehensionProduct               OK:js
+* parse set comprehension variants          OK:js
 * add unit tests                            OK:js
 
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!

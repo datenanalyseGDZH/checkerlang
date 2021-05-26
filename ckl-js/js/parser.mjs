@@ -64,6 +64,8 @@ import {
     NodeReturn,
     NodeSet,
     NodeSetComprehension,
+    NodeSetComprehensionParallel,
+    NodeSetComprehensionProduct,
     NodeSpread,
     NodeWhile
 } from "./nodes.mjs";
@@ -768,12 +770,34 @@ export class Parser {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
                 const listExpr = this.parseOrExpr(lexer);
-                const comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.matchIf("if", "keyword")) {
-                    comprehension.setCondition(this.parseOrExpr(lexer));
+                if (lexer.matchIf("for", "keyword")) {
+                    const identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", "keyword");
+                    const listExpr2 = this.parseOrExpr(lexer);
+                    const comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
+                } else if (lexer.matchIf(["also", "for"], "keyword")) {
+                    const identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", "keyword");
+                    const listExpr2 = this.parseOrExpr(lexer);
+                    const comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
+                } else {
+                    const comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match(">>", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
                 }
-                lexer.match(">>", "interpunction");
-                return this.derefOrInvoke(lexer, comprehension);
             } else {
                 const set = new NodeSet(token.pos);
                 set.addItem(expr);
