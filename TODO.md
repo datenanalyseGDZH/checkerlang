@@ -48,9 +48,18 @@ the other participant to execute code on our machine/browser.
 * rework unittests to run per module (without legacy!)
 * add much more unit tests and unify them across all plattforms
 
-* expand list comprehensions to include more than one for-loop, e.g. 
-  [[x, y] for x in xs for y in ys if x < y] which processes for each x all y (i.e. the cartesian product)
-  [[x, y] for x in xs and y in ys]          which processes the xs and ys in parallel (providing NULL if one list is longer)
+* add keyword "also"                        OK:js
+* extract GetCollectionValues function      OK:js
+* add ListComprehensionParallel             OK:js
+* add ListComprehensionProduct              OK:js
+* parse list comprehension variants         OK:js
+* add SetComprehensionParallel              OK:
+* add SetComprehensionProduct               OK:
+* parse set comprehension variants          OK:
+* add MapComprehensionParallel              OK:
+* add MapComprehensionProduct               OK:
+* parse map comprehension variants          OK:
+* add unit tests                            OK:js
 
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1

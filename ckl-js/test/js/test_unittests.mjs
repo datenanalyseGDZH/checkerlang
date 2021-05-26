@@ -258,6 +258,8 @@ interpreter_test("List", "[]", "[]");
 interpreter_test("ListComprehensionSimple", "[x * 2 for x in range(5)]", "[0, 2, 4, 6, 8]");
 interpreter_test("ListComprehensionWithCondition", "[x * 2 for x in range(5) if x % 2 == 1]", "[2, 6]");
 interpreter_test("ListComprehensionString", "[int(ch) for ch in '123']", "[1, 2, 3]");
+interpreter_test("ListComprehensionParallel", "[a * b for a in [1, 2, 3] also for b in [1, 2, 3]]", "[1, 4, 9]")
+interpreter_test("ListComprehensionProduct", "[a * b for a in [1, 2, 3] for b in [1, 2, 3]]", "[1, 2, 3, 2, 4, 6, 3, 6, 9]")
 interpreter_test("SetComprehensionSimple", "<<x * 2 for x in range(5)>>", "<<0, 2, 4, 6, 8>>");
 interpreter_test("SetComprehensionWithCondition", "<<x * 2 for x in range(5) if x % 2 == 1>>", "<<2, 6>>");
 interpreter_test("SetComprehensionString", "<<int(ch) for ch in '12312'>>", "<<1, 2, 3>>");

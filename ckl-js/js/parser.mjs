@@ -51,11 +51,14 @@ import {
     NodeLambda,
     NodeList,
     NodeListComprehension,
+    NodeListComprehensionParallel,
+    NodeListComprehensionProduct,
     NodeLiteral,
     NodeMap,
     NodeMapComprehension,
     NodeNot,
     NodeNull,
+    NodeObject,
     NodeOr,
     NodeRequire,
     NodeReturn,
@@ -64,7 +67,6 @@ import {
     NodeSpread,
     NodeWhile
 } from "./nodes.mjs";
-import { NodeObject } from "./nodes.mjs";
 
 export class Parser {
     static parseScript(script, filename) {
@@ -710,12 +712,34 @@ export class Parser {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
                 const listExpr = this.parseOrExpr(lexer);
-                const comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.matchIf("if", "keyword")) {
-                    comprehension.setCondition(this.parseOrExpr(lexer));
+                if (lexer.matchIf("for", "keyword")) {
+                    const identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", "keyword");
+                    const listExpr2 = this.parseOrExpr(lexer);
+                    const comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match("]", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
+                } else if (lexer.matchIf(["also", "for"], "keyword")) {
+                    const identifier2 = lexer.matchIdentifier();
+                    lexer.match("in", "keyword");
+                    const listExpr2 = this.parseOrExpr(lexer);
+                    const comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match("]", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
+                } else {
+                    const comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.matchIf("if", "keyword")) {
+                        comprehension.setCondition(this.parseOrExpr(lexer));
+                    }
+                    lexer.match("]", "interpunction");
+                    return this.derefOrInvoke(lexer, comprehension);
                 }
-                lexer.match("]", "interpunction");
-                return this.derefOrInvoke(lexer, comprehension);
             } else {
                 const list = new NodeList(token.pos);
                 while (!lexer.peekn(1, "]", "interpunction")) {

@@ -39,6 +39,15 @@ import {
     ValueString 
 } from "./values.mjs";
 
+function getCollectionValue(collection) {
+    if (collection.isList()) return collection.value;
+    else if (collection.isSet()) return collection.value.sortedValues();
+    else if (collection.isMap()) return collection.value.sortedEntries();
+    else if (collection.isObject()) return collection.keys();
+    else if (collection.isString()) return collection.value.split("");
+    else return null;
+}
+
 function getFuncallString(fn, args) {
     return fn.name + "(" + args.toStringAbbrev() + ")";
 }
@@ -1124,12 +1133,7 @@ export class NodeListComprehension {
         const result = new ValueList();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        let values = null;
-        if (list.isList()) values = list.value;
-        else if (list.isSet()) values = list.value.sortedValues();
-        else if (list.isMap()) values = list.value.sortedEntries();
-        else if (list.isObject()) values = list.keys();
-        else if (list.isString()) values = list.value.split("");
+        const values = getCollectionValue(list);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const value = this.valueExpr.evaluate(localEnv);
@@ -1157,6 +1161,126 @@ export class NodeListComprehension {
         boundVarsLocal.push(this.identifier);
         this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
         this.listExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
+export class NodeListComprehensionParallel {
+    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+        this.valueExpr = valueExpr;
+        this.identifier1 = identifier1;
+        this.listExpr1 = listExpr1;
+        this.identifier2 = identifier2;
+        this.listExpr2 = listExpr2;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueList();
+        const localEnv = environment.newEnv();
+        const list1 = this.listExpr1.evaluate(environment);
+        const list2 = this.listExpr2.evaluate(environment);
+        const values1 = getCollectionValue(list1);
+        const values2 = getCollectionValue(list2);
+        for (let i = 0; i < Math.max(values1.length, values2.length); i++) {
+            const listValue1 = i < values1.length ? values1[i] : ValueNull.NULL;
+            const listValue2 = i < values2.length ? values2[i] : ValueNull.NULL;
+            localEnv.put(this.identifier1, listValue1);
+            localEnv.put(this.identifier2, listValue2);
+            const value = this.valueExpr.evaluate(localEnv);
+            if (this.conditionExpr != null) {
+                const condition = this.conditionExpr.evaluate(localEnv);
+                if (!(condition instanceof ValueBoolean)) {
+                    throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
+                }
+                if (condition.value) {
+                    result.addItem(value);
+                }
+            } else {
+                result.addItem(value);
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + this.listExpr1 
+            + " also for " + this.identifier2 + " in " + this.listExpr2
+            + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier1);
+        boundVarsLocal.push(this.identifier2);
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr1.collectVars(freeVars, boundVars, additionalBoundVars);
+        this.listExpr2.collectVars(freeVars, boundVars, additionalBoundVars);
+        if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+    }
+}
+
+export class NodeListComprehensionProduct {
+    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+        this.valueExpr = valueExpr;
+        this.identifier1 = identifier1;
+        this.listExpr1 = listExpr1;
+        this.identifier2 = identifier2;
+        this.listExpr2 = listExpr2;
+        this.conditionExpr = null;
+        this.pos = pos;
+    }
+
+    setCondition(conditionExpr) {
+        this.conditionExpr = conditionExpr;
+    }
+
+    evaluate(environment) {
+        const result = new ValueList();
+        const localEnv = environment.newEnv();
+        const list1 = this.listExpr1.evaluate(environment);
+        const list2 = this.listExpr2.evaluate(environment);
+        const values1 = getCollectionValue(list1);
+        const values2 = getCollectionValue(list2);
+        for (const listValue1 of values1) {
+            localEnv.put(this.identifier1, listValue1);
+            for (const listValue2 of values2) {
+                localEnv.put(this.identifier2, listValue2);
+                const value = this.valueExpr.evaluate(localEnv);
+                if (this.conditionExpr != null) {
+                    const condition = this.conditionExpr.evaluate(localEnv);
+                    if (!(condition instanceof ValueBoolean)) {
+                        throw new RuntimeError("ERROR", "Condition must be boolean but got " + condition.type(), this.pos);
+                    }
+                    if (condition.value) {
+                        result.addItem(value);
+                    }
+                } else {
+                    result.addItem(value);
+                }
+            }
+        }
+        return result;
+    }
+
+    toString() {
+        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + this.listExpr1 
+            + " for " + this.identifier2 + " in " + this.listExpr2
+            + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        const boundVarsLocal = [...boundVars];
+        boundVarsLocal.push(this.identifier1);
+        boundVarsLocal.push(this.identifier2);
+        this.valueExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
+        this.listExpr1.collectVars(freeVars, boundVars, additionalBoundVars);
+        this.listExpr2.collectVars(freeVars, boundVars, additionalBoundVars);
         if (this.conditionExpr != null) this.conditionExpr.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
     }
 }
@@ -1237,11 +1361,7 @@ export class NodeMapComprehension {
         const result = new ValueMap();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        let values = null;
-        if (list.isList()) values = list.value;
-        else if (list.isSet()) values = list.value.sortedValues();
-        else if (list.isMap()) values = list.value.sortedEntries();
-        else if (list.isString()) values = list.value.split("");
+        const values = getCollectionValue(list);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const key = this.keyExpr.evaluate(localEnv);
@@ -1565,11 +1685,7 @@ export class NodeSetComprehension {
         const result = new ValueSet();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        let values = null;
-        if (list.isList()) values = list.value;
-        else if (list.isSet()) values = list.value.sortedValues();
-        else if (list.isMap()) values = list.value.sortedEntries();
-        else if (list.isString()) values = list.value.split("");
+        const values = getCollectionValue(list);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const value = this.valueExpr.evaluate(localEnv);

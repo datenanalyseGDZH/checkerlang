@@ -25,7 +25,7 @@ export const Keywords = [
     "if", "then", "elif", "else", "and", "or", "not", 
     "is", "in", "def", "fn", "for", "while", 
     "do", "end", "finally", "catch", "break", "continue", 
-    "return", "error", "require", "as"
+    "return", "error", "require", "as", "also"
 ];
 
 export const Operators = [
