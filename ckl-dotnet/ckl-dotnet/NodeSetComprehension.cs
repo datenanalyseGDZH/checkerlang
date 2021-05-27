@@ -49,16 +49,8 @@ namespace CheckerLang
         {
             var result = new ValueSet();
             var localEnv = environment.NewEnv();
-            var list = listExpr.Evaluate(environment);
-            if (list.IsString()) {
-                var s = list.AsString().GetValue();
-                var slist = new ValueList();
-                for (var i = 0; i < s.Length; i++) {
-                    slist.AddItem(new ValueString(s.Substring(i, 1)));
-                }
-                list = slist;
-            }
-            foreach (var listValue in list.AsList().GetValue())
+            var list = AsList.From(listExpr.Evaluate(environment));
+            foreach (var listValue in list.GetValue())
             {
                 localEnv.Put(identifier, listValue);
                 var value = valueExpr.Evaluate(localEnv);

@@ -18,24 +18,30 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
+using System;
 using System.Collections.Generic;
 
 namespace CheckerLang
 {
-    public class NodeListComprehension : Node
+    public class NodeListComprehensionParallel : Node
     {
         private Node valueExpr;
-        private string identifier;
-        private Node listExpr;
+        private string identifier1;
+        private Node listExpr1;
+        private string identifier2;
+        private Node listExpr2;
         private Node conditionExpr;
 
         private SourcePos pos;
         
-        public NodeListComprehension(Node valueExpr, string identifier, Node listExpr, SourcePos pos)
+        public NodeListComprehensionParallel(Node valueExpr, string identifier1, Node listExpr1, string identifier2, Node listExpr2, SourcePos pos)
         {
             this.valueExpr = valueExpr;
-            this.identifier = identifier;
-            this.listExpr = listExpr;
+            this.identifier1 = identifier1;
+            this.listExpr1 = listExpr1;
+            this.identifier2 = identifier2;
+            this.listExpr2 = listExpr2;
             this.pos = pos;
         }
 
@@ -48,17 +54,19 @@ namespace CheckerLang
         {
             var result = new ValueList();
             var localEnv = environment.NewEnv();
-            var list = AsList.From(listExpr.Evaluate(environment));
-            foreach (var listValue in list.GetValue())
-            {
-                localEnv.Put(identifier, listValue);
+            var list1 = AsList.From(listExpr1.Evaluate(environment)).GetValue();
+            var list2 = AsList.From(listExpr2.Evaluate(environment)).GetValue();
+            for (var i = 0; i < Math.Max(list1.Count, list2.Count); i++) {
+                localEnv.Put(identifier1, i < list1.Count ? list1[i] : ValueNull.NULL);
+                localEnv.Put(identifier2, i < list2.Count ? list2[i] : ValueNull.NULL);
                 var value = valueExpr.Evaluate(localEnv);
                 if (conditionExpr != null)
                 {
                     var condition = conditionExpr.Evaluate(localEnv);
                     if (!condition.IsBoolean())
                     {
-                        throw new ControlErrorException(new ValueString("ERROR"), "Condition must be boolean but got " + condition.Type(),
+                        throw new ControlErrorException(new ValueString("ERROR"),
+                            "Condition must be boolean but got " + condition.Type(),
                             pos);
                     }
 
@@ -78,15 +86,20 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return "[" + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
+            return "[" + valueExpr + 
+                   " for " + identifier1 + " in " + listExpr1 + 
+                   " also for " + identifier2 + " in " + listExpr2 + 
+                   (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)
         {
             var boundVarsLocal = new HashSet<string>(boundVars);
-            boundVarsLocal.Add(identifier);
+            boundVarsLocal.Add(identifier1);
+            boundVarsLocal.Add(identifier2);
             valueExpr.CollectVars(freeVars, boundVarsLocal, additionalBoundVars);
-            listExpr.CollectVars(freeVars, boundVars, additionalBoundVars);
+            listExpr1.CollectVars(freeVars, boundVars, additionalBoundVars);
+            listExpr2.CollectVars(freeVars, boundVars, additionalBoundVars);
             conditionExpr?.CollectVars(freeVars, boundVarsLocal, additionalBoundVars);
         }
         

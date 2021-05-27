@@ -868,6 +868,30 @@ namespace Tests
                 "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;");
         }
         
+        [Test]
+        public void TestListComprehensionParallel() {
+            Verify("[1, 4, 9]",
+                    "[a * b for a in [1, 2, 3] also for b in [1, 2, 3]]");
+        }
+
+        [Test]
+        public void TestListComprehensionProduct() {
+            Verify("[1, 2, 3, 2, 4, 6, 3, 6, 9]",
+                    "[a * b for a in [1, 2, 3] for b in [1, 2, 3]]");
+        }
+
+        [Test]
+        public void TestSetComprehensionParallel() {
+            Verify("<<1, 4, 9>>",
+                    "<<a * b for a in [1, 2, 3] also for b in [1, 2, 3]>>");
+        }
+
+        [Test]
+        public void TestSetComprehensionProduct() {
+            Verify("<<1, 2, 3, 4, 6, 9>>",
+                    "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
+        }
+
         private void Verify(string expected, string script)
         {
             var env = new Environment();

@@ -808,13 +808,34 @@ namespace CheckerLang
                 var identifier = lexer.MatchIdentifier();
                 lexer.Match("in", TokenType.Keyword);
                 var listExpr = ParseOrExpr(lexer);
-                var comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.MatchIf("if", TokenType.Keyword))
-                {
-                    comprehension.SetCondition(ParseOrExpr(lexer));
+                if (lexer.MatchIf("for", TokenType.Keyword)) {
+                    var identifier2 = lexer.MatchIdentifier();
+                    lexer.Match("in", TokenType.Keyword);
+                    var listExpr2 = ParseOrExpr(lexer);
+                    var comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match("]", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
+                } else if (lexer.MatchIf("also", "for", TokenType.Keyword)) {
+                    var identifier2 = lexer.MatchIdentifier();
+                    lexer.Match("in", TokenType.Keyword);
+                    var listExpr2 = ParseOrExpr(lexer);
+                    var comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match("]", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
+                } else {
+                    var comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match("]", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
                 }
-                lexer.Match("]", TokenType.Interpunction);
-                return DerefOrInvoke(lexer, comprehension);
             }
             
             var list = new NodeList(token.pos);
@@ -848,13 +869,34 @@ namespace CheckerLang
                 var identifier = lexer.MatchIdentifier();
                 lexer.Match("in", TokenType.Keyword);
                 var listExpr = ParseOrExpr(lexer);
-                var comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
-                if (lexer.MatchIf("if", TokenType.Keyword)) {
-                    comprehension.SetCondition(ParseOrExpr(lexer));
+                if (lexer.MatchIf("for", TokenType.Keyword)) {
+                    var identifier2 = lexer.MatchIdentifier();
+                    lexer.Match("in", TokenType.Keyword);
+                    var listExpr2 = ParseOrExpr(lexer);
+                    var comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match(">>", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
+                } else if (lexer.MatchIf("also", "for", TokenType.Keyword)) {
+                    var identifier2 = lexer.MatchIdentifier();
+                    lexer.Match("in", TokenType.Keyword);
+                    var listExpr2 = ParseOrExpr(lexer);
+                    var comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match(">>", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
+                } else {
+                    var comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                    if (lexer.MatchIf("if", TokenType.Keyword)) {
+                        comprehension.SetCondition(ParseOrExpr(lexer));
+                    }
+                    lexer.Match(">>", TokenType.Interpunction);
+                    return DerefOrInvoke(lexer, comprehension);
                 }
-
-                lexer.Match(">>", TokenType.Interpunction);
-                return DerefOrInvoke(lexer, comprehension);
             }
             var set = new NodeSet(token.pos);
             set.AddItem(expr);

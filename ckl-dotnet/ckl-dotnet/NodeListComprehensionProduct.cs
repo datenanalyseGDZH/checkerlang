@@ -22,20 +22,24 @@ using System.Collections.Generic;
 
 namespace CheckerLang
 {
-    public class NodeListComprehension : Node
+    public class NodeListComprehensionProduct : Node
     {
         private Node valueExpr;
-        private string identifier;
-        private Node listExpr;
+        private string identifier1;
+        private Node listExpr1;
+        private string identifier2;
+        private Node listExpr2;
         private Node conditionExpr;
 
         private SourcePos pos;
         
-        public NodeListComprehension(Node valueExpr, string identifier, Node listExpr, SourcePos pos)
+        public NodeListComprehensionProduct(Node valueExpr, string identifier1, Node listExpr1, string identifier2, Node listExpr2, SourcePos pos)
         {
             this.valueExpr = valueExpr;
-            this.identifier = identifier;
-            this.listExpr = listExpr;
+            this.identifier1 = identifier1;
+            this.listExpr1 = listExpr1;
+            this.identifier2 = identifier2;
+            this.listExpr2 = listExpr2;
             this.pos = pos;
         }
 
@@ -48,28 +52,34 @@ namespace CheckerLang
         {
             var result = new ValueList();
             var localEnv = environment.NewEnv();
-            var list = AsList.From(listExpr.Evaluate(environment));
-            foreach (var listValue in list.GetValue())
+            var list1 = AsList.From(listExpr1.Evaluate(environment));
+            var list2 = AsList.From(listExpr2.Evaluate(environment));
+            foreach (var value1 in list1.GetValue()) 
             {
-                localEnv.Put(identifier, listValue);
-                var value = valueExpr.Evaluate(localEnv);
-                if (conditionExpr != null)
+                localEnv.Put(identifier1, value1);
+                foreach (var value2 in list2.GetValue())
                 {
-                    var condition = conditionExpr.Evaluate(localEnv);
-                    if (!condition.IsBoolean())
+                    localEnv.Put(identifier2, value2);
+                    var value = valueExpr.Evaluate(localEnv);
+                    if (conditionExpr != null)
                     {
-                        throw new ControlErrorException(new ValueString("ERROR"), "Condition must be boolean but got " + condition.Type(),
-                            pos);
-                    }
+                        var condition = conditionExpr.Evaluate(localEnv);
+                        if (!condition.IsBoolean())
+                        {
+                            throw new ControlErrorException(new ValueString("ERROR"),
+                                "Condition must be boolean but got " + condition.Type(),
+                                pos);
+                        }
 
-                    if (condition.AsBoolean().GetValue())
+                        if (condition.AsBoolean().GetValue())
+                        {
+                            result.AddItem(value);
+                        }
+                    }
+                    else
                     {
                         result.AddItem(value);
                     }
-                }
-                else
-                {
-                    result.AddItem(value);
                 }
             }
 
@@ -78,15 +88,20 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return "[" + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
+            return "[" + valueExpr + 
+                   " for " + identifier1 + " in " + listExpr1 + 
+                   " for " + identifier2 + " in " + listExpr2 + 
+                   (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)
         {
             var boundVarsLocal = new HashSet<string>(boundVars);
-            boundVarsLocal.Add(identifier);
+            boundVarsLocal.Add(identifier1);
+            boundVarsLocal.Add(identifier2);
             valueExpr.CollectVars(freeVars, boundVarsLocal, additionalBoundVars);
-            listExpr.CollectVars(freeVars, boundVars, additionalBoundVars);
+            listExpr1.CollectVars(freeVars, boundVars, additionalBoundVars);
+            listExpr2.CollectVars(freeVars, boundVars, additionalBoundVars);
             conditionExpr?.CollectVars(freeVars, boundVarsLocal, additionalBoundVars);
         }
         
