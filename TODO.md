@@ -48,16 +48,6 @@ the other participant to execute code on our machine/browser.
 * rework unittests to run per module (without legacy!)
 * add much more unit tests and unify them across all plattforms
 
-* add keyword "also"                        OK:js,java
-* extract GetCollectionValues function      OK:js,java
-* add ListComprehensionParallel             OK:js,java
-* add ListComprehensionProduct              OK:js,java
-* parse list comprehension variants         OK:js,java
-* add SetComprehensionParallel              OK:js,java
-* add SetComprehensionProduct               OK:js,java
-* parse set comprehension variants          OK:js,java
-* add unit tests                            OK:js,java
-
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
