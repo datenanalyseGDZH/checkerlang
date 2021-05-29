@@ -1,0 +1,150 @@
+# CSV file processing
+
+require IO;
+
+def csv(input, with_header = TRUE, sep = ";", NA = "") do
+    def result = <*class="csv", 
+                   sep=sep, 
+                   na=NA,
+                   input=input, 
+                   colnames=NULL, 
+                   coltypes=NULL, 
+                   operations=[]*>;
+    if with_header then result->colnames = result->input !> IO->readln() !> split(sep);
+    result;
+end;
+
+def set_column_names(csv, colnames...) do
+    csv->colnames = colnames...;
+    csv;
+end;
+
+def set_column_types(csv, coltypes...) do
+    csv->coltypes = coltypes...;
+    csv;
+end;
+
+def filter(csv, predicate) do
+    csv->operations !> append(predicate);
+    csv;
+end;
+
+def EQUALS(column, value) do
+    <*op="equals", column=column, value=value*>
+end;
+
+def NOT_EQUALS(column, value) do
+    <*op="not_equals", column=column, value=value*>
+end;
+
+def STARTS_WITH(column, value) do
+    <*op="starts_with", column=column, value=value*>
+end;
+
+def ENDS_WITH(column, value) do
+    <*op="ends_with", column=column, value=value*>
+end;
+
+def rename(csv, src_col, dest_col) do
+    csv->operations !> append(<*op="rename", src_col=src_col, dest_col=dest_col*>);
+    csv;
+end;
+
+def select(csv, columns...) do
+    csv->operations !> append(<*op="select", columns=[...columns...]*>);
+    csv;
+end;
+
+def _initial_processing(csv) do
+    def cols = csv->colnames;
+    cols = [...cols];
+    for op in csv->operations do
+        if op->op == "rename" then do
+            for [idx, col] in enumerate(cols) do
+                if col == op->src_col then cols[idx] = op->dest_col;
+            end;
+        end elif op->op == "select" then do
+            cols = op->columns;
+        end;
+    end;
+    csv->dest_colnames = cols;
+end;
+
+def _process_row(csv, line) do
+    def fields = [if s == csv->na then NULL else s for s in split(line, csv->sep)];
+    if csv->coltypes is not null then do
+        for [idx, coltype] in enumerate(csv->coltypes) do
+            if fields[idx] == NULL then continue;
+            if coltype == "int" then fields[idx] = int(fields[idx])
+            elif coltype == "date" then fields[idx] = date(fields[idx]);
+        end;
+    end;
+    fields = zip_map(csv->colnames, fields);
+    for op in csv->operations do
+        if op->op == "rename" then do
+            fields[op->dest_col] = fields[op->src_col];
+            remove(fields, op->src_col);
+        end elif op->op == "equals" then do
+            if fields[op->column] != op->value then return NULL;
+        end elif op->op == "not_equals" then do
+            if fields[op->column] == op->value then return NULL;
+        end elif op->op == "starts_with" then do
+            if not starts_with(fields[op->column], op->value) then return NULL;
+        end elif op->op == "ends_with" then do
+            if not ends_with(fields[op->column], op->value) then return NULL;
+        end;
+    end;
+    [fields[col] for col in csv->dest_colnames];
+end;
+
+def save_as(csv, filename, NA = "", encoding = "UTF-8") do
+    def output = IO->file_output(filename, encoding = encoding);
+    do
+        _initial_processing(csv);
+        println(csv->dest_colnames !> join(csv->sep), output);
+        do
+            IO->process_lines(csv->input, fn(line) do
+                line = _process_row(csv, line);
+                if line != NULL then do
+                    line = [if s == NULL then csv->na else s for s in line];
+                    println(line !> join(csv->sep), output);
+                end;
+            end);
+        finally
+            IO->close(csv->input);
+        end;
+    finally
+        IO->close(output);
+    end;
+    return NULL;
+end;
+
+def process(csv) do
+    _initial_processing(csv);
+    def result = [[colname, []] for colname in csv->dest_colnames];
+    do
+        IO->process_lines(csv->input, fn(line) do
+            line = _process_row(csv, line);
+            if line != NULL then do
+                for [idx, value] in enumerate(line) do
+                    result[idx][1] !> append(value);
+                end;
+            end;
+        end);
+    finally
+        IO->close(csv->input);
+    end;
+    result;
+end;
+
+
+csv(IO->file_input("test.csv"), with_header = TRUE) !>
+set_column_names("a", "bb", "ccc") !>
+set_column_types("string", "int", "date") !>
+filter(STARTS_WITH("a", "xyz")) !>
+filter(EQUALS("bb", 14)) !>
+rename("a", "A") !>
+select("bb", "A") !>
+save_as("output.csv", encoding = "UTF-8");
+#process();
+
