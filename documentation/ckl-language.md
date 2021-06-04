@@ -3,20 +3,136 @@
 ## Data types
 
 ### String
+
+```
+def s = "Hello world!";
+def t = 'Good morning';
+```
+
+Strings are arbitrarily long sequences of characters. They are delimited
+by either a pair of double quotes or a pair of single quotes. 
+
+Strings can span multiple lines:
+
+```
+def s = "hello
+there";
+```
+
+Strings can be added:
+
+```
+"abc" + "def" == "abcdef"
+```
+
+If a string is multiplied by an integer n, the result is a
+string containing n times the original string:
+
+```
+"abc" * 3 == "abcabcabc"
+```
+
 ### Int
+
+```
+def n = 1234;
+```
+
+Integers represent integral numbers. They are signed and have a 64bit
+representation.
+
+All the basic arithmetic operations are defined for integers.
+Division returns an integer.
+
+```
+2 + 3 == 5;
+2 - 3 == -1;
+2 * 3 == 6;
+7 / 3 == 2;
+7 % 3 == 1;
+```
+
 ### Decimal
+
+```
+def d = 123.45;
+```
+
+Decimals represent floating point numbers. They are signed and have
+a 64bit representation.
+
+All the basic arithmetic operations are defined for decimals.
+
+```
+2.3 + 3.5 == 5.8
+2.5 - 3.0 == -0.5
+2.3 * 3.6 == 8.28
+6.9 / 2 == 3.45
+7.0 % 2.0 == 1.0
+```
+
+Some implementations use decimal arithmetic (e.g. the ckl-dotnet one),
+others use standard IEEE floating point arithmetic. Thus, you need
+to be careful about rounding issues and should never use the ==
+operator to compare two decimal values.
+
+
 ### Boolean
+
+```
+def a = TRUE;
+def b = FALSE;
+```
+
+Boolean values are used in logical operations (for example in
+condition expressions). A boolean can have either TRUE or FALSE
+as value. Other values are not possible.
+
+The boolean operators `and`, `or` and `not` are supported. See
+section "Boolean algebra" for details.
+
 ### Pattern
+
 ### Date
 ### List
+
+```
+def a = [1, 2, 3];
+```
+
 ### Set
+
+```
+def a = <<1, 2, 3>>;
+```
+
 ### Map
+
+```
+def a = <<<a => 1, b => 2, c => 3>>>;
+```
+
 ### Object
+
+```
+def a = <* val = 12, f = fn(x) 2 * x *>;
+```
+
 ### Func
+
+```
+def f = fn(x) 2 * x;
+```
+
 ### Error
 ### Input
 ### Output
 ### Null
+
+```
+def a = NULL;
+```
+
 ### Node
 
 
