@@ -26,12 +26,14 @@ namespace CheckerLang
     {
         private Node expression;
         private Node index;
+        private Node defaultValue;
 
         private SourcePos pos;
 
-        public NodeDeref(Node expression, Node index, SourcePos pos) {
+        public NodeDeref(Node expression, Node index, Node defaultValue, SourcePos pos) {
             this.expression = expression;
             this.index = index;
+            this.defaultValue = defaultValue;
             this.pos = pos;
         }
 
@@ -41,6 +43,7 @@ namespace CheckerLang
             if (value.IsNull()) return ValueNull.NULL;
             if (value.IsString())
             {
+                if (defaultValue != null) throw new ControlErrorException(new ValueString("ERROR"), "Default value not allowed in string dereference", pos);
                 var s = value.AsString().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + s.Length;
@@ -49,6 +52,7 @@ namespace CheckerLang
             } 
             if (value.IsList())
             {
+                if (defaultValue != null) throw new ControlErrorException(new ValueString("ERROR"), "Default value not allowed in list dereference", pos);
                 var list = value.AsList().GetValue();
                 var i = (int) idx.AsInt().GetValue();
                 if (i < 0) i = i + list.Count;
@@ -58,11 +62,19 @@ namespace CheckerLang
             if (value.IsMap())
             {
                 var map = value.AsMap().GetValue();
-                if (!map.ContainsKey(idx)) throw new ControlErrorException(new ValueString("ERROR"),"Map does not contain key " + idx, pos);
+                if (!map.ContainsKey(idx))
+                {
+                    if (defaultValue == null)
+                    {
+                        throw new ControlErrorException(new ValueString("ERROR"), "Map does not contain key " + idx, pos);
+                    }
+                    return defaultValue.Evaluate(environment);
+                }
                 return map[idx];
             }
             if (value.IsObject())
             {
+                if (defaultValue != null) throw new ControlErrorException(new ValueString("ERROR"), "Default value not allowed in object dereference", pos);
                 var obj = value.AsObject();
                 var member = idx.AsString().GetValue();
                 var exists = obj.value.ContainsKey(member);

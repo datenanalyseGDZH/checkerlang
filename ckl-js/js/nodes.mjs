@@ -448,9 +448,10 @@ export class NodeDefDestructuring {
 }
 
 export class NodeDeref {
-    constructor(expression, index, pos) {
+    constructor(expression, index, default_value, pos) {
         this.expression = expression;
         this.index = index;
+        this.default_value = default_value;
         this.pos = pos;
     }
 
@@ -459,6 +460,7 @@ export class NodeDeref {
         let value = this.expression.evaluate(environment);
         if (value == ValueNull.NULL) return ValueNull.NULL;
         if (value instanceof ValueString) {
+            if (this.default_value !== null) throw new RuntimeError("ERROR", "Default value not allowed in string dereference", this.pos);
             const s = value.value;
             let i = Number(idx.value);
             if (i < 0) i = i + s.length;
@@ -466,6 +468,7 @@ export class NodeDeref {
             return new ValueString(s.charAt(i));
         }
         if (value instanceof ValueList) {
+            if (this.default_value !== null) throw new RuntimeError("ERROR", "Default value not allowed in list dereference", this.pos);
             const list = value.value;
             let i = Number(idx.value);
             if (i < 0) i = i + list.length;
@@ -473,10 +476,14 @@ export class NodeDeref {
             return list[i];
         }
         if (value instanceof ValueMap) {
-            if (!value.hasItem(idx)) throw new RuntimeError("ERROR", "Map does not contain key " + idx, this.pos);
+            if (!value.hasItem(idx)) {
+                if (this.default_value === null) throw new RuntimeError("ERROR", "Map does not contain key " + idx, this.pos);
+                else return this.default_value.evaluate(environment);
+            }
             return value.getItem(idx);
         }
         if (value instanceof ValueObject) {
+            if (this.default_value !== null) throw new RuntimeError("ERROR", "Default value not allowed in object dereference", this.pos);
             const member = idx.asString().value;
             let exists = value.hasItem(member);
             while (!exists && value.hasItem("_proto_")) {

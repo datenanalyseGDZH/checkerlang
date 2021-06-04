@@ -34,12 +34,14 @@ import java.util.Map;
 public class NodeDeref implements Node {
     private Node expression;
     private Node index;
+    private Node defaultValue;
 
     private SourcePos pos;
 
-    public NodeDeref(Node expression, Node index, SourcePos pos) {
+    public NodeDeref(Node expression, Node index, Node defaultValue, SourcePos pos) {
         this.expression = expression;
         this.index = index;
+        this.defaultValue = defaultValue;
         this.pos = pos;
     }
 
@@ -48,6 +50,7 @@ public class NodeDeref implements Node {
         Value value = expression.evaluate(environment);
         if (value.isNull()) return ValueNull.NULL;
         if (value.isString()) {
+            if (defaultValue != null) throw new ControlErrorException("Default value not allowed in string dereference", pos);
             String s = value.asString().getValue();
             int i = (int) idx.asInt().getValue();
             if (i < 0) i = i + s.length();
@@ -56,6 +59,7 @@ public class NodeDeref implements Node {
             return new ValueString(s.substring(i, i + 1));
         }
         if (value.isList()) {
+            if (defaultValue != null) throw new ControlErrorException("Default value not allowed in list dereference", pos);
             List<Value> list = value.asList().getValue();
             int i = (int) idx.asInt().getValue();
             if (i < 0) i = i + list.size();
@@ -65,11 +69,14 @@ public class NodeDeref implements Node {
         }
         if (value.isMap()) {
             Map<Value, Value> map = value.asMap().getValue();
-            if (!map.containsKey(idx))
-                throw new ControlErrorException("Map does not contain key " + idx, pos);
+            if (!map.containsKey(idx)) {
+                if (defaultValue == null) throw new ControlErrorException("Map does not contain key " + idx, pos);
+                else return defaultValue.evaluate(environment);
+            }
             return map.get(idx);
         }
         if (value.isObject()) {
+            if (defaultValue != null) throw new ControlErrorException("Default value not allowed in object dereference", pos);
             Map<String, Value> map = value.asObject().value;
             String member = idx.asString().getValue();
             boolean exists = map.containsKey(member);

@@ -1032,7 +1032,7 @@ namespace CheckerLang
                 } else {
                     fn = new NodeIdentifier(lexer.MatchIdentifier(), lexer.GetPos());
                     while (lexer.MatchIf("->", TokenType.Operator)) {
-                        fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.MatchIdentifier()), lexer.GetPos()), lexer.GetPos());
+                        fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.MatchIdentifier()), lexer.GetPos()), null, lexer.GetPos());
                     }
                 }
                 var call = new NodeFuncall(fn, lexer.GetPos());
@@ -1121,42 +1121,47 @@ namespace CheckerLang
                 else if (lexer.MatchIf("+=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("add", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("add", "a", new NodeDeref(node, index, null, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("-=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("sub", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("sub", "a", new NodeDeref(node, index, null, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("*=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mul", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mul", "a", new NodeDeref(node, index, null, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("/=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("div", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("div", "a", new NodeDeref(node, index, null, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("%=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mod", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mod", "a", new NodeDeref(node, index, null, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else 
                 {
-                    result.node = new NodeDeref(node, index, pos);
+                    result.node = new NodeDeref(node, index, null, pos);
                 }
             }
             else if (lexer.MatchIf("[", TokenType.Interpunction)) 
             {
                 var pos = lexer.GetPos();
                 var index = this.ParseExpression(lexer);
+                Node defaultValue = null;
+                if (lexer.MatchIf(",", TokenType.Interpunction))
+                {
+                    defaultValue = ParseExpression(lexer);
+                }
                 if (lexer.MatchIf("]", TokenType.Interpunction, "=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
@@ -1166,36 +1171,36 @@ namespace CheckerLang
                 else if (lexer.MatchIf("]", TokenType.Interpunction, "+=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("add", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("add", "a", new NodeDeref(node, index, defaultValue, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("]", TokenType.Interpunction, "-=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("sub", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("sub", "a", new NodeDeref(node, index, defaultValue, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("]", TokenType.Interpunction, "*=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mul", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mul", "a", new NodeDeref(node, index, defaultValue, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("]", TokenType.Interpunction, "/=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("div", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("div", "a", new NodeDeref(node, index, defaultValue, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else if (lexer.MatchIf("]", TokenType.Interpunction, "%=", TokenType.Operator)) 
                 {
                     var value = this.ParseExpression(lexer);
-                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mod", "a", new NodeDeref(node, index, pos), "b", value, pos), pos);
+                    result.node = new NodeDerefAssign(node, index, this.FuncCall("mod", "a", new NodeDeref(node, index, defaultValue, pos), "b", value, pos), pos);
                     result.interrupt = true;
                 } 
                 else 
                 {
-                    result.node = new NodeDeref(node, index, pos);
+                    result.node = new NodeDeref(node, index, defaultValue, pos);
                     lexer.Match("]", TokenType.Interpunction);
                 }
             }

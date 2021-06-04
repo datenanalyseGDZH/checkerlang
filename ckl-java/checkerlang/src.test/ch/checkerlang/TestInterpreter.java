@@ -760,6 +760,16 @@ public class TestInterpreter {
                 "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
     }
 
+    @Test
+    public void testMapDefaultValue() {
+        verify("-1", "def m = <<<'a' => 12>>>; m['b', -1]");
+    }
+
+    @Test
+    public void testMapDefaultIncrement() {
+        verify("1", "def m = <<<>>>; m['a', 0] += 1; m['a']");
+    }
+
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {

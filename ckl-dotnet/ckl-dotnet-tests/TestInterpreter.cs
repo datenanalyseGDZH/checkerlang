@@ -892,6 +892,18 @@ namespace Tests
                     "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
         }
 
+        [Test]
+        public void TestMapDefaultValue() 
+        {
+            Verify("-1", "def m = <<<'a' => 12>>>; m['b', -1]");
+        }
+
+        [Test]
+        public void TestMapDefaultIncrement() 
+        {
+            Verify("1", "def m = <<<>>>; m['a', 0] += 1; m['a']");
+        }
+        
         private void Verify(string expected, string script)
         {
             var env = new Environment();

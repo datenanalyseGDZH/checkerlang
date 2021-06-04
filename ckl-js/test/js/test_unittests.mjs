@@ -387,7 +387,8 @@ interpreter_test("TestForObjectValues", "def result = []; def obj = <*a=1, b=2, 
 interpreter_test("TestForObjectDefault", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in obj append(result, o); result;", "[1, 2, 3]");
 interpreter_test("TestForObjectKeys", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in keys obj append(result, o); result;", "['a', 'b', 'c']");
 interpreter_test("TestForObjectEntries", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;", "[['a', 1], ['b', 2], ['c', 3]]");
-
+interpreter_test("MapDefaultValue", "def m = <<<'a' => 1>>>; m['b', 0]", "0");
+interpreter_test("MapIncrementDefaultValue", "def m = <<<>>>; m['a', 0] += 1; m['a']", "1");
 
 function collectvars_test(description, code, expected) {
     let get_freevars = function(node, environment) {

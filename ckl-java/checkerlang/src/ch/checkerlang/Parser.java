@@ -897,7 +897,7 @@ public class Parser {
             } else {
                 fn = new NodeIdentifier(lexer.matchIdentifier(), lexer.getPos());
                 while (lexer.matchIf("->", TokenType.Operator)) {
-                    fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.matchIdentifier()), lexer.getPos()), lexer.getPos());
+                    fn = new NodeDeref(fn, new NodeLiteral(new ValueString(lexer.matchIdentifier()), lexer.getPos()), null, lexer.getPos());
                 }
             }
             NodeFuncall call = new NodeFuncall(fn, lexer.getPos());
@@ -969,56 +969,60 @@ public class Parser {
                 result.node = n;
             } else if (lexer.matchIf("+=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, null, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf( "-=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, null, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("*=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, null, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("/=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, null, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("%=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, null, pos), value, pos), pos);
                 result.interrupt = true;
             } else {
-                result.node = new NodeDeref(node, index, pos);
+                result.node = new NodeDeref(node, index, null, pos);
             }
         } else if (lexer.matchIf("[", TokenType.Interpunction)) {
             SourcePos pos = lexer.getPos();
             Node index = this.parseExpression(lexer);
+            Node defaultValue = null;
+            if (lexer.matchIf(",", TokenType.Interpunction)) {
+                defaultValue = this.parseExpression(lexer);
+            }
             if (lexer.matchIf("]", TokenType.Interpunction, "=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
                 result.node = new NodeDerefAssign(node, index, value, pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("]", TokenType.Interpunction, "+=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("]", TokenType.Interpunction, "-=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("]", TokenType.Interpunction, "*=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("]", TokenType.Interpunction, "/=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
                 result.interrupt = true;
             } else if (lexer.matchIf("]", TokenType.Interpunction, "%=", TokenType.Operator)) {
                 Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, pos), value, pos), pos);
+                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
                 result.interrupt = true;
             } else {
-                result.node = new NodeDeref(node, index, pos);
+                result.node = new NodeDeref(node, index, defaultValue, pos);
                 lexer.match("]", TokenType.Interpunction);
             }
         }
