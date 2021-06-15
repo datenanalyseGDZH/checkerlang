@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>CKL 3.4.2-js function ref</title>
+<title>CKL 3.4.3-js function ref</title>
 <style>
 h1 { font-family: Arial Black; font-height: 18pt; }
 h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }
@@ -21,7 +21,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <link rel="shortcut icon" type="image/png" href="../img/ckl.png">
 </head>
 <body>
-<h1>CKL 3.4.2-js function ref</h1>
+<h1>CKL 3.4.3-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
 <li><a href='#module_Date'>Module Date</a></li>
@@ -638,11 +638,15 @@ Core
 <div class='header'>
 <div class='header_title'>Syntax</div>
 all(lst, predicate)
+all(lst)
 </div>
 <div class='text'>
 <div class='text_title'>Description</div>
 Returns TRUE, if the predicate function returns
 TRUE for all elements of the list.
+
+If no predicate function is passed, the list must
+contain boolean values.
 
 
 </div>
@@ -654,16 +658,24 @@ Core
 <div class='examples_title'>Examples</div>
 <div class='example'>all([1, 2, 3], fn(n) n &lt;= 3) ==&gt; TRUE</div>
 <div class='example'>all([1, 2, 3], fn(n) n &lt;  3) ==&gt; FALSE</div>
+<div class='example'>all([TRUE, TRUE, TRUE]) ==&gt; TRUE</div>
+<div class='example'>all([TRUE, FALSE, TRUE]) ==&gt; FALSE</div>
+<div class='example'>all([e &gt;= 2 for e in [2, 3, 4]]) ==&gt; TRUE</div>
+<div class='example'>all([e &gt;= 2 for e in [1, 3, 4]]) ==&gt; FALSE</div>
 </div>
 <h2 id='any'>any</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
 any(lst, predicate)
+any(lst)
 </div>
 <div class='text'>
 <div class='text_title'>Description</div>
 Returns TRUE, if the predicate function returns
 TRUE for any element of the list.
+
+If no predicate function is passed, the list must
+contain boolean values.
 
 
 </div>
@@ -675,6 +687,10 @@ Core
 <div class='examples_title'>Examples</div>
 <div class='example'>any([1, 2, 3], fn(n) n == 3) ==&gt; TRUE</div>
 <div class='example'>any([1, 2, 3], fn(n) n == 4) ==&gt; FALSE</div>
+<div class='example'>any([TRUE, TRUE, TRUE]) ==&gt; TRUE</div>
+<div class='example'>any([TRUE, FALSE, TRUE]) ==&gt; TRUE</div>
+<div class='example'>any([e &gt;= 2 for e in [2, 3, 4]]) ==&gt; TRUE</div>
+<div class='example'>any([e &gt;= 2 for e in [1, 3, 4]]) ==&gt; TRUE</div>
 </div>
 <h2 id='append'>append</h2>
 <div class='header'>
