@@ -311,14 +311,22 @@ end;
 
 "
 any(lst, predicate)
+any(lst)
 
 Returns TRUE, if the predicate function returns
 TRUE for any element of the list.
 
+If no predicate function is passed, the list must
+contain boolean values.
+
 : any([1, 2, 3], fn(n) n == 3) ==> TRUE
 : any([1, 2, 3], fn(n) n == 4) ==> FALSE
+: any([TRUE, TRUE, TRUE]) ==> TRUE
+: any([TRUE, FALSE, TRUE]) ==> TRUE
+: any([e >= 2 for e in [2, 3, 4]]) ==> TRUE
+: any([e >= 2 for e in [1, 3, 4]]) ==> TRUE
 "
-def any(lst, pred) do
+def any(lst, pred = fn(x) x) do
     for element in lst do
         if pred(element) then return TRUE;
     end;
@@ -328,14 +336,22 @@ end;
 
 "
 all(lst, predicate)
+all(lst)
 
 Returns TRUE, if the predicate function returns
 TRUE for all elements of the list.
 
+If no predicate function is passed, the list must
+contain boolean values.
+
 : all([1, 2, 3], fn(n) n <= 3) ==> TRUE
 : all([1, 2, 3], fn(n) n <  3) ==> FALSE
+: all([TRUE, TRUE, TRUE]) ==> TRUE
+: all([TRUE, FALSE, TRUE]) ==> FALSE
+: all([e >= 2 for e in [2, 3, 4]]) ==> TRUE
+: all([e >= 2 for e in [1, 3, 4]]) ==> FALSE
 "
-def all(lst, pred) do
+def all(lst, pred = fn(x) x) do
     for element in lst do
         if not pred(element) then return FALSE;
     end;
