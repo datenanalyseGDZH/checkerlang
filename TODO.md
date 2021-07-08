@@ -51,3 +51,6 @@ the other participant to execute code on our machine/browser.
 * Can we prevent loops in toString due to recursive data structures? In objects by using _str_, but in general? This is important, because in stacktraces the objects get printed!
   One possibility would be to add a level into toString and only print up to a certain level (i.e. 3 or 4?) This might also be configurable. If called with initial level -1
   it would be without limit, thus we could still handle string(val) in a general manner, but in e.g. stacktraces, we would limit it.
+
+
+* Bug in sprintf? sprintf("{0} \{ {1}", 1, 2) should work?!
