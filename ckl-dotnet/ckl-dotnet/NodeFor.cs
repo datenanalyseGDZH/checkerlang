@@ -20,6 +20,7 @@
 */
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -193,45 +194,114 @@ namespace CheckerLang
             if (list.IsMap())
             {
                 Value result = ValueBoolean.TRUE;
-                foreach (var entry in list.AsMap().GetValue())
+                if (what == "keys")
                 {
-                    Value val = null;
-                    if (what == "keys") val = entry.Key;
-                    else if (what == "values") val = entry.Value;
-                    else if (what == "entries") {
-                        var vallist = new ValueList();
-                        vallist.AddItem(entry.Key);
-                        vallist.AddItem(entry.Value);
-                        val = vallist;
-                    }
-                    if (identifiers.Count == 1) 
+                    foreach (var val in list.AsMap().GetValue().Keys.ToList())
                     {
-                        environment.Put(identifiers[0], val);
-                    } 
-                    else 
-                    {
-                        var vals = val.AsList().GetValue();
-                        for (int i = 0; i < identifiers.Count; i++) 
+                        if (identifiers.Count == 1) 
                         {
-                            environment.Put(identifiers[i], vals[i]);
+                            environment.Put(identifiers[0], val);
+                        } 
+                        else 
+                        {
+                            var vals = val.AsList().GetValue();
+                            for (int i = 0; i < identifiers.Count; i++) 
+                            {
+                                environment.Put(identifiers[i], vals[i]);
+                            }
+                        }
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
+                        {
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
+
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
+
+                        if (result.IsReturn())
+                        {
+                            break;
                         }
                     }
-                    result = block.Evaluate(environment);
-                    if (result.IsBreak())
+                    
+                }
+                else if (what == "values")
+                {
+                    foreach (var val in list.AsMap().GetValue().Values.ToList())
                     {
-                        result = ValueBoolean.TRUE;
-                        break;
-                    }
+                        if (identifiers.Count == 1) 
+                        {
+                            environment.Put(identifiers[0], val);
+                        } 
+                        else 
+                        {
+                            var vals = val.AsList().GetValue();
+                            for (int i = 0; i < identifiers.Count; i++) 
+                            {
+                                environment.Put(identifiers[i], vals[i]);
+                            }
+                        }
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
+                        {
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
 
-                    if (result.IsContinue())
-                    {
-                        result = ValueBoolean.TRUE;
-                        // continue
-                    }
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
 
-                    if (result.IsReturn())
+                        if (result.IsReturn())
+                        {
+                            break;
+                        }
+                    }
+                    
+                }
+                else if (what == "entries")
+                {
+                    foreach (var entry in list.AsMap().GetValue().ToList())
                     {
-                        break;
+                        ValueList val = new ValueList();
+                        val.AddItem(entry.Key);
+                        val.AddItem(entry.Value);
+                        if (identifiers.Count == 1) 
+                        {
+                            environment.Put(identifiers[0], val);
+                        } 
+                        else 
+                        {
+                            var vals = val.AsList().GetValue();
+                            for (int i = 0; i < identifiers.Count; i++) 
+                            {
+                                environment.Put(identifiers[i], vals[i]);
+                            }
+                        }
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
+                        {
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
+
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
+
+                        if (result.IsReturn())
+                        {
+                            break;
+                        }
                     }
                 }
                 if (identifiers.Count == 1) {
@@ -246,45 +316,103 @@ namespace CheckerLang
             if (list.IsObject())
             {
                 Value result = ValueBoolean.TRUE;
-                foreach (var entry in list.AsObject().value)
+                if (what == "keys")
                 {
-                    Value val = null;
-                    if (what == "keys") val = new ValueString(entry.Key);
-                    else if (what == "values") val = entry.Value;
-                    else if (what == "entries") {
-                        var vallist = new ValueList();
-                        vallist.AddItem(new ValueString(entry.Key));
-                        vallist.AddItem(entry.Value);
-                        val = vallist;
-                    }
-                    if (identifiers.Count == 1) 
+                    foreach (var key in list.AsObject().value.Keys.ToList())
                     {
+                        Value val = new ValueString(key);
                         environment.Put(identifiers[0], val);
-                    } 
-                    else 
-                    {
-                        var vals = val.AsList().GetValue();
-                        for (int i = 0; i < identifiers.Count; i++) 
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
                         {
-                            environment.Put(identifiers[i], vals[i]);
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
+
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
+
+                        if (result.IsReturn())
+                        {
+                            break;
                         }
                     }
-                    result = block.Evaluate(environment);
-                    if (result.IsBreak())
+                }
+                else if (what == "values")
+                {
+                    foreach (var val in list.AsObject().value.Values.ToList())
                     {
-                        result = ValueBoolean.TRUE;
-                        break;
-                    }
+                        if (identifiers.Count == 1) 
+                        {
+                            environment.Put(identifiers[0], val);
+                        } 
+                        else 
+                        {
+                            var vals = val.AsList().GetValue();
+                            for (int i = 0; i < identifiers.Count; i++) 
+                            {
+                                environment.Put(identifiers[i], vals[i]);
+                            }
+                        }
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
+                        {
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
 
-                    if (result.IsContinue())
-                    {
-                        result = ValueBoolean.TRUE;
-                        // continue
-                    }
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
 
-                    if (result.IsReturn())
+                        if (result.IsReturn())
+                        {
+                            break;
+                        }
+                    }
+                    
+                }
+                else if (what == "entries")
+                {
+                    foreach (var entry in list.AsObject().value.ToList())
                     {
-                        break;
+                        var val = new ValueList();
+                        val.AddItem(new ValueString(entry.Key));
+                        val.AddItem(entry.Value);
+                        if (identifiers.Count == 1) 
+                        {
+                            environment.Put(identifiers[0], val);
+                        } 
+                        else 
+                        {
+                            var vals = val.AsList().GetValue();
+                            for (int i = 0; i < identifiers.Count; i++) 
+                            {
+                                environment.Put(identifiers[i], vals[i]);
+                            }
+                        }
+                        result = block.Evaluate(environment);
+                        if (result.IsBreak())
+                        {
+                            result = ValueBoolean.TRUE;
+                            break;
+                        }
+
+                        if (result.IsContinue())
+                        {
+                            result = ValueBoolean.TRUE;
+                            // continue
+                        }
+
+                        if (result.IsReturn())
+                        {
+                            break;
+                        }
                     }
                 }
                 if (identifiers.Count == 1) {
