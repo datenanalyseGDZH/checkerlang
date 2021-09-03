@@ -23,12 +23,15 @@ textarea.input {
     width: 100%; 
     height: 1.5em;
     outline: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12pt;
 }
 
 .input { 
     background-color: #404040;
     color: #aaa;
-    font-family: "JetBrains Mono", monospace; 
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12pt;
     min-height: 1.5em;
     margin: 0.2em 0;
     padding: 0.1em 0.1em;
@@ -38,6 +41,7 @@ textarea.input {
 .output { 
     color: #aaa;
     font-family: "JetBrains Mono", monospace; 
+    font-size: 12pt;
     white-space: pre-wrap;
     margin: 0.2em 0;
 }
@@ -62,21 +66,21 @@ button {
     outline: 0;
     border: 0;
     padding: 0.5em 1em;
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     font-size: 10pt;
 }
 
 .dropdown {
     position: relative;
     display: inline-block;
-    font-family: 'Arial Black', sans-serif;
+    font-family: "Arial Black", sans-serif;
     font-size: medium;
     display: inline-block;
     cursor: pointer;
 }
   
 .dropdown-content {
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     font-size: small;
     display: none;
     position: absolute;
