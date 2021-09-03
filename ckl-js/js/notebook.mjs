@@ -74,8 +74,10 @@ function makeCellReadonly(cell) {
     const readonlyInput = document.createElement("div");
     readonlyInput.className = "input";
     readonlyInput.innerText = contents;
+    const height = input.offsetHeight;
     input.remove();
     cell.insertBefore(readonlyInput, cell.querySelector(".output"));
+    readonlyInput.style.height = height + 'px';
 }
 
 function getCellState(cell) {
