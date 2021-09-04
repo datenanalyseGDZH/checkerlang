@@ -1,7 +1,7 @@
 package ch.checkerlang;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -75,19 +75,19 @@ public class TestParser {
                 parse("non_zero('12', '3')"));
     }
 
-    @Test(expected = SyntaxError.class)
+    @Test
     public void testTooManyTokens() {
-        parse("1 + 1 1");
+        Assert.assertThrows(SyntaxError.class, ()->{parse("1 + 1 1");});
     }
 
-    @Test(expected = SyntaxError.class)
+    @Test
     public void testNotEnoughTokens() {
-        parse("1 + ");
+        Assert.assertThrows(SyntaxError.class, ()->{parse("1 + ");});
     }
 
-    @Test(expected = SyntaxError.class)
+    @Test
     public void testMissingThen() {
-        parse("if 1 < 2 else FALSE");
+        Assert.assertThrows(SyntaxError.class, ()->{parse("if 1 < 2 else FALSE");});
     }
 
     @Test
@@ -102,9 +102,9 @@ public class TestParser {
                 parse("if a == 1 then b elif c == 1 or d == 2 then b in c or d == 9999"));
     }
 
-    @Test(expected = SyntaxError.class)
+    @Test
     public void testMissingClosingParens() {
-        parse("2 * (3 + 4( - 3");
+        Assert.assertThrows(SyntaxError.class, ()->{parse("2 * (3 + 4( - 3");});
     }
 
     @Test

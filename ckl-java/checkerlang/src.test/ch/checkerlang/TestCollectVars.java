@@ -2,7 +2,7 @@ package ch.checkerlang;
 
 import ch.checkerlang.nodes.Node;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,0 +1,103 @@
+require IO unqualified;
+require OS unqualified;
+require List import [ filter ];
+
+def dir_delete(path, level = 0) do
+    if level == 0 then println(now() + " Delete dir " + path);
+    for file in list_dir(path, include_path = TRUE, include_dirs = TRUE) do
+        if file_info(file)->is_dir then dir_delete(file, level + 1)
+        else file_delete(file);
+    end;
+    file_delete(path);
+end;
+
+def dir_copy(src, dest, level = 0) do
+    if level == 0 then println(now() + " Copy dir " + src + " to " + dest);
+    if not file_exists(dest) then make_dir(dest);
+    for file in list_dir(src, include_path = FALSE, include_dirs = TRUE) do
+        if file_info(src + "/" + file)->is_dir then do
+            dir_copy(src + "/" + file, dest + "/" + file, level + 1);
+        end else do
+            file_copy(src + "/" + file, dest + "/" + file);
+        end;
+    end;
+end;
+
+def collect_files(path, extension) do
+    def files = list_dir(path, recursive = TRUE, include_dirs = FALSE);
+    [file for file in files if file !> ends_with(extension)];
+end;
+
+def jars(dir) do
+    list_dir(dir, include_path = TRUE) !>
+    filter(fn(file) file !> ends_with(".jar")) !>
+    join(FS);
+end;
+
+def write_file(path, lines, encoding = "UTF-8") do
+    def out = file_output(path, encoding);
+    do
+        for line in lines println(line, out);
+    finally
+        close(out);
+    end;
+end;
+
+def basename(path) do
+    path !> replace("\\", "/") !> split("/")[-1];
+end;
+
+def get_java_executable(cmd) do
+    if OS_NAME == "Linux" then do
+        return get_env("JAVA_HOME") + "/bin/" + cmd;
+    end else do
+        return get_env("JAVA_HOME") + "\\bin\\" + cmd + ".exe";
+    end;
+end;
+
+def compile_java_files(path, output, cp) do
+    println(now() + " Compiling " + basename(path)); 
+    def sources = collect_files(path, ".java");
+    def options = ["-cp", cp, "-d", output, "-encoding", "UTF-8", 
+                   "-source", "8", "-target", "8"];
+    write_file("99_temp/_javac_input", options + sources);
+    def exitcode = execute(get_java_executable("javac"), ["@99_temp/_javac_input"]);
+    file_delete("99_temp/_javac_input");
+    if exitcode != 0 then error "Compilation failed";
+end;
+
+def create_jar_file(jarfile, basedir, mainclass = NULL) do
+    println(now() + " Creating jarfile " + basename(jarfile));
+    def args = [];
+    if mainclass == NULL then args = ["--create", "--file", jarfile, "-C", basedir + "/", "."]
+    else args = ["--create", "--file", jarfile, "--main-class", mainclass, "-C", basedir + "/", "."];
+    def exitcode = execute(get_java_executable("jar"), args);
+    if exitcode != 0 then error "Jarfile creation failed";
+end;
+
+def run_unittests(path, resources, cp, work_dir = NULL, report_dir="junit-reports") do
+    println(now() + " Testing " + basename(path));
+    def exitcode = execute(get_java_executable("java"),
+                           ["-DSPLG_GROUPER_LANGUAGE=de",
+                            "-jar",
+                            "../checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar",
+                            "--details=none",
+                            "--disable-ansi-colors",
+                            "--disable-banner",
+                            "--exclude-engine=junit-vintage",
+                            "-cp", path + ";" + cp + ";" + resources,
+                            "--scan-classpath",
+                            "--reports-dir=" + report_dir,
+                            "--fail-if-no-tests"],
+                            work_dir = work_dir);
+    if exitcode != 0 then error "Unittests failed";
+end;
+
+def increment_build(versionfile) do
+    println(now() + " Increment build version");
+    def [major, minor, build] = read_file(versionfile) !> trim() !> split("\\.");
+    build = string(int(build) + 1);
+    println(now() + " new version is " + major + "." + minor + "." + build);
+    write_file(versionfile, [major + "." + minor + "." + build]);
+end;
+
