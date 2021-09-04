@@ -1,0 +1,40 @@
+require IO unqualified;
+require OS unqualified;
+
+println(now() + " ckl-dotnet build");
+println(now() + " CKL " + checkerlang_version + "-" + checkerlang_platform);
+
+def dotnet(args, work_dir = NULL) do
+    def exitcode = execute("dotnet", args, work_dir = work_dir);
+    if exitcode != 0 then error "dotnet call failed";
+end;
+
+dotnet(["publish", 
+        "-c", "Release", 
+        "--output", "../dist", 
+        "--self-contained", 
+        "--nologo"], 
+        work_dir = "ckl-dotnet");
+
+dotnet(["publish",
+        "--output", "../dist",
+        "--self-contained",
+        "--nologo",
+        "--runtime", "win-x64",
+        "-p:PublishSingleFile=true",
+        "-p:PublishTrimmed=true",
+        "-c", "Release"],
+        work_dir = "ckl-run");
+
+dotnet(["publish",
+        "--output", "../dist",
+        "--self-contained",
+        "--nologo",
+        "--runtime", "win-x64",
+        "-p:PublishSingleFile=true",
+        "-p:PublishTrimmed=true",
+        "-c", "Release"],
+        work_dir = "ckl-repl");
+
+println(now() + " Done");
+
