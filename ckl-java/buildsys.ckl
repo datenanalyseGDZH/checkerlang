@@ -82,7 +82,7 @@ end;
 def run_unittests(path, resources, cp, work_dir = NULL, report_dir="junit-reports") do
     println(now() + " Testing " + basename(path));
     def exitcode = execute(get_java_executable("java"),
-                           ["-jar", "../checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar",
+                           ["-jar", "../lib/junit-platform-console-standalone-1.7.1-all.jar",
                             "--details=none",
                             "--disable-ansi-colors",
                             "--disable-banner",

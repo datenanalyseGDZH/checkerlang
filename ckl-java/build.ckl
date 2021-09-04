@@ -9,22 +9,22 @@ if file_exists("99_temp") then dir_delete("99_temp");
 make_dir("99_temp");
 
 make_dir("99_temp/build");
-compile_java_files("checkerlang/src", "99_temp/build", cp = []);
-for file in list_dir("checkerlang/src") do  
-    if file_extension(file) == ".ckl" then file_copy("checkerlang/src/" + file, "99_temp/build/" + file);
+compile_java_files("src", "99_temp/build", cp = []);
+for file in list_dir("src") do  
+    if file_extension(file) == ".ckl" then file_copy("src/" + file, "99_temp/build/" + file);
 end;
 
 make_dir("99_temp/build.test");
-compile_java_files("checkerlang/src.test",
+compile_java_files("src.test",
                    "99_temp/build.test",
-                   cp = join(["checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar",
+                   cp = join(["lib/junit-platform-console-standalone-1.7.1-all.jar",
                               "99_temp/build"], 
                              FS));
-file_copy("checkerlang/src.test/tests.txt", "99_temp/build.test/tests.txt");
+file_copy("src.test/tests.txt", "99_temp/build.test/tests.txt");
 run_unittests("build.test",
               "res.test",
               cp = join(["build",
-                         "../checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar"], 
+                         "../lib/junit-platform-console-standalone-1.7.1-all.jar"], 
                         FS),
               work_dir = "99_temp");
 
