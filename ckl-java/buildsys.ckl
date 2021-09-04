@@ -55,11 +55,15 @@ def get_java_executable(cmd) do
     end;
 end;
 
-def compile_java_files(path, output, cp) do
+def compile_java_files(path, output, cp, target = 8) do
     println(now() + " Compiling " + basename(path)); 
     def sources = collect_files(path, ".java");
-    def options = ["-cp", cp, "-d", output, "-encoding", "UTF-8", 
-                   "-source", "8", "-target", "8"];
+    def options = ["-cp", cp, 
+                   "-d", output, 
+                   "-encoding", "UTF-8", 
+                   "-source", target, 
+                   "-target", target,
+                   "-Xlint:-options"];
     write_file("99_temp/_javac_input", options + sources);
     def exitcode = execute(get_java_executable("javac"), ["@99_temp/_javac_input"]);
     file_delete("99_temp/_javac_input");
@@ -78,26 +82,16 @@ end;
 def run_unittests(path, resources, cp, work_dir = NULL, report_dir="junit-reports") do
     println(now() + " Testing " + basename(path));
     def exitcode = execute(get_java_executable("java"),
-                           ["-DSPLG_GROUPER_LANGUAGE=de",
-                            "-jar",
-                            "../checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar",
+                           ["-jar", "../checkerlang/lib/junit-platform-console-standalone-1.7.1-all.jar",
                             "--details=none",
                             "--disable-ansi-colors",
                             "--disable-banner",
                             "--exclude-engine=junit-vintage",
-                            "-cp", path + ";" + cp + ";" + resources,
+                            "-cp", path + FS + cp + FS + resources,
                             "--scan-classpath",
                             "--reports-dir=" + report_dir,
                             "--fail-if-no-tests"],
                             work_dir = work_dir);
     if exitcode != 0 then error "Unittests failed";
-end;
-
-def increment_build(versionfile) do
-    println(now() + " Increment build version");
-    def [major, minor, build] = read_file(versionfile) !> trim() !> split("\\.");
-    build = string(int(build) + 1);
-    println(now() + " new version is " + major + "." + minor + "." + build);
-    write_file(versionfile, [major + "." + minor + "." + build]);
 end;
 
