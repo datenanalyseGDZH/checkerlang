@@ -26,6 +26,7 @@ import { Args } from "./args.mjs";
 import { moduleloader } from "./moduleloader.mjs";
 
 import { 
+    Value,
     ValueBoolean,
     ValueControlBreak,
     ValueControlContinue,
@@ -39,10 +40,25 @@ import {
     ValueString 
 } from "./values.mjs";
 
-function getCollectionValue(collection) {
+function convertEntries(entries) {
+    const result = [];
+    for (const [key, value] of entries) {
+        const list = new ValueList();
+        list.addItem(key instanceof Value ? key : new ValueString(key));
+        list.addItem(value);
+        result.push(list);
+    }
+    return result;
+}
+
+function getCollectionValue(collection, what) {
     if (collection.isList()) return collection.value;
     else if (collection.isSet()) return collection.value.sortedValues();
-    else if (collection.isMap()) return collection.value.sortedEntries();
+    else if (collection.isMap() && what === "keys") return collection.value.sortedKeys();
+    else if (collection.isMap() && what === "values") return collection.value.sortedValues();
+    else if (collection.isMap()) return convertEntries(collection.value.sortedEntries());
+    else if (collection.isObject() && what === "values") return collection.value.values();
+    else if (collection.isObject() && what === "entries") return convertEntries(collection.value.entries());
     else if (collection.isObject()) return collection.keys();
     else if (collection.isString()) return collection.value.split("");
     else return null;
@@ -1124,10 +1140,11 @@ export class NodeList {
 }
 
 export class NodeListComprehension {
-    constructor(valueExpr, identifier, listExpr, pos) {
+    constructor(valueExpr, identifier, listExpr, what, pos) {
         this.valueExpr = valueExpr;
         this.identifier = identifier;
         this.listExpr = listExpr;
+        this.what = what;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1140,7 +1157,7 @@ export class NodeListComprehension {
         const result = new ValueList();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        const values = getCollectionValue(list);
+        const values = getCollectionValue(list, this.what);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const value = this.valueExpr.evaluate(localEnv);
@@ -1160,7 +1177,7 @@ export class NodeListComprehension {
     }
 
     toString() {
-        return "[" + this.valueExpr + " for " + this.identifier + " in " + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
+        return "[" + this.valueExpr + " for " + this.identifier + " in " + (this.what === undefined ? "" : this.what + " ") + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
@@ -1173,12 +1190,14 @@ export class NodeListComprehension {
 }
 
 export class NodeListComprehensionParallel {
-    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+    constructor(valueExpr, identifier1, listExpr1, what1, identifier2, listExpr2, what2, pos) {
         this.valueExpr = valueExpr;
         this.identifier1 = identifier1;
         this.listExpr1 = listExpr1;
+        this.what1 = what1;
         this.identifier2 = identifier2;
         this.listExpr2 = listExpr2;
+        this.what2 = what2;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1192,8 +1211,8 @@ export class NodeListComprehensionParallel {
         const localEnv = environment.newEnv();
         const list1 = this.listExpr1.evaluate(environment);
         const list2 = this.listExpr2.evaluate(environment);
-        const values1 = getCollectionValue(list1);
-        const values2 = getCollectionValue(list2);
+        const values1 = getCollectionValue(list1, this.what1);
+        const values2 = getCollectionValue(list2, this.what2);
         for (let i = 0; i < Math.max(values1.length, values2.length); i++) {
             const listValue1 = i < values1.length ? values1[i] : ValueNull.NULL;
             const listValue2 = i < values2.length ? values2[i] : ValueNull.NULL;
@@ -1216,8 +1235,8 @@ export class NodeListComprehensionParallel {
     }
 
     toString() {
-        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + this.listExpr1 
-            + " also for " + this.identifier2 + " in " + this.listExpr2
+        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + (this.what1 === undefined ? "" : this.what1 + " ") + this.listExpr1 
+            + " also for " + this.identifier2 + " in " + (this.what2 === undefined ? "" : this.what2 + " ") + this.listExpr2
             + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
     }
 
@@ -1233,12 +1252,14 @@ export class NodeListComprehensionParallel {
 }
 
 export class NodeListComprehensionProduct {
-    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+    constructor(valueExpr, identifier1, listExpr1, what1, identifier2, listExpr2, what2, pos) {
         this.valueExpr = valueExpr;
         this.identifier1 = identifier1;
         this.listExpr1 = listExpr1;
+        this.what1 = what1;
         this.identifier2 = identifier2;
         this.listExpr2 = listExpr2;
+        this.what2 = what2;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1252,8 +1273,8 @@ export class NodeListComprehensionProduct {
         const localEnv = environment.newEnv();
         const list1 = this.listExpr1.evaluate(environment);
         const list2 = this.listExpr2.evaluate(environment);
-        const values1 = getCollectionValue(list1);
-        const values2 = getCollectionValue(list2);
+        const values1 = getCollectionValue(list1, this.what1);
+        const values2 = getCollectionValue(list2, this.what2);
         for (const listValue1 of values1) {
             localEnv.put(this.identifier1, listValue1);
             for (const listValue2 of values2) {
@@ -1276,8 +1297,8 @@ export class NodeListComprehensionProduct {
     }
 
     toString() {
-        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + this.listExpr1 
-            + " for " + this.identifier2 + " in " + this.listExpr2
+        return "[" + this.valueExpr + " for " + this.identifier1 + " in " + (this.what1 === undefined ? "" : this.what1 + " ") + this.listExpr1 
+            + " for " + this.identifier2 + " in " + (this.what2 === undefined ? "" : this.what2 + " ") + this.listExpr2
             + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + "]";
     }
 
@@ -1351,11 +1372,12 @@ export class NodeMap {
 }
 
 export class NodeMapComprehension {
-    constructor(keyExpr, valueExpr, identifier, listExpr, pos) {
+    constructor(keyExpr, valueExpr, identifier, listExpr, what, pos) {
         this.keyExpr = keyExpr;
         this.valueExpr = valueExpr;
         this.identifier = identifier;
         this.listExpr = listExpr;
+        this.what = what;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1368,7 +1390,7 @@ export class NodeMapComprehension {
         const result = new ValueMap();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        const values = getCollectionValue(list);
+        const values = getCollectionValue(list, this.what);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const key = this.keyExpr.evaluate(localEnv);
@@ -1389,7 +1411,9 @@ export class NodeMapComprehension {
     }
 
     toString() {
-        return "<<<" + this.keyExpr + " => " + this.valueExpr + " for " + this.identifier + " in " + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>>";
+        return "<<<" + this.keyExpr + " => " + this.valueExpr + " for " + this.identifier + 
+            " in " + (this.what === undefined ? "" : this.what + " ") + this.listExpr + 
+            (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>>";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
@@ -1676,10 +1700,11 @@ export class NodeSet {
 }
 
 export class NodeSetComprehension {
-    constructor(valueExpr, identifier, listExpr, pos) {
+    constructor(valueExpr, identifier, listExpr, what, pos) {
         this.valueExpr = valueExpr;
         this.identifier = identifier;
         this.listExpr = listExpr;
+        this.what = what;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1692,7 +1717,7 @@ export class NodeSetComprehension {
         const result = new ValueSet();
         const localEnv = environment.newEnv();
         const list = this.listExpr.evaluate(environment);
-        const values = getCollectionValue(list);
+        const values = getCollectionValue(list, this.what);
         for (const listValue of values) {
             localEnv.put(this.identifier, listValue);
             const value = this.valueExpr.evaluate(localEnv);
@@ -1712,7 +1737,9 @@ export class NodeSetComprehension {
     }
 
     toString() {
-        return "<<" + this.valueExpr + " for " + this.identifier + " in " + this.listExpr + (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
+        return "<<" + this.valueExpr + " for " + this.identifier + 
+            " in " + (this.what === undefined ? "" : this.what + " ") + this.listExpr + 
+            (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
@@ -1725,12 +1752,14 @@ export class NodeSetComprehension {
 }
 
 export class NodeSetComprehensionParallel {
-    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+    constructor(valueExpr, identifier1, listExpr1, what1, identifier2, listExpr2, what2, pos) {
         this.valueExpr = valueExpr;
         this.identifier1 = identifier1;
         this.listExpr1 = listExpr1;
+        this.what1 = what1;
         this.identifier2 = identifier2;
         this.listExpr2 = listExpr2;
+        this.what2 = what2;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1744,8 +1773,8 @@ export class NodeSetComprehensionParallel {
         const localEnv = environment.newEnv();
         const list1 = this.listExpr1.evaluate(environment);
         const list2 = this.listExpr2.evaluate(environment);
-        const values1 = getCollectionValue(list1);
-        const values2 = getCollectionValue(list2);
+        const values1 = getCollectionValue(list1, this.what1);
+        const values2 = getCollectionValue(list2, this.what2);
         for (let i = 0; i < Math.max(values1.length, values2.length); i++) {
             localEnv.put(this.identifier1, i < values1.length ? values1[i] : ValueNull.NULL);
             localEnv.put(this.identifier2, i < values2.length ? values2[i] : ValueNull.NULL);
@@ -1767,8 +1796,8 @@ export class NodeSetComprehensionParallel {
 
     toString() {
         return "<<" + this.valueExpr + 
-        " for " + this.identifier1 + " in " + this.listExpr1 + 
-        " also for " + this.identifier2 + " in " + this.listExpr2 +
+        " for " + this.identifier1 + " in " + (this.what1 === undefined ? "" : this.what1 + " ") + this.listExpr1 + 
+        " also for " + this.identifier2 + " in " + (this.what2 === undefined ? "" : this.what2 + " ") + this.listExpr2 +
         (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
     }
 
@@ -1782,12 +1811,14 @@ export class NodeSetComprehensionParallel {
 }
 
 export class NodeSetComprehensionProduct {
-    constructor(valueExpr, identifier1, listExpr1, identifier2, listExpr2, pos) {
+    constructor(valueExpr, identifier1, listExpr1, what1, identifier2, listExpr2, what2, pos) {
         this.valueExpr = valueExpr;
         this.identifier1 = identifier1;
         this.listExpr1 = listExpr1;
+        this.what1 = what1;
         this.identifier2 = identifier2;
         this.listExpr2 = listExpr2;
+        this.what2 = what2;
         this.conditionExpr = null;
         this.pos = pos;
     }
@@ -1801,8 +1832,8 @@ export class NodeSetComprehensionProduct {
         const localEnv = environment.newEnv();
         const list1 = this.listExpr1.evaluate(environment);
         const list2 = this.listExpr2.evaluate(environment);
-        const values1 = getCollectionValue(list1);
-        const values2 = getCollectionValue(list2);
+        const values1 = getCollectionValue(list1, this.what1);
+        const values2 = getCollectionValue(list2, this.what2);
         for (const value1 of values1) {
             localEnv.put(this.identifier1, value1);
             for (const value2 of values2) {
@@ -1826,8 +1857,8 @@ export class NodeSetComprehensionProduct {
 
     toString() {
         return "<<" + this.valueExpr + 
-        " for " + this.identifier1 + " in " + this.listExpr1 + 
-        " also for " + this.identifier2 + " in " + this.listExpr2 +
+        " for " + this.identifier1 + " in " + (this.what1 === undefined ? "" : this.what1 + " ") + this.listExpr1 + 
+        " also for " + this.identifier2 + " in " + (this.what2 === undefined ? "" : this.what2 + " ") + this.listExpr2 +
         (this.conditionExpr == null ? "" : (" if " + this.conditionExpr)) + ">>";
     }
 

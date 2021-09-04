@@ -28,15 +28,17 @@ namespace CheckerLang
         private Node valueExpr;
         private string identifier;
         private Node listExpr;
+        private string what;
         private Node conditionExpr;
 
         private SourcePos pos;
         
-        public NodeSetComprehension(Node valueExpr, string identifier, Node listExpr, SourcePos pos)
+        public NodeSetComprehension(Node valueExpr, string identifier, Node listExpr, string what, SourcePos pos)
         {
             this.valueExpr = valueExpr;
             this.identifier = identifier;
             this.listExpr = listExpr;
+            this.what = what;
             this.pos = pos;
         }
 
@@ -49,7 +51,7 @@ namespace CheckerLang
         {
             var result = new ValueSet();
             var localEnv = environment.NewEnv();
-            var list = AsList.From(listExpr.Evaluate(environment));
+            var list = AsList.From(listExpr.Evaluate(environment), what);
             foreach (var listValue in list.GetValue())
             {
                 localEnv.Put(identifier, listValue);
@@ -76,7 +78,7 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return "<<" + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>";
+            return "<<" + valueExpr + " for " + identifier + " in " + (what != null ? what + " " : "") + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)

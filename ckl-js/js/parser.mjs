@@ -713,12 +713,20 @@ export class Parser {
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
+                let what = undefined;
+                if (lexer.matchIf("keys", "identifier")) what = "keys";
+                else if (lexer.matchIf("values", "identifier")) what = "values";
+                else if (lexer.matchIf("entries", "identifier")) what = "entries";
                 const listExpr = this.parseOrExpr(lexer);
                 if (lexer.matchIf("for", "keyword")) {
                     const identifier2 = lexer.matchIdentifier();
                     lexer.match("in", "keyword");
+                    let what2 = undefined;
+                    if (lexer.matchIf("keys", "identifier")) what2 = "keys";
+                    else if (lexer.matchIf("values", "identifier")) what2 = "values";
+                    else if (lexer.matchIf("entries", "identifier")) what2 = "entries";
                     const listExpr2 = this.parseOrExpr(lexer);
-                    const comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    const comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
@@ -727,15 +735,19 @@ export class Parser {
                 } else if (lexer.matchIf(["also", "for"], "keyword")) {
                     const identifier2 = lexer.matchIdentifier();
                     lexer.match("in", "keyword");
+                    let what2 = undefined;
+                    if (lexer.matchIf("keys", "identifier")) what2 = "keys";
+                    else if (lexer.matchIf("values", "identifier")) what2 = "values";
+                    else if (lexer.matchIf("entries", "identifier")) what2 = "entries";
                     const listExpr2 = this.parseOrExpr(lexer);
-                    const comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    const comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
                     lexer.match("]", "interpunction");
                     return this.derefOrInvoke(lexer, comprehension);
                 } else {
-                    const comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
+                    const comprehension = new NodeListComprehension(expr, identifier, listExpr, what, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
@@ -769,12 +781,20 @@ export class Parser {
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
+                let what = undefined;
+                if (lexer.matchIf("keys", "identifier")) what = "keys";
+                else if (lexer.matchIf("values", "identifier")) what = "values";
+                else if (lexer.matchIf("entries", "identifier")) what = "entries";
                 const listExpr = this.parseOrExpr(lexer);
                 if (lexer.matchIf("for", "keyword")) {
                     const identifier2 = lexer.matchIdentifier();
                     lexer.match("in", "keyword");
+                    let what2 = undefined;
+                    if (lexer.matchIf("keys", "identifier")) what2 = "keys";
+                    else if (lexer.matchIf("values", "identifier")) what2 = "values";
+                    else if (lexer.matchIf("entries", "identifier")) what2 = "entries";
                     const listExpr2 = this.parseOrExpr(lexer);
-                    const comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    const comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
@@ -783,15 +803,19 @@ export class Parser {
                 } else if (lexer.matchIf(["also", "for"], "keyword")) {
                     const identifier2 = lexer.matchIdentifier();
                     lexer.match("in", "keyword");
+                    let what2 = undefined;
+                    if (lexer.matchIf("keys", "identifier")) what2 = "keys";
+                    else if (lexer.matchIf("values", "identifier")) what2 = "values";
+                    else if (lexer.matchIf("entries", "identifier")) what2 = "entries";
                     const listExpr2 = this.parseOrExpr(lexer);
-                    const comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    const comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
                     lexer.match(">>", "interpunction");
                     return this.derefOrInvoke(lexer, comprehension);
                 } else {
-                    const comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                    const comprehension = new NodeSetComprehension(expr, identifier, listExpr, what, token.pos);
                     if (lexer.matchIf("if", "keyword")) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
@@ -826,8 +850,12 @@ export class Parser {
             if (lexer.matchIf("for", "keyword")) {
                 const identifier = lexer.matchIdentifier();
                 lexer.match("in", "keyword");
+                let what = undefined;
+                if (lexer.matchIf("keys", "identifier")) what = "keys";
+                else if (lexer.matchIf("values", "identifier")) what = "values";
+                else if (lexer.matchIf("entries", "identifier")) what = "entries";
                 const listExpr = this.parseOrExpr(lexer);
-                const comprehension = new NodeMapComprehension(key, value, identifier, listExpr, token.pos);
+                const comprehension = new NodeMapComprehension(key, value, identifier, listExpr, what, token.pos);
                 if (lexer.matchIf("if", "keyword")) {
                     comprehension.setCondition(this.parseOrExpr(lexer));
                 }

@@ -29,16 +29,18 @@ namespace CheckerLang
         private Node valueExpr;
         private string identifier;
         private Node listExpr;
+        private string what;
         private Node conditionExpr;
 
         private SourcePos pos;
         
-        public NodeMapComprehension(Node keyExpr, Node valueExpr, string identifier, Node listExpr, SourcePos pos)
+        public NodeMapComprehension(Node keyExpr, Node valueExpr, string identifier, Node listExpr, string what, SourcePos pos)
         {
             this.keyExpr = keyExpr;
             this.valueExpr = valueExpr;
             this.identifier = identifier;
             this.listExpr = listExpr;
+            this.what = what;
             this.pos = pos;
         }
 
@@ -51,16 +53,8 @@ namespace CheckerLang
         {
             var result = new ValueMap();
             var localEnv = environment.NewEnv();
-            var list = listExpr.Evaluate(environment);
-            if (list.IsString()) {
-                var s = list.AsString().GetValue();
-                var slist = new ValueList();
-                for (var i = 0; i < s.Length; i++) {
-                    slist.AddItem(new ValueString(s.Substring(i, 1)));
-                }
-                list = slist;
-            }
-            foreach (var listValue in list.AsList().GetValue())
+            var list = AsList.From(listExpr.Evaluate(environment), what);
+            foreach (var listValue in list.GetValue())
             {
                 localEnv.Put(identifier, listValue);
                 var key = keyExpr.Evaluate(localEnv);
@@ -87,7 +81,7 @@ namespace CheckerLang
 
         public override string ToString()
         {
-            return "<<<" + keyExpr + " => " + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>>";
+            return "<<<" + keyExpr + " => " + valueExpr + " for " + identifier + " in " + (what != null ? what + " " : "") + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>>";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)

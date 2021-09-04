@@ -692,12 +692,20 @@ public class Parser {
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
+                String what = null;
+                if (lexer.matchIf("keys", TokenType.Identifier)) what = "keys";
+                else if (lexer.matchIf("values", TokenType.Identifier)) what = "values";
+                else if (lexer.matchIf("entries", TokenType.Identifier)) what = "entries";
                 Node listExpr = parseOrExpr(lexer);
                 if (lexer.matchIf("for", TokenType.Keyword)) {
                     String identifier2 = lexer.matchIdentifier();
                     lexer.match("in", TokenType.Keyword);
+                    String what2 = null;
+                    if (lexer.matchIf("keys", TokenType.Identifier)) what2 = "keys";
+                    else if (lexer.matchIf("values", TokenType.Identifier)) what2 = "values";
+                    else if (lexer.matchIf("entries", TokenType.Identifier)) what2 = "entries";
                     Node listExpr2 = parseOrExpr(lexer);
-                    NodeListComprehensionProduct comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    NodeListComprehensionProduct comprehension = new NodeListComprehensionProduct(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(parseOrExpr(lexer));
                     }
@@ -706,15 +714,19 @@ public class Parser {
                 } else if (lexer.matchIf("also", "for", TokenType.Keyword)) {
                     String identifier2 = lexer.matchIdentifier();
                     lexer.match("in", TokenType.Keyword);
+                    String what2 = null;
+                    if (lexer.matchIf("keys", TokenType.Identifier)) what2 = "keys";
+                    else if (lexer.matchIf("values", TokenType.Identifier)) what2 = "values";
+                    else if (lexer.matchIf("entries", TokenType.Identifier)) what2 = "entries";
                     Node listExpr2 = parseOrExpr(lexer);
-                    NodeListComprehensionParallel comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    NodeListComprehensionParallel comprehension = new NodeListComprehensionParallel(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(parseOrExpr(lexer));
                     }
                     lexer.match("]", TokenType.Interpunction);
                     return derefOrInvoke(lexer, comprehension);
                 } else {
-                    NodeListComprehension comprehension = new NodeListComprehension(expr, identifier, listExpr, token.pos);
+                    NodeListComprehension comprehension = new NodeListComprehension(expr, identifier, listExpr, what, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(parseOrExpr(lexer));
                     }
@@ -748,12 +760,20 @@ public class Parser {
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
+                String what = null;
+                if (lexer.matchIf("keys", TokenType.Identifier)) what = "keys";
+                else if (lexer.matchIf("values", TokenType.Identifier)) what = "values";
+                else if (lexer.matchIf("entries", TokenType.Identifier)) what = "entries";
                 Node listExpr = parseOrExpr(lexer);
                 if (lexer.matchIf("for", TokenType.Keyword)) {
                     String identifier2 = lexer.matchIdentifier();
                     lexer.match("in", TokenType.Keyword);
+                    String what2 = null;
+                    if (lexer.matchIf("keys", TokenType.Identifier)) what2 = "keys";
+                    else if (lexer.matchIf("values", TokenType.Identifier)) what2 = "values";
+                    else if (lexer.matchIf("entries", TokenType.Identifier)) what2 = "entries";
                     Node listExpr2 = parseOrExpr(lexer);
-                    NodeSetComprehensionProduct comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    NodeSetComprehensionProduct comprehension = new NodeSetComprehensionProduct(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(parseOrExpr(lexer));
                     }
@@ -762,15 +782,19 @@ public class Parser {
                 } else if (lexer.matchIf("also", "for", TokenType.Keyword)) {
                     String identifier2 = lexer.matchIdentifier();
                     lexer.match("in", TokenType.Keyword);
+                    String what2 = null;
+                    if (lexer.matchIf("keys", TokenType.Identifier)) what2 = "keys";
+                    else if (lexer.matchIf("values", TokenType.Identifier)) what2 = "values";
+                    else if (lexer.matchIf("entries", TokenType.Identifier)) what2 = "entries";
                     Node listExpr2 = parseOrExpr(lexer);
-                    NodeSetComprehensionParallel comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, identifier2, listExpr2, token.pos);
+                    NodeSetComprehensionParallel comprehension = new NodeSetComprehensionParallel(expr, identifier, listExpr, what, identifier2, listExpr2, what2, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(parseOrExpr(lexer));
                     }
                     lexer.match(">>", TokenType.Interpunction);
                     return derefOrInvoke(lexer, comprehension);
                 } else {
-                    NodeSetComprehension comprehension = new NodeSetComprehension(expr, identifier, listExpr, token.pos);
+                    NodeSetComprehension comprehension = new NodeSetComprehension(expr, identifier, listExpr, what, token.pos);
                     if (lexer.matchIf("if", TokenType.Keyword)) {
                         comprehension.setCondition(this.parseOrExpr(lexer));
                     }
@@ -805,8 +829,12 @@ public class Parser {
             if (lexer.matchIf("for", TokenType.Keyword)) {
                 String identifier = lexer.matchIdentifier();
                 lexer.match("in", TokenType.Keyword);
+                String what = null;
+                if (lexer.matchIf("keys", TokenType.Identifier)) what = "keys";
+                else if (lexer.matchIf("values", TokenType.Identifier)) what = "values";
+                else if (lexer.matchIf("entries", TokenType.Identifier)) what = "entries";
                 Node listExpr = parseOrExpr(lexer);
-                NodeMapComprehension comprehension = new NodeMapComprehension(key, value, identifier, listExpr, token.pos);
+                NodeMapComprehension comprehension = new NodeMapComprehension(key, value, identifier, listExpr, what, token.pos);
                 if (lexer.matchIf("if", TokenType.Keyword)) {
                     comprehension.setCondition(this.parseOrExpr(lexer));
                 }

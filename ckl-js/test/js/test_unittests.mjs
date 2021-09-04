@@ -256,17 +256,28 @@ interpreter_test("List", "[1, 2, 3,]", "[1, 2, 3]");
 interpreter_test("List", "[1]", "[1]");
 interpreter_test("List", "[]", "[]");
 interpreter_test("ListComprehensionSimple", "[x * 2 for x in range(5)]", "[0, 2, 4, 6, 8]");
+interpreter_test("ListComprehensionKeysMap", "[x for x in keys <<<'a' => 12, 'b' => 13>>>]", "['a', 'b']");
+interpreter_test("ListComprehensionValuesMap", "[x for x in values <<<'a' => 12, 'b' => 13>>>]", "[12, 13]");
+interpreter_test("ListComprehensionEntriesMap", "[x for x in entries <<<'a' => 12, 'b' => 13>>>]", "[['a', 12], ['b', 13]]");
+interpreter_test("ListComprehensionKeysObject", "[x for x in keys <*a = 12, b = 13*>]", "['a', 'b']");
+interpreter_test("ListComprehensionValuesObject", "[x for x in values <*a = 12, b = 13*>]", "[12, 13]");
+interpreter_test("ListComprehensionEntriesObject", "[x for x in entries <*a = 12, b = 13*>]", "[['a', 12], ['b', 13]]");
 interpreter_test("ListComprehensionWithCondition", "[x * 2 for x in range(5) if x % 2 == 1]", "[2, 6]");
 interpreter_test("ListComprehensionString", "[int(ch) for ch in '123']", "[1, 2, 3]");
 interpreter_test("ListComprehensionParallel", "[a * b for a in [1, 2, 3] also for b in [1, 2, 3]]", "[1, 4, 9]")
 interpreter_test("ListComprehensionProduct", "[a * b for a in [1, 2, 3] for b in [1, 2, 3]]", "[1, 2, 3, 2, 4, 6, 3, 6, 9]")
 interpreter_test("SetComprehensionSimple", "<<x * 2 for x in range(5)>>", "<<0, 2, 4, 6, 8>>");
+interpreter_test("SetComprehensionKeysMap", "<<x for x in keys <<<'a' => 12, 'b' => 13>>> >>", "<<'a', 'b'>>");
+interpreter_test("SetComprehensionValuesMap", "<<x for x in values <<<'a' => 12, 'b' => 13>>> >>", "<<12, 13>>");
+interpreter_test("SetComprehensionEntriesMap", "<<x for x in entries <<<'a' => 12, 'b' => 13>>> >>", "<<['a', 12], ['b', 13]>>");
 interpreter_test("SetComprehensionWithCondition", "<<x * 2 for x in range(5) if x % 2 == 1>>", "<<2, 6>>");
 interpreter_test("SetComprehensionString", "<<int(ch) for ch in '12312'>>", "<<1, 2, 3>>");
 interpreter_test("SetComprehensionParallel", "<<a * b for a in [1, 2, 3] also for b in [1, 2, 3]>>", "<<1, 4, 9>>")
 interpreter_test("SetComprehensionProduct", "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>", "<<1, 2, 3, 4, 6, 9>>")
 interpreter_test("MapComprehensionSimple", "<<<a => 2 * a for a in range(5)>>>", "<<<0 => 0, 1 => 2, 2 => 4, 3 => 6, 4 => 8>>>");
 interpreter_test("MapComprehensionSimple2", "<<<'x' + a => 2 * a for a in range(5)>>>", "<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>");
+interpreter_test("MapComprehensionValuesMap", "<<<x[0] => x[1] for x in values <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>", "<<<'u' => 12, 'v' => 13>>>");
+interpreter_test("MapComprehensionEntriesMap", "<<<x[0] => x[1][1] for x in entries <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>", "<<<'a' => 12, 'b' => 13>>>");
 interpreter_test("MapComprehensionWithCondition", "<<<a => 2 * a for a in range(5) if 2 * a < 6>>>", "<<<0 => 0, 1 => 2, 2 => 4>>>");
 interpreter_test("FuncRange", "range()", "[]");
 interpreter_test("FuncRange", "range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]");

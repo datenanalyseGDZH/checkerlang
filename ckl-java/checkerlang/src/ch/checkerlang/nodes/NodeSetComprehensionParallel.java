@@ -38,18 +38,22 @@ public class NodeSetComprehensionParallel implements Node {
     private Node valueExpr;
     private String identifier1;
     private Node listExpr1;
+    private String what1;
     private String identifier2;
     private Node listExpr2;
+    private String what2;
     private Node conditionExpr;
 
     private SourcePos pos;
 
-    public NodeSetComprehensionParallel(Node valueExpr, String identifier1, Node listExpr1, String identifier2, Node listExpr2, SourcePos pos) {
+    public NodeSetComprehensionParallel(Node valueExpr, String identifier1, Node listExpr1, String what1, String identifier2, Node listExpr2, String what2, SourcePos pos) {
         this.valueExpr = valueExpr;
         this.identifier1 = identifier1;
         this.listExpr1 = listExpr1;
+        this.what1 = what1;
         this.identifier2 = identifier2;
         this.listExpr2 = listExpr2;
+        this.what2 = what2;
         this.pos = pos;
     }
 
@@ -60,8 +64,8 @@ public class NodeSetComprehensionParallel implements Node {
     public Value evaluate(Environment environment) {
         ValueSet result = new ValueSet();
         Environment localEnv = environment.newEnv();
-        List<Value> list1 = AsList.from(listExpr1.evaluate(environment)).getValue();
-        List<Value> list2 = AsList.from(listExpr2.evaluate(environment)).getValue();
+        List<Value> list1 = AsList.from(listExpr1.evaluate(environment), what1).getValue();
+        List<Value> list2 = AsList.from(listExpr2.evaluate(environment), what2).getValue();
         for (int i = 0; i < Math.max(list1.size(), list2.size()); i++) {
             localEnv.put(identifier1, i < list1.size() ? list1.get(i) : ValueNull.NULL);
             localEnv.put(identifier2, i < list2.size() ? list2.get(i) : ValueNull.NULL);
@@ -83,8 +87,8 @@ public class NodeSetComprehensionParallel implements Node {
 
     public String toString() {
         return "<<" + valueExpr +
-                " for " + identifier1 + " in " + listExpr1 +
-                " also for " + identifier2 + " in " + listExpr2 +
+                " for " + identifier1 + " in " + (what1 != null ? what1 + " " : "") + listExpr1 +
+                " also for " + identifier2 + " in " + (what2 != null ? what2 + " " : "") + listExpr2 +
                 (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>";
     }
 

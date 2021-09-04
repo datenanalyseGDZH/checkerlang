@@ -20,6 +20,7 @@
 */
 package ch.checkerlang.nodes;
 
+import ch.checkerlang.AsList;
 import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
@@ -34,15 +35,17 @@ public class NodeMapComprehension implements Node {
     private Node valueExpr;
     private String identifier;
     private Node listExpr;
+    private String what;
     private Node conditionExpr;
 
     private SourcePos pos;
 
-    public NodeMapComprehension(Node keyExpr, Node valueExpr, String identifier, Node listExpr, SourcePos pos) {
+    public NodeMapComprehension(Node keyExpr, Node valueExpr, String identifier, Node listExpr, String what, SourcePos pos) {
         this.keyExpr = keyExpr;
         this.valueExpr = valueExpr;
         this.identifier = identifier;
         this.listExpr = listExpr;
+        this.what = what;
         this.pos = pos;
     }
 
@@ -53,16 +56,8 @@ public class NodeMapComprehension implements Node {
     public Value evaluate(Environment environment) {
         ValueMap result = new ValueMap();
         Environment localEnv = environment.newEnv();
-        Value list = listExpr.evaluate(environment);
-        if (list.isString()) {
-            String s = list.asString().getValue();
-            ValueList slist = new ValueList();
-            for (int i = 0; i < s.length(); i++) {
-                slist.addItem(new ValueString(s.substring(i, i + 1)));
-            }
-            list = slist;
-        }
-        for (Value listValue : list.asList().getValue()) {
+        ValueList list = AsList.from(listExpr.evaluate(environment), what);
+        for (Value listValue : list.getValue()) {
             localEnv.put(identifier, listValue);
             Value key = keyExpr.evaluate(localEnv);
             Value value = valueExpr.evaluate(localEnv);
@@ -82,7 +77,8 @@ public class NodeMapComprehension implements Node {
     }
 
     public String toString() {
-        return "<<<" + keyExpr + " => " + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>>";
+        return "<<<" + keyExpr + " => " + valueExpr + " for " + identifier + " in " + (what != null ? what + " " : "") + listExpr +
+                (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>>";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {

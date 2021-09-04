@@ -36,14 +36,16 @@ public class NodeListComprehension implements Node {
     private Node valueExpr;
     private String identifier;
     private Node listExpr;
+    private String what;
     private Node conditionExpr;
 
     private SourcePos pos;
 
-    public NodeListComprehension(Node valueExpr, String identifier, Node listExpr, SourcePos pos) {
+    public NodeListComprehension(Node valueExpr, String identifier, Node listExpr, String what, SourcePos pos) {
         this.valueExpr = valueExpr;
         this.identifier = identifier;
         this.listExpr = listExpr;
+        this.what = what;
         this.pos = pos;
     }
 
@@ -54,7 +56,7 @@ public class NodeListComprehension implements Node {
     public Value evaluate(Environment environment) {
         ValueList result = new ValueList();
         Environment localEnv = environment.newEnv();
-        ValueList list = AsList.from(listExpr.evaluate(environment));
+        ValueList list = AsList.from(listExpr.evaluate(environment), what);
         for (Value listValue : list.getValue()) {
             localEnv.put(identifier, listValue);
             Value value = valueExpr.evaluate(localEnv);
@@ -74,7 +76,8 @@ public class NodeListComprehension implements Node {
     }
 
     public String toString() {
-        return "[" + valueExpr + " for " + identifier + " in " + listExpr + (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
+        return "[" + valueExpr + " for " + identifier + " in " + (what != null ? what + " " : "") + listExpr
+                + (conditionExpr == null ? "" : (" if " + conditionExpr)) + "]";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {

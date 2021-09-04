@@ -27,19 +27,23 @@ namespace CheckerLang
         private Node valueExpr;
         private string identifier1;
         private Node listExpr1;
+        private string what1;
         private string identifier2;
         private Node listExpr2;
+        private string what2;
         private Node conditionExpr;
 
         private SourcePos pos;
         
-        public NodeSetComprehensionProduct(Node valueExpr, string identifier1, Node listExpr1, string identifier2, Node listExpr2, SourcePos pos)
+        public NodeSetComprehensionProduct(Node valueExpr, string identifier1, Node listExpr1, string what1, string identifier2, Node listExpr2, string what2, SourcePos pos)
         {
             this.valueExpr = valueExpr;
             this.identifier1 = identifier1;
             this.listExpr1 = listExpr1;
+            this.what1 = what1;
             this.identifier2 = identifier2;
             this.listExpr2 = listExpr2;
+            this.what2 = what2;
             this.pos = pos;
         }
 
@@ -52,8 +56,8 @@ namespace CheckerLang
         {
             var result = new ValueSet();
             var localEnv = environment.NewEnv();
-            var list1 = AsList.From(listExpr1.Evaluate(environment));
-            var list2 = AsList.From(listExpr2.Evaluate(environment));
+            var list1 = AsList.From(listExpr1.Evaluate(environment), what1);
+            var list2 = AsList.From(listExpr2.Evaluate(environment), what2);
             foreach (var value1 in list1.GetValue()) 
             {
                 localEnv.Put(identifier1, value1);
@@ -89,8 +93,8 @@ namespace CheckerLang
         public override string ToString()
         {
             return "<<" + valueExpr + 
-                   " for " + identifier1 + " in " + listExpr1 + 
-                   " for " + identifier2 + " in " + listExpr2 + 
+                   " for " + identifier1 + " in " + (what1 != null ? what1 + " " : "") + listExpr1 + 
+                   " for " + identifier2 + " in " + (what2 != null ? what2 + " " : "") + listExpr2 + 
                    (conditionExpr == null ? "" : (" if " + conditionExpr)) + ">>";
         }
         

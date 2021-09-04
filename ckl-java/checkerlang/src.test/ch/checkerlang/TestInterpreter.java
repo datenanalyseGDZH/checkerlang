@@ -760,6 +760,50 @@ public class TestInterpreter {
                 "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
     }
 
+    @Test public void TestListComprehensionKeysMap() {
+        verify("['a', 'b']", "[x for x in keys <<<'a' => 12, 'b' => 13>>>]");
+    }
+
+    @Test public void TestListComprehensionValuesMap() {
+        verify("[12, 13]", "[x for x in values <<<'a' => 12, 'b' => 13>>>]");
+    }
+
+    @Test public void TestListComprehensionEntriesMap() {
+        verify("[['a', 12], ['b', 13]]", "[x for x in entries <<<'a' => 12, 'b' => 13>>>]");
+    }
+
+    @Test public void TestListComprehensionKeysObject() {
+        verify("['a', 'b']", "[x for x in keys <*a = 12, b = 13*>]");
+    }
+
+    @Test public void TestListComprehensionValuesObject() {
+        verify("[12, 13]", "[x for x in values <*a = 12, b = 13*>]");
+    }
+
+    @Test public void TestListComprehensionEntriesObject() {
+        verify("[['a', 12], ['b', 13]]", "[x for x in entries <*a = 12, b = 13*>]");
+    }
+
+    @Test public void TestSetComprehensionKeysMap() {
+        verify("<<'a', 'b'>>", "<<x for x in keys <<<'a' => 12, 'b' => 13>>> >>");
+    }
+
+    @Test public void TestSetComprehensionValuesMap() {
+        verify("<<12, 13>>", "<<x for x in values <<<'a' => 12, 'b' => 13>>> >>");
+    }
+
+    @Test public void TestSetComprehensionEntriesMap() {
+        verify("<<['a', 12], ['b', 13]>>", "<<x for x in entries <<<'a' => 12, 'b' => 13>>> >>");
+    }
+
+    @Test public void TestMapComprehensionValuesMap() {
+        verify("<<<'u' => 12, 'v' => 13>>>", "<<<x[0] => x[1] for x in values <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>");
+    }
+
+    @Test public void TestMapComprehensionEntriesMap() {
+        verify("<<<'a' => 12, 'b' => 13>>>", "<<<x[0] => x[1][1] for x in entries <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>");
+    }
+
     @Test
     public void testMapDefaultValue() {
         verify("-1", "def m = <<<'a' => 12>>>; m['b', -1]");

@@ -18,6 +18,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
+
 using CheckerLang;
 using NUnit.Framework;
 using Environment = CheckerLang.Environment;
@@ -420,37 +421,45 @@ namespace Tests
         }
 
         [Test]
-        public void TestSetComprehensionSimple() {
+        public void TestSetComprehensionSimple()
+        {
             Verify("<<0, 2, 4, 6, 8>>", "<<x * 2 for x in range(5)>>");
         }
 
         [Test]
-        public void TestSetComprehensionWithCondition() {
+        public void TestSetComprehensionWithCondition()
+        {
             Verify("<<2, 6>>", "<<x * 2 for x in range(5) if x % 2 == 1>>");
         }
 
         [Test]
-        public void TestListComprehensionString() {
+        public void TestListComprehensionString()
+        {
             Verify("[1, 2, 3]", "[int(ch) for ch in '123']");
         }
 
         [Test]
-        public void TestSetComprehensionString() {
+        public void TestSetComprehensionString()
+        {
             Verify("<<1, 2, 3>>", "<<int(ch) for ch in '12312'>>");
         }
 
         [Test]
-        public void TestMapComprehensionSimple() {
+        public void TestMapComprehensionSimple()
+        {
             Verify("<<<0 => 0, 1 => 2, 2 => 4, 3 => 6, 4 => 8>>>", "<<<a => 2 * a for a in range(5)>>>");
         }
 
         [Test]
-        public void TestMapComprehensionSimple2() {
-            Verify("<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>", "<<<'x' + a => 2 * a for a in range(5)>>>");
+        public void TestMapComprehensionSimple2()
+        {
+            Verify("<<<'x0' => 0, 'x1' => 2, 'x2' => 4, 'x3' => 6, 'x4' => 8>>>",
+                "<<<'x' + a => 2 * a for a in range(5)>>>");
         }
 
         [Test]
-        public void TestMapComprehensionWithCondition() {
+        public void TestMapComprehensionWithCondition()
+        {
             Verify("<<<0 => 0, 1 => 2, 2 => 4>>>", "<<<a => 2 * a for a in range(5) if 2 * a < 6>>>");
         }
 
@@ -699,85 +708,91 @@ namespace Tests
         }
 
         [Test]
-        public void TestDefDestructure2() 
+        public void TestDefDestructure2()
         {
             Verify("1", "def [a] = [1, 2]; a");
-            
         }
-        
+
         [Test]
-        public void TestDefDestructure3() 
+        public void TestDefDestructure3()
         {
             Verify("3", "def [a, b, c] = <<1, 2, 3>>; c");
         }
-        
+
         [Test]
-        public void TestDefDestructure4() 
+        public void TestDefDestructure4()
         {
             Verify("NULL", "def [a, b, c] = [1, 2]");
         }
-        
+
         [Test]
-        public void TestAssignDestructure1() 
+        public void TestAssignDestructure1()
         {
             Verify("[1, 2]", "def a = 1; def b = 1; [a, b] = [1, 2]; [a, b]");
         }
-        
+
         [Test]
-        public void TestAssignDestructure2() 
+        public void TestAssignDestructure2()
         {
             Verify("2", "def a = 1; [a] = [2, 3]; a");
         }
-        
+
         [Test]
-        public void TestSwapUsingDestructure() 
+        public void TestSwapUsingDestructure()
         {
             Verify("[2, 1]", "def a = 1; def b = 2; [a, b] = [b, a]; [a, b]");
         }
- 
+
         [Test]
-        public void TestAll() {
+        public void TestAll()
+        {
             Verify("TRUE", "all([2, 4, 6], fn(x) x % 2 == 0)");
         }
 
         [Test]
-        public void TestMethods1() {
+        public void TestMethods1()
+        {
             Verify("TRUE", "'abcdef'!>starts_with('abc')");
         }
 
         [Test]
-        public void TestMethods2() {
+        public void TestMethods2()
+        {
             Verify("'xy'", "' xy '!>trim()");
         }
 
         [Test]
-        public void TestMethods3() {
+        public void TestMethods3()
+        {
             Verify("[3, 2, 1]", "require List; [1, 2, 3]!>List->reverse()");
         }
 
         [Test]
-        public void TestMethods4() {
+        public void TestMethods4()
+        {
             Verify("TRUE", "[2, 4, 6] !> all(fn(x) x % 2 == 0)");
         }
 
         [Test]
-        public void TestMethods5() {
+        public void TestMethods5()
+        {
             Verify("12", "12 !> max(2)");
         }
 
         [Test]
-        public void TestMethods6() {
+        public void TestMethods6()
+        {
             Verify("'3-2-1'", "require List; [1, 2, 3] !> List->reverse() !> join(sep = '-')");
         }
-        
+
         [Test]
-        public void TestDerefProperty() 
+        public void TestDerefProperty()
         {
             Verify("2", "def a = <<<'x' => 1, 'y' => 2>>>; a->y");
         }
 
         [Test]
-        public void TestMapLiteralImplicitString() 
+        public void TestMapLiteralImplicitString()
         {
             Verify("<<<'x' => 1, 'y' => 2>>>", "<<<x => 1, y => 2>>>");
         }
@@ -795,22 +810,26 @@ namespace Tests
         }
 
         [Test]
-        public void TestForDestructuringListList() {
+        public void TestForDestructuringListList()
+        {
             Verify("21", "def a = 0; for [x, y, z] in [[1, 2, 3], [4, 5, 6]] do a += x + y + z; end; a;");
         }
 
         [Test]
-        public void TestForDestructuringListSet() {
+        public void TestForDestructuringListSet()
+        {
             Verify("21", "def a = 0; for [x, y, z] in [<<1, 2, 3>>, <<4, 5, 6>>] do a += x + y + z; end; a;");
         }
 
         [Test]
-        public void TestForDestructuringSetList() {
+        public void TestForDestructuringSetList()
+        {
             Verify("21", "def a = 0; for [x, y, z] in <<[1, 2, 3], [4, 5, 6]>> do a += x + y + z; end; a;");
         }
 
         [Test]
-        public void TestForDestructuringSetSet() {
+        public void TestForDestructuringSetSet()
+        {
             Verify("21", "def a = 0; for [x, y, z] in << <<1, 2, 3>>, <<4, 5, 6>> >> do a += x + y + z; end; a;");
         }
 
@@ -820,20 +839,21 @@ namespace Tests
             Verify("[1, 2, 3]",
                 "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in values obj do append(result, o) end; result;");
         }
-        
+
         [Test]
         public void TestForMapDefault()
         {
             Verify("[1, 2, 3]",
                 "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in obj do append(result, o); end; result;");
         }
-        
+
         [Test]
         public void TestForMapKeys()
         {
             Verify("['a', 'b', 'c']",
                 "def result = []; def obj = <<<a=>1, b=>2, c=>3>>>; for o in keys obj do append(result, o); end; result;");
         }
+
         [Test]
         public void TestForMapEntries()
         {
@@ -847,70 +867,143 @@ namespace Tests
             Verify("[1, 2, 3]",
                 "def result = []; def obj = <*a=1, b=2, c=3*>; for o in values obj append(result, o); result;");
         }
-        
+
         [Test]
         public void TestForObjectDefault()
         {
             Verify("[1, 2, 3]",
                 "def result = []; def obj = <*a=1, b=2, c=3*>; for o in obj append(result, o); result;");
         }
-        
+
         [Test]
         public void TestForObjectKeys()
         {
             Verify("['a', 'b', 'c']",
                 "def result = []; def obj = <*a=1, b=2, c=3*>; for o in keys obj append(result, o); result;");
         }
+
         [Test]
         public void TestForObjectEntries()
         {
             Verify("[['a', 1], ['b', 2], ['c', 3]]",
                 "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;");
         }
-        
+
         [Test]
-        public void TestListComprehensionParallel() {
+        public void TestListComprehensionParallel()
+        {
             Verify("[1, 4, 9]",
-                    "[a * b for a in [1, 2, 3] also for b in [1, 2, 3]]");
+                "[a * b for a in [1, 2, 3] also for b in [1, 2, 3]]");
         }
 
         [Test]
-        public void TestListComprehensionProduct() {
+        public void TestListComprehensionProduct()
+        {
             Verify("[1, 2, 3, 2, 4, 6, 3, 6, 9]",
-                    "[a * b for a in [1, 2, 3] for b in [1, 2, 3]]");
+                "[a * b for a in [1, 2, 3] for b in [1, 2, 3]]");
         }
 
         [Test]
-        public void TestSetComprehensionParallel() {
+        public void TestSetComprehensionParallel()
+        {
             Verify("<<1, 4, 9>>",
-                    "<<a * b for a in [1, 2, 3] also for b in [1, 2, 3]>>");
+                "<<a * b for a in [1, 2, 3] also for b in [1, 2, 3]>>");
         }
 
         [Test]
-        public void TestSetComprehensionProduct() {
+        public void TestSetComprehensionProduct()
+        {
             Verify("<<1, 2, 3, 4, 6, 9>>",
-                    "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
+                "<<a * b for a in [1, 2, 3] for b in [1, 2, 3]>>");
         }
 
         [Test]
-        public void TestMapDefaultValue() 
+        public void TestMapDefaultValue()
         {
             Verify("-1", "def m = <<<'a' => 12>>>; m['b', -1]");
         }
 
         [Test]
-        public void TestMapDefaultIncrement() 
+        public void TestMapDefaultIncrement()
         {
             Verify("1", "def m = <<<>>>; m['a', 0] += 1; m['a']");
         }
-        
+
+        [Test]
+        public void TestListComprehensionKeysMap()
+        {
+            Verify("['a', 'b']", "[x for x in keys <<<'a' => 12, 'b' => 13>>>]");
+        }
+
+        [Test]
+        public void TestListComprehensionValuesMap()
+        {
+            Verify("[12, 13]", "[x for x in values <<<'a' => 12, 'b' => 13>>>]");
+        }
+
+        [Test]
+        public void TestListComprehensionEntriesMap()
+        {
+            Verify("[['a', 12], ['b', 13]]", "[x for x in entries <<<'a' => 12, 'b' => 13>>>]");
+        }
+
+        [Test]
+        public void TestListComprehensionKeysObject()
+        {
+            Verify("['a', 'b']", "[x for x in keys <*a = 12, b = 13*>]");
+        }
+
+        [Test]
+        public void TestListComprehensionValuesObject()
+        {
+            Verify("[12, 13]", "[x for x in values <*a = 12, b = 13*>]");
+        }
+
+        [Test]
+        public void TestListComprehensionEntriesObject()
+        {
+            Verify("[['a', 12], ['b', 13]]", "[x for x in entries <*a = 12, b = 13*>]");
+        }
+
+        [Test]
+        public void TestSetComprehensionKeysMap()
+        {
+            Verify("<<'a', 'b'>>", "<<x for x in keys <<<'a' => 12, 'b' => 13>>> >>");
+        }
+
+        [Test]
+        public void TestSetComprehensionValuesMap()
+        {
+            Verify("<<12, 13>>", "<<x for x in values <<<'a' => 12, 'b' => 13>>> >>");
+        }
+
+        [Test]
+        public void TestSetComprehensionEntriesMap()
+        {
+            Verify("<<['a', 12], ['b', 13]>>", "<<x for x in entries <<<'a' => 12, 'b' => 13>>> >>");
+        }
+
+        [Test]
+        public void TestMapComprehensionValuesMap()
+        {
+            Verify("<<<'u' => 12, 'v' => 13>>>",
+                "<<<x[0] => x[1] for x in values <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>");
+        }
+
+        [Test]
+        public void TestMapComprehensionEntriesMap()
+        {
+            Verify("<<<'a' => 12, 'b' => 13>>>",
+                "<<<x[0] => x[1][1] for x in entries <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>");
+        }
+
         private void Verify(string expected, string script)
         {
             var env = new Environment();
             var result = new Interpreter().Interpret(script, "{test}", env);
             Assert.AreEqual(expected, result.ToString());
         }
-        
+
         private void Verify(string expected, string script, string variable, object value)
         {
             var env = new Environment();
