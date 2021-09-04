@@ -9,6 +9,16 @@ def dotnet(args, work_dir = NULL) do
     if exitcode != 0 then error "dotnet call failed";
 end;
 
+dotnet(["build", 
+        "-c", "Release", 
+        "--nologo"], 
+        work_dir = "ckl-dotnet");
+
+dotnet(["test", 
+        "-c", "Release", 
+        "--nologo"], 
+        work_dir = "ckl-dotnet-tests");
+
 dotnet(["publish", 
         "-c", "Release", 
         "--output", "../dist", 

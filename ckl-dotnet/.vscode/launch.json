@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ckl-repl",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/ckl-repl/bin/Debug/netcoreapp3.1/ckl-repl.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ckl-repl",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
