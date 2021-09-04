@@ -4,8 +4,6 @@ import ch.checkerlang.functions.*;
 import ch.checkerlang.values.ValueDecimal;
 import ch.checkerlang.values.ValueString;
 
-import java.util.Locale;
-
 public class BindNative {
     public static void bind(Environment env, String nativeName, String nativeAlias, SourcePos pos) {
         switch (nativeName) {

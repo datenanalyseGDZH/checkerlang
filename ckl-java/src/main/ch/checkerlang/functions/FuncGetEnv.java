@@ -25,13 +25,7 @@ import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class FuncGetEnv extends FuncBase {

@@ -28,7 +28,6 @@ import ch.checkerlang.values.ValueList;
 import ch.checkerlang.values.ValueString;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 

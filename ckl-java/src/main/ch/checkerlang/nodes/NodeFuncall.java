@@ -22,14 +22,10 @@ package ch.checkerlang.nodes;
 
 import ch.checkerlang.*;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueFunc;
-import ch.checkerlang.values.ValueList;
-import ch.checkerlang.values.ValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class NodeFuncall implements Node {
     private Node func;

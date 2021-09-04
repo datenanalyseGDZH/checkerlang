@@ -25,7 +25,6 @@ import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueInt;
-import ch.checkerlang.values.ValueNull;
 
 import java.util.Arrays;
 import java.util.List;

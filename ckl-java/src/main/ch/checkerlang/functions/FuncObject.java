@@ -27,7 +27,6 @@ import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueObject;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class FuncObject extends FuncBase {

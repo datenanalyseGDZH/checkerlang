@@ -26,7 +26,6 @@ import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
 import ch.checkerlang.values.ValueList;
-import ch.checkerlang.values.ValueString;
 
 import java.util.Collection;
 import java.util.HashSet;

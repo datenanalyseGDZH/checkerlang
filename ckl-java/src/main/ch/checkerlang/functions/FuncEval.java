@@ -23,7 +23,6 @@ package ch.checkerlang.functions;
 import ch.checkerlang.*;
 import ch.checkerlang.nodes.Node;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueNode;
 
 import java.io.IOException;
 import java.util.Arrays;

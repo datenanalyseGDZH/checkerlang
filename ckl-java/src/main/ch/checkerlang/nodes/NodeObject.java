@@ -23,7 +23,6 @@ package ch.checkerlang.nodes;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueMap;
 import ch.checkerlang.values.ValueObject;
 
 import java.util.ArrayList;

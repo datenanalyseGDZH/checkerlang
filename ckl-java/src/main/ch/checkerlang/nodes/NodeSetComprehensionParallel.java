@@ -25,7 +25,6 @@ import ch.checkerlang.ControlErrorException;
 import ch.checkerlang.Environment;
 import ch.checkerlang.SourcePos;
 import ch.checkerlang.values.Value;
-import ch.checkerlang.values.ValueList;
 import ch.checkerlang.values.ValueNull;
 import ch.checkerlang.values.ValueSet;
 
