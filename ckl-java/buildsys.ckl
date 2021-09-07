@@ -49,7 +49,7 @@ end;
 
 def get_java_executable(cmd) do
     if OS_NAME == "Linux" then do
-        return get_env("JAVA_HOME") + "/bin/" + cmd;
+        return which(cmd);
     end else do
         return get_env("JAVA_HOME") + "\\bin\\" + cmd + ".exe";
     end;

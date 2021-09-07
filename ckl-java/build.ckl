@@ -28,6 +28,7 @@ run_unittests("build.test",
                         FS),
               work_dir = "99_temp");
 
+if not file_exists("dist") then make_dir("dist");
 create_jar_file("dist/ckl-java-repl.jar", "99_temp/build", mainclass="ch.checkerlang.REPL");
 create_jar_file("dist/ckl-java-run.jar", "99_temp/build", mainclass="ch.checkerlang.Run");
     
