@@ -81,6 +81,7 @@ end;
 
 def run_unittests(path, resources, cp, work_dir = NULL, report_dir="junit-reports") do
     println(now() + " Testing " + basename(path));
+    if not file_exists(report_dir) then make_dir(report_dir);
     def exitcode = execute(get_java_executable("java"),
                            ["-jar", "../lib/junit-platform-console-standalone-1.7.1-all.jar",
                             "--details=none",
@@ -91,7 +92,8 @@ def run_unittests(path, resources, cp, work_dir = NULL, report_dir="junit-report
                             "--scan-classpath",
                             "--reports-dir=" + report_dir,
                             "--fail-if-no-tests"],
-                            work_dir = work_dir);
+                            work_dir = work_dir,
+                            output_file = report_dir + "/stdout.txt");
     if exitcode != 0 then error "Unittests failed";
 end;
 

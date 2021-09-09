@@ -26,7 +26,8 @@ run_unittests("build.test",
               cp = join(["build",
                          "../lib/junit-platform-console-standalone-1.7.1-all.jar"], 
                         FS),
-              work_dir = "99_temp");
+              work_dir = "99_temp",
+              report_dir = "99_temp/junit-reports");
 
 if not file_exists("dist") then make_dir("dist");
 create_jar_file("dist/ckl-java-repl.jar", "99_temp/build", mainclass="ch.checkerlang.REPL");
