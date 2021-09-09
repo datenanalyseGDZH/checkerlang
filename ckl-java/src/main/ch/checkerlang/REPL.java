@@ -47,7 +47,7 @@ public class REPL {
         stdout.print("> ");
         stdout.flush();
         String line = stdin.readLine();
-        while (!line.equals("exit")) {
+        while (line != null && !line.equals("exit")) {
             try {
                 Parser.parse(line, "{stdin}");
             } catch (SyntaxError e) {
