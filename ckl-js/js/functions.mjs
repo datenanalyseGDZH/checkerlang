@@ -950,15 +950,15 @@ export class FuncEval extends ValueFunc {
 export class FuncExecute extends ValueFunc {
     constructor(system) {
         super("execute");
-        this.info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
+        this.info = "execute(program, args, work_dir = NULL, echo = FALSE, output_file = NULL)\r\n" +
                 "\r\n" +
-                "Executes the program an provides the specified arguments in the list args.\r\n";
+                "Executes the program and provides the specified arguments in the list args.\r\n";
         this.system = system;
         this.secure = false;
     }
 
     getArgNames() {
-        return ["program", "args", "work_dir", "echo"];
+        return ["program", "args", "work_dir", "echo", "output_file"];
     }
 
     execute(args, environment, pos) {
@@ -972,10 +972,22 @@ export class FuncExecute extends ValueFunc {
         if (args.hasArg("work_dir")) work_dir = args.getString("work_dir").value;
         let echo = false;
         if (args.hasArg("echo")) echo = args.getBoolean("echo").value;
-        const options = { cwd: work_dir === null ? undefined : work_dir, stdio: 'inherit' };
-        if (echo) console.log(program + " " + arglist.join(" "));
-        const result = system.child_process.spawnSync(program, arglist, options);
-        return result.status === null ? ValueNull.NULL : new ValueInt(result.status);
+        let output_file = null;
+        if (args.hasArg("output_file")) output_file = args.getString("output_file").value;
+        if (output_file !== null) {
+            const options = { cwd: work_dir === null ? undefined : work_dir, stdio: "pipe" };
+            if (echo) console.log(program + " " + arglist.join(" "));
+            const result = system.child_process.spawnSync(program, arglist, options);
+            const output = system.fs.openSync(output_file, "w");
+            system.fs.writeSync(output, result.stdout, null);
+            system.fs.closeSync(output);
+            return result.status === null ? ValueNull.NULL : new ValueInt(result.status);
+        } else {
+            const options = { cwd: work_dir === null ? undefined : work_dir, stdio: "inherit" };
+            if (echo) console.log(program + " " + arglist.join(" "));
+            const result = system.child_process.spawnSync(program, arglist, options);
+            return result.status === null ? ValueNull.NULL : new ValueInt(result.status);
+        }
     }
 }
 

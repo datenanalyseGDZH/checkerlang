@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace CheckerLang
@@ -30,7 +31,7 @@ namespace CheckerLang
     {
         public FuncExecute() : base("execute")
         {
-             info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
+             info = "execute(program, args, work_dir = NULL, echo = FALSE, output_file = NULL)\r\n" +
                  "\r\n" +
                  "Executed the program and provides the specified arguments in the list args.\r\n";
         }
@@ -42,7 +43,7 @@ namespace CheckerLang
         
         public override List<string> GetArgNames()
         {
-            return new List<string> {"program", "args", "work_dir", "echo"};
+            return new List<string> {"program", "args", "work_dir", "echo", "output_file"};
         }
         
         public override Value Execute(Args args, Environment environment, SourcePos pos)
@@ -53,10 +54,11 @@ namespace CheckerLang
             if (args.HasArg("work_dir")) work_dir = args.GetString("work_dir").GetValue();
             var echo = false;
             if (args.HasArg("echo")) echo = args.GetBoolean("echo").GetValue();
+            string output_file = null;
+            if (args.HasArg("output_file")) output_file = args.GetString("output_file").GetValue();
             try
             {
                 var list = new StringBuilder();
-                list.Append(program).Append(" ");
                 foreach (var argument in arguments) {
                     list.Append(argument.AsString().GetValue()).Append(" ");
                 }
@@ -68,10 +70,19 @@ namespace CheckerLang
                 if (work_dir != null) info.WorkingDirectory = work_dir;
                 info.CreateNoWindow = true;
                 info.RedirectStandardOutput = true;
-                info.RedirectStandardError = true;
-                info.RedirectStandardInput = true;
+                info.RedirectStandardError = false;
+                info.RedirectStandardInput = false;
                 if (echo) System.Console.WriteLine(program + " " + list);
                 process.Start();
+                var output = process.StandardOutput.ReadToEnd();
+                if (output_file != null)
+                {
+                    File.WriteAllText(output_file, output);
+                }
+                else
+                {
+                    Console.Write(output);
+                }
                 process.WaitForExit();
                 return new ValueInt(process.ExitCode);
             } catch (Exception e) {

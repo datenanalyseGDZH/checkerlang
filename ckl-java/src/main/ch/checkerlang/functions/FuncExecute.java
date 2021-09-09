@@ -35,7 +35,7 @@ import java.util.List;
 public class FuncExecute extends FuncBase {
     public FuncExecute() {
         super("execute");
-        info = "execute(program, args, work_dir = NULL, echo = FALSE)\r\n" +
+        info = "execute(program, args, work_dir = NULL, echo = FALSE, output_file = NULL)\r\n" +
                 "\r\n" +
                 "Executed the program and provides the specified arguments in the list args.\r\n";
     }
@@ -45,7 +45,7 @@ public class FuncExecute extends FuncBase {
     }
 
     public List<String> getArgNames() {
-        return Arrays.asList("program", "args", "work_dir", "echo");
+        return Arrays.asList("program", "args", "work_dir", "echo", "output_file");
     }
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
@@ -55,6 +55,8 @@ public class FuncExecute extends FuncBase {
         if (args.hasArg("work_dir")) work_dir = args.getString("work_dir").getValue();
         boolean echo = false;
         if (args.hasArg("echo")) echo = args.getBoolean("echo").getValue();
+        String output_file = null;
+        if (args.hasArg("output_file")) output_file = args.getString("output_file").getValue();
         try {
             List<String> list = new ArrayList<>();
             list.add(program);
@@ -63,6 +65,9 @@ public class FuncExecute extends FuncBase {
             }
             ProcessBuilder proc = new ProcessBuilder(list);
             proc.inheritIO();
+            if (output_file != null) {
+                proc.redirectOutput(new File(output_file));
+            }
             proc.directory(work_dir == null ? null : new File(work_dir));
             if (echo) System.out.println(proc.command());
             Process process = proc.start();
