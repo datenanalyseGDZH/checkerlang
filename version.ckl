@@ -3,8 +3,13 @@ require IO unqualified;
 def cmd = "bump";
 if length(args) > 0 then cmd = args[0];
 
+def split_lines(text) do
+    if text !> ends_with("\n") then text = text !> substr(0, -1);
+    text !> split("\n");
+end;
+
 def get_version(filepath) do
-    for line in read_file(filepath) !> split("\n") do
+    for line in read_file(filepath) !> split_lines() do
         if line !> starts_with("def checkerlang_version = ") then do
             def version = (line !> split(" "))[3] !> trim() !> substr(1, -2);
             def [major, minor, build] = version !> split(escape_pattern("."));
@@ -16,7 +21,7 @@ end;
 
 def patch_file(filepath, newversion) do
     println("patching file " + filepath);
-    def lines = read_file(filepath) !> split("\n");
+    def lines = read_file(filepath) !> split_lines();
     def outfile = file_output(filepath);
     do
         for line in lines do
@@ -32,7 +37,7 @@ end;
 
 def patch_project(filepath, newversion) do
     println("patching project file " + filepath);
-    def lines = read_file(filepath) !> split("\n");
+    def lines = read_file(filepath) !> split_lines();
     def outfile = file_output(filepath);
     do
         for line in lines do
