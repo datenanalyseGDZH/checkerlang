@@ -35,6 +35,8 @@ export const moduleloader = function(modulefile, pos) {
                 // TODO configure base module path
                 const path = modulefile.replace(/\\/g, "/").split("/");
                 const filename = path[path.length - 1];
+                const modulepath = system.os.homedir() + "/.ckl/modules/" + filename;
+                if (system.fs.existsSync(modulepath)) return system.fs.readFileSync(modulepath, {encoding: 'utf-8', flag: 'r'});
                 if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {
