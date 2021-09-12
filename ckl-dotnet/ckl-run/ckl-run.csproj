@@ -3,9 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyVersion>3.4.4.0</AssemblyVersion>
-    <FileVersion>3.4.4</FileVersion>
-    <Version>3.4.4</Version>
+    <AssemblyVersion>3.4.7.0</AssemblyVersion>
+    <FileVersion>3.4.7</FileVersion>
+    <Version>3.4.7</Version>
     <Company>Damian Brunold / Gesundheitsdirektion Zürich</Company>
     <StartupObject>run.Program</StartupObject>
     <RootNamespace>run</RootNamespace>
@@ -17,3 +17,4 @@
   </ItemGroup>
 
 </Project>
+

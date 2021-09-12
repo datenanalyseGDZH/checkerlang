@@ -1,0 +1,67 @@
+require IO unqualified;
+
+def cmd = "bump";
+if length(args) > 0 then cmd = args[0];
+
+def get_version(filepath) do
+    for line in read_file(filepath) !> split("\n") do
+        if line !> starts_with("def checkerlang_version = ") then do
+            def version = (line !> split(" "))[3] !> trim() !> substr(1, -2);
+            def [major, minor, build] = version !> split(escape_pattern("."));
+            return [int(major), int(minor), int(build)];
+        end;
+    end;
+    return NULL;
+end;
+
+def patch_file(filepath, newversion) do
+    println("patching file " + filepath);
+    def lines = read_file(filepath) !> split("\n");
+    def outfile = file_output(filepath);
+    do
+        for line in lines do
+            if line !> starts_with("def checkerlang_version = ") then do
+                line = 'def checkerlang_version = "' + newversion + '";';
+            end;
+            println(line, outfile);
+        end;
+    finally
+        outfile !> close();
+    end;
+end;
+
+def patch_project(filepath, newversion) do
+    println("patching project file " + filepath);
+    def lines = read_file(filepath) !> split("\n");
+    def outfile = file_output(filepath);
+    do
+        for line in lines do
+            if line !> starts_with("    <AssemblyVersion>") then line = "    <AssemblyVersion>" + newversion + ".0</AssemblyVersion>"
+            elif line !> starts_with("    <FileVersion>") then line = "    <FileVersion>" + newversion + "</FileVersion>"
+            elif line !> starts_with("    <Version>") then line = "    <Version>" + newversion + "</Version>";
+            println(line, outfile);
+        end;
+    finally
+        outfile !> close();
+    end;
+end;
+
+def [major, minor, build] = get_version("ckl-js/js/module_sys.mjs");
+
+if cmd == "get" then do
+    println("old version is " + major + "." + minor + "." + build);
+end elif cmd !> starts_with("bump") then do
+    if cmd == "bump-major" then do major += 1; minor = 0; build = 0; end
+    elif cmd == "bump-minor" then do minor += 1; build = 0; end
+    elif cmd == "bump-build" or cmd == "bump" then do build += 1; end;
+    def newversion = major + "." + minor + "." + build;
+    println("new version is " + newversion);
+    patch_file("ckl-js/js/module_sys.mjs", newversion);
+    patch_file("ckl-java/src/main/module-sys.ckl", newversion);
+    patch_file("ckl-dotnet/ckl-dotnet/module-sys.ckl", newversion);
+    patch_project("ckl-dotnet/ckl-dotnet/ckl-dotnet.csproj", newversion);
+    patch_project("ckl-dotnet/ckl-repl/ckl-repl.csproj", newversion);
+    patch_project("ckl-dotnet/ckl-run/ckl-run.csproj", newversion);
+end;
+println("done");
+
