@@ -1,6 +1,6 @@
 require IO unqualified;
 
-def cmd = "bump";
+def cmd = "help";
 if length(args) > 0 then cmd = args[0];
 
 def split_lines(text) do
@@ -53,7 +53,12 @@ end;
 
 def [major, minor, build] = get_version("ckl-js/js/module_sys.mjs");
 
-if cmd == "get" then do
+if cmd == "help" then do
+    println("usage: ckl-run version.ckl <cmd>");
+    println("where <cmd> is one of:");
+    println("  help, get, bump, bump-major, bump-minor, bump-build");
+    println("bump is equivalent to bump-build");
+end elif cmd == "get" then do
     println("old version is " + major + "." + minor + "." + build);
 end elif cmd !> starts_with("bump") then do
     if cmd == "bump-major" then do major += 1; minor = 0; build = 0; end
