@@ -14,7 +14,7 @@ import { modulestring } from "./module_string.mjs";
 import { modulesys } from "./module_sys.mjs";
 import { moduletype } from "./module_type.mjs";
 
-export const moduleloader = function(modulefile, pos) {
+export const moduleloader = function(modulefile, environment, pos) {
     switch (modulefile) {
         case "Core.ckl": return modulecore;
         case "Date.ckl": return moduledate;
@@ -32,11 +32,16 @@ export const moduleloader = function(modulefile, pos) {
         default:
             if (system.fs !== undefined && system.fs !== null) {
                 // TODO prevent directory traversal, but allow some relative paths?!
-                // TODO configure base module path
                 const path = modulefile.replace(/\\/g, "/").split("/");
-                const filename = path[path.length - 1];
+                let filename = path[path.length - 1];
                 const modulepath = system.os.homedir() + "/.ckl/modules/" + filename;
                 if (system.fs.existsSync(modulepath)) return system.fs.readFileSync(modulepath, {encoding: 'utf-8', flag: 'r'});
+                if (environment.isDefined("checkerlang_module_path")) {
+                    for (const dir of environment.get("checkerlang_module_path", pos).value) {
+                        filename = dir.value + "/" + filename;
+                        if (system.fs.existsSync(filename)) return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
+                    }
+                }
                 if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {

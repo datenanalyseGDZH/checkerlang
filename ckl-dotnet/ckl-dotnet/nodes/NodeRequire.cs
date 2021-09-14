@@ -76,7 +76,7 @@ namespace CheckerLang
                 moduleEnv = modules[moduleidentifier];
             } else {
                 moduleEnv = environment.GetBase().NewEnv();
-                var modulesrc = ModuleLoader.LoadModule(modulefile, pos);
+                var modulesrc = ModuleLoader.LoadModule(modulefile, environment, pos);
                 Node node = null;
                 try {
                     node = Parser.Parse(modulesrc, modulefile);

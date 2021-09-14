@@ -49,14 +49,18 @@ public class FuncAppend extends FuncBase {
         Value lst = args.get("lst");
         Value element = args.get("element");
 
-        if (lst.isList()) {
-            lst.asList().getValue().add(element);
-            return lst;
-        }
+        try {
+            if (lst.isList()) {
+                lst.asList().getValue().add(element);
+                return lst;
+            }
 
-        if (lst.isSet()) {
-            lst.asSet().getValue().add(element);
-            return lst;
+            if (lst.isSet()) {
+                lst.asSet().getValue().add(element);
+                return lst;
+            }
+        } catch (UnsupportedOperationException e) {
+            // handled below
         }
 
         throw new ControlErrorException("Cannot append to " + lst, pos);

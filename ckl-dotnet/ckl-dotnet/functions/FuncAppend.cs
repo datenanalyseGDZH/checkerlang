@@ -45,16 +45,23 @@ namespace CheckerLang
             var lst = args.Get("lst");
             var element = args.Get("element");
 
-            if (lst.IsList())
+            try
             {
-                lst.AsList().GetValue().Add(element);
-                return lst;
-            }
+                if (lst.IsList())
+                {
+                    lst.AsList().GetValue().Add(element);
+                    return lst;
+                }
 
-            if (lst.IsSet())
+                if (lst.IsSet())
+                {
+                    lst.AsSet().GetValue().Add(element);
+                    return lst;
+                }
+            }
+            catch
             {
-                lst.AsSet().GetValue().Add(element);
-                return lst;
+                // handled below
             }
             
             throw new ControlErrorException(new ValueString("ERROR"),"Cannot append to " + lst, pos);

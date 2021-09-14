@@ -33,7 +33,7 @@ namespace run
             {
                 if (args.Length == 0)
                 {
-                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] scriptname [scriptargs...]");
+                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]");
                     System.Environment.Exit(1);
                 }
                 
@@ -41,6 +41,7 @@ namespace run
                 var legacy = false;
                 string scriptname = null;
                 var scriptargs = new ValueList();
+                var modulepath = new ValueList();
 
                 var in_options = true;
                 foreach (var arg in args)
@@ -49,6 +50,10 @@ namespace run
                     {
                         if (arg == "--secure") secure = true;
                         else if (arg == "--legacy") legacy = true;
+                        else if (arg.StartsWith("-I")) 
+                        {
+                            modulepath.AddItem(new ValueString(arg.Substring(2)));
+                        }
                         else if (arg.StartsWith("--"))
                         {
                             Console.Error.WriteLine("Unknown option " + arg);
@@ -65,10 +70,11 @@ namespace run
                         scriptargs.AddItem(new ValueString(arg));
                     }
                 }
+                modulepath.MakeReadonly();
                 
                 if (scriptname == null)
                 {
-                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] scriptname [scriptargs...]");
+                    Console.Error.WriteLine("Syntax: ckl-run-dotnet [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]");
                     System.Environment.Exit(1);
                 }
                 
@@ -83,6 +89,7 @@ namespace run
                 interpreter.SetStandardOutput(Console.Out);
                 interpreter.GetEnvironment().Put("scriptname", new ValueString(scriptname));
                 interpreter.GetEnvironment().Put("args", scriptargs);
+                interpreter.GetEnvironment().Put("checkerlang_module_path", modulepath);
                 var value = interpreter.Interpret(File.ReadAllText(scriptname, Encoding.UTF8), scriptname);
                 if (value.IsReturn()) value = value.AsReturn().value;
                 if (value != ValueNull.NULL) Console.Out.WriteLine(value);

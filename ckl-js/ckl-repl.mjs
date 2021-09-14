@@ -29,6 +29,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as child_process from "child_process";
 import * as os from "os";
+import { ValueString } from "./js/values.mjs";
 
 system.fs = fs;
 system.path = path;
@@ -38,18 +39,22 @@ system.os = os;
 
 let secure = false;
 let legacy = false;
+const modulepath = new ValueList();
 
 for (let arg of process.argv.slice(2)) {
     if (arg === "--secure") secure = true;
     else if (arg === "--legacy") legacy = true;
+    else if (arg.startsWith("-I")) modulepath.addItem(new ValueString(arg.substr(2)));
 }
 
 const interpreter = new Interpreter(secure, legacy);
 interpreter.baseEnvironment.set("stdout", interpreter.baseEnvironment.get("console"));
 interpreter.environment.put("args", new ValueList());
+interpreter.environment.put("checkerlang_module_path", modulepath);
 
 for (let arg of process.argv.slice(2)) {
     if (arg.startsWith("--")) continue;
+    if (arg.startsWith("-I")) continue;
     const script = fs.readFileSync(arg, {encoding: 'utf8', flag: 'r'});
     interpreter.interpret(script, arg); // TODO better error handling/reporting
 }

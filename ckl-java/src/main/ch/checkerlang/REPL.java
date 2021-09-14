@@ -21,7 +21,9 @@
 package ch.checkerlang;
 
 import ch.checkerlang.values.Value;
+import ch.checkerlang.values.ValueList;
 import ch.checkerlang.values.ValueNull;
+import ch.checkerlang.values.ValueString;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +42,16 @@ public class REPL {
         Interpreter interpreter = new Interpreter(secure, legacy);
         interpreter.setStandardInput(stdin);
         interpreter.setStandardOutput(stdout);
+        ValueList modulepath = new ValueList();
         for (String arg : args) {
+            if (arg.startsWith("-I")) {
+                modulepath.addItem(new ValueString(arg.substring(2)));
+            }
+        }
+        modulepath.makeReadonly();
+        interpreter.getEnvironment().put("checkerlang_module_path", modulepath);
+        for (String arg : args) {
+            if (arg.startsWith("-I")) continue;
             if (arg.startsWith("--")) continue;
             interpreter.interpret(new String(Files.readAllBytes(new File(arg).toPath()), StandardCharsets.UTF_8), arg);
         }

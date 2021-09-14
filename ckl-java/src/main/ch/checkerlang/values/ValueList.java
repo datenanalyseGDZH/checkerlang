@@ -22,6 +22,7 @@ package ch.checkerlang.values;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ValueList extends Value {
@@ -37,6 +38,11 @@ public class ValueList extends Value {
 
     public ValueList(ValueList value) {
         this.value.addAll(value.getValue());
+    }
+
+    public ValueList makeReadonly() {
+        this.value = Collections.unmodifiableList(value);
+        return this;
     }
 
     public ValueList addItems(Collection<Value> items) {

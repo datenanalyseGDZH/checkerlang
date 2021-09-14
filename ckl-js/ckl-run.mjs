@@ -39,9 +39,10 @@ let secure = false;
 let legacy = false;
 let scriptname = null;
 let scriptargs = [];
+let modulepath = new ValueList();
 
 if (process.argv.length <= 2) {
-    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] scriptname [scriptargs...]\n");
+    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]\n");
     exit(1);
 }
 
@@ -50,7 +51,9 @@ for (let arg of process.argv.slice(2)) {
     if (in_options) {
         if (arg === "--secure") secure = true;
         else if (arg === "--legacy") legacy = true;
-        else if (arg.startsWith("--")) {
+        else if (arg.startsWith("-I")) {
+            modulepath.addItem(new ValueString(arg.substr(2)));
+        } else if (arg.startsWith("--")) {
             process.stderr.write(`Unknown option ${arg}\n`);
             exit(1);
         } else {
@@ -63,7 +66,7 @@ for (let arg of process.argv.slice(2)) {
 }
 
 if (scriptname === null) {
-    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] scriptname [scriptargs...]\n");
+    process.stderr.write("Syntax: ckl-run [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]\n");
     exit(1);
 }
 
@@ -79,6 +82,7 @@ const args = new ValueList();
 for (const scriptarg of scriptargs) args.addItem(new ValueString(scriptarg));
 interpreter.environment.put("args", args);
 interpreter.environment.put("scriptname", new ValueString(scriptname));
+interpreter.environment.put("checkerlang_module_path", modulepath);
 
 const script = fs.readFileSync(scriptname, {encoding: 'utf8', flag: 'r'});
 

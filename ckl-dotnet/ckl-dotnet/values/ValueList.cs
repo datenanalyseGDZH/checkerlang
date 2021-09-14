@@ -26,21 +26,30 @@ namespace CheckerLang
 {
     public class ValueList : Value
     {
-        private List<Value> value = new List<Value>();
+        private IList<Value> value = new List<Value>();
 
         public ValueList()
         {
             // empty
         }
 
-        public ValueList(List<Value> value)
+        public ValueList(IList<Value> value)
         {
-            this.value.AddRange(value);
+            ((List<Value>) this.value).AddRange(value);
         }
 
         public ValueList(ValueList value)
         {
-            this.value.AddRange(value.value);
+            ((List<Value>) this.value).AddRange(value.value);
+        }
+
+        public ValueList MakeReadonly() 
+        {
+            if (value is List<Value>)
+            {
+                value = ((List<Value>) value).AsReadOnly();
+            }
+            return this;
         }
 
         public ValueList AddItems(IEnumerable<Value> items)
@@ -58,7 +67,7 @@ namespace CheckerLang
             return this;
         }
 
-        public List<Value> GetValue()
+        public IList<Value> GetValue()
         {
             return value;
         }

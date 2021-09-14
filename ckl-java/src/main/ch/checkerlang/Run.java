@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 public class Run {
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            System.err.println("Syntax: ckl-run-java [--secure] [--legacy] scriptname [scriptargs...]");
+            System.err.println("Syntax: ckl-run-java [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]");
             System.exit(1);
         }
 
@@ -39,13 +39,16 @@ public class Run {
         boolean legacy = false;
         String scriptname = null;
         ValueList scriptargs = new ValueList();
+        ValueList modulepath = new ValueList();
 
         boolean in_options = true;
         for (String arg : args) {
             if (in_options) {
                 if (arg.equals("--secure")) secure = true;
                 else if (arg.equals("--legacy")) legacy = true;
-                else if (arg.startsWith("--")) {
+                else if (arg.startsWith("-I")) {
+                    modulepath.addItem(new ValueString(arg.substring(2)));
+                } else if (arg.startsWith("--")) {
                     System.err.println("Unknown option " + arg);
                     System.exit(1);
                 } else {
@@ -56,9 +59,10 @@ public class Run {
                 scriptargs.addItem(new ValueString(arg));
             }
         }
+        modulepath.makeReadonly();
 
         if (scriptname == null) {
-            System.err.println("Syntax: ckl-run-java [--secure] [--legacy] scriptname [scriptargs...]");
+            System.err.println("Syntax: ckl-run-java [--secure] [--legacy] [-I<moduledir>] scriptname [scriptargs...]");
             System.exit(1);
         }
 
@@ -75,6 +79,7 @@ public class Run {
             interpreter.setStandardOutput(stdout);
             interpreter.getEnvironment().put("scriptname", new ValueString(scriptname));
             interpreter.getEnvironment().put("args", scriptargs);
+            interpreter.getEnvironment().put("checkerlang_module_path", modulepath);
             try (Reader input = new InputStreamReader(new FileInputStream(scriptname), StandardCharsets.UTF_8)) {
                 Value value = interpreter.interpret(input, scriptname);
                 if (value.isReturn()) value = value.asReturn().value;

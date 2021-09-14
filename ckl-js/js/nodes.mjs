@@ -1602,7 +1602,7 @@ export class NodeRequire {
             moduleEnv = modules.get(moduleidentifier);
         } else {
             moduleEnv = environment.getBase().newEnv();
-            const modulesrc = moduleloader(modulefile, this.pos);
+            const modulesrc = moduleloader(modulefile, environment, this.pos);
             const node = Parser.parseScript(modulesrc, "mod:" + modulefile.substr(0, modulefile.length - 4));
             node.evaluate(moduleEnv);
             modules.set(moduleidentifier, moduleEnv);

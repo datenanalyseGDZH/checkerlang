@@ -77,7 +77,7 @@ public class NodeRequire implements Node {
             moduleEnv = modules.get(moduleidentifier);
         } else {
             moduleEnv = environment.getBase().newEnv();
-            String modulesrc = ModuleLoader.loadModule(modulefile, this.pos);
+            String modulesrc = ModuleLoader.loadModule(modulefile, environment, this.pos);
             Node node = null;
             try {
                 node = Parser.parse(modulesrc, modulefile);

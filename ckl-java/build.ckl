@@ -1,4 +1,4 @@
-require buildsys unqualified;
+require Buildsys unqualified;
 require IO unqualified;
 require OS unqualified;
 

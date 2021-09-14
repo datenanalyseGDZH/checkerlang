@@ -39,9 +39,18 @@ namespace repl
             var interpreter = new Interpreter(secure, legacy);
             interpreter.SetStandardInput(Console.In);
             interpreter.SetStandardOutput(Console.Out);
+            var modulepath = new ValueList();
+            foreach (var arg in args) {
+                if (arg.StartsWith("-I")) {
+                    modulepath.AddItem(new ValueString(arg.Substring(2)));
+                }
+            }
+            modulepath.MakeReadonly();
+            interpreter.GetEnvironment().Put("checkerlang_module_path", modulepath);
             foreach (var arg in args)
             {
                 if (arg.StartsWith("--")) continue;
+                if (arg.StartsWith("-I")) continue;
                 interpreter.Interpret(File.ReadAllText(arg, Encoding.UTF8), arg);
             }
             Console.Write("> ");
