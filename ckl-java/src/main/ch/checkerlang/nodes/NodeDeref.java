@@ -76,7 +76,6 @@ public class NodeDeref implements Node {
             return map.get(idx);
         }
         if (value.isObject()) {
-            if (defaultValue != null) throw new ControlErrorException("Default value not allowed in object dereference", pos);
             Map<String, Value> map = value.asObject().value;
             String member = idx.asString().getValue();
             boolean exists = map.containsKey(member);
@@ -84,14 +83,17 @@ public class NodeDeref implements Node {
                 map = map.get("_proto_").asObject().value;
                 exists = map.containsKey(member);
             }
-            if (!exists) return ValueNull.NULL;
+            if (!exists) {
+                if (defaultValue != null) return defaultValue.evaluate(environment);
+                else return ValueNull.NULL;
+            }
             return map.get(member);
         }
         throw new ControlErrorException("Cannot dereference value " + value, pos);
     }
 
     public String toString() {
-        return "(" + expression + "[" + index + "])";
+        return "(" + expression + "[" + index + (defaultValue != null ? ", " + defaultValue : "") + "])";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {

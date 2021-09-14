@@ -499,21 +499,23 @@ export class NodeDeref {
             return value.getItem(idx);
         }
         if (value instanceof ValueObject) {
-            if (this.default_value !== null) throw new RuntimeError("ERROR", "Default value not allowed in object dereference", this.pos);
             const member = idx.asString().value;
             let exists = value.hasItem(member);
             while (!exists && value.hasItem("_proto_")) {
                 value = value.getItem("_proto_");
                 exists = value.hasItem(member);
             }
-            if (!exists) return ValueNull.NULL;
+            if (!exists) {
+                if (this.default_value !== null) return this.default_value.evaluate(environment);
+                else return ValueNull.NULL;
+            }
             return value.getItem(member);
         }
         throw new RuntimeError("ERROR", "Cannot dereference value " + value, this.pos);
     }
 
     toString() {
-        return this.expression + "[" + this.index + "]";
+        return this.expression + "[" + this.index + (this.default_value != null ? ", " + this.default_value : "") + "]";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {

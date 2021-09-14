@@ -74,22 +74,26 @@ namespace CheckerLang
             }
             if (value.IsObject())
             {
-                if (defaultValue != null) throw new ControlErrorException(new ValueString("ERROR"), "Default value not allowed in object dereference", pos);
                 var obj = value.AsObject();
                 var member = idx.AsString().GetValue();
                 var exists = obj.value.ContainsKey(member);
-                while (!exists && obj.value.ContainsKey("_proto_")) {
+                while (!exists && obj.value.ContainsKey("_proto_")) 
+                {
                     obj = obj.value["_proto_"].AsObject();
                     exists = obj.value.ContainsKey(member);
                 }
-                if (!exists) return ValueNull.NULL;
+                if (!exists) 
+                {
+                    if (defaultValue != null) return defaultValue.Evaluate(environment);
+                    else return ValueNull.NULL;
+                }
                 return obj.value[member];
             }
             throw new ControlErrorException(new ValueString("ERROR"),"Cannot dereference value " + value, pos);
         }
 
         public override string ToString() {
-            return "(" + expression + "[" + index + "])";
+            return "(" + expression + "[" + index + (defaultValue != null ? ", " + defaultValue : "") + "])";
         }
         
         public void CollectVars(ICollection<string> freeVars, ICollection<string> boundVars, ICollection<string> additionalBoundVars)
