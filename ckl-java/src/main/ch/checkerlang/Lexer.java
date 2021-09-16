@@ -236,6 +236,7 @@ public class Lexer {
 
     // Perform lexical analysis using a classical deterministic finite state machine.
     private void lex(Reader reader) throws IOException {
+        String tempbuf = "";
         StringBuilder token = new StringBuilder();
         int state = 0;
         int c = reader.read();
@@ -384,10 +385,23 @@ public class Lexer {
                     } else if (ch == 't') {
                         token.append('\t');
                         state = 3;
+                    } else if (ch == 'x') {
+                        state = 311;
                     } else {
                         token.append(ch);
                         state = 3;
                     }
+
+                    break;
+                case 311:
+                    tempbuf = Character.toString(ch);
+                    state = 312;
+
+                    break;
+                case 312:
+                    tempbuf += Character.toString(ch);
+                    token.append((char) Integer.parseInt(tempbuf, 16));
+                    state = 3;
 
                     break;
                 case 4: // single quote

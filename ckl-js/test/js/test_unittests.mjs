@@ -84,6 +84,7 @@ function lexer_test_exception(description, code) {
 
 lexer_test("Simple", "1_6_V04 nicht leer", "[1_6_V04 (identifier), nicht (identifier), leer (identifier)] @ 0");
 lexer_test("Quotes", "a \"double\" b 'single' c", "[a (identifier), double (string), b (identifier), single (string), c (identifier)] @ 0");
+lexer_test("NumEscapes", "\x58Y\x5a", "[XYZ (identifier)] @ 0");
 lexer_test("Pattern", "//abc//", "[//abc// (pattern)] @ 0");
 lexer_test("In", "feld1 in ['a', 'bb', 'ccc']", "[feld1 (identifier), in (keyword), [ (interpunction), a (string), , (interpunction), bb (string), , (interpunction), ccc (string), ] (interpunction)] @ 0");
 lexer_test("Complex", "(felda beginnt mit 'D12') oder (feldb <= 1.3*(feldc-feldd/2))", 

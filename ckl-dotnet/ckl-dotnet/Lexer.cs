@@ -283,6 +283,7 @@ namespace CheckerLang
         // Perform lexical analysis using a classical deterministic finite state machine.
         private void Lex(TextReader reader)
         {
+            var tempbuf = "";
             var token = new StringBuilder();
             var state = 0;
             var c = reader.Read();
@@ -480,10 +481,23 @@ namespace CheckerLang
                         } else if (ch == 't') {
                             token.Append('\t');
                             state = 3;
+                        } else if (ch == 'x') {
+                            state = 311;
                         } else {
                             token.Append(ch);
                             state = 3;
                         }
+
+                        break;
+                    case 311:
+                        tempbuf = ch.ToString();
+                        state = 312;
+
+                        break;
+                    case 312:
+                        tempbuf += ch.ToString();
+                        token.Append(Char.ConvertFromUtf32(Convert.ToInt32(tempbuf, 16)));
+                        state = 3;
 
                         break;
                     case 4: // single quote

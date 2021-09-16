@@ -162,6 +162,7 @@ export class Lexer {
         
         const filename = this.name;
 
+        let tempbuf = "";
         let token = "";
         let state = 0;
         let pos = 0;
@@ -312,10 +313,24 @@ export class Lexer {
                     } else if (ch == 't') {
                         token = token.concat('\t');
                         state = 3;
+                    } else if (ch == 'x') {
+                        state = 311;
                     } else {
                         token = token.concat(ch);
                         state = 3;
                     }
+                    break;
+
+                case 311: // hex num first digit
+                    tempbuf = ch;
+                    state = 312;
+                    break;
+
+                case 312: // hex num second digit
+                    tempbuf = tempbuf.concat(ch);
+                    token = token.concat(String.fromCharCode(parseInt(tempbuf, 16)));
+                    tempbuf = "";
+                    state = 3;
                     break;
 
                 case 4: // single quote

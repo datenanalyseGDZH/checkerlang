@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>CKL 3.4.9-js function ref</title>
+<title>CKL 3.4.10-js function ref</title>
 <style>
 h1 { font-family: Arial Black; font-height: 18pt; }
 h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }
@@ -21,7 +21,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <link rel="shortcut icon" type="image/png" href="../img/ckl.png">
 </head>
 <body>
-<h1>CKL 3.4.9-js function ref</h1>
+<h1>CKL 3.4.10-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
 <li><a href='#module_Date'>Module Date</a></li>
@@ -4250,6 +4250,8 @@ Core, String
 <div class='example'>def n = 1.2345678; s('n = {n#.2}') ==&gt; 'n = 1.23'</div>
 <div class='example'>def n = 1.2345678; s('n = {n#06.2}') ==&gt; 'n = 001.23'</div>
 <div class='example'>s('2x3 = {2*3}') ==&gt; '2x3 = 6'</div>
+<div class='example'>def n = 123; s('n = {n#x}') ==&gt; 'n = 7b'</div>
+<div class='example'>def n = 255; s('n = {n#04x}') ==&gt; 'n = 00ff'</div>
 <div class='example'>require Math; s('{Math-&gt;PI} is cool') ==&gt; '3.141592653589793 is cool'</div>
 </div>
 <h2 id='sample'>sample</h2>
