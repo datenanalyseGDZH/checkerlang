@@ -56,6 +56,8 @@ namespace CheckerLang
                    ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
                    ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
                    ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
+                   ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
+                   ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
                    ": s('{PI} is cool') ==> '3.14159265358979 is cool'\r\n";
         }
         
@@ -79,6 +81,7 @@ namespace CheckerLang
                 var width = 0;
                 var zeroes = false;
                 var leading = true;
+                int numbase = 10;
                 var digits = -1;
                 int idx3 = variable.IndexOf('#');
                 if (idx3 != -1) {
@@ -93,10 +96,14 @@ namespace CheckerLang
                         leading = false;
                         spec = spec.Substring(1);
                     }
+                    if (spec.EndsWith("x")) {
+                        numbase = 16;
+                        spec = spec.Substring(0, spec.Length - 1);
+                    }
                     int idx4 = spec.IndexOf('.');
                     if (idx4 == -1) {
                         digits = -1;
-                        width = int.Parse(spec);
+                        width = int.Parse(spec == "" ? "0" : spec);
                     } else {
                         digits = int.Parse(spec.Substring(idx4 + 1));
                         width = idx4 == 0 ? 0 : int.Parse(spec.Substring(0, idx4));
@@ -104,7 +111,8 @@ namespace CheckerLang
                 }
                 var node = Parser.Parse(variable, pos.filename);
                 var value = node.Evaluate(environment).AsString().GetValue();
-                if (digits != -1) value = string.Format("{0:f" + digits + "}", decimal.Parse(value));
+                if (numbase == 16) value = string.Format("{0:x}", int.Parse(value));
+                else if (digits != -1) value = string.Format("{0:f" + digits + "}", decimal.Parse(value));
                 while (value.Length < width) {
                     if (leading) value = ' ' + value;
                     else if (zeroes) value = '0' + value;

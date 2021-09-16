@@ -2846,6 +2846,8 @@ export class FuncS extends ValueFunc {
                 ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
                 ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
+                ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
+                ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
                 ": require Math; s('{Math->PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -2868,6 +2870,7 @@ export class FuncS extends ValueFunc {
             let zeroes = false;
             let leading = true;
             let digits = -1;
+            let base = 10;
             const idx3 = variable.indexOf('#');
             if (idx3 != -1) {
                 let spec = variable.substring(idx3 + 1);
@@ -2881,6 +2884,10 @@ export class FuncS extends ValueFunc {
                     leading = false;
                     spec = spec.substring(1);
                 }
+                if (spec.endsWith('x')) {
+                    base = 16;
+                    spec = spec.substring(0, spec.length - 1);
+                }
                 const idx4 = spec.indexOf('.');
                 if (idx4 == -1) {
                     digits = -1;
@@ -2892,7 +2899,8 @@ export class FuncS extends ValueFunc {
             }
             const node = Parser.parseScript(variable, pos.filename);
             let value = node.evaluate(environment).asString().value;
-            if (digits !== -1) value = Number(value).toFixed(digits);
+            if (base != 10) value = Number(value).toString(base);
+            else if (digits !== -1) value = Number(value).toFixed(digits);
             while (value.length < width) {
                 if (leading) value = ' ' + value;
                 else if (zeroes) value = '0' + value;

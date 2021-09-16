@@ -62,6 +62,8 @@ public class FuncS extends FuncBase {
                 ": def n = 1.2345678; s('n = {n#.2}') ==> 'n = 1.23'\r\n" +
                 ": def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'\r\n" +
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
+                ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
+                ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
                 ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -83,6 +85,7 @@ public class FuncS extends FuncBase {
             int width = 0;
             boolean zeroes = false;
             boolean leading = true;
+            int base = 10;
             int digits = -1;
             int idx3 = var.indexOf('#');
             if (idx3 != -1) {
@@ -97,10 +100,14 @@ public class FuncS extends FuncBase {
                     leading = false;
                     spec = spec.substring(1);
                 }
+                if (spec.endsWith("x")) {
+                    base = 16;
+                    spec = spec.substring(0, spec.length() - 1);
+                }
                 int idx4 = spec.indexOf('.');
                 if (idx4 == -1) {
                     digits = -1;
-                    width = Integer.parseInt(spec);
+                    width = Integer.parseInt(spec.isEmpty() ? "0" : spec);
                 } else {
                     digits = Integer.parseInt(spec.substring(idx4 + 1));
                     width = idx4 == 0 ? 0 : Integer.parseInt(spec.substring(0, idx4));
@@ -110,7 +117,8 @@ public class FuncS extends FuncBase {
             try {
                 Node node = Parser.parse(var, pos.filename);
                 value = node.evaluate(environment).asString().getValue();
-                if (digits != -1) value = String.format("%." + digits + "f", Double.parseDouble(value));
+                if (base != 10) value = String.format("%x", Integer.parseInt(value));
+                else if (digits != -1) value = String.format("%." + digits + "f", Double.parseDouble(value));
                 while (value.length() < width) {
                     if (leading) value = ' ' + value;
                     else if (zeroes) value = '0' + value;
