@@ -1,0 +1,75 @@
+# advent of code day 3
+# https://adventofcode.com/2015/day/3
+
+require IO import [read_file, println];
+
+def pos = <*
+    x = 1,
+    y = 1,
+    up(this) this->y += 1,
+    down(this) this->y -= 1,
+    left(this) this->x -= 1,
+    right(this) this->x += 1,
+    pos(this) [this->x, this->y],
+    _str_(this) this->x + "x" + this->y
+*>;
+
+def clone(obj) do
+    def result = <**>;
+    for member in keys obj do
+        result[member] = obj[member];
+    end;
+    result;
+end;
+
+
+def visited = <<>>;
+
+def visit(spec) do
+    def current = clone(pos);
+    visited !> append(current->pos());
+    for ch in spec do
+        if ch == "^" then current->up()
+        elif ch == "v" then current->down()
+        elif ch == "<" then current->left()
+        elif ch == ">" then current->right();        
+        visited !> append(current->pos());
+    end;
+    visited;
+end;
+
+read_file("aoc2015-day3-input.txt") !>
+trim() !>
+visit() !>
+length() !>
+sprintf(fmt = "part1: {0}")!>
+println();
+
+
+def visited = <<>>;
+
+def visit2(spec) do
+    def current1 = clone(pos);
+    def current2 = clone(pos);
+    visited !> append(current1->pos());
+    visited !> append(current2->pos());
+    def current = current1;
+    for ch in spec do
+        if ch == "^" then current->up()
+        elif ch == "v" then current->down()
+        elif ch == "<" then current->left()
+        elif ch == ">" then current->right();        
+        visited !> append(current->pos());
+        if current == current1 then current = current2 else current = current1;
+    end;
+    visited;
+end;
+
+
+read_file("aoc2015-day3-input.txt") !>
+trim() !>
+visit2() !>
+length() !>
+sprintf(fmt = "part2: {0}")!>
+println();
+

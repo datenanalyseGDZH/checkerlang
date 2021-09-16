@@ -13,8 +13,6 @@ def calc_paper_size(dimensions) do
     return 2 * a * b + 2 * a * c + 2 * b * c + a * b;
 end;
 
-println(parse_dimensions("2x3x4") !> calc_paper_size());
-
 read_file("aoc2015-day2-input.txt") !>
 trim() !>
 lines() !>
