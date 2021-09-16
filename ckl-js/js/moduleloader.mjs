@@ -42,6 +42,7 @@ export const moduleloader = function(modulefile, environment, pos) {
                         if (system.fs.existsSync(filename)) return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
                     }
                 }
+                filename = path[path.length - 1];
                 if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {
