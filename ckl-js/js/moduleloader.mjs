@@ -33,16 +33,15 @@ export const moduleloader = function(modulefile, environment, pos) {
             if (system.fs !== undefined && system.fs !== null) {
                 // TODO prevent directory traversal, but allow some relative paths?!
                 const path = modulefile.replace(/\\/g, "/").split("/");
-                let filename = path[path.length - 1];
-                const modulepath = system.os.homedir() + "/.ckl/modules/" + filename;
+                const filename = path[path.length - 1];
+                let modulepath = system.os.homedir() + "/.ckl/modules/" + filename;
                 if (system.fs.existsSync(modulepath)) return system.fs.readFileSync(modulepath, {encoding: 'utf-8', flag: 'r'});
                 if (environment.isDefined("checkerlang_module_path")) {
                     for (const dir of environment.get("checkerlang_module_path", pos).value) {
-                        filename = dir.value + "/" + filename;
-                        if (system.fs.existsSync(filename)) return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
+                        modulepath = dir.value + "/" + filename;
+                        if (system.fs.existsSync(modulepath)) return system.fs.readFileSync(modulepath, {encoding: 'utf8', flag: 'r'});
                     }
                 }
-                filename = path[path.length - 1];
                 if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {
