@@ -1,0 +1,41 @@
+# advent of code day 1
+# https://adventofcode.com/2015/day/1
+
+require IO import [read_file, println];
+
+def calc_floor(instructions) do
+    def result = 0;
+    for ch in instructions do
+        if ch == '(' then result += 1
+        elif ch == ')' then result -= 1
+        else error "invalid input " + ch;
+    end;
+    return result;
+end;
+
+read_file("aoc2015-day1-input.txt") !>
+trim() !>
+calc_floor() !>
+sprintf(fmt = "part1: {0}")!>
+println();
+
+
+def find_first_position(instructions, target_floor) do
+    def result = 0;
+    def floor = 0;
+    for ch in instructions do
+        result += 1;
+        if ch == "(" then floor += 1
+        elif ch == ")" then floor -= 1
+        else error "invalid input " + ch;
+        if floor == target_floor then break;
+    end;
+    return result;
+end;
+
+read_file("aoc2015-day1-input.txt") !>
+trim() !>
+find_first_position(-1) !>
+sprintf(fmt = "part2: {0}")!>
+println();
+

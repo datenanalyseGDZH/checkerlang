@@ -1,0 +1,39 @@
+# advent of code day 2
+# https://adventofcode.com/2015/day/2
+
+require IO import [read_file, println];
+require List import [map_list];
+
+def parse_dimensions(desc) do
+    return sorted([int(s) for s in desc !> trim() !> split("x")]);
+end;
+
+def calc_paper_size(dimensions) do
+    def [a, b, c] = dimensions;
+    return 2 * a * b + 2 * a * c + 2 * b * c + a * b;
+end;
+
+println(parse_dimensions("2x3x4") !> calc_paper_size());
+
+read_file("aoc2015-day2-input.txt") !>
+trim() !>
+lines() !>
+map_list(fn(desc) parse_dimensions(desc) !> calc_paper_size()) !>
+sum() !>
+sprintf(fmt = "part1: {0}")!>
+println();
+
+
+def calc_ribbon_length(dimensions) do
+    def [a, b, c] = dimensions;
+    return a + a + b + b + a * b * c;
+end;
+
+read_file("aoc2015-day2-input.txt") !>
+trim() !>
+lines() !>
+map_list(fn(desc) parse_dimensions(desc) !> calc_ribbon_length()) !>
+sum() !>
+sprintf(fmt = "part2: {0}")!>
+println();
+
