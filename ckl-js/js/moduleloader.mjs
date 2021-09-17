@@ -1,5 +1,6 @@
 import { RuntimeError } from "./errors.mjs";
 import { system } from "./system.mjs";
+import { modulebitwise } from "./module_bitwise.mjs";
 import { modulecore } from "./module_core.mjs";
 import { moduledate } from "./module_date.mjs";
 import { moduleio } from "./module_io.mjs";
@@ -16,6 +17,7 @@ import { moduletype } from "./module_type.mjs";
 
 export const moduleloader = function(modulefile, environment, pos) {
     switch (modulefile) {
+        case "Bitwise.ckl": return modulebitwise;
         case "Core.ckl": return modulecore;
         case "Date.ckl": return moduledate;
         case "IO.ckl": return moduleio;

@@ -188,6 +188,14 @@ const bind_native = function(environment, native, alias = null) {
         case "atan": bind_native_fun(environment, new FuncAtan(), alias); break;
         case "atan2": bind_native_fun(environment, new FuncAtan2(), alias); break;
         case "bind_native": bind_native_fun(environment, new FuncBindNative(), alias); break;
+        case "bit_and": bind_native_fun(environment, new FuncBitAnd(), alias); break;
+        case "bit_or": bind_native_fun(environment, new FuncBitOr(), alias); break;
+        case "bit_not": bind_native_fun(environment, new FuncBitNot(), alias); break;
+        case "bit_xor": bind_native_fun(environment, new FuncBitXor(), alias); break;
+        case "bit_rotate_left": bind_native_fun(environment, new FuncBitRotateLeft(), alias); break;
+        case "bit_rotate_right": bind_native_fun(environment, new FuncBitRotateRight(), alias); break;
+        case "bit_shift_left": bind_native_fun(environment, new FuncBitShiftLeft(), alias); break;
+        case "bit_shift_right": bind_native_fun(environment, new FuncBitShiftRight(), alias); break;
         case "body": bind_native_fun(environment, new FuncBody(), alias); break;
         case "boolean": bind_native_fun(environment, new FuncBoolean(), alias); break;
         case "ceiling": bind_native_fun(environment, new FuncCeiling(), alias); break;
@@ -532,6 +540,179 @@ export class FuncBindNative extends ValueFunc {
         if (args.hasArg("alias")) alias = args.getString("alias").value;
         bind_native(environment, native, alias);
         return ValueNull.NULL;
+    }
+}
+
+export class FuncBitAnd extends ValueFunc {
+    constructor() {
+        super("bit_and");
+        this.info = "bit_and(a, b)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise and for the two 32bit values a and b.\r\n" +
+                    ": bit_and(5, 6) ==> 4\r\n" +
+                    ": bit_and(4, 4) ==> 4\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "b"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const b = args.getInt("b").value;
+        return new ValueInt((a & b) >>> 0);
+    }
+}
+
+export class FuncBitOr extends ValueFunc {
+    constructor() {
+        super("bit_or");
+        this.info = "bit_or(a, b)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise or for the two 32bit values a and b.\r\n" +
+                    ": bit_or(1, 2) ==> 3\r\n" +
+                    ": bit_or(3, 4) ==> 7\r\n" +
+                    ": bit_or(4, 4) ==> 4\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "b"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const b = args.getInt("b").value;
+        return new ValueInt((a | b) >>> 0);
+    }
+}
+
+export class FuncBitNot extends ValueFunc {
+    constructor() {
+        super("bit_not");
+        this.info = "bit_not(a)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise not for the 32bit value a.\r\n" +
+                    ": bit_not(1) ==> 4294967294\r\n" +
+                    ": bit_not(0) ==> 4294967295\r\n";
+    }
+
+    getArgNames() {
+        return ["a"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        return new ValueInt((~a) >>> 0);
+    }
+}
+
+export class FuncBitXor extends ValueFunc {
+    constructor() {
+        super("bit_xor");
+        this.info = "bit_xor(a, b)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise xor for the two 32bit values a and b.\r\n" +
+                    ": bit_xor(1, 2) ==> 3\r\n" +
+                    ": bit_xor(1, 3) ==> 2\r\n" +
+                    ": bit_xor(4, 4) ==> 0\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "b"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const b = args.getInt("b").value;
+        return new ValueInt((a ^ b) >>> 0);
+    }
+}
+
+export class FuncBitRotateLeft extends ValueFunc {
+    constructor() {
+        super("bit_rotate_left");
+        this.info = "bit_rotate_left(a, n)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise rotate of 32bit value a by n bits to the left.\r\n" +
+                    ": bit_rotate_left(1, 2) ==> 4\r\n" +
+                    ": bit_rotate_left(1, 3) ==> 8\r\n" +
+                    ": bit_rotate_left(4, 4) ==> 64\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "n"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const n = args.getInt("n").value;
+        return new ValueInt(((a << n) | (a >>> (32 - n))) >>> 0);
+    }
+}
+
+export class FuncBitRotateRight extends ValueFunc {
+    constructor() {
+        super("bit_rotate_right");
+        this.info = "bit_rotate_right(a, n)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise rotate of 32bit value a by n bits to the right.\r\n" +
+                    ": bit_rotate_right(1, 2) ==> 1073741824\r\n" +
+                    ": bit_rotate_right(1, 3) ==> 536870912\r\n" +
+                    ": bit_rotate_right(4, 4) ==> 1073741824\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "n"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const n = args.getInt("n").value;
+        return new ValueInt(((a >>> n) | (a << (32 - n))) >>> 0);
+    }
+}
+
+export class FuncBitShiftLeft extends ValueFunc {
+    constructor() {
+        super("bit_shift_left");
+        this.info = "bit_shift_left(a, n)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise shift of 32bit value a by n bits to the left.\r\n" +
+                    ": bit_shift_left(1, 2) ==> 4\r\n" +
+                    ": bit_shift_left(1, 3) ==> 8\r\n" +
+                    ": bit_shift_left(1, 4) ==> 16\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "n"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const n = args.getInt("n").value;
+        return new ValueInt(a << n);
+    }
+}
+
+export class FuncBitShiftRight extends ValueFunc {
+    constructor() {
+        super("bit_shift_right");
+        this.info = "bit_shift_right(a, n)\r\n" +
+                    "\r\n" +
+                    "Performs bitwise shift of 32bit value a by n bits to the right.\r\n" +
+                    ": bit_shift_right(4, 1) ==> 2\r\n" +
+                    ": bit_shift_right(4, 3) ==> 0\r\n" +
+                    ": bit_shift_right(4, 2) ==> 1\r\n";
+    }
+
+    getArgNames() {
+        return ["a", "n"];
+    }
+
+    execute(args, environment, pos) {
+        const a = args.getInt("a").value;
+        const n = args.getInt("n").value;
+        return new ValueInt(a >>> n);
     }
 }
 
