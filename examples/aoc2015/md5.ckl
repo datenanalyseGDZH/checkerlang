@@ -1,0 +1,149 @@
+# MD5 implementation based on pseudo code from https://en.wikipedia.org/wiki/MD5
+
+# TODO extend ckl to include
+# TODO - get code point for character  (ord)
+# TODO - get character for code point (chr)
+# TODO - support \uxxxx syntax in strings
+# TODO - hex/dec conversions (as implemented here but more efficient and general?!)
+
+# TODO bit_and, bit_or, bit_not, bit_xor, bit_rotate_left, bit_rotate_right, bit_shift_left, bit_shift_right
+# careful, need 32bit versions here, but more natural would be 64bit, make configurable?
+# or definitions for both (i.e. bit_and_32, bit_and_64, ...)?
+
+require List;
+require String;
+
+def digits = "0123456789";
+def alphabet = "abcdefghijklmnopqrstuvwxyz";
+def ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+def ord(ch) do
+    def idx = digits !> find(ch);
+    if idx != -1 then return 48 + idx;
+    idx = alphabet !> find(ch);
+    if idx != -1 then return 97 + idx;
+    idx = ALPHABET !> find(ch);
+    if idx != -1 then return 65 + idx;
+    if ch == ' ' then return 32;
+    error "Unsupported character " + ch;
+end;
+
+def HEXDIGITS = "0123456789abcdef";
+
+def hex(n) do
+    def result = "";
+    while n > 0 do
+        def digit = HEXDIGITS[n % 16];
+        result += digit;
+        n /= 16;
+    end;
+    return result !> String->reverse();
+end;
+
+def dec(s) do
+    def result = 0;    
+    for ch in s do
+        result += find(HEXDIGITS, ch) + result * 15;
+    end;
+    return result;
+end;
+
+def dec4(s) do
+    if s !> starts_with("0x") then s = s !> substr(2);
+    return dec(s);
+end;
+
+def s = [7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
+         5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
+         4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
+         6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21];
+
+def K = [dec4("0xd76aa478"), dec4("0xe8c7b756"), dec4("0x242070db"), dec4("0xc1bdceee"),
+         dec4("0xf57c0faf"), dec4("0x4787c62a"), dec4("0xa8304613"), dec4("0xfd469501"),
+         dec4("0x698098d8"), dec4("0x8b44f7af"), dec4("0xffff5bb1"), dec4("0x895cd7be"),
+         dec4("0x6b901122"), dec4("0xfd987193"), dec4("0xa679438e"), dec4("0x49b40821"),
+         dec4("0xf61e2562"), dec4("0xc040b340"), dec4("0x265e5a51"), dec4("0xe9b6c7aa"),
+         dec4("0xd62f105d"), dec4("0x02441453"), dec4("0xd8a1e681"), dec4("0xe7d3fbc8"),
+         dec4("0x21e1cde6"), dec4("0xc33707d6"), dec4("0xf4d50d87"), dec4("0x455a14ed"),
+         dec4("0xa9e3e905"), dec4("0xfcefa3f8"), dec4("0x676f02d9"), dec4("0x8d2a4c8a"),
+         dec4("0xfffa3942"), dec4("0x8771f681"), dec4("0x6d9d6122"), dec4("0xfde5380c"),
+         dec4("0xa4beea44"), dec4("0x4bdecfa9"), dec4("0xf6bb4b60"), dec4("0xbebfbc70"),
+         dec4("0x289b7ec6"), dec4("0xeaa127fa"), dec4("0xd4ef3085"), dec4("0x04881d05"),
+         dec4("0xd9d4d039"), dec4("0xe6db99e5"), dec4("0x1fa27cf8"), dec4("0xc4ac5665"),
+         dec4("0xf4292244"), dec4("0x432aff97"), dec4("0xab9423a7"), dec4("0xfc93a039"),
+         dec4("0x655b59c3"), dec4("0x8f0ccc92"), dec4("0xffeff47d"), dec4("0x85845dd1"),
+         dec4("0x6fa87e4f"), dec4("0xfe2ce6e0"), dec4("0xa3014314"), dec4("0x4e0811a1"),
+         dec4("0xf7537e82"), dec4("0xbd3af235"), dec4("0x2ad7d2bb"), dec4("0xeb86d391")];
+
+def to_word(bytes) do
+    return bytes[0] * 256 * 256 * 256 +
+           bytes[1] * 256 * 256 +
+           bytes[2] * 256 +
+           bytes[3];
+end;
+
+def to_bytes(word) do
+    return [word % 256,
+            (word / 256) % 256,
+            (word / 256 / 256) % 256,
+            (word / 256 / 256 / 256) % 256];
+end;
+
+def MD5(message) do
+    def a0 = dec4("0x67452301");
+    def b0 = dec4("0xefcdab89");
+    def c0 = dec4("0x98badcfe");
+    def d0 = dec4("0x10325476");
+
+    def data = [ord(ch) for ch in message];
+    data !> append(128);
+    while length(data) % 64 != 56 do
+        data !> append(0);
+    end;
+    data !> List->append_all(to_bytes(length(message) * 8));
+
+    for chunk in chunks(data, 64) do
+        def M = [to_word(c) for c in chunks(chunk, 4)];
+        def A = a0;
+        def B = b0;
+        def C = c0;
+        def D = d0;
+        for i in range(64) do
+            def F = 0;
+            def g = 0;
+            if 0 <= i <= 15 then do
+                F = bit_or_32(bit_and_32(B, C), bit_and_32(bit_not_32(B), D));
+                g = i;
+            end
+            if 16 <= i <= 31 then do
+                F = bit_or_32(bit_and_32(D, B), bit_and_32(bit_not_32(D), C));
+                g = (5 * i + 1) % 16;
+            end
+            if 32 <= i <= 47 then do
+                F = bit_xor_32(B, bit_xor_32(C, D));
+                g = (3 * i + 5) % 16;
+            end
+            if 48 <= i <= 63 then do
+                F = bit_xor_32(C, bit_or_32(B, bit_not(D)));
+                g = (7 * i) % 16;
+            end;
+            F = F + A + K[i] + M[g];
+            A = D;
+            D = C;
+            C = B;
+            B = B + bit_rotate_left_32(F, s[i]);
+        end;
+        a0 += A;
+        b0 += B;
+        c0 += C;
+        d0 += D;
+    end;
+    return String->s("{a0#08x}{b0#08x}{c0#08x}{d0#08x}");
+end;
+
+# Tests:
+
+println(MD5("The quick brown fox jumps over the lazy dog"));  # 9e107d9d372bb6826bd81d3542a419d6
+println(MD5("The quick brown fox jumps over the lazy dog.")); # e4d909c290d0fb1ca068ffaddf22cbd0
+println(MD5(""));                                             # d41d8cd98f00b204e9800998ecf8427e
+
