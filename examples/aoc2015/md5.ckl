@@ -1,151 +1,161 @@
 # MD5 implementation based on pseudo code from https://en.wikipedia.org/wiki/MD5
 
-require Bitwise;
-require List;
-require String;
+def md5_hash_str = NULL;
+def md5_hash_bytes = NULL;
 
-def digits = "0123456789";
-def alphabet = "abcdefghijklmnopqrstuvwxyz";
-def ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+(fn() do
+    require Bitwise unqualified;
+    require List;
+    require String;
 
-def ord(ch) do
-    def idx = digits !> find(ch);
-    if idx != -1 then return 48 + idx;
-    idx = alphabet !> find(ch);
-    if idx != -1 then return 97 + idx;
-    idx = ALPHABET !> find(ch);
-    if idx != -1 then return 65 + idx;
-    if ch == ' ' then return 32;
-    if ch == '.' then return 46;
-    error "Unsupported character " + ch;
-end;
+    def digits = "0123456789";
+    def alphabet = "abcdefghijklmnopqrstuvwxyz";
+    def ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-def HEXDIGITS = "0123456789abcdef";
-
-def hex(n) do
-    def result = "";
-    while n > 0 do
-        def digit = HEXDIGITS[n % 16];
-        result += digit;
-        n /= 16;
+    def ord(ch) do
+        def idx = digits !> find(ch);
+        if idx != -1 then return 48 + idx;
+        idx = alphabet !> find(ch);
+        if idx != -1 then return 97 + idx;
+        idx = ALPHABET !> find(ch);
+        if idx != -1 then return 65 + idx;
+        if ch == ' ' then return 32;
+        if ch == '.' then return 46;
+        error "Unsupported character " + ch;
     end;
-    return result !> String->reverse();
-end;
 
-def dec(s) do
-    def result = 0;    
-    for ch in s do
-        result = find(HEXDIGITS, ch) + result * 16;
-    end;
-    return result;
-end;
+    def HEXDIGITS = "0123456789abcdef";
 
-def le_hex_8(n) do
-    def result = "";
-    result += pad_left(hex((n) % 256));
-    result += pad_left(hex((n / 256) % 256));
-    result += pad_left(hex((n / 256 / 256) % 256));
-    result += pad_left(hex((n / 256 / 256 / 256) % 256));
-    return result;
-end;
-
-def pad_left(s, ch = "0", len = 2) do
-    while length(s) < len do
-        s = "0" + s;
-    end;
-    return s;
-end;
-
-def s = [7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-         5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-         4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-         6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21];
-
-def K = [dec("d76aa478"), dec("e8c7b756"), dec("242070db"), dec("c1bdceee"),
-         dec("f57c0faf"), dec("4787c62a"), dec("a8304613"), dec("fd469501"),
-         dec("698098d8"), dec("8b44f7af"), dec("ffff5bb1"), dec("895cd7be"),
-         dec("6b901122"), dec("fd987193"), dec("a679438e"), dec("49b40821"),
-         dec("f61e2562"), dec("c040b340"), dec("265e5a51"), dec("e9b6c7aa"),
-         dec("d62f105d"), dec("02441453"), dec("d8a1e681"), dec("e7d3fbc8"),
-         dec("21e1cde6"), dec("c33707d6"), dec("f4d50d87"), dec("455a14ed"),
-         dec("a9e3e905"), dec("fcefa3f8"), dec("676f02d9"), dec("8d2a4c8a"),
-         dec("fffa3942"), dec("8771f681"), dec("6d9d6122"), dec("fde5380c"),
-         dec("a4beea44"), dec("4bdecfa9"), dec("f6bb4b60"), dec("bebfbc70"),
-         dec("289b7ec6"), dec("eaa127fa"), dec("d4ef3085"), dec("04881d05"),
-         dec("d9d4d039"), dec("e6db99e5"), dec("1fa27cf8"), dec("c4ac5665"),
-         dec("f4292244"), dec("432aff97"), dec("ab9423a7"), dec("fc93a039"),
-         dec("655b59c3"), dec("8f0ccc92"), dec("ffeff47d"), dec("85845dd1"),
-         dec("6fa87e4f"), dec("fe2ce6e0"), dec("a3014314"), dec("4e0811a1"),
-         dec("f7537e82"), dec("bd3af235"), dec("2ad7d2bb"), dec("eb86d391")];
-
-def to_word(bytes) do
-    return bytes[3] * 256 * 256 * 256 +
-           bytes[2] * 256 * 256 +
-           bytes[1] * 256 +
-           bytes[0];
-end;
-
-def to_bytes(word) do
-    return [word % 256,
-            (word / 256) % 256,
-            (word / 256 / 256) % 256,
-            (word / 256 / 256 / 256) % 256];
-end;
-
-def MD5(message) do
-    def a0 = dec("67452301");
-    def b0 = dec("efcdab89");
-    def c0 = dec("98badcfe");
-    def d0 = dec("10325476");
-
-    def data = [ord(ch) for ch in message];
-    data !> append(128);
-    while length(data) % 64 != 56 do
-        data !> append(0);
-    end;
-    data !> List->append_all(to_bytes(length(message) * 8)) !> List->append_all([0, 0, 0, 0]);
-
-    for chunk in chunks(data, 64) do
-        def M = [to_word(c) for c in chunks(chunk, 4)];
-        def A = a0 % 4294967296;
-        def B = b0 % 4294967296;
-        def C = c0 % 4294967296;
-        def D = d0 % 4294967296;
-        for i in range(64) do
-            def F = 0;
-            def g = 0;
-            if 0 <= i <= 15 then do
-                F = Bitwise->bit_or(Bitwise->bit_and(B, C), Bitwise->bit_and(Bitwise->bit_not(B), D));
-                g = i;
-            end
-            if 16 <= i <= 31 then do
-                F = Bitwise->bit_or(Bitwise->bit_and(D, B), Bitwise->bit_and(Bitwise->bit_not(D), C));
-                g = (5 * i + 1) % 16;
-            end
-            if 32 <= i <= 47 then do
-                F = Bitwise->bit_xor(Bitwise->bit_xor(B, C), D);
-                g = (3 * i + 5) % 16;
-            end
-            if 48 <= i <= 63 then do
-                F = Bitwise->bit_xor(C, Bitwise->bit_or(B, Bitwise->bit_not(D)));
-                g = (7 * i) % 16;
-            end;
-            F = (F + A + K[i] + M[g]) % 4294967296;
-            A = D;
-            D = C;
-            C = B;
-            B = (B + Bitwise->bit_rotate_left(F, s[i])) % 4294967296;
+    def hex(n) do
+        def result = "";
+        while n > 0 do
+            def digit = HEXDIGITS[n % 16];
+            result += digit;
+            n /= 16;
         end;
-        a0 = (a0 + A) % 4294967296;
-        b0 = (b0 + B) % 4294967296;
-        c0 = (c0 + C) % 4294967296;
-        d0 = (d0 + D) % 4294967296;
+        return result !> String->reverse();
     end;
-    return le_hex_8(a0) + le_hex_8(b0) + le_hex_8(c0) + le_hex_8(d0);
-end;
 
-# Tests:
-#println(MD5("The quick brown fox jumps over the lazy dog"));  # 9e107d9d372bb6826bd81d3542a419d6
-#println(MD5("The quick brown fox jumps over the lazy dog.")); # e4d909c290d0fb1ca068ffaddf22cbd0
-#println(MD5(""));                                             # d41d8cd98f00b204e9800998ecf8427e
+    def dec(s) do
+        def result = 0;    
+        for ch in s do
+            result = find(HEXDIGITS, ch) + result * 16;
+        end;
+        return result;
+    end;
+
+    def le_hex_8(n) do
+        def result = "";
+        result += pad_left(hex((n) % 256));
+        result += pad_left(hex((n / 256) % 256));
+        result += pad_left(hex((n / 256 / 256) % 256));
+        result += pad_left(hex((n / 256 / 256 / 256) % 256));
+        return result;
+    end;
+
+    def pad_left(s, ch = "0", len = 2) do
+        while length(s) < len do
+            s = "0" + s;
+        end;
+        return s;
+    end;
+
+    def s = [7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
+             5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
+             4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
+             6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21];
+
+    def K = [dec("d76aa478"), dec("e8c7b756"), dec("242070db"), dec("c1bdceee"),
+             dec("f57c0faf"), dec("4787c62a"), dec("a8304613"), dec("fd469501"),
+             dec("698098d8"), dec("8b44f7af"), dec("ffff5bb1"), dec("895cd7be"),
+             dec("6b901122"), dec("fd987193"), dec("a679438e"), dec("49b40821"),
+             dec("f61e2562"), dec("c040b340"), dec("265e5a51"), dec("e9b6c7aa"),
+             dec("d62f105d"), dec("02441453"), dec("d8a1e681"), dec("e7d3fbc8"),
+             dec("21e1cde6"), dec("c33707d6"), dec("f4d50d87"), dec("455a14ed"),
+             dec("a9e3e905"), dec("fcefa3f8"), dec("676f02d9"), dec("8d2a4c8a"),
+             dec("fffa3942"), dec("8771f681"), dec("6d9d6122"), dec("fde5380c"),
+             dec("a4beea44"), dec("4bdecfa9"), dec("f6bb4b60"), dec("bebfbc70"),
+             dec("289b7ec6"), dec("eaa127fa"), dec("d4ef3085"), dec("04881d05"),
+             dec("d9d4d039"), dec("e6db99e5"), dec("1fa27cf8"), dec("c4ac5665"),
+             dec("f4292244"), dec("432aff97"), dec("ab9423a7"), dec("fc93a039"),
+             dec("655b59c3"), dec("8f0ccc92"), dec("ffeff47d"), dec("85845dd1"),
+             dec("6fa87e4f"), dec("fe2ce6e0"), dec("a3014314"), dec("4e0811a1"),
+             dec("f7537e82"), dec("bd3af235"), dec("2ad7d2bb"), dec("eb86d391")];
+
+    def to_word(bytes) do
+        return bytes[3] * 256 * 256 * 256 +
+               bytes[2] * 256 * 256 +
+               bytes[1] * 256 +
+               bytes[0];
+    end;
+
+    def to_bytes(word) do
+        return [word % 256,
+                (word / 256) % 256,
+                (word / 256 / 256) % 256,
+                (word / 256 / 256 / 256) % 256];
+    end;
+
+    md5_hash_str = fn(message) do
+        def a0 = dec("67452301");
+        def b0 = dec("efcdab89");
+        def c0 = dec("98badcfe");
+        def d0 = dec("10325476");
+
+        def data = [ord(ch) for ch in message];
+        data !> append(128);
+        while length(data) % 64 != 56 do
+            data !> append(0);
+        end;
+        data !> List->append_all(to_bytes(length(message) * 8)) !> List->append_all([0, 0, 0, 0]);
+
+        for chunk in chunks(data, 64) do
+            def M = [to_word(c) for c in chunks(chunk, 4)];
+            def A = a0 % 4294967296;
+            def B = b0 % 4294967296;
+            def C = c0 % 4294967296;
+            def D = d0 % 4294967296;
+            for i in range(64) do
+                def F = 0;
+                def g = 0;
+                if 0 <= i <= 15 then do
+                    F = bit_or(bit_and(B, C), bit_and(bit_not(B), D));
+                    g = i;
+                end
+                if 16 <= i <= 31 then do
+                    F = bit_or(bit_and(D, B), bit_and(bit_not(D), C));
+                    g = (5 * i + 1) % 16;
+                end
+                if 32 <= i <= 47 then do
+                    F = bit_xor(bit_xor(B, C), D);
+                    g = (3 * i + 5) % 16;
+                end
+                if 48 <= i <= 63 then do
+                    F = bit_xor(C, bit_or(B, bit_not(D)));
+                    g = (7 * i) % 16;
+                end;
+                F = (F + A + K[i] + M[g]) % 4294967296;
+                A = D;
+                D = C;
+                C = B;
+                B = (B + bit_rotate_left(F, s[i])) % 4294967296;
+            end;
+            a0 = (a0 + A) % 4294967296;
+            b0 = (b0 + B) % 4294967296;
+            c0 = (c0 + C) % 4294967296;
+            d0 = (d0 + D) % 4294967296;
+        end;
+        return le_hex_8(a0) + le_hex_8(b0) + le_hex_8(c0) + le_hex_8(d0);
+    end;
+
+    md5_hash_bytes = fn(message) do
+        return [dec(x) for x in chunks(md5_hash_str(message), 2)];
+    end;
+end)();
+
+def test() do
+    if md5_hash_str("The quick brown fox jumps over the lazy dog") != "9e107d9d372bb6826bd81d3542a419d6" then println("1 failed");
+    if md5_hash_str("The quick brown fox jumps over the lazy dog.") != "e4d909c290d0fb1ca068ffaddf22cbd0" then println("2 failed");
+    if md5_hash_str("") != "d41d8cd98f00b204e9800998ecf8427e" then println("3 failed");
+end;
 
