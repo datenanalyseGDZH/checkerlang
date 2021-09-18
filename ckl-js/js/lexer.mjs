@@ -198,6 +198,8 @@ export class Lexer {
                         state = 3;
                     } else if (ch === '\'') {
                         state = 4;
+                    } else if (ch === '0') {
+                        state = 70;
                     } else if ("0123456789".indexOf(ch) !== -1) {
                         token = token.concat(ch);
                         state = 7;
@@ -404,6 +406,53 @@ export class Lexer {
                         token = token.concat(ch);
                         state = 1;
                     }
+                    break;
+
+                case 70: // int, decimal or hex/binary int literal
+                    if (ch === 'x') {
+                        state = 71; // hex int literal
+                    } else if (ch === 'b') {
+                        state = 72; // binary int literal
+                    } else {
+                        token = token.concat('0');
+                        pos--;
+                        updatepos = false;
+                        state = 7;
+                    }
+                    break;
+
+                case 71: // hex int literal
+                    if ("0123456789abcdefABCDEF".indexOf(ch) !== -1) {
+                        token = token.concat(ch);
+                    } else if (ch == "_") {
+                        // skip underscores
+                    } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
+                        this.tokens.push(new Token(parseInt(token, 16).toString(), "int", new SourcePos(filename, line, column - token.length)));
+                        token = "";
+                        pos--;
+                        updatepos = false;
+                        state = 0;
+                    } else {
+                        token = token.concat(ch);
+                        state = 1;
+                    } 
+                    break;
+
+                case 72: // binary int literal
+                    if ("01".indexOf(ch) !== -1) {
+                        token = token.concat(ch);
+                    } else if (ch == "_") {
+                        // skip underscores
+                    } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
+                        this.tokens.push(new Token(parseInt(token, 2).toString(), "int", new SourcePos(filename, line, column - token.length)));
+                        token = "";
+                        pos--;
+                        updatepos = false;
+                        state = 0;
+                    } else {
+                        token = token.concat(ch);
+                        state = 1;
+                    } 
                     break;
 
                 case 8: // decimal
