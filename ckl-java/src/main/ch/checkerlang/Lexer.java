@@ -272,7 +272,9 @@ public class Lexer {
                         state = 3;
                     } else if (ch == '\'') {
                         state = 4;
-                    } else if ("0123456789".indexOf(ch) != -1) {
+                    } else if (ch == '0') {
+                        state = 70;
+                    } else if ("123456789".indexOf(ch) != -1) {
                         token.append(ch);
                         state = 7;
                     } else if (" \t\r\n".indexOf(ch) == -1) {
@@ -474,6 +476,50 @@ public class Lexer {
                     }
 
                     break;
+                case 70: // int, decimal or hex/binary int literal
+                    if (ch == 'x') {
+                        state = 71; // hex int literal
+                    } else if (ch == 'b') {
+                        state = 72; // binary int literal
+                    } else {
+                        token.append('0');
+                        lastc = c;
+                        state = 7;
+                    }
+
+                    break;
+                case 71: // hex int literal
+                    if ("0123456789abcdefABCDEF".indexOf(ch) != -1) {
+                        token.append(ch);
+                    } else if (ch == '_') {
+                        // skip underscores
+                    } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) != -1) {
+                        tokens.add(new Token(Integer.toString(Integer.parseInt(token.toString(), 16)), TokenType.Int, new SourcePos(filename, line, column - token.length())));
+                        token = new StringBuilder();
+                        lastc = c;
+                        state = 0;
+                    } else {
+                        token.append(ch);
+                        state = 1;
+                    } 
+
+                    break;
+                case 72: // binary int literal
+                    if ("01".indexOf(ch) != -1) {
+                        token.append(ch);
+                    } else if (ch == '_') {
+                        // skip underscores
+                    } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) != -1) {
+                        tokens.add(new Token(Integer.toString(Integer.parseInt(token.toString(), 2)), TokenType.Int, new SourcePos(filename, line, column - token.length())));
+                        token = new StringBuilder();
+                        lastc = c;
+                        state = 0;
+                    } else {
+                        token.append(ch);
+                        state = 1;
+                    } 
+
+                    break;
                 case 8: // decimal
                     if ("0123456789".indexOf(ch) != -1) {
                         token.append(ch);
@@ -555,6 +601,12 @@ public class Lexer {
                     break;
                 case 7:
                     tokens.add(new Token(t, TokenType.Int, new SourcePos(filename, line, column - t.length())));
+                    break;
+                case 71:
+                    tokens.add(new Token(Integer.toString(Integer.parseInt(token.toString(), 16)), TokenType.Int, new SourcePos(filename, line, column - t.length())));
+                    break;
+                case 72:
+                    tokens.add(new Token(Integer.toString(Integer.parseInt(token.toString(), 2)), TokenType.Int, new SourcePos(filename, line, column - t.length())));
                     break;
                 case 8:
                     tokens.add(new Token(t, TokenType.Decimal, new SourcePos(filename, line, column - t.length())));

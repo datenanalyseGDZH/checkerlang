@@ -339,7 +339,11 @@ namespace CheckerLang
                         {
                             state = 4;
                         }
-                        else if ("0123456789".IndexOf(ch) != -1)
+                        else if (ch == '0') 
+                        {
+                            state = 70;
+                        }
+                        else if ("123456789".IndexOf(ch) != -1)
                         {
                             token.Append(ch);
                             state = 7;
@@ -590,6 +594,50 @@ namespace CheckerLang
                         }
 
                         break;
+                    case 70: // int, decimal or hex/binary int literal
+                        if (ch == 'x') {
+                            state = 71; // hex int literal
+                        } else if (ch == 'b') {
+                            state = 72; // binary int literal
+                        } else {
+                            token.Append('0');
+                            lastc = c;
+                            state = 7;
+                        }
+
+                        break;
+                    case 71: // hex int literal
+                        if ("0123456789abcdefABCDEF".IndexOf(ch) != -1) {
+                            token.Append(ch);
+                        } else if (ch == '_') {
+                            // skip underscores
+                        } else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1) {
+                            tokens.Add(new Token(Convert.ToUInt64(token.ToString(), 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
+                            token = new StringBuilder();
+                            lastc = c;
+                            state = 0;
+                        } else {
+                            token.Append(ch);
+                            state = 1;
+                        } 
+
+                        break;
+                    case 72: // binary int literal
+                        if ("01".IndexOf(ch) != -1) {
+                            token.Append(ch);
+                        } else if (ch == '_') {
+                            // skip underscores
+                        } else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1) {
+                            tokens.Add(new Token(Convert.ToUInt64(token.ToString(), 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
+                            token = new StringBuilder();
+                            lastc = c;
+                            state = 0;
+                        } else {
+                            token.Append(ch);
+                            state = 1;
+                        } 
+
+                        break;
                     case 8: // decimal
                         if ("0123456789".IndexOf(ch) != -1)
                         {
@@ -687,6 +735,12 @@ namespace CheckerLang
                         break;
                     case 7:
                         tokens.Add(new Token(t, TokenType.Int, new SourcePos(filename, line, column - t.Length)));
+                        break;
+                    case 71:
+                        tokens.Add(new Token(Convert.ToUInt64(t, 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
+                        break;
+                    case 72:
+                        tokens.Add(new Token(Convert.ToUInt64(t, 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
                         break;
                     case 8:
                         tokens.Add(new Token(t, TokenType.Decimal, new SourcePos(filename, line, column - t.Length)));
