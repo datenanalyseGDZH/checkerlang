@@ -572,17 +572,13 @@ namespace CheckerLang
                             token.Append(ch);
                             state = 8;
                         }
-                        else if (ch == '_')
-                        {
-                            // skip underscores
-                        }
-                        else if ("0123456789".IndexOf(ch) != -1)
+                        else if ("0123456789_".IndexOf(ch) != -1)
                         {
                             token.Append(ch);
                         }
                         else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1)
                         {
-                            tokens.Add(new Token(token.ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
+                            tokens.Add(new Token(token.ToString().Replace("_", ""), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
                             token = new StringBuilder();
                             lastc = c;
                             state = 0;
@@ -607,12 +603,10 @@ namespace CheckerLang
 
                         break;
                     case 71: // hex int literal
-                        if ("0123456789abcdefABCDEF".IndexOf(ch) != -1) {
+                        if ("0123456789abcdefABCDEF_".IndexOf(ch) != -1) {
                             token.Append(ch);
-                        } else if (ch == '_') {
-                            // skip underscores
                         } else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1) {
-                            tokens.Add(new Token(Convert.ToUInt64(token.ToString(), 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
+                            tokens.Add(new Token(Convert.ToUInt64(token.ToString().Replace("_", ""), 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
                             token = new StringBuilder();
                             lastc = c;
                             state = 0;
@@ -623,12 +617,10 @@ namespace CheckerLang
 
                         break;
                     case 72: // binary int literal
-                        if ("01".IndexOf(ch) != -1) {
+                        if ("01_".IndexOf(ch) != -1) {
                             token.Append(ch);
-                        } else if (ch == '_') {
-                            // skip underscores
                         } else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1) {
-                            tokens.Add(new Token(Convert.ToUInt64(token.ToString(), 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
+                            tokens.Add(new Token(Convert.ToUInt64(token.ToString().Replace("_", ""), 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - token.Length)));
                             token = new StringBuilder();
                             lastc = c;
                             state = 0;
@@ -639,17 +631,13 @@ namespace CheckerLang
 
                         break;
                     case 8: // decimal
-                        if ("0123456789".IndexOf(ch) != -1)
+                        if ("0123456789_".IndexOf(ch) != -1)
                         {
                             token.Append(ch);
                         }
-                        else if (ch == '_')
-                        {
-                            // skip underscores
-                        }
                         else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1)
                         {
-                            tokens.Add(new Token(token.ToString(), TokenType.Decimal, new SourcePos(filename, line, column - token.Length)));
+                            tokens.Add(new Token(token.ToString().Replace("_", ""), TokenType.Decimal, new SourcePos(filename, line, column - token.Length)));
                             token = new StringBuilder();
                             lastc = c;
                             state = 0;
@@ -734,16 +722,16 @@ namespace CheckerLang
                         tokens.Add(new Token(t, TokenType.String, new SourcePos(filename, line, column - t.Length - 2)));
                         break;
                     case 7:
-                        tokens.Add(new Token(t, TokenType.Int, new SourcePos(filename, line, column - t.Length)));
+                        tokens.Add(new Token(t.Replace("_", ""), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
                         break;
                     case 71:
-                        tokens.Add(new Token(Convert.ToUInt64(t, 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
+                        tokens.Add(new Token(Convert.ToUInt64(t.Replace("_", ""), 16).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
                         break;
                     case 72:
-                        tokens.Add(new Token(Convert.ToUInt64(t, 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
+                        tokens.Add(new Token(Convert.ToUInt64(t.Replace("_", ""), 2).ToString(), TokenType.Int, new SourcePos(filename, line, column - t.Length)));
                         break;
                     case 8:
-                        tokens.Add(new Token(t, TokenType.Decimal, new SourcePos(filename, line, column - t.Length)));
+                        tokens.Add(new Token(t.Replace("_", ""), TokenType.Decimal, new SourcePos(filename, line, column - t.Length)));
                         break;
                     case 9: // ignore comment
                         break;
@@ -753,6 +741,10 @@ namespace CheckerLang
                         else tokens.Add(new Token(t, TokenType.Identifier, new SourcePos(filename, line, column - t.Length)));
                         break;
                 }
+            }
+            else if (state == 70) 
+            {
+                tokens.Add(new Token("0", TokenType.Int, new SourcePos(filename, line, column - 1)));
             }
         }
 

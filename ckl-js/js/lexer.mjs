@@ -392,12 +392,10 @@ export class Lexer {
                     if (ch === '.') {
                         token = token.concat(ch);
                         state = 8;
-                    } else if (ch == '_') {
-                        // skip underscores
-                    } else if ("0123456789".indexOf(ch) !== -1) {
+                    } else if ("0123456789_".indexOf(ch) !== -1) {
                         token = token.concat(ch);
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
-                        this.tokens.push(new Token(token, "int", new SourcePos(filename, line, column - token.length)));
+                        this.tokens.push(new Token(token.replace(/_/g, ""), "int", new SourcePos(filename, line, column - token.length)));
                         token = "";
                         pos--;
                         updatepos = false;
@@ -422,12 +420,10 @@ export class Lexer {
                     break;
 
                 case 71: // hex int literal
-                    if ("0123456789abcdefABCDEF".indexOf(ch) !== -1) {
+                    if ("0123456789abcdefABCDEF_".indexOf(ch) !== -1) {
                         token = token.concat(ch);
-                    } else if (ch == "_") {
-                        // skip underscores
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
-                        this.tokens.push(new Token(parseInt(token, 16).toString(), "int", new SourcePos(filename, line, column - token.length)));
+                        this.tokens.push(new Token(parseInt(token.replace(/_/g, ""), 16).toString(), "int", new SourcePos(filename, line, column - token.length)));
                         token = "";
                         pos--;
                         updatepos = false;
@@ -439,12 +435,10 @@ export class Lexer {
                     break;
 
                 case 72: // binary int literal
-                    if ("01".indexOf(ch) !== -1) {
+                    if ("01_".indexOf(ch) !== -1) {
                         token = token.concat(ch);
-                    } else if (ch == "_") {
-                        // skip underscores
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
-                        this.tokens.push(new Token(parseInt(token, 2).toString(), "int", new SourcePos(filename, line, column - token.length)));
+                        this.tokens.push(new Token(parseInt(token.replace(/_/g, ""), 2).toString(), "int", new SourcePos(filename, line, column - token.length)));
                         token = "";
                         pos--;
                         updatepos = false;
@@ -456,12 +450,10 @@ export class Lexer {
                     break;
 
                 case 8: // decimal
-                    if ("0123456789".indexOf(ch) !== -1) {
+                    if ("0123456789_".indexOf(ch) !== -1) {
                         token = token.concat(ch);
-                    } else if (ch == "_") {
-                        // skip underscores
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
-                        this.tokens.push(new Token(token, "decimal", new SourcePos(filename, line, column - token.length)));
+                        this.tokens.push(new Token(token.replace(/_/g, ""), "decimal", new SourcePos(filename, line, column - token.length)));
                         token = "";
                         pos--;
                         updatepos = false;
