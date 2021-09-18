@@ -14,6 +14,14 @@ public class BindNative {
             case "atan": bindNative(env, new FuncAtan(), nativeAlias); break;
             case "atan2": bindNative(env, new FuncAtan2(), nativeAlias); break;
             case "bind_native": bindNative(env, new FuncBindNative(), nativeAlias); break;
+            case "bit_and": bindNative(env, new FuncBitAnd(), nativeAlias); break;
+            case "bit_or": bindNative(env, new FuncBitOr(), nativeAlias); break;
+            case "bit_not": bindNative(env, new FuncBitNot(), nativeAlias); break;
+            case "bit_xor": bindNative(env, new FuncBitXor(), nativeAlias); break;
+            case "bit_rotate_left": bindNative(env, new FuncBitRotateLeft(), nativeAlias); break;
+            case "bit_rotate_right": bindNative(env, new FuncBitRotateRight(), nativeAlias); break;
+            case "bit_shift_left": bindNative(env, new FuncBitShiftLeft(), nativeAlias); break;
+            case "bit_shift_right": bindNative(env, new FuncBitShiftRight(), nativeAlias); break;
             case "body": bindNative(env, new FuncBody(), nativeAlias); break;
             case "boolean": bindNative(env, new FuncBoolean(), nativeAlias); break;
             case "ceiling": bindNative(env, new FuncCeiling(), nativeAlias); break;
