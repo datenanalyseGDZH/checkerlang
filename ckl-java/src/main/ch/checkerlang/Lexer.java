@@ -459,6 +459,8 @@ public class Lexer {
                     if (ch == '.') {
                         token.append(ch);
                         state = 8;
+                    } else if (ch == '_') {
+                        // skip underscores
                     } else if ("0123456789".indexOf(ch) != -1) {
                         token.append(ch);
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) != -1) {
@@ -475,6 +477,8 @@ public class Lexer {
                 case 8: // decimal
                     if ("0123456789".indexOf(ch) != -1) {
                         token.append(ch);
+                    } else if (ch == '_') {
+                        // skip underscores
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) != -1) {
                         tokens.add(new Token(token.toString(), TokenType.Decimal, new SourcePos(filename, line, column - token.length())));
                         token = new StringBuilder();

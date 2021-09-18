@@ -568,6 +568,10 @@ namespace CheckerLang
                             token.Append(ch);
                             state = 8;
                         }
+                        else if (ch == '_')
+                        {
+                            // skip underscores
+                        }
                         else if ("0123456789".IndexOf(ch) != -1)
                         {
                             token.Append(ch);
@@ -590,6 +594,10 @@ namespace CheckerLang
                         if ("0123456789".IndexOf(ch) != -1)
                         {
                             token.Append(ch);
+                        }
+                        else if (ch == '_')
+                        {
+                            // skip underscores
                         }
                         else if ("()[]<>=! \t\n\r+-*/%,;#".IndexOf(ch) != -1)
                         {

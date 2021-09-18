@@ -390,6 +390,8 @@ export class Lexer {
                     if (ch === '.') {
                         token = token.concat(ch);
                         state = 8;
+                    } else if (ch == '_') {
+                        // skip underscores
                     } else if ("0123456789".indexOf(ch) !== -1) {
                         token = token.concat(ch);
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
@@ -407,6 +409,8 @@ export class Lexer {
                 case 8: // decimal
                     if ("0123456789".indexOf(ch) !== -1) {
                         token = token.concat(ch);
+                    } else if (ch == "_") {
+                        // skip underscores
                     } else if ("()[]<>=! \t\n\r+-*/%,;#".indexOf(ch) !== -1) {
                         this.tokens.push(new Token(token, "decimal", new SourcePos(filename, line, column - token.length)));
                         token = "";
