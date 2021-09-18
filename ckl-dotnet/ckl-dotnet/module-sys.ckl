@@ -18,8 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-def checkerlang_version = "3.4.10";
+def checkerlang_version = "3.5.0";
 def checkerlang_platform = "dotnet";
 
-def checkerlang_modules = ["Core", "Date", "IO", "List", "Math", "OS", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
+def checkerlang_modules = ["Bitwise", "Core", "Date", "IO", "List", "Math", "OS", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
 

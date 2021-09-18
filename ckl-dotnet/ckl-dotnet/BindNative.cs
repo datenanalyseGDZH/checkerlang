@@ -17,6 +17,14 @@ namespace CheckerLang
                 case "atan": BindNativeFunc(env, new FuncAtan(), nativeAlias); break;
                 case "atan2": BindNativeFunc(env, new FuncAtan2(), nativeAlias); break;
                 case "bind_native": BindNativeFunc(env, new FuncBindNative(), nativeAlias); break;
+                case "bit_and": BindNativeFunc(env, new FuncBitAnd(), nativeAlias); break;
+                case "bit_or": BindNativeFunc(env, new FuncBitOr(), nativeAlias); break;
+                case "bit_not": BindNativeFunc(env, new FuncBitNot(), nativeAlias); break;
+                case "bit_xor": BindNativeFunc(env, new FuncBitXor(), nativeAlias); break;
+                case "bit_rotate_left": BindNativeFunc(env, new FuncBitRotateLeft(), nativeAlias); break;
+                case "bit_rotate_right": BindNativeFunc(env, new FuncBitRotateRight(), nativeAlias); break;
+                case "bit_shift_left": BindNativeFunc(env, new FuncBitShiftLeft(), nativeAlias); break;
+                case "bit_shift_right": BindNativeFunc(env, new FuncBitShiftRight(), nativeAlias); break;
                 case "body": BindNativeFunc(env, new FuncBody(), nativeAlias); break;
                 case "boolean": BindNativeFunc(env, new FuncBoolean(), nativeAlias); break;
                 case "ceiling": BindNativeFunc(env, new FuncCeiling(), nativeAlias); break;

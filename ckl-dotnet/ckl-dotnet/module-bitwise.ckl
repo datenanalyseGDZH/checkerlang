@@ -18,27 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require Sys unqualified;
-require Bitwise unqualified;
-require Core unqualified;
-require Date unqualified;
-require List unqualified;
-require Math unqualified;
-require OS unqualified;
-require Predicate unqualified;
-require Random unqualified;
-require IO unqualified;
-require Set unqualified;
-require Stat unqualified;
-require String unqualified;
-require Type unqualified;
-
-require String import [
-    starts_with as str_starts_with,
-    ends_with as str_ends_with,
-    contains as str_contains,
-    find as str_find,
-    find_last as str_find_last,
-    matches as str_matches,
-    trim as str_trim
-];
+bind_native("bit_and", "bit_and_32");
+bind_native("bit_or", "bit_or_32");
+bind_native("bit_not", "bit_not_32");
+bind_native("bit_xor", "bit_xor_32");
+bind_native("bit_rotate_left", "bit_rotate_left_32");
+bind_native("bit_rotate_right", "bit_rotate_right_32");
+bind_native("bit_shift_left", "bit_shift_left");
+bind_native("bit_shift_right", "bit_shift_right");
