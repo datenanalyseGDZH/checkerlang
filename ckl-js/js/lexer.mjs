@@ -358,10 +358,24 @@ export class Lexer {
                     } else if (ch == 't') {
                         token = token.concat('\t');
                         state = 4;
+                    } else if (ch == 'x') {
+                        state = 411;
                     } else {
                         token = token.concat(ch);
                         state = 4;
                     }
+                    break;
+
+                case 411: // hex num first digit
+                    tempbuf = ch;
+                    state = 412;
+                    break;
+
+                case 412: // hex num second digit
+                    tempbuf = tempbuf.concat(ch);
+                    token = token.concat(String.fromCharCode(parseInt(tempbuf, 16)));
+                    tempbuf = "";
+                    state = 4;
                     break;
 
                 case 5: // check for pattern

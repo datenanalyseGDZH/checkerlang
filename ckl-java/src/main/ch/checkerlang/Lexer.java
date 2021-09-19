@@ -428,10 +428,23 @@ public class Lexer {
                     } else if (ch == 't') {
                         token.append('\t');
                         state = 4;
+                    } else if (ch == 'x') {
+                        state = 411;
                     } else {
                         token.append(ch);
                         state = 4;
                     }
+
+                    break;
+                case 411:
+                    tempbuf = Character.toString(ch);
+                    state = 412;
+
+                    break;
+                case 412:
+                    tempbuf += Character.toString(ch);
+                    token.append((char) Integer.parseInt(tempbuf, 16));
+                    state = 4;
 
                     break;
                 case 5: // check for pattern

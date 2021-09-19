@@ -531,10 +531,23 @@ namespace CheckerLang
                         } else if (ch == 't') {
                             token.Append('\t');
                             state = 4;
+                        } else if (ch == 'x') {
+                            state = 411;
                         } else {
                             token.Append(ch);
                             state = 4;
                         }
+
+                        break;
+                    case 411:
+                        tempbuf = ch.ToString();
+                        state = 412;
+
+                        break;
+                    case 412:
+                        tempbuf += ch.ToString();
+                        token.Append(Char.ConvertFromUtf32(Convert.ToInt32(tempbuf, 16)));
+                        state = 4;
 
                         break;
                     case 5: // check for pattern
