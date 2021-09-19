@@ -28,6 +28,7 @@ namespace CheckerLang
                 case "body": BindNativeFunc(env, new FuncBody(), nativeAlias); break;
                 case "boolean": BindNativeFunc(env, new FuncBoolean(), nativeAlias); break;
                 case "ceiling": BindNativeFunc(env, new FuncCeiling(), nativeAlias); break;
+                case "chr": BindNativeFunc(env, new FuncChr(), nativeAlias); break;
                 case "close": BindNativeFunc(env, new FuncClose(), nativeAlias); break;
                 case "compare": BindNativeFunc(env, new FuncCompare(), nativeAlias); break;
                 case "contains": BindNativeFunc(env, new FuncContains(), nativeAlias); break;
@@ -83,6 +84,7 @@ namespace CheckerLang
                 case "mul": BindNativeFunc(env, new FuncMul(), nativeAlias); break;
                 case "not_equals": BindNativeFunc(env, new FuncNotEquals(), nativeAlias); break;
                 case "object": BindNativeFunc(env, new FuncObject(), nativeAlias); break;
+                case "ord": BindNativeFunc(env, new FuncOrd(), nativeAlias); break;
                 case "parse": BindNativeFunc(env, new FuncParse(), nativeAlias); break;
                 case "parse_date": BindNativeFunc(env, new FuncParseDate(), nativeAlias); break;
                 case "parse_json": BindNativeFunc(env, new FuncParseJson(), nativeAlias); break;

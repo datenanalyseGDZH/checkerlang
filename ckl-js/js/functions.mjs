@@ -199,6 +199,7 @@ const bind_native = function(environment, native, alias = null) {
         case "body": bind_native_fun(environment, new FuncBody(), alias); break;
         case "boolean": bind_native_fun(environment, new FuncBoolean(), alias); break;
         case "ceiling": bind_native_fun(environment, new FuncCeiling(), alias); break;
+        case "chr": bind_native_fun(environment, new FuncChr(), alias); break;
         case "close": bind_native_fun(environment, new FuncClose(), alias); break;
         case "compare": bind_native_fun(environment, new FuncCompare(), alias); break;
         case "contains": bind_native_fun(environment, new FuncContains(), alias); break;
@@ -254,6 +255,7 @@ const bind_native = function(environment, native, alias = null) {
         case "mul": bind_native_fun(environment, new FuncMul(), alias); break;
         case "not_equals": bind_native_fun(environment, new FuncNotEquals(), alias); break;
         case "object": bind_native_fun(environment, new FuncObject(), alias); break;
+        case "ord": bind_native_fun(environment, new FuncOrd(), alias); break;
         case "parse": bind_native_fun(environment, new FuncParse(), alias); break;
         case "parse_date": bind_native_fun(environment, new FuncParseDate(), alias); break;
         case "parse_json": bind_native_fun(environment, new FuncParseJson(), alias); break;
@@ -777,6 +779,27 @@ export class FuncCeiling extends ValueFunc {
     execute(args, environment, pos) {
         if (args.isNull("x")) return ValueNull.NULL;
         return new ValueDecimal(Math.ceil(args.getNumerical("x").value));
+    }
+}
+
+export class FuncChr extends ValueFunc {
+    constructor() {
+        super("chr");
+        this.info = "chr(n)\r\n" +
+                "\r\n" +
+                "Returns a single character string for the code point integer n.\r\n" +
+                "\r\n" +
+                ": chr(97) ==> 'a'\r\n" +
+                ": chr(32) ==> ' '\r\n";
+    }
+
+    getArgNames() {
+        return ["n"];
+    }
+
+    execute(args, environment, pos) {
+        if (args.isNull("n")) return ValueNull.NULL;
+        return new ValueString(String.fromCodePoint(args.getInt("n").value));
     }
 }
 
@@ -2362,6 +2385,27 @@ export class FuncObject extends ValueFunc {
     execute(args, environment, pos) {
         if (!args.hasArg("obj")) return new ValueObject();
         return args.getAsObject("obj");
+    }
+}
+
+export class FuncOrd extends ValueFunc {
+    constructor() {
+        super("ord");
+        this.info = "ord(ch)\r\n" +
+                "\r\n" +
+                "Returns the code point integer of the character ch.\r\n" +
+                "\r\n" +
+                ": ord('a') ==> 97\r\n" +
+                ": ord(' ') ==> 32\r\n";
+    }
+
+    getArgNames() {
+        return ["ch"];
+    }
+
+    execute(args, environment, pos) {
+        if (args.isNull("ch")) return ValueNull.NULL;
+        return new ValueInt(args.getString("ch").value.charCodeAt(0));
     }
 }
 

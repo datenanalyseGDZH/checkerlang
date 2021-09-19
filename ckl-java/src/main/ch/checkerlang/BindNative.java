@@ -25,6 +25,7 @@ public class BindNative {
             case "body": bindNative(env, new FuncBody(), nativeAlias); break;
             case "boolean": bindNative(env, new FuncBoolean(), nativeAlias); break;
             case "ceiling": bindNative(env, new FuncCeiling(), nativeAlias); break;
+            case "chr": bindNative(env, new FuncChr(), nativeAlias); break;
             case "close": bindNative(env, new FuncClose(), nativeAlias); break;
             case "compare": bindNative(env, new FuncCompare(), nativeAlias); break;
             case "contains": bindNative(env, new FuncContains(), nativeAlias); break;
@@ -80,6 +81,7 @@ public class BindNative {
             case "mul": bindNative(env, new FuncMul(), nativeAlias); break;
             case "not_equals": bindNative(env, new FuncNotEquals(), nativeAlias); break;
             case "object": bindNative(env, new FuncObject(), nativeAlias); break;
+            case "ord": bindNative(env, new FuncOrd(), nativeAlias); break;
             case "parse": bindNative(env, new FuncParse(), nativeAlias); break;
             case "parse_date": bindNative(env, new FuncParseDate(), nativeAlias); break;
             case "parse_json": bindNative(env, new FuncParseJson(), nativeAlias); break;
