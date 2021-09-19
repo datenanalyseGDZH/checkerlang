@@ -47,6 +47,6 @@ public class FuncChr extends FuncBase {
 
     public Value execute(Args args, Environment environment, SourcePos pos) {
         if (args.isNull("n")) return ValueNull.NULL;
-        return new ValueString(Character.toString((char) args.getInt("n").getValue()));
+        return new ValueString(Character.toString((int) args.getInt("n").getValue()));
     }
 }
