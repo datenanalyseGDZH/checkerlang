@@ -100,6 +100,7 @@ rl.on("line", function(data) {
         buffer = "";
     } else {
         buffer = buffer.concat(data.toString('utf8'));
+        if (buffer === "exit") process.exit(0);
         try {
             Parser.parseScript(buffer, "{repl}");
             interpretStatement(buffer);
