@@ -1,0 +1,77 @@
+# advent of code day 5
+# https://adventofcode.com/2015/day/5
+
+require IO import [read_file, println];
+require List import [filter];
+
+def is_nice_part1(s) do
+    all([
+        vowel_count(s) >= 3,
+        has_adjacent_duplicate(s),
+        not contains_one_of(s, ["ab", "cd", "pq", "xy"])
+    ]);
+end;
+
+def vowel_count(s) do
+    def result = 0;
+    for ch in s do
+        if find("aeiou", ch) != -1 then result += 1;
+    end;
+    return result;
+end;
+
+def has_adjacent_duplicate(s) do
+    for [a, b] in pairs(s) do
+        if a == b then return TRUE;
+    end;
+    return FALSE;
+end;
+
+def contains_one_of(s, parts) do
+    for part in parts do
+        if find(s, part) != -1 then return TRUE;
+    end;
+    return FALSE;
+end;
+
+read_file("aoc2015-day5-input.txt") !>
+trim() !>
+lines() !>
+filter(is_nice_part1) !>
+length() !>
+sprintf(fmt = "part1: {0}") !>
+println();
+
+
+def is_nice_part2(s) do
+    all([
+        has_non_overlapping_pairs(s),
+        has_distance_one_repeat(s)
+    ]);
+end;
+
+def has_non_overlapping_pairs(s) do
+    for i in range(length(s) - 3) do
+        def pair = s !> substr(i, i + 2);
+        if find(s, pair, start = i + 2) != -1 then return TRUE;
+    end;
+    return FALSE;
+end;
+
+def has_distance_one_repeat(s) do
+    for i in range(length(s) - 2) do
+        def ch1 = s !> substr(i, i + 1);
+        def ch2 = s !> substr(i+ 2, i + 3);
+        if ch1 == ch2 then return TRUE;
+    end;
+    return FALSE;
+end;
+
+read_file("aoc2015-day5-input.txt") !>
+trim() !>
+lines() !>
+filter(is_nice_part2) !>
+length() !>
+sprintf(fmt = "part2: {0}") !>
+println();
+
