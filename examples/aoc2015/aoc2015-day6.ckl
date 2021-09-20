@@ -1,0 +1,101 @@
+# advent of code day 6
+# https://adventofcode.com/2015/day/6
+
+require IO import [read_file, println];
+
+# example commands:
+#
+# toggle 461,550 through 564,900
+# turn off 812,389 through 865,874
+# turn on 599,989 through 806,993
+
+def idx(x, y) x + 1_000 * y;
+
+def parse_range(command) do
+    def [a, _, b] = command !> split(" ");
+    a = [int(x) for x in a !> split(",")];
+    b = [int(x) for x in b !> split(",")];
+    return <*left = a[0], top = a[1], right = b[0], bottom = b[1]*>;
+end;
+
+def apply_commands_part1(lines) do
+    def grid = [0 for _ in range(1_000_000)];
+    for [linenr, line] in enumerate(lines) do
+        println(linenr + ": " + line);
+        if line !> starts_with("toggle ") then do
+            def range = parse_range(line !> substr(length("toggle ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    def index = idx(i, j);
+                    grid[index] = (grid[index] + 1) % 2;
+                end;
+            end;
+        end elif line !> starts_with("turn off ") then do
+            def range = parse_range(line !> substr(length("turn off ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    grid[idx(i, j)] = 0;
+                end;
+            end;
+        end elif line !> starts_with("turn on ") then do
+            def range = parse_range(line !> substr(length("turn on ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    grid[idx(i, j)] = 1;
+                end;
+            end;
+        end;
+    end;
+    return grid;
+end;
+
+read_file("aoc2015-day6-input.txt") !>
+trim() !>
+lines() !>
+apply_commands_part1() !>
+sum() !>
+sprintf(fmt = "part1: {0}") !>
+println();
+
+
+def apply_commands_part2(lines) do
+    def grid = [0 for _ in range(1_000_000)];
+    for [linenr, line] in enumerate(lines) do
+        println(linenr + ": " + line);
+        if line !> starts_with("toggle ") then do
+            def range = parse_range(line !> substr(length("toggle ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    def index = idx(i, j);
+                    grid[index] += 2;
+                end;
+            end;
+        end elif line !> starts_with("turn off ") then do
+            def range = parse_range(line !> substr(length("turn off ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    def index = idx(i, j);
+                    grid[index] = max(0, grid[index] - 1);
+                end;
+            end;
+        end elif line !> starts_with("turn on ") then do
+            def range = parse_range(line !> substr(length("turn on ")));
+            for i in interval(range->left, range->right) do
+                for j in interval(range->top, range->bottom) do
+                    def index = idx(i, j);
+                    grid[index] += 1;
+                end;
+            end;
+        end;
+    end;
+    return grid;
+end;
+
+read_file("aoc2015-day6-input.txt") !>
+trim() !>
+lines() !>
+apply_commands_part2() !>
+sum() !>
+sprintf(fmt = "part2: {0}") !>
+println();
+
