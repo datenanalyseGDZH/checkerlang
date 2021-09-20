@@ -1,6 +1,8 @@
 require IO unqualified;
 require OS unqualified;
 
+def verbosity = "q";
+
 println(now() + " ckl-dotnet build");
 println(now() + " CKL " + checkerlang_version + "-" + checkerlang_platform);
 
@@ -11,19 +13,22 @@ end;
 
 dotnet(["build", 
         "-c", "Release", 
-        "--nologo"], 
+        "--nologo",
+        "--verbosity", verbosity], 
         work_dir = "ckl-dotnet");
 
 dotnet(["test", 
         "-c", "Release", 
-        "--nologo"], 
+        "--nologo",
+        "--verbosity", verbosity], 
         work_dir = "ckl-dotnet-tests");
 
 dotnet(["publish", 
         "-c", "Release", 
         "--output", "../dist", 
         "--self-contained", 
-        "--nologo"], 
+        "--nologo",
+        "--verbosity", verbosity], 
         work_dir = "ckl-dotnet");
 
 dotnet(["publish",
@@ -33,7 +38,8 @@ dotnet(["publish",
         "--runtime", "win-x64",
         "-p:PublishSingleFile=true",
         "-p:PublishTrimmed=true",
-        "-c", "Release"],
+        "-c", "Release",
+        "--verbosity", verbosity],
         work_dir = "ckl-run");
 
 dotnet(["publish",
@@ -43,7 +49,8 @@ dotnet(["publish",
         "--runtime", "win-x64",
         "-p:PublishSingleFile=true",
         "-p:PublishTrimmed=true",
-        "-c", "Release"],
+        "-c", "Release",
+        "--verbosity", verbosity],
         work_dir = "ckl-repl");
 
 println(now() + " Done");
