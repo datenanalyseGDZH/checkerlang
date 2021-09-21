@@ -50,7 +50,15 @@ public class FuncFileDelete extends FuncBase {
     public Value execute(Args args, Environment environment, SourcePos pos) {
         String filename = args.getString("filename").getValue();
         if (!new File(filename).delete()) {
-            throw new ControlErrorException("Cannot delete file " + filename, pos);
+            // if delete fails: wait a little and try again
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            if (!new File(filename).delete()) {
+                throw new ControlErrorException("Cannot delete file " + filename, pos);
+            }
         }
         return ValueNull.NULL;
     }
