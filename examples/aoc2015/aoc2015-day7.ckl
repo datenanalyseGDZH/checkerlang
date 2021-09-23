@@ -1,0 +1,55 @@
+# advent of code day 7
+# https://adventofcode.com/2015/day/7
+
+require IO import [read_file, println];
+require List import [map_list];
+require Bitwise unqualified;
+
+def read_spec(filename) do
+    def result = <<<>>>;
+    read_file(filename) !>
+    trim() !>
+    lines() !>
+    map_list(fn(line) do
+        def [src, wire] = line !> split(" -> ");
+        if src !> contains(" AND ") then result[wire] = ["AND"] + (src !> split(" AND "))
+        elif src !> contains(" OR ") then result[wire] = ["OR"] + (src !> split(" OR "))
+        elif src !> contains(" LSHIFT ") then result[wire] = ["LSHIFT"] + (src !> split(" LSHIFT "))
+        elif src !> contains(" RSHIFT ") then result[wire] = ["RSHIFT"] + (src !> split(" RSHIFT "))
+        elif src !> starts_with("NOT ") then result[wire] = ["NOT", src !> substr(length("NOT "))]
+        elif src !> matches(//[0-9]+//) then result[wire] = ["VALUE", int(src)]
+        else result[wire] = ["WIRE", src];
+     end);
+    result;
+end;
+
+def cache = <<<>>>;
+
+def resolve_wire(spec, wire) do
+    if wire !> matches(//[0-9]+//) then return int(wire);
+    if wire in cache then return cache[wire];
+    def node = spec[wire];
+    def result = NULL;
+    if node[0] == "AND" then result = bit_and(resolve_wire(spec, node[1]), resolve_wire(spec, node[2]))
+    elif node[0] == "OR" then result = bit_or(resolve_wire(spec, node[1]), resolve_wire(spec, node[2]))
+    elif node[0] == "NOT" then result = bit_and(bit_not(resolve_wire(spec, node[1])), 0xffff)
+    elif node[0] == "LSHIFT" then result = bit_and(bit_shift_left(resolve_wire(spec, node[1]), int(node[2])), 0xffff)
+    elif node[0] == "RSHIFT" then result = bit_and(bit_shift_right(resolve_wire(spec, node[1]), int(node[2])), 0xffff)
+    elif node[0] == "WIRE" then result = resolve_wire(spec, node[1])
+    elif node[0] == "VALUE" then result = node[1]
+    else error "unknown node type " + node;
+    cache[wire] = result;
+    return result;
+end;
+
+def spec = read_spec("aoc2015-day7-input.txt");
+
+def value = resolve_wire(spec, "a");
+
+println("part1: " + value);
+
+spec["b"] = ["VALUE", value];
+cache = <<<>>>;
+
+println("part2: " + resolve_wire(spec, "a"));
+
