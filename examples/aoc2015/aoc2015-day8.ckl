@@ -1,0 +1,52 @@
+# advent of code day 8
+# https://adventofcode.com/2015/day/8
+
+require IO import [read_file, println];
+require List import [map_list, reduce];
+
+def str_chars(s) do
+    def s = s !> substr(1, -1);
+    def result = 0;
+    def idx = 0;
+    def lastidx = length(s);
+    def escape = FALSE;
+    while idx < lastidx do
+        def ch = s[idx];
+        if not escape and ch == "\\" then escape = TRUE
+        elif not escape then result += 1
+        else do
+            if ch == "\\" then result += 1
+            elif ch == '"' then result += 1
+            elif ch == "x" then do result += 1; idx += 2; end
+            else result += 1;
+            escape = FALSE;
+        end;
+        idx += 1;
+    end;
+    return result;
+end;
+
+read_file("aoc2015-day8-input.txt") !>
+trim() !>
+lines() !>
+map_list(fn(line) do
+    [length(line), str_chars(line), line]
+end) !>
+reduce(fn(partial_sum, tuple) [partial_sum[0] + tuple[0], partial_sum[1] + tuple[1]]) !>
+(fn(tuple) println("part1: " + (tuple[0] - tuple[1])))();
+
+
+def encode_str(s) do
+    def result = s !> replace('\\', '\\\\') !> replace('"', '\\"');
+    return '"' + result + '"';
+end;
+
+read_file("aoc2015-day8-input.txt") !>
+trim() !>
+lines() !>
+map_list(fn(line) do
+    [length(line), length(encode_str(line))]
+end) !>
+reduce(fn(partial_sum, tuple) [partial_sum[0] + tuple[0], partial_sum[1] + tuple[1]]) !>
+(fn(tuple) println("part2: " + (tuple[1] - tuple[0])))();
+
