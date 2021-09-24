@@ -1,0 +1,48 @@
+# advent of code day 9
+# https://adventofcode.com/2015/day/9
+
+require IO import [read_file, println];
+
+def read_data(filename) do
+    def result = <**>;
+    for line in read_file(filename) !> trim() !> lines() do
+        def parts = line !> trim() !> words();
+        def from = parts[0];
+        def to = parts[2];
+        def distance = int(parts[4]);
+        def destinations = result[from, <**>];
+        destinations[to] = distance;
+        result[from] = destinations;
+        destinations = result[to, <**>];
+        destinations[from] = distance;
+        result[to] = destinations;
+    end;
+    return result;
+end;
+
+def find_best_route(network, type = "shortest") do
+    def route_length = length(network);
+    def best_cost = if type == "shortest" then 9999999 else 0;
+    def find_route(network, current, route, cost) do
+        if length(route) == route_length then do
+            if (type == "shortest" and cost < best_cost) or (type == "longest" and cost > best_cost) then do
+                best_cost = cost;
+                println(best_cost + " " + string(route));
+            end;
+            return;
+        end;
+        for next in keys network[current] do
+            if next in route then continue;
+            find_route(network, next, route + [next], cost + network[current][next]);
+        end;
+    end;
+    for first in keys network do
+        find_route(network, first, [first], 0);
+    end;
+    return best_cost;
+end;
+
+def network = read_data("aoc2015-day9-input.txt");
+
+println("part1: " + find_best_route(network, "shortest"));
+println("part2: " + find_best_route(network, "longest"));
