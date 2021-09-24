@@ -1,0 +1,22 @@
+# advent of code day 10
+# https://adventofcode.com/2015/day/10
+
+require IO import [read_file, println];
+require List unqualified;
+
+def say(s) do
+    def groups = s !> split("") !> grouped();
+    return [[length(g), g[0]] for g in groups] !> flatten() !> join("");
+end;
+
+def sayn(s, n) do
+    for _ in range(n) do
+        s = say(s);
+    end;
+    return s;
+end;
+
+def result1 = sayn("3113322113", 40);
+println("part1: " + length(result1));
+println("part2: " + length(sayn(result1, 10)));
+
