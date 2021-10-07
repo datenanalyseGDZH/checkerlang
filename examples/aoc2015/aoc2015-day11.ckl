@@ -1,0 +1,64 @@
+# advent of code day 11
+# https://adventofcode.com/2015/day/11
+
+require IO import [println];
+require String import [chr, ord];
+
+def a = ord("a");
+
+def next(ch) do
+    return chr(a + (ord(ch) - a + 1) % 26);
+end;
+
+def has_three_straight(pw) do
+    for i in range(length(pw) - 2) do
+        if ord(pw[i]) + 1 == ord(pw[i+1]) == ord(pw[i+2]) -1 then return TRUE;
+    end;
+    return FALSE;
+end;
+
+def has_invalid_letters(pw) do
+    return "i" in pw or "o" in pw or "l" in pw;
+end;
+
+def has_two_distinct_pairs(pw) do
+    def pairs = <<>>;
+    def i = 0;
+    while i < length(pw) - 1 do
+        if pw[i] == pw[i + 1] then do
+            pairs !> append(pw !> substr(i, i + 2));
+            i += 1;
+        end;
+        i += 1;
+    end;
+    return length(pairs) > 1;
+end;
+
+def is_valid_pw(pw) do
+    return has_three_straight(pw) and 
+           not has_invalid_letters(pw) and 
+           has_two_distinct_pairs(pw);
+end;
+
+def next_candidate_pw(pw) do
+    def result = "" + pw; # copy string
+    for i in [7, 6, 5, 4, 3, 2, 1, 0] do
+        def ch = next(pw[i]);
+        result[i] = ch;
+        if ch != "a" then break;
+    end;
+    return result;
+end;
+
+def next_pw(pw) do
+    def result = next_candidate_pw(pw);
+    while not is_valid_pw(result) do
+        result = next_candidate_pw(result);
+    end;
+    return result;
+end;
+
+def result = next_pw("cqjxjnds");
+println("Part1: " + result);
+println("Part2: " + next_pw(result));
+
