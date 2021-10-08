@@ -1,0 +1,24 @@
+# advent of code day 12
+# https://adventofcode.com/2015/day/12
+
+require IO import [println, read_file];
+
+def json = parse_json(read_file("aoc2015-day12-input.txt"));
+
+def sum_numbers(json) do
+    if is_numeric(json) then return json
+    if is_list(json) then return sum([sum_numbers(j) for j in json])
+    if is_map(json) then return sum([sum_numbers(j) for j in values json])
+    else return 0;
+end;
+
+println("Part1: " + sum_numbers(json));
+
+def sum_numbers_without_red(json) do
+    if is_numeric(json) then return json
+    if is_list(json) then return sum([sum_numbers_without_red(j) for j in json])
+    if is_map(json) and "red" not in list(json) then return sum([sum_numbers_without_red(j) for j in values json])
+    else return 0;
+end;
+
+println("Part2: " + sum_numbers_without_red(json));
