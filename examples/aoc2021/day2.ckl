@@ -1,0 +1,45 @@
+require IO import [read_file];
+require List import [map_list];
+
+def parse_command(line) do
+    def [type, value] = line !> split(" ");
+    return <*type=type, value=int(value)*>;
+end;
+
+def commands = read_file("day2-input.txt") !> trim() !> lines() !> map_list(parse_command);
+
+def position = <*
+    horizontal=0, 
+    depth=0, 
+    update(self, command) do
+        if command->type == "forward" then self->horizontal += command->value 
+        if command->type == "down" then self->depth += command->value
+        if command->type == "up" then self->depth -= command->value
+        else error "unknown command " + command->type;
+    end
+*>;
+
+for command in commands do
+    position->update(command);
+end;
+
+println(position->horizontal * position->depth);
+
+def position = <*
+    horizontal=0, 
+    depth=0,
+    aim=0,
+    update(self, command) do
+        if command->type == "forward" then do self->horizontal += command->value; self->depth += self->aim * command->value; end
+        if command->type == "down" then self->aim += command->value
+        if command->type == "up" then self->aim -= command->value
+        else error "unknown command " + command->type;
+    end
+*>;
+
+for command in commands do
+    position->update(command);
+end;
+
+println(position->horizontal * position->depth);
+
