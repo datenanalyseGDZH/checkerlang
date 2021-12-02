@@ -1,0 +1,17 @@
+require IO import [read_file];
+require List import [map_list];
+
+def data = read_file("day1-input.txt") !> trim() !> lines() !> map_list(fn(line) int(line));
+
+def count_increases(data) do
+    sum([1 for idx in range(length(data) - 1) if data[idx] < data[idx + 1]]);
+end;
+
+println(count_increases(data));
+
+def moving_window_tuples(data, size) do
+    [sublist(data, idx, idx + size) for idx in range(length(data) - size + 1)];
+end;
+
+println(moving_window_tuples(data, 3) !> map_list(fn(tuple) sum(tuple)) !> count_increases());
+
