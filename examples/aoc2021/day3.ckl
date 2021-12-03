@@ -1,0 +1,44 @@
+# https://adventofcode.com/2021/day/3
+
+require IO import [read_file];
+require List import [map_list, reduce];
+
+def data = read_file("day3-input.txt") !> trim() !> lines() !> map_list(fn(line) [int(bit) for bit in line !> split("")]);
+def count = length(data);
+
+def add_list(a, b) do
+    [a[i] + b[i] for i in range(length(a))];
+end;
+
+def summed = reduce(data, add_list);
+
+def gamma = int("0b" + [if x > count/2 then "1" else "0" for x in summed] !> join(""));
+def epsilon = int("0b" + [if x < count/2 then "1" else "0" for x in summed] !> join(""));
+
+println(gamma * epsilon);
+
+def filter_most_common(data, bit) do
+    def count = length(data);
+    def summed = reduce(data, add_list);
+    def state = if summed[bit] >= (count - summed[bit]) then 1 else 0;
+    [value for value in data if value[bit] == state];
+end;
+
+def filter_least_common(data, bit) do
+    def count = length(data);
+    def summed = reduce(data, add_list);
+    def state = if summed[bit] < (count - summed[bit]) then 1 else 0;
+    [value for value in data if value[bit] == state];
+end;
+
+def filter_value(data, filter) do
+    for bit in range(12) do
+        if length(data) == 1 then return int("0b" + data[0] !> join(""));
+        data = filter(data, bit);
+    end;
+end;
+
+def oxygen_generator_rating = filter_value(data, filter_most_common);
+def co2_scrubbing_rating = filter_value(data, filter_least_common);
+println(oxygen_generator_rating * co2_scrubbing_rating);
+
