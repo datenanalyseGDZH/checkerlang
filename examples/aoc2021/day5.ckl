@@ -1,0 +1,81 @@
+# https://adventofcode.com/2021/day/5
+
+require IO import [read_file];
+require List import [map_list];
+
+def Point = <*
+    _init_(self, x, y) do
+        self->x = x;
+        self->y = y;
+    end
+*>;
+
+def Line = <*
+    _init_(self, x1, y1, x2, y2) do
+        self->x1 = x1;
+        self->y1 = y1;
+        self->x2 = x2;
+        self->y2 = y2;
+    end,
+    width(self) abs(self->x2 - self->x1) + 1,
+    height(self) abs(self->y2 - self->y1) + 1,
+    is_vertical(self) self->x1 == self->x2,
+    is_horizontal(self) self->y1 == self->y2,
+    is_orthogonal(self) self->is_horizontal() or self->is_vertical(),
+    is_diagonal(self) self->width() == self->height(),
+    points(self) do
+        if self->is_horizontal() then [new(Point, x, self->y1) for x in interval(min(self->x1, self->x2), max(self->x1, self->x2))]
+        if self->is_vertical() then [new(Point, self->x1, y) for y in interval(min(self->y1, self->y2), max(self->y1, self->y2))]
+        if self->is_diagonal() then [new(Point, self->x1 + sign(self->x2 - self->x1) * i, self->y1 + sign(self->y2 - self->y1) * i) for i in range(self->width())]
+    end
+*>;
+
+def new(obj, args...) do
+    def result = <*_proto_=obj*>;
+    if "_init_" in obj then result->_init_(...args...);
+    return result;
+end;
+
+def parse_line(line) do
+    def [a, b] = line !> split(" -> ");
+    a = a !> split(",");
+    b = b !> split(",");
+    return new(Line, int(a[0]), int(a[1]), int(b[0]), int(b[1]));
+end;
+
+def key(x, y) x + "," + y;
+
+def fill_grid_orthogonal(lines) do
+    def grid = <**>;
+    for line in lines do
+        if not line->is_orthogonal() then continue;
+        for point in line->points() do
+            grid[key(point->x, point->y), 0] += 1;
+        end;
+    end;
+    return grid;
+end;
+
+def count_points(grid, overlaps = 2) do
+    sum([1 for value in values grid if value >= overlaps]);
+end;
+
+def lines = read_file("day5-input.txt") !> trim() !> lines() !> map_list(parse_line);
+
+def grid = fill_grid_orthogonal(lines);
+println(count_points(grid));
+
+def fill_grid(lines) do
+    def grid = <**>;
+    for line in lines do
+        if not line->is_orthogonal() and not line->is_diagonal() then continue;
+        for point in line->points() do
+            grid[key(point->x, point->y), 0] += 1;
+        end;
+    end;
+    return grid;
+end;
+
+def grid = fill_grid(lines);
+println(count_points(grid));
+
