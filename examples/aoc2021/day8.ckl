@@ -1,0 +1,115 @@
+# https://adventofcode.com/2021/day/8
+
+require IO import [read_file];
+require List import [map_list];
+
+def correct = <<<
+    '0' => <<'a', 'b', 'c', 'e', 'f', 'g'>>,
+    '1' => <<'c', 'f'>>,
+    '2' => <<'a', 'c', 'd', 'e', 'g'>>,
+    '3' => <<'a', 'c', 'd', 'f', 'g'>>,
+    '4' => <<'b', 'c', 'd', 'f'>>,
+    '5' => <<'a', 'b', 'd', 'f', 'g'>>,
+    '6' => <<'a', 'b', 'd', 'e', 'f', 'g'>>,
+    '7' => <<'a', 'c', 'f'>>,
+    '8' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+    '9' => <<'a', 'b', 'c', 'd', 'f', 'g'>>
+>>>;
+
+def parse_line(line) do
+    def [unique, output] = line !> split(escape_pattern("|"));
+    unique = unique !> trim() !> split(" ");
+    output = output !> trim() !> split(" ");
+    return <*unique = unique, output = output*>;
+end;
+
+def data = read_file("day8-input.txt") !> trim() !> lines() !> map_list(parse_line);
+
+def count_simple_digits(data) do
+    data !>
+    map_list(fn(entry) sum([1 for s in entry->output if length(s) in [2, 3, 4, 7]])) !>
+    sum();
+end;
+
+println(count_simple_digits(data));
+
+def convert_pattern(mapping, pattern) do
+    def result = <<>>;
+    for p in pattern do
+        for [k, v] in entries mapping do
+            if p == v then result !> append(k);
+        end;
+    end;
+    return result;
+end;
+
+def convert_output(mapping, output) do
+    def result = "";
+    for pattern in output do
+        pattern = pattern !> split("");
+        def c = convert_pattern(mapping, pattern);
+        for [digit, pat] in entries correct do
+            if pat == c then result += digit;
+        end;
+    end;
+    return int(result);
+end;
+
+def solve_entry(entry) do
+    def mapping = <<<
+        'a' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'b' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'c' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'd' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'e' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'f' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>,
+        'g' => <<'a', 'b', 'c', 'd', 'e', 'f', 'g'>>
+    >>>;
+    def patterns = <<<>>>;
+    for pattern in entry->unique do
+        patterns[string(length(pattern))] = set(pattern !> split(""));
+    end;
+    mapping['a'] = patterns['3'] - patterns['2'];
+    mapping['c'] = patterns['2'];
+    mapping['f'] = patterns['2'];
+    mapping['b'] = patterns['4'] - patterns['2'];
+    mapping['d'] = patterns['4'] - patterns['2'];
+    mapping['e'] = mapping['e'] - mapping['a'] - mapping['b'] - mapping['c'];
+    mapping['g'] = mapping['e'] - mapping['a'] - mapping['b'] - mapping['c'];
+    for c in mapping['c'] do
+        for b in mapping['b'] do
+            for e in mapping['e'] do
+                def m = <<<
+                    'a' => list(mapping['a'])[0],
+                    'c' => c,
+                    'f' => list(mapping['c'] - <<c>>)[0],
+                    'b' => b,
+                    'd' => list(mapping['b'] - <<b>>)[0],
+                    'e' => e,
+                    'g' => list(mapping['g'] - <<e>>)[0]
+                >>>;
+                def digits = <<'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'>>;
+                for pattern in entry->unique do
+                    pattern = set(pattern !> split(""));
+                    def converted = convert_pattern(m, pattern);
+                    for [digit, pattern] in entries correct do
+                        if pattern == converted then do
+                            digits = digits - <<digit>>;
+                        end;
+                    end;
+                    if digits == <<>> then do
+                        def output = convert_output(m, entry->output);
+                        return output;
+                    end;
+                end;
+            end;
+        end;
+    end;
+end;
+
+def sum_solutions(data) do
+    sum([solve_entry(entry) for entry in data]);
+end;
+
+println(sum_solutions(data));
+
