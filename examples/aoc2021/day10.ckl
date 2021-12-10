@@ -1,0 +1,65 @@
+# https://adventofcode.com/2021/day/10
+
+require IO import [read_file];
+require List import [last, reverse];
+
+def data = read_file("day10-input.txt") !> trim() !> lines();
+
+def get_corrupted_char(line) do
+    def matching = <<<"{" => "}", "[" => "]", "(" => ")", "<" => ">">>>;
+    def stack = [];
+    for ch in line do
+        if ch in "{([<" then stack !> append(ch)
+        else do
+            if ch <> matching[last(stack)] then return ch;
+            stack !> delete_at(length(stack) - 1);
+        end;
+    end;
+    return NULL;
+end;
+
+def get_error_score(data) do
+    def score = 0;
+    for line in data do
+        def ch = get_corrupted_char(line);
+        if ch == ')' then score += 3
+        if ch == ']' then score += 57
+        if ch == '}' then score += 1197
+        if ch == '>' then score += 25137;
+    end;
+    return score;
+end;
+
+println(get_error_score(data));
+
+def incomplete = [line for line in data if get_corrupted_char(line) == NULL];
+
+def get_autocomplete_chars(line) do
+    def matching = <<<"{" => "}", "[" => "]", "(" => ")", "<" => ">">>>;
+    def stack = [];
+    for ch in line do
+        if ch in "{([<" then stack !> append(ch)
+        elif ch == matching[last(stack)] then stack !> delete_at(length(stack) - 1)
+        else error "mismatch in " + line + " at " + ch;
+    end;
+    return [matching[ch] for ch in stack] !> reverse() !> join("");
+end;
+
+def get_autocomplete_score(chars) do
+    def score = 0;
+    for ch in chars do
+        if ch == ')' then score = 5 * score + 1
+        if ch == ']' then score = 5 * score + 2
+        if ch == '}' then score = 5 * score + 3
+        if ch == '>' then score = 5 * score + 4;
+    end;
+    return score;
+end;
+
+def get_autocomplete_winner(data) do
+    def list = [get_autocomplete_score(get_autocomplete_chars(line)) for line in data] !> sorted();
+    return list[length(list) / 2];
+end;
+
+println(get_autocomplete_winner(incomplete));
+
