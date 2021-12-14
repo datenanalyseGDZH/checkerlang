@@ -1,4 +1,4 @@
-# https://adventofcode.com/2021/day/13
+# https://adventofcode.com/2021/day/14
 
 require IO import [read_file];
 require List import [map_list];
@@ -54,12 +54,12 @@ def count_min_max(pairs, input) do
         if count < min_count then do min_count = count; min_ch = ch; end;
         if count > max_count then do max_count = count; max_ch = ch; end;
     end;
-    return [min_count, max_count, max_count - min_count, min_ch, max_ch];
+    return <*min=[min_ch, min_count], max=[max_ch, max_count], delta=max_count - min_count*>;
 end;
 
 def counts = count_min_max(steps(build_pairs(start), 10), start);
-println(counts[2]);
+println(counts->delta);
 
 def counts = count_min_max(steps(build_pairs(start), 40), start);
-println(counts[2]);
+println(counts->delta);
 
