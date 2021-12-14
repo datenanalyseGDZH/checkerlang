@@ -1,0 +1,65 @@
+# https://adventofcode.com/2021/day/13
+
+require IO import [read_file];
+require List import [map_list];
+
+def data = read_file("day14-input.txt") !> trim() !> lines();
+
+def start = data[0];
+def mapping = data !> sublist(2) !> map_list(fn(line) [trim(s) for s in split(line, " -> ")]) !> map();
+def keys = set(mapping);
+
+def build_pairs(input) do
+    def result = <<<>>>;
+    for i in range(length(input) - 1) do
+        def pair = substr(input, i, i + 2);
+        result[pair, 0] += 1;
+    end;
+    return result;
+end;
+
+def step(pairs) do
+    def result = <<<>>>;
+    for [pair, value] in entries pairs do
+        if pair in keys then do
+            def left = pair[0] + mapping[pair];
+            def right = mapping[pair] + pair[1];
+            result[left, 0] += value;
+            result[right, 0] += value;
+        end else do
+            result[pair, 0] += value;
+        end;
+    end;
+    return result;
+end;
+
+def steps(pairs, n) do
+    for i in range(n) do
+        pairs = step(pairs); 
+    end;
+    return pairs;
+end;
+
+def count_min_max(pairs, input) do
+    def counts = <<<>>>;
+    for [pair, value] in entries pairs do
+        counts[pair[0], 0] += value;
+    end;
+    counts[input[-1], 0] += 1;
+    def min_count = MAXINT;
+    def max_count = MININT;
+    def min_ch = NULL;
+    def max_ch = NULL;
+    for [ch, count] in entries counts do
+        if count < min_count then do min_count = count; min_ch = ch; end;
+        if count > max_count then do max_count = count; max_ch = ch; end;
+    end;
+    return [min_count, max_count, max_count - min_count, min_ch, max_ch];
+end;
+
+def counts = count_min_max(steps(build_pairs(start), 10), start);
+println(counts[2]);
+
+def counts = count_min_max(steps(build_pairs(start), 40), start);
+println(counts[2]);
+
