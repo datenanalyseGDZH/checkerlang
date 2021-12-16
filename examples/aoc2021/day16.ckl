@@ -1,0 +1,149 @@
+# https://adventofcode.com/2021/day/16
+
+require IO import [read_file];
+require List import [map_list, prod];
+
+def hex_to_bin(msg) do
+    def mapping = <<<
+        '0' => '0000',
+        '1' => '0001',
+        '2' => '0010',
+        '3' => '0011',
+        '4' => '0100',
+        '5' => '0101',
+        '6' => '0110',
+        '7' => '0111',
+        '8' => '1000',
+        '9' => '1001',
+        'A' => '1010',
+        'B' => '1011',
+        'C' => '1100',
+        'D' => '1101',
+        'E' => '1110',
+        'F' => '1111'
+    >>>;
+    msg !>
+    split("") !>
+    map_list(fn(ch) mapping[ch]) !>
+    join("");
+end;
+
+def Buffer = <*
+    _init_(self, msg) do
+        self->msg = msg;
+        self->index = 0;
+        self->length = length(msg);
+    end,
+
+    get_bits(self, bits) do
+        def result = substr(self->msg, self->index, self->index + bits);
+        self->index += bits;
+        return result;
+    end,
+
+    get_number(self, bits) do
+        return int("0b" + self->get_bits(bits));
+    end,
+
+    get_sub_buffer(self, length) do
+        return new(Buffer, self->get_bits(length));
+    end
+*>;
+
+def PacketLiteral = <*
+    _init_(self, version, value) do
+        self->version = version;
+        self->type = 4;
+        self->value = value;
+    end
+*>;
+
+def PacketOperator = <*
+    _init_(self, version, type) do
+        self->version = version;
+        self->type = type;
+        self->packets = [];
+    end,
+
+    add_sub_packet(self, packet) do
+        self->packets !> append(packet);
+    end
+*>;
+
+def parse_packet(buffer) do
+    def version = buffer->get_number(3);
+    def type = buffer->get_number(3);
+    if type == 4 then do
+        def value = 0;
+        def bit = buffer->get_number(1);
+        def number = buffer->get_number(4);
+        while bit == 1 do
+            value = value * 16 + number;
+            def bit = buffer->get_number(1);
+            def number = buffer->get_number(4);
+        end;
+        value = value * 16 + number;
+        return new(PacketLiteral, version, value);
+    end else do
+        def packet = new(PacketOperator, version, type);
+        def length_type = buffer->get_number(1);
+        if length_type == 0 then do
+            def length = buffer->get_number(15);
+            def start = buffer->index;
+            while buffer->index < start + length do
+                packet->add_sub_packet(parse_packet(buffer));
+            end;
+        end else do
+            def count = buffer->get_number(11);
+            for i in range(count) do
+                packet->add_sub_packet(parse_packet(buffer));
+            end;
+        end;
+        return packet;
+    end;
+end;
+
+def count_versions(packet) do
+    def result = packet->version;
+    if packet->type != 4 then do
+        for sub_packet in packet->packets do
+            result += count_versions(sub_packet);
+        end;
+    end;
+    return result;
+end;
+
+def data = read_file("day16-input.txt") !> trim();
+def buffer = new(Buffer, hex_to_bin(data));
+def packet = parse_packet(buffer);
+println(count_versions(packet));
+
+
+def TYPE_SUM = 0;
+def TYPE_PRODUCT = 1;
+def TYPE_MINIMUM = 2;
+def TYPE_MAXIMUM = 3;
+def TYPE_LITERAL = 4;
+def TYPE_GREATER_THAN = 5;
+def TYPE_LESS_THAN = 6;
+def TYPE_EQUALS_TO = 7;
+
+def evaluate(packet) do
+    if packet->type == TYPE_LITERAL then packet->value
+    if packet->type == TYPE_SUM then sum([evaluate(p) for p in packet->packets])
+    if packet->type == TYPE_PRODUCT then prod([evaluate(p) for p in packet->packets])
+    if packet->type == TYPE_MINIMUM then min([evaluate(p) for p in packet->packets])
+    if packet->type == TYPE_MAXIMUM then max([evaluate(p) for p in packet->packets])
+    if packet->type == TYPE_GREATER_THAN then do
+        if evaluate(packet->packets[0]) > evaluate(packet->packets[1]) then 1 else 0
+    end
+    if packet->type == TYPE_LESS_THAN then do
+        if evaluate(packet->packets[0]) < evaluate(packet->packets[1]) then 1 else 0
+    end
+    if packet->type == TYPE_EQUALS_TO then do
+        if evaluate(packet->packets[0]) == evaluate(packet->packets[1]) then 1 else 0
+    end;
+end;
+
+println(evaluate(packet));
+
