@@ -1,0 +1,78 @@
+# https://adventofcode.com/2021/day/17
+
+# This uses a kind of heuristic approach: first, we
+# determine all possible x start velocities. Then we
+# check which y start velocities result in valid
+# trajectories. Now, the question is, what would be
+# the possible y start velocities to check. In theory,
+# they could go as high as we wish and might nonetheless
+# be valid because if the x velocity is such, that it
+# reaches 0 within the target box, then the y can take
+# all the time to go up and down again and still strike
+# the target. Here, I chose to use an experimental upper
+# limit for the y start velocity. I started with 100 and
+# increased it by 100 until the solutions did not change
+# any more. As it is, 300 seems to be enough and does
+# get the accepted aoc solutions.
+
+require IO import [read_file];
+
+def read_data(filename) do
+    def line = read_file(filename) !> trim();
+    def x = [int(n) for n in line !> substr(line !> find("x") + 2, line !> find(",")) !> split(escape_pattern(".."))];
+    def y = [int(n) for n in line !> substr(line !> find("y") + 2) !> split(escape_pattern(".."))];
+    return <*x=[min(x), max(x)], y=[min(y), max(y)]*>;
+end;
+
+def get_valid_vx(data) do
+    def result = [];
+    for startvx in interval(1, data->x[1]) do
+        def vx = startvx;
+        def x = 0;
+        while x <= data->x[1] do
+            if data->x[0] <= x <= data->x[1] then do
+                result !> append(startvx);
+                break;
+            end;
+            if vx == 0 then break;
+            x += vx;
+            vx -= 1;
+        end;
+    end;
+    return result;
+end;
+
+def get_valid_velocities(data) do
+    def result = [];
+    for startvx in get_valid_vx(data) do
+        for startvy in interval(min(data->y), 300) do
+            def vx = startvx;
+            def vy = startvy;
+            def x = 0;
+            def y = 0;
+            def maxy = 0;
+            while x <= data->x[1] and y >= min(data->y) do
+                if data->x[0] <= x <= data->x[1] and data->y[0] <= y <= data->y[1] then do
+                    result !> append(<*start=[startvx, startvy], maxy=maxy*>);
+                    break;
+                end;
+                x += vx;
+                y += vy;
+                maxy = max(maxy, y);
+                vx = max(0, vx - 1);
+                vy -= 1;
+            end;
+        end;
+    end;
+    return result;
+end;
+
+def get_best_velocity(valid_velocities) do
+    return max(valid_velocities, key = fn(v) v->maxy);
+end;
+
+def data = read_data("day17-input.txt");
+def valid = get_valid_velocities(data);
+println(get_best_velocity(valid)->maxy);
+println(length(valid));
+
