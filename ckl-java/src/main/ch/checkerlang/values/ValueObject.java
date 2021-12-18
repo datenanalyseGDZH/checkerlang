@@ -47,6 +47,16 @@ public class ValueObject extends Value {
         this.value.remove(key);
     }
 
+    public Value resolveItem(String key) {
+        if (hasItem(key)) return getItem(key);
+        ValueObject current = this;
+        while (current.hasItem("_proto_")) {
+            current = current.getItem("_proto_").asObject();
+            if (current.hasItem(key)) return current.getItem(key);
+        }
+        return null;
+    }
+
     public boolean isEquals(Value value) {
         if (!value.isObject()) return false;
         Map<String, Value> other = value.asObject().value;
@@ -119,8 +129,8 @@ public class ValueObject extends Value {
     }
 
     public String toString() {
-        if (value.containsKey("_str_")) {
-            ValueFunc fn = value.get("_str_").asFunc();
+        ValueFunc fn = (ValueFunc) resolveItem("_str_");
+        if (fn != null) {
             Args args_ = new Args(fn.getArgNames(), SourcePos.Unknown);
             List<String> names = new ArrayList<>();
             List<Value> values = new ArrayList<>();

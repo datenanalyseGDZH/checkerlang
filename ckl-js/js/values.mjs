@@ -1164,6 +1164,17 @@ export class ValueObject extends Value {
         this.value;
     }
 
+    resolveItem(key) {
+        if (this.hasItem(key)) return this.getItem(key);
+        let current = this;
+        while (current.hasItem("_proto_")) {
+            current = current.getItem("_proto_");
+            if (current === null) break;
+            if (current.hasItem(key)) return current.getItem(key);
+        }
+        return null;
+    }
+
     isEquals(other) {
         if (!(other instanceof ValueObject)) return false;
         if (this.value.size != other.value.size) return false;
@@ -1239,8 +1250,8 @@ export class ValueObject extends Value {
     }
 
     toString() {
-        if (this.value.has("_str_")) {
-            const fn = this.value.get("_str_");
+        const fn = this.resolveItem("_str_");
+        if (fn !== null) {
             const args_ = new Args(null);
             args_.addArgs(fn.getArgNames());
             args_.setArgs([null], [this]);

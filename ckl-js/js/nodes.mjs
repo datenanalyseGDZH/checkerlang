@@ -562,7 +562,7 @@ export class NodeDerefAssign {
             container.value.set(member, value);
             return container;
         }
-        throw new RuntimeError("ERROR", "Cannot deref-assign " + this.value.type(), this.pos);
+        throw new RuntimeError("ERROR", "Cannot deref-assign " + this.value, this.pos);
     }
 
     toString() {
