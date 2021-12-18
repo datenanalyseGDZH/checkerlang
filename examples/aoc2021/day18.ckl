@@ -1,0 +1,205 @@
+# https://adventofcode.com/2021/day/18
+
+require IO import [read_file];
+require String import [ord];
+require List import [map_list];
+
+def nextid = 1;
+
+def Pair = <*
+    _init_(self, type, parent = NULL) do
+        self->id = nextid;
+        nextid += 1;
+        self->type = type;
+        self->parent = parent;
+    end,
+
+    _str_(self) do
+        if self->type == "value" then return string(self->value)
+        else return "[" + string(self->left) + "," + string(self->right) + "]";
+    end,
+
+    nesting(self) do
+        if self->parent == NULL then return 0
+        else return 1 + self->parent->nesting();
+    end,
+
+    next_left_value(self) do
+        def current = self;
+        while current->parent->right->id != current->id do
+            current = current->parent;
+            if current == NULL then return NULL;
+        end;
+        current = current->parent->left;
+        while current->type == "pair" do
+            current = current->right;
+        end;
+        return current;
+    end,
+
+    next_right_value(self) do
+        def current = self;
+        while current->parent->left->id != current->id do
+            current = current->parent;
+            if current == NULL then return NULL;
+        end;
+        current = current->parent->right;
+        while current->type == "pair" do
+            current = current->left;
+        end;
+        return current;
+    end,
+
+    next_right_pair(self) do
+        if self->parent == NULL then do
+            return NULL;
+        end elif self->parent->left->id == self->id then do
+            def result = self->parent->right->left_most_pair();
+            if result == NULL then return self->parent->next_right_pair();
+            return result;
+        end else do
+            return self->parent->next_right_pair();
+        end;
+    end,
+
+    left_most_pair(self) do
+        if self->type == "value" then return NULL;
+        def result = self;
+        while result->left->type == "pair" or result->right->type == "pair" do
+            if result->left->type == "pair" then result = result->left
+            else result = result->right;
+        end;
+        return result;
+    end,
+
+    left_most_value(self) do
+        def result = self;
+        while result->type != "value" do
+            result = result->left;
+        end;
+        return result;
+    end,
+
+    explode(self) do
+        def left = self->next_left_value();
+        if left != NULL then left->value += self->left->value;
+        def right = self->next_right_value();
+        if right != NULL then right->value += self->right->value;
+        if self->parent->left->id == self->id then self->parent->left = new_value(0, self->parent)
+        else self->parent->right = new_value(0, self->parent);
+    end,
+
+    split(self) do
+        def left = new_value(int(self->value / 2), NULL);
+        def right = new_value(int((self->value + 1) / 2), NULL);
+        if self->parent->left->id == self->id then self->parent->left = new_pair(left, right, self->parent)
+        else self->parent->right = new_pair(left, right, self->parent);
+    end,
+
+    root(self) do
+        def root = self;
+        while root->parent != NULL do
+            root = root->parent;
+        end;
+        return root;
+    end
+*>;
+
+def new_value(value, parent = NULL) do
+    def result = new(Pair, "value", parent);
+    result->value = value;
+    return result;
+end;
+
+def new_pair(left, right, parent = NULL) do
+    def result = new(Pair, "pair", parent);
+    result->left = left;
+    result->right = right;
+    left->parent = result;
+    right->parent = result;
+    return result;
+end;
+
+def reduce_number(number, nesting = 0) do
+    def result = number;
+    while TRUE do
+        # explode
+        def current = number->left_most_pair();
+        def changed = FALSE;
+        while current != NULL do
+            if current->nesting() == 4 then do
+                current->explode();
+                changed = TRUE;
+                break;
+            end;
+            current = current->next_right_pair();
+        end;
+        if changed then continue;
+
+        # split
+        def current = number->left_most_value();
+        def changed = FALSE;
+        while current != NULL do
+            if current->value >= 10 then do
+                current->split();
+                changed = TRUE;
+                break;
+            end;
+            current = current->next_right_value();
+        end;
+        if not changed then break;
+    end;
+    return result;
+end;
+
+def add_numbers(first, second) do
+    def result = new_pair(first, second, NULL);
+    return reduce_number(result);
+end;
+
+def get_magnitude(number) do
+    if number->type == "value" then return number->value;
+    return 3 * get_magnitude(number->left) + 2 * get_magnitude(number->right);
+end;
+
+def parse_number(s) do
+    if s[0] == '[' then do
+        def [left, s] = parse_number(s !> substr(1));
+        def [right, s] = parse_number(s !> substr(1));
+        def result = new_pair(left, right);
+        left->parent = result;
+        right->parent = result;
+        return [result, s !> substr(1)];
+    end else do
+        def index = 0;
+        def value = 0;
+        while s[index] not in [',', ']'] do
+            value = value * 10 + ord(s[index]) - ord('0');
+            index += 1;
+        end;
+        return [new_value(value), s !> substr(index)];
+    end;
+end;
+
+def data = read_file("day18-input.txt") !> trim() !> lines();
+
+def result = parse_number(data[0])[0];
+for line in sublist(data, 1) do
+    def number = parse_number(line)[0];
+    result = add_numbers(result, number);
+end;
+println(get_magnitude(result));
+
+def data = read_file("day18-input.txt") !> trim() !> lines();
+
+def maxsum = 0;
+for first in range(length(data)) do
+    for second in range(length(data)) do
+        if first == second then continue;
+        def a = parse_number(data[first])[0];
+        def b = parse_number(data[second])[0];
+        maxsum = max(maxsum, get_magnitude(add_numbers(a, b)));
+    end;
+end;
+println(maxsum);
+
