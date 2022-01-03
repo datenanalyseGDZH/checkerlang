@@ -20,8 +20,8 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using Microsoft.Win32.SafeHandles;
 
 namespace CheckerLang
 {
@@ -696,11 +696,11 @@ namespace CheckerLang
                     result = DerefOrInvoke(lexer, result);
                     break;
                 case TokenType.Int:
-                    result = new NodeLiteral(new ValueInt(Convert.ToInt64(token.value) * (unary_minus ? -1 : 1)), token.pos);
+                    result = new NodeLiteral(new ValueInt(Convert.ToInt64(token.value, CultureInfo.InvariantCulture) * (unary_minus ? -1 : 1)), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 case TokenType.Decimal:
-                    result = new NodeLiteral(new ValueDecimal(Convert.ToDecimal(token.value) * (unary_minus ? -1 : 1)), token.pos);
+                    result = new NodeLiteral(new ValueDecimal(Convert.ToDecimal(token.value, CultureInfo.InvariantCulture) * (unary_minus ? -1 : 1)), token.pos);
                     result = Invoke(lexer, result);
                     break;
                 case TokenType.Boolean:
