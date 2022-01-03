@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>CKL 3.4.10-js function ref</title>
+<title>CKL 3.5.2-js function ref</title>
 <style>
 h1 { font-family: Arial Black; font-height: 18pt; }
 h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }
@@ -21,9 +21,10 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <link rel="shortcut icon" type="image/png" href="../img/ckl.png">
 </head>
 <body>
-<h1>CKL 3.4.10-js function ref</h1>
+<h1>CKL 3.5.2-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
+<li><a href='#module_Bitwise'>Module Bitwise</a></li>
 <li><a href='#module_Date'>Module Date</a></li>
 <li><a href='#module_IO'>Module IO</a></li>
 <li><a href='#module_List'>Module List</a></li>
@@ -59,11 +60,26 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#atan2'>atan2</a></li>
 <li><a href='#basename'>basename</a></li>
 <li><a href='#bind_native'>bind_native</a></li>
+<li><a href='#bit_and'>bit_and</a></li>
+<li><a href='#bit_and_32'>bit_and_32</a></li>
+<li><a href='#bit_not'>bit_not</a></li>
+<li><a href='#bit_not_32'>bit_not_32</a></li>
+<li><a href='#bit_or'>bit_or</a></li>
+<li><a href='#bit_or_32'>bit_or_32</a></li>
+<li><a href='#bit_rotate_left'>bit_rotate_left</a></li>
+<li><a href='#bit_rotate_left_32'>bit_rotate_left_32</a></li>
+<li><a href='#bit_rotate_right'>bit_rotate_right</a></li>
+<li><a href='#bit_rotate_right_32'>bit_rotate_right_32</a></li>
+<li><a href='#bit_shift_left'>bit_shift_left</a></li>
+<li><a href='#bit_shift_right'>bit_shift_right</a></li>
+<li><a href='#bit_xor'>bit_xor</a></li>
+<li><a href='#bit_xor_32'>bit_xor_32</a></li>
 <li><a href='#body'>body</a></li>
 <li><a href='#boolean'>boolean</a></li>
 <li><a href='#ceiling'>ceiling</a></li>
 <li><a href='#choice'>choice</a></li>
 <li><a href='#choices'>choices</a></li>
+<li><a href='#chr'>chr</a></li>
 <li><a href='#chunks'>chunks</a></li>
 <li><a href='#close'>close</a></li>
 <li><a href='#compare'>compare</a></li>
@@ -190,6 +206,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#not_equals'>not_equals</a></li>
 <li><a href='#now'>now</a></li>
 <li><a href='#object'>object</a></li>
+<li><a href='#ord'>ord</a></li>
 <li><a href='#pairs'>pairs</a></li>
 <li><a href='#parse'>parse</a></li>
 <li><a href='#parse_date'>parse_date</a></li>
@@ -255,6 +272,23 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#words'>words</a></li>
 <li><a href='#zip'>zip</a></li>
 <li><a href='#zip_map'>zip_map</a></li>
+</ul>
+<h2 id='module_Bitwise'>Module Bitwise</h2>
+<ul class='toc'>
+<li><a href='#bit_and'>bit_and</a></li>
+<li><a href='#bit_and_32'>bit_and_32</a></li>
+<li><a href='#bit_not'>bit_not</a></li>
+<li><a href='#bit_not_32'>bit_not_32</a></li>
+<li><a href='#bit_or'>bit_or</a></li>
+<li><a href='#bit_or_32'>bit_or_32</a></li>
+<li><a href='#bit_rotate_left'>bit_rotate_left</a></li>
+<li><a href='#bit_rotate_left_32'>bit_rotate_left_32</a></li>
+<li><a href='#bit_rotate_right'>bit_rotate_right</a></li>
+<li><a href='#bit_rotate_right_32'>bit_rotate_right_32</a></li>
+<li><a href='#bit_shift_left'>bit_shift_left</a></li>
+<li><a href='#bit_shift_right'>bit_shift_right</a></li>
+<li><a href='#bit_xor'>bit_xor</a></li>
+<li><a href='#bit_xor_32'>bit_xor_32</a></li>
 </ul>
 <h2 id='module_Date'>Module Date</h2>
 <ul class='toc'>
@@ -398,6 +432,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 </ul>
 <h2 id='module_String'>Module String</h2>
 <ul class='toc'>
+<li><a href='#chr'>chr</a></li>
 <li><a href='#contains'>contains</a></li>
 <li><a href='#ends_with'>ends_with</a></li>
 <li><a href='#esc'>esc</a></li>
@@ -406,6 +441,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#join'>join</a></li>
 <li><a href='#lower'>lower</a></li>
 <li><a href='#matches'>matches</a></li>
+<li><a href='#ord'>ord</a></li>
 <li><a href='#q'>q</a></li>
 <li><a href='#replace'>replace</a></li>
 <li><a href='#reverse'>reverse</a></li>
@@ -849,6 +885,282 @@ Binds a native function in the current environment.
 Core
 </div>
 </div>
+<h2 id='bit_and'>bit_and</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_and(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise and for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_and(5, 6) ==&gt; 4</div>
+<div class='example'>bit_and(4, 4) ==&gt; 4</div>
+</div>
+<h2 id='bit_and_32'>bit_and_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_and(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise and for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_and(5, 6) ==&gt; 4</div>
+<div class='example'>bit_and(4, 4) ==&gt; 4</div>
+</div>
+<h2 id='bit_not'>bit_not</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_not(a)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise not for the 32bit value a.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_not(1) ==&gt; 4294967294</div>
+<div class='example'>bit_not(0) ==&gt; 4294967295</div>
+</div>
+<h2 id='bit_not_32'>bit_not_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_not(a)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise not for the 32bit value a.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_not(1) ==&gt; 4294967294</div>
+<div class='example'>bit_not(0) ==&gt; 4294967295</div>
+</div>
+<h2 id='bit_or'>bit_or</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_or(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise or for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_or(1, 2) ==&gt; 3</div>
+<div class='example'>bit_or(3, 4) ==&gt; 7</div>
+<div class='example'>bit_or(4, 4) ==&gt; 4</div>
+</div>
+<h2 id='bit_or_32'>bit_or_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_or(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise or for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_or(1, 2) ==&gt; 3</div>
+<div class='example'>bit_or(3, 4) ==&gt; 7</div>
+<div class='example'>bit_or(4, 4) ==&gt; 4</div>
+</div>
+<h2 id='bit_rotate_left'>bit_rotate_left</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_rotate_left(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise rotate of 32bit value a by n bits to the left.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_rotate_left(1, 2) ==&gt; 4</div>
+<div class='example'>bit_rotate_left(1, 3) ==&gt; 8</div>
+<div class='example'>bit_rotate_left(4, 4) ==&gt; 64</div>
+</div>
+<h2 id='bit_rotate_left_32'>bit_rotate_left_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_rotate_left(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise rotate of 32bit value a by n bits to the left.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_rotate_left(1, 2) ==&gt; 4</div>
+<div class='example'>bit_rotate_left(1, 3) ==&gt; 8</div>
+<div class='example'>bit_rotate_left(4, 4) ==&gt; 64</div>
+</div>
+<h2 id='bit_rotate_right'>bit_rotate_right</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_rotate_right(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise rotate of 32bit value a by n bits to the right.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_rotate_right(1, 2) ==&gt; 1073741824</div>
+<div class='example'>bit_rotate_right(1, 3) ==&gt; 536870912</div>
+<div class='example'>bit_rotate_right(4, 4) ==&gt; 1073741824</div>
+</div>
+<h2 id='bit_rotate_right_32'>bit_rotate_right_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_rotate_right(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise rotate of 32bit value a by n bits to the right.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_rotate_right(1, 2) ==&gt; 1073741824</div>
+<div class='example'>bit_rotate_right(1, 3) ==&gt; 536870912</div>
+<div class='example'>bit_rotate_right(4, 4) ==&gt; 1073741824</div>
+</div>
+<h2 id='bit_shift_left'>bit_shift_left</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_shift_left(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise shift of 32bit value a by n bits to the left.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_shift_left(1, 2) ==&gt; 4</div>
+<div class='example'>bit_shift_left(1, 3) ==&gt; 8</div>
+<div class='example'>bit_shift_left(1, 4) ==&gt; 16</div>
+</div>
+<h2 id='bit_shift_right'>bit_shift_right</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_shift_right(a, n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise shift of 32bit value a by n bits to the right.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_shift_right(4, 1) ==&gt; 2</div>
+<div class='example'>bit_shift_right(4, 3) ==&gt; 0</div>
+<div class='example'>bit_shift_right(4, 2) ==&gt; 1</div>
+</div>
+<h2 id='bit_xor'>bit_xor</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_xor(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise xor for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_xor(1, 2) ==&gt; 3</div>
+<div class='example'>bit_xor(1, 3) ==&gt; 2</div>
+<div class='example'>bit_xor(4, 4) ==&gt; 0</div>
+</div>
+<h2 id='bit_xor_32'>bit_xor_32</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+bit_xor(a, b)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Performs bitwise xor for the two 32bit values a and b.
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+Bitwise
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>bit_xor(1, 2) ==&gt; 3</div>
+<div class='example'>bit_xor(1, 3) ==&gt; 2</div>
+<div class='example'>bit_xor(4, 4) ==&gt; 0</div>
+</div>
 <h2 id='body'>body</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
@@ -939,6 +1251,26 @@ Returns a list with n random elements from the list or set lst.
 <div class='module_title'>Modules</div>
 Random
 </div>
+</div>
+<h2 id='chr'>chr</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+chr(n)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns a single character string for the code point integer n.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>chr(97) ==&gt; 'a'</div>
+<div class='example'>chr(32) ==&gt; ' '</div>
 </div>
 <h2 id='chunks'>chunks</h2>
 <div class='header'>
@@ -3445,24 +3777,17 @@ Core
 <h2 id='new'>new</h2>
 <div class='header'>
 <div class='header_title'>Syntax</div>
-new(obj, args...)
+new(cls, args...)
 </div>
 <div class='text'>
 <div class='text_title'>Description</div>
-Creates a new instance of an object. This makes a copy of
-the original object and afterwards calls the constructor
-_init_, if it exists.
-
+Creates an instance of the class cls.
 
 </div>
 <div class='module'>
 <div class='module_title'>Modules</div>
 Core
 </div>
-<div class='examples'>
-<div class='examples_title'>Examples</div>
-<div class='example'>def o = &lt;* a = 2, f = fn(self, x) self-&gt;a * x, _init_ = fn(self, a) self-&gt;a = a *&gt;; def n = new(o, 3); [o-&gt;f(2), n-&gt;f(2)] ==&gt; [4, 6]</div>
-<div class='example'>def o = &lt;* _init_(self, n) self-&gt;_data = interval(1, n), get(self) sum(self-&gt;_data) *&gt;; def a = new(o, 100); a-&gt;get() ==&gt; 5050</div>
 </div>
 <h2 id='non_empty'>non_empty</h2>
 <div class='header'>
@@ -3564,6 +3889,26 @@ Core
 <div class='example'>object() ==&gt; &lt;**&gt;</div>
 <div class='example'>object(&lt;&lt;&lt;a =&gt; 1&gt;&gt;&gt;) ==&gt; &lt;*a=1*&gt;</div>
 <div class='example'>object([['a', 1]]) ==&gt; &lt;*a=1*&gt;</div>
+</div>
+<h2 id='ord'>ord</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+ord(ch)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the code point integer of the character ch.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>ord('a') ==&gt; 97</div>
+<div class='example'>ord(' ') ==&gt; 32</div>
 </div>
 <h2 id='pairs'>pairs</h2>
 <div class='header'>
