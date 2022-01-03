@@ -628,4 +628,15 @@ def chunks(obj, chunk_size) do
 end;
 
 
+"
+new(cls, args...)
+
+Creates an instance of the class cls.
+"
+def new(cls, args...) do
+    def instance = <*_proto_=cls*>;
+    if "_init_" in cls then instance->_init_(...args...);
+    return instance;
+end;
+
 `;

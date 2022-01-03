@@ -1,0 +1,43 @@
+# https://adventofcode.com/2021/day/6
+
+require IO import [read_file];
+require List import [append_all];
+
+def data = [int(n) for n in read_file("day6-input.txt") !> trim() !> split(",")];
+
+def build_groups(data) do
+    def groups = <<<>>>;
+    for value in data do
+        groups[value, 0] += 1;
+    end;
+    return groups;
+end;
+
+def update_groups(groups) do
+    def result = <<<>>>;
+    for [state, count] in entries groups do
+        if state == 0 then do
+            result[6, 0] += count;
+            result[8, 0] += count;
+        end else do
+            result[state - 1, 0] += count;
+        end;
+    end;
+    return result;
+end;
+
+def fish_count(groups) do
+    return sum(list(groups));
+end;
+
+def breed(data, days) do
+    def groups = build_groups(data);
+    for i in range(days) do
+        groups = update_groups(groups);
+    end;
+    return fish_count(groups);
+end;
+
+println(breed(data, 80));
+println(breed(data, 256));
+

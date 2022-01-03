@@ -1,0 +1,121 @@
+# https://adventofcode.com/2021/day/4
+
+require IO import [file_input, readln, close, printf];
+
+def read_data(filename) do
+    def result = <*boards = []*>;
+    def infile = file_input(filename);
+    do
+        result->numbers = infile !> readln() !> trim() !> split(",");
+        def board = [];
+        def line = infile !> readln();
+        while line != NULL do
+            line = line !> trim();
+            if line == "" then do
+                if board != [] then do
+                    result->boards !> append(board); 
+                end;
+                board = [];
+            end else do
+                board !> append([[number, 0] for number in line !> replace("  ", " ") !> split(" ")]);
+            end;
+            line = infile !> readln();
+        end;
+        if board != [] then do
+            result->boards !> append(board);
+        end;
+    finally
+        infile !> close();
+    end;
+    result;
+end;
+
+def board_get(board, x, y) do
+    return board[y][x];
+end;
+
+def board_mark(board, number) do
+    for row in board do
+        for cell in row do
+            if cell[0] == number then do
+                cell[1] = 1;
+                return;
+            end;
+        end;
+    end;
+end;
+
+def board_is_winner(board) do
+    for row in board do
+        def winner = TRUE;
+        for cell in row do
+            if cell[1] == 0 then do
+                winner = FALSE;
+                break;
+            end;
+        end;
+        if winner then return TRUE;
+    end;
+    for x in range(length(board[0])) do
+        def winner = TRUE;
+        for y in range(length(board)) do
+            if board_get(board, x, y)[1] == 0 then do
+                winner = FALSE;
+                break;
+            end;
+        end;
+        if winner then return TRUE;
+    end;
+    return FALSE;
+end;
+
+def find_winning_board(data) do
+    for number in data->numbers do
+        for board in data->boards do
+            board_mark(board, number);
+            if board_is_winner(board) then return [board, get_score(board, number)];
+        end;
+    end;
+    return NULL;
+end;
+
+def get_score(board, number) do
+    def unmarked_sum = 0;
+    for row in board do
+        for cell in row do
+            if cell[1] == 0 then unmarked_sum += int(cell[0]);
+        end;
+    end;
+    return unmarked_sum * int(number);
+end;
+
+def print_board(board) do
+    for row in board do
+        for cell in row do
+            if cell[1] == 0 then printf("{0#2}  ", cell[0])
+            else printf("{0#2}* ", cell[0]);
+        end;
+        println();
+    end;
+end;
+
+def [winning_board, score] = find_winning_board(read_data("day4-input.txt"));
+print_board(winning_board);
+println("Score: " + score);
+println();
+
+def find_last_winning_board(data) do
+    def last_winning = NULL;
+    for number in data->numbers do
+        for board in data->boards do
+            if board_is_winner(board) then continue; # skip boards that have already won
+            board_mark(board, number);
+            if board_is_winner(board) then last_winning = [board, get_score(board, number)];
+        end;
+    end;
+    return last_winning;
+end;
+
+def [last_winning_board, score] = find_last_winning_board(read_data("day4-input.txt"));
+print_board(last_winning_board);
+println("Score: " + score);

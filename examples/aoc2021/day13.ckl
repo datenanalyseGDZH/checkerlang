@@ -1,0 +1,99 @@
+# https://adventofcode.com/2021/day/13
+
+require IO import [read_file];
+
+def new(obj, args...) do
+    def result = <*_proto_=obj*>;
+    if "_init_" in obj then result->_init_(...args...);
+    return result;
+end;
+
+def Dot = <*
+    _init_(self, x, y) do
+        self->x = x;
+        self->y = y;
+    end,
+
+    mirror_at_x(self, x) do
+        if self->x < x then new(Dot, self->x, self->y)
+        else new(Dot, x - (self->x - x), self->y);
+    end,
+
+    mirror_at_y(self, y) do
+        if self->y < y then new(Dot, self->x, self->y)
+        else new(Dot, self->x, y - (self->y - y));
+    end
+*>;
+
+def Sheet = <*
+    _init_(self) do
+        self->dots = <<>>;
+    end,
+
+    add_dot(self, dot) do
+        self->dots !> append(dot);
+    end,
+
+    fold_at_x(self, x) do
+        def result = new(Sheet);
+        for dot in self->dots do
+            result->add_dot(dot->mirror_at_x(x));
+        end;
+        return result;
+    end,
+
+    fold_at_y(self, y) do
+        def result = new(Sheet);
+        for dot in self->dots do
+            result->add_dot(dot->mirror_at_y(y));
+        end;
+        return result;
+    end,
+*>;
+
+def read_data(filename) do
+    def result = <*sheet=new(Sheet), folds=[]*>;
+    def lines = read_file(filename) !> trim() !> lines();
+    for line in lines do
+        if line == "" then continue;
+        if line !> starts_with("fold along ") then do
+            def [axis, value] = line !> substr(length("fold along ")) !> split("=");
+            value = int(value);
+            result->folds !> append(<*axis=axis, value=value*>);
+        end else do
+            def [x, y] = [int(n) for n in line !> split(",")];
+            result->sheet->add_dot(new(Dot, x, y));
+        end;
+    end;
+    return result;
+end;
+
+def fold(sheet, folds) do
+    for fold in folds do
+        if fold->axis == "x" then sheet = sheet->fold_at_x(fold->value)
+        else sheet = sheet->fold_at_y(fold->value);
+    end;
+    return sheet;
+end;
+
+def data = read_data("day13-input.txt");
+
+println(length(fold(data->sheet, [data->folds[0]])->dots));
+
+def print_code(code) do
+    def max_x = max([dot->x for dot in code]);
+    def max_y = max([dot->y for dot in code]);
+    def grid = [" " * (max_x + 1)] * (max_y + 1);
+    def set(grid, x, y) grid[y] = substitute(grid[y], x, "#");
+    for dot in code do
+        set(grid, dot->x, dot->y);
+    end;
+    for line in grid do
+        println(line);
+    end;
+end;
+
+def code = fold(data->sheet, data->folds)->dots;
+
+print_code(code);
+

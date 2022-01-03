@@ -120,10 +120,22 @@ namespace CheckerLang
             return true;
         }
 
+        public ValueFunc Resolve(string name)
+        {
+            if (value.ContainsKey(name)) return value[name].AsFunc();
+            var current = this;
+            while (current.value.ContainsKey("_proto_"))
+            {
+                current = current.value["_proto_"].AsObject();
+                if (current.value.ContainsKey(name)) return current.value[name].AsFunc();
+            }
+            return null;
+        }
+
         public override string ToString()
         {
-            if (value.ContainsKey("_str_")) {
-                var fn = value["_str_"].AsFunc();
+            var fn = Resolve("_str_");
+            if (fn != null) {
                 var args_ = new Args(fn.GetArgNames(), SourcePos.Unknown);
                 var names = new List<string>();
                 var values = new List<Value>();

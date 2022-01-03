@@ -1,0 +1,42 @@
+# https://adventofcode.com/2021/day/7
+
+require IO import [read_file];
+require List import [grouped, map_list];
+
+def data = [int(x) for x in read_file("day7-input.txt") !> trim() !> split(",")] !>
+                sorted() !>
+                grouped() !>
+                map_list(fn(group) [group[0], length(group)]) !>
+                map();
+
+def get_range(data) do
+    def values = list(set(data));
+    [min(values), max(values)];
+end;
+
+def fuel_constant(distance) do
+    return distance;
+end;
+
+def get_best_pos(data, fuel_required) do
+    def best_pos = -1;
+    def best_fuel = MAXINT;
+    def [min_pos, max_pos] = get_range(data);
+    for pos in interval(min_pos, max_pos) do
+        def fuel = sum([data[x] * fuel_required(abs(x - pos)) for x in keys data]);
+        if fuel < best_fuel then do
+            best_fuel = fuel;
+            best_pos = pos;
+        end;
+    end;
+    return <*pos=best_pos, fuel=best_fuel*>;
+end;
+
+println(get_best_pos(data, fuel_constant)->fuel);
+
+def fuel_linear(distance) do
+    return distance * (distance + 1) / 2;
+end;
+
+println(get_best_pos(data, fuel_linear)->fuel);
+

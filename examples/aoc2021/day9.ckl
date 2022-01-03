@@ -1,0 +1,54 @@
+# https://adventofcode.com/2021/day/9
+
+require IO import [read_file];
+
+def data = read_file("day9-input.txt") !> trim() !> lines();
+
+def find_sinks(data) do
+    def result = [];
+    for y in range(length(data)) do
+        for x in range(length(data[0])) do
+            def is_sink = TRUE;
+            if x > 0 and data[y][x-1] <= data[y][x] then is_sink = FALSE
+            if x < length(data[0]) - 1 and data[y][x] >= data[y][x+1] then is_sink = FALSE
+            if y > 0 and data[y-1][x] <= data[y][x] then is_sink = FALSE
+            if y < length(data) - 1 and data[y][x] >= data[y+1][x] then is_sink = FALSE;
+            if is_sink then result !> append(<*x=x, y=y, height=int(data[y][x])*>);
+        end;
+    end;
+    return result;
+end;
+
+def calc_risk(sinks) do
+    return sum([sink->height + 1 for sink in sinks]);
+end;
+
+println(calc_risk(find_sinks(data)));
+
+def find_neighbors(data, x, y, basin) do
+    if x < 0 or x > length(data[0])-1 then return;
+    if y < 0 or y > length(data)-1 then return;
+    if data[y][x] == '9' then return;
+    def entry = x + "-" + y;
+    if not entry in basin then do
+        basin !> append(entry);
+        find_neighbors(data, x - 1, y, basin);
+        find_neighbors(data, x + 1, y, basin);
+        find_neighbors(data, x, y - 1, basin);
+        find_neighbors(data, x, y + 1, basin);
+    end;
+end;
+
+def find_basins(data) do
+    def result = [];
+    for sink in find_sinks(data) do
+        def basin = <<>>;
+        find_neighbors(data, sink->x, sink->y, basin);
+        result !> append(basin);
+    end;
+    return [<*size=length(basin), points=basin*> for basin in sorted(result, key = fn(basin) -length(basin))];
+end;
+
+def basins = find_basins(data);
+println(basins[0]->size * basins[1]->size * basins[2]->size);
+

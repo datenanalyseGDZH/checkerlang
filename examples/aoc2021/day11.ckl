@@ -1,0 +1,85 @@
+# https://adventofcode.com/2021/day/11
+
+require IO import [read_file];
+require List import [map_list];
+
+def data = [int(n) for n in read_file("day11-input.txt") !> trim() !> lines() !> join("") !> split("")];
+
+def idx(x, y) y * 10 + x;
+def at(data, x, y) data[idx(x, y)];
+def put(data, x, y, value) data[idx(x, y)] = value;
+def inc(data, x, y) do data[idx(x, y)] += 1; data[idx(x, y)]; end;
+
+def adjacents(x, y) do
+    def result = [];
+    for i in [x-1, x, x+1] do
+        for j in [y-1, y, y+1] do
+            if i < 0 or 9 < i then continue;
+            if j < 0 or 9 < j then continue;
+            if i == x and j == y then continue;
+            result !> append([i, j]);
+        end;
+    end;
+    return result;
+end;
+
+def flash(data, x, y, flashed) do
+    if flashed[idx(x, y)] == 1 then return;
+    flashed[idx(x, y)] = 1;
+    for [i, j] in adjacents(x, y) do
+        inc(data, i, j);
+        if at(data, i, j) > 9 then flash(data, i, j, flashed);
+    end;
+end;
+
+def clear_flashes(data) do
+    for i in range(length(data)) do 
+        if data[i] > 9 then data[i] = 0; 
+    end;
+end;
+
+def step(data) do
+    def flashed = [0] * length(data);
+    for x in range(10) do
+        for y in range(10) do
+            inc(data, x, y);
+            if at(data, x, y) > 9 then flash(data, x, y, flashed);
+        end;
+    end;
+    clear_flashes(data);
+    return sum(flashed);
+end;
+
+def process(data, steps) do
+    def flashes = 0;
+    for s in range(steps) do
+        flashes += step(data);
+    end;
+    return flashes;
+end;
+
+def print_data(data) do
+    while length(data) > 10 do
+        println(data !> sublist(0, 10) !> join(""));
+        data = data !> sublist(10);
+    end;
+    println(data !> join(""));
+    println();
+end;
+
+println(process(data, 100));
+
+def data = [int(n) for n in read_file("day11-input.txt") !> trim() !> lines() !> join("") !> split("")];
+
+def find_sync_step(data) do
+    def all_empty = [0] * length(data);
+    def result = 0;
+    while data != all_empty do
+        result += 1;
+        step(data);
+    end;
+    return result;
+end;
+
+println(find_sync_step(data));
+

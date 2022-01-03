@@ -1,0 +1,60 @@
+# https://adventofcode.com/2021/day/12
+
+require IO import [read_file];
+require List import [map_list, for_each];
+require String import [lower];
+
+def read_graph(filename) do
+    def result = <<<>>>;
+    read_file(filename) !> 
+        trim() !> 
+        lines() !>
+        map_list(fn(line) split(line, "-")) !>
+        for_each(fn(entry) do 
+            result[entry[0], <<>>] += entry[1];
+            result[entry[1], <<>>] += entry[0];
+        end);
+    result;
+end;
+
+def collect_all_paths(graph, current_node="start", current_path = ["start"], visited_smalls = <<"start">>, found_paths=<<>>) do
+    for next_node in graph[current_node] do
+        if next_node in visited_smalls then continue;
+        if next_node == "end" then do
+            found_paths !> append(current_path + "end");
+        end elif next_node == lower(next_node) then do
+            collect_all_paths(graph, next_node, current_path + next_node, visited_smalls + next_node, found_paths);
+        end else do
+            collect_all_paths(graph, next_node, current_path + next_node, visited_smalls, found_paths);
+        end;
+    end;
+end;
+
+def graph = read_graph("day12-input.txt");
+def paths = <<>>;
+collect_all_paths(graph, found_paths = paths);
+println(length(paths));
+
+def collect_all_paths_repeat(graph, current_node="start", current_path = ["start"], visited_smalls = <<"start">>, repeated_small = NULL, found_paths=<<>>) do
+    for next_node in graph[current_node] do
+        if next_node == "end" then do
+            found_paths !> append(current_path + "end");
+        end elif next_node == lower(next_node) then do
+            if next_node in visited_smalls and repeated_small == NULL and next_node != "start" then do
+                collect_all_paths_repeat(graph, next_node, current_path + next_node, visited_smalls, next_node, found_paths);
+            end elif next_node in visited_smalls then do
+                continue;
+            end else do
+                collect_all_paths_repeat(graph, next_node, current_path + next_node, visited_smalls + next_node, repeated_small, found_paths);
+            end;
+        end else do
+            collect_all_paths_repeat(graph, next_node, current_path + next_node, visited_smalls, repeated_small, found_paths);
+        end;
+    end;
+end;
+
+def graph = read_graph("day12-input.txt");
+def paths = <<>>;
+collect_all_paths_repeat(graph, found_paths = paths);
+println(length(paths));
+
