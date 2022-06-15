@@ -423,9 +423,9 @@ end;
 ### Syntax
 
 ```
-for <identifier> in <expression> <block_or_expression>
+for <identifier> in [ keys|values|entries ] <expression> <block_or_expression>
 
-for [ <identifier>, ... ] in <expression> <block_or_expression>
+for [ <identifier>, ... ] in [ keys|values|entries ] <expression> <block_or_expression>
 ```
 
 ### Description
@@ -441,6 +441,8 @@ In case of an input, `for` iterates over text lines.
 
 The more complex variant allows to assign values to multiple variables in each
 iteration. In this case, the values of the expression must be of type list or set.
+
+By using `in keys`, `in values`, `in entries`, we can select the keys, the values or entry-pairs to iterate over in case of a map or object.
 
 ### Examples
 
@@ -459,6 +461,19 @@ iteration. In this case, the values of the expression must be of type list or se
 > for [a, b] in x do def y = a * b; println(y - a - b); end
 -1
 5
+```
+
+```
+> def m = <<<'a' = 1, 'b' => 2, 'c' => 3>>>;
+<<<'a' => 1, 'b' => 2, 'c' => 3
+> for [k, v] in entries m do println(k + " => " + v); end;
+a => 1
+b => 2
+c => 3
+> for v in values m do println(v); end;
+1
+2
+3
 ```
 
 ## While loop statement
