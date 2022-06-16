@@ -93,36 +93,86 @@ section "Boolean algebra" for details.
 
 ### Pattern
 
+```
+def p = //[a-c]+[1-9]+//;
+```
+
+Patterns contain regular expressions and can be used to match
+strings.
+
+```
+'abc12' matches //[a-c]+[1-9]+// == TRUE
+```
+
 ### Date
+
 ### List
 
 ```
 def a = [1, 2, 3];
+a[0] == 1;
+a[-1] == 3;
+2 in a == TRUE
 ```
+
+Lists are collections that can be accessed by index. Negative indices
+count from the end.
+
+They can contain elements of any type. Although normally one list contains
+only elements of one type - e.g. a list of integers - it is possible
+to create lists containing e.g. integers, strings, other lists etc.
+
 
 ### Set
 
 ```
 def a = <<1, 2, 3>>;
+2 in a == TRUE
 ```
+
+Sets are collections containing no duplicate elements.
+
+It is quite fast to check for containment of an element.
+
 
 ### Map
 
 ```
-def a = <<<a => 1, b => 2, c => 3>>>;
+def a = <<<'a' => 1, 'b' => 2, 'c' => 2>>>;
+a['b'] == 2
+a->b == 2
+list(a) == [1, 2, 2]
+set(a) == <<'a', 'b', 'c'>>
 ```
+
+Maps assign each key element a value element. Both key and value
+can be arbitrary values.
 
 ### Object
 
 ```
-def a = <* val = 12, f = fn(x) 2 * x *>;
+def a = <* val = 12, f = fn(self, x) 2 * x *>;
+a->val == 12
+a->f(2) == 4
 ```
+
+Objects are similar to maps with the limitation that only strings
+are allowed as keys. Objects use less memory and are faster than
+maps.
+
+Objects can be used to implement object-oriented programming ("classes")
+but it is also possible to use objects just as fast, efficient
+mappings from strings to values.
 
 ### Func
 
 ```
-def f = fn(x) 2 * x;
+def f(x) do
+    2 * x;
+end;
+f(3) == 6
 ```
+
 
 ### Error
 ### Input
