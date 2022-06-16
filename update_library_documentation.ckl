@@ -1,0 +1,145 @@
+# Copyright (c) 2022 Damian Brunold, Gesundheitsdirektion Kanton Zürich
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# This visits all modules and for each symbol in the module (mostly functions)
+# it generates a documentation entry. All the entries, as well as overall and
+# per module tables of contents result in the checkerlang_function.html output.
+
+def prepare_info(value) do
+    def infolines = info(value) !> lines();
+    if infolines is not empty and infolines[0] == "" then infolines = sublist(infolines, 1);
+    return infolines;
+end;
+
+def get_info_parts(symbol, module = "Core") do
+    def result = <*modules = [module], symbol = symbol, header = [], text = [], examples = []*>;
+    def value = NULL;
+    if module != "Core" then value = eval("require " + module + "; " + module + "->" + symbol)
+    else value = eval(symbol);
+    def infos = prepare_info(value);
+    if infos is not empty then do
+        def in_header = TRUE;
+        for line in infos do
+            if line !> starts_with(":") then result->examples !> append(line !> substr(1) !> trim())
+            elif in_header and trim(line) == "" then in_header = FALSE
+            elif in_header then result->header !> append(line)
+            else result->text !> append(line);
+        end;
+    end;
+    result;
+end;
+
+def collect_module_information(result, module) do
+    require module;
+    result->modules[module] = <<<>>>;
+    for symbol in ls(module) do
+        def infos = get_info_parts(symbol, module);
+        if is_empty(infos->header) then continue;
+        if symbol not in result->entries then result->entries[symbol] = [];
+        def found = FALSE;
+        for entry in result->entries[symbol] do
+            if entry->header == infos->header and entry->text == infos->text and entry->examples == infos->examples then do
+                found = TRUE;
+                entry->modules !> append(module);
+            end;
+        end;
+        if not found then do
+            result->entries[symbol] !> append(infos);
+        end;
+        result->modules[module][symbol] = infos;
+    end;
+end;
+
+def collect_information() do
+    def result = <* entries = <<<>>>, modules = <<<>>> *>;
+    for symbol in ls() do
+        def infos = get_info_parts(symbol);
+        if infos->header is not empty then result->entries[symbol] = [infos];
+    end;
+    require Sys;
+    for module in Sys->checkerlang_modules do
+        if module == "Core" then continue;
+        collect_module_information(result, module);
+    end;
+    return result;
+end;
+
+def information = collect_information();
+
+require Sys;
+require IO import [file_output, close, println];
+
+def out = file_output("documentation/ckl-library.md");
+
+println("# CKL " + Sys->checkerlang_version + "-" + Sys->checkerlang_platform + " library", out);
+
+println("## Table of contents", out);
+
+for module in keys information->modules do
+    println("* [Module " + module + "](#module_" + module + ")", out);
+end;
+
+for module in keys information->modules do
+    def infos = information->modules[module];
+    println("", out);
+    println("<a name=\"module_" + module +"\"></a>", out);
+    println("## " + module, out);
+    for symbol in keys infos do
+        println("* [" + symbol + "](#" + symbol + ")", out);
+    end;
+end;
+
+for symbol in keys information->entries do
+    def infos = information->entries[symbol];
+    for info in infos do
+        println("", out);
+        println("<a name=\"" + symbol + "\"></a>", out);
+        println("## " + symbol, out);
+        println("### Syntax", out);
+        println("```", out);
+        for line in info->header do
+            println(line, out);
+        end;
+        println("```", out);
+        if info->text is not empty then do
+            println("", out);
+            println("### Description", out);
+            for line in info->text do
+                println(line, out);
+            end;
+        end;
+        if info->modules is not empty then do
+            println("", out);
+            println("### Modules", out);
+            println(join(info->modules, ", "), out);
+        end;
+        if info->examples is not empty then do
+            println("", out);
+            println("### Examples", out);
+            println("```", out);
+            for line in info->examples do
+                println(line, out);
+            end;
+            println("```", out);
+        end;
+    end;
+end;
+
+close(out);
