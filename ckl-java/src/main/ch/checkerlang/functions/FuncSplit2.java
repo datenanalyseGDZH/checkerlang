@@ -39,7 +39,7 @@ public class FuncSplit2 extends FuncBase {
                 "This results in a list of list of strings.\r\n" +
                 "\r\n" +
                 ": split2('a:b:c|d:e:f', escape_pattern('|'), escape_pattern(':')) ==> [['a', 'b', 'c'], ['d', 'e', 'f']]\r\n" +
-                ": split2('', '\\|', ':') ==> []\r\n";
+                ": split2('', //\\|//, //://) ==> []\r\n";
     }
 
     public List<String> getArgNames() {
