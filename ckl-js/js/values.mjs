@@ -1070,7 +1070,7 @@ export class ValueNode extends Value {
 
     isEquals(other) {
         if (!(other instanceof ValueNode)) return false;
-        return this.value.toString() == this.toString();
+        return this.value.toString() == other.value.toString();
     }
 
     compareTo(other) {
