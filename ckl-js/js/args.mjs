@@ -59,7 +59,7 @@ export class Args {
         for(let [name, value] of this.args) {
             result = result.concat(name, "=", value, ", ");
         }
-        if (result.length > 0) result = result.substr(0, result.length - 2);
+        if (result.length > 0) result = result.substring(0, result.length - 2);
         return result;
     }
 
@@ -67,10 +67,10 @@ export class Args {
         let result = "";
         for(let [name, value] of this.args) {
             value = value.toString();
-            if (value.length > 50) value = value.substr(0, 50) + "... " + value.substr(value.length - 5, 5);
+            if (value.length > 50) value = value.substring(0, 50) + "... " + value.substr(value.length - 5, value.length);
             result = result.concat(name, "=", value, ", ");
         }
-        if (result.length > 0) result = result.substr(0, result.length - 2);
+        if (result.length > 0) result = result.substring(0, result.length - 2);
         return result;
     }
 

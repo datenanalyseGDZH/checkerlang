@@ -143,7 +143,7 @@ export class NodeAnd {
         for (let expression of this.expressions) {
             result = result.concat(expression.toString(), " and ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - " and ".length);
+        if (result.length > 1) result = result.substring(0, result.length - " and ".length);
         result = result.concat(")");
         return result;
     }
@@ -272,18 +272,18 @@ export class NodeBlock {
         for (let expression of this.expressions) {
             result = result.concat(expression.toString(), ", ");
         }
-        if (this.expressions.length > 0) result = result.substr(0, result.length - 2);
+        if (this.expressions.length > 0) result = result.substring(0, result.length - 2);
         for (let [err, expr] of this.catchexprs) {
             result = result.concat(" catch ").concat(err.toString()).concat(" ").concat(expression.toString()).concat(" ");
         }
-        if (this.catchexprs.length > 0) result = result.substr(0, result.length - 1);
+        if (this.catchexprs.length > 0) result = result.substring(0, result.length - 1);
         if (this.finallyexprs.length > 0) {
             result = result.concat(" finally ");
             for (let expression of this.finallyexprs) {
                 result = result.concat(expression.toString(), ", ");
             }
         }
-        if (this.finallyexprs.length > 0) result = result.substr(0, result.length - 2);
+        if (this.finallyexprs.length > 0) result = result.substring(0, result.length - 2);
         return result.concat(")");
     }
 
@@ -399,7 +399,7 @@ export class NodeClass {
         for (let expression of this.expressions) {
             result = result.concat(expression.toString(), " ");
         }
-        if (this.expressions.length > 0) result = result.substr(0, result.length - 2);
+        if (this.expressions.length > 0) result = result.substring(0, result.length - 2);
         return result.concat(")");
     }
 
@@ -666,7 +666,7 @@ export class NodeDerefInvoke {
         for (let i = 0; i < this.args.length; i++) {
             result = result.concat(this.names[i], "=", this.args[i], ", ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - 2);
+        if (result.length > 1) result = result.substring(0, result.length - 2);
         return "(" + this.objectExpr + "->" + this.member + "(" + result + ")";
     }
 
@@ -960,7 +960,7 @@ export class NodeFuncall {
         for (const expression of this.args) {
             result = result.concat(expression, ", ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - 2);
+        if (result.length > 1) result = result.substring(0, result.length - 2);
         return "(" + this.func + " " + result + ")";
     }
 
@@ -1169,7 +1169,7 @@ export class NodeList {
         for (const expression of this.items) {
             result = result.concat(expression.toString(), ", ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - 2);
+        if (result.length > 1) result = result.substring(0, result.length - 2);
         return result.concat("]");
     }
 
@@ -1398,7 +1398,7 @@ export class NodeMap {
         for (let i = 0; i < this.keys.length; i++) {
             result = result.concat(this.keys[i], " => ", this.values[i], ", ");
         }
-        if (result.length > 3) result = result.substr(0, result.length - 2);
+        if (result.length > 3) result = result.substring(0, result.length - 2);
         return result.concat(">>>");
     }
 
@@ -1531,7 +1531,7 @@ export class NodeObject {
         for (let i = 0; i < this.keys.length; i++) {
             result = result.concat(this.keys[i], "=", this.values[i], ", ");
         }
-        if (result.length > 2) result = result.substr(0, result.length - 2);
+        if (result.length > 2) result = result.substring(0, result.length - 2);
         return result.concat("*>");
     }
 
@@ -1576,7 +1576,7 @@ export class NodeOr {
         for (const expression of this.expressions) {
             result = result.concat(expression, " or ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - " or ".length);
+        if (result.length > 1) result = result.substring(0, result.length - " or ".length);
         return result.concat(")");
     }
 
@@ -1632,7 +1632,7 @@ export class NodeRequire {
         let modulename = this.name;
         const parts = modulespec.split("/");
         let name = parts[parts.length - 1];
-        if (name.endsWith(".ckl")) name = name.substr(0, name.length - 4);
+        if (name.endsWith(".ckl")) name = name.substring(0, name.length - 4);
         moduleidentifier = name;
         if (modulename == null) modulename = name;
         environment.pushModuleStack(moduleidentifier, this.pos);
@@ -1644,7 +1644,7 @@ export class NodeRequire {
         } else {
             moduleEnv = environment.getBase().newEnv();
             const modulesrc = moduleloader(modulefile, environment, this.pos);
-            const node = Parser.parseScript(modulesrc, "mod:" + modulefile.substr(0, modulefile.length - 4));
+            const node = Parser.parseScript(modulesrc, "mod:" + modulefile.substring(0, modulefile.length - 4));
             node.evaluate(moduleEnv);
             modules.set(moduleidentifier, moduleEnv);
         }
@@ -1729,7 +1729,7 @@ export class NodeSet {
         for (const expression of this.items) {
             result = result.concat(expression, ", ");
         }
-        if (result.length > 2) result = result.substr(0, result.length - 2);
+        if (result.length > 2) result = result.substring(0, result.length - 2);
         return result.concat(">>");
     }
 

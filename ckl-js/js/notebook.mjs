@@ -100,7 +100,7 @@ function saveState() {
     [...document.getElementById("contents").querySelectorAll(".cell")].forEach(function (cell) {
         state.push(getCellState(cell))
     });
-    const name = document.getElementById("name").innerText.substr("Script: ".length);
+    const name = document.getElementById("name").innerText.substring("Script: ".length);
     window.localStorage.setItem("checkerlang_notebook_cells_" + name, JSON.stringify(state));
 }
 
@@ -109,7 +109,7 @@ function loadState() {
     while (contents.firstChild) {
         contents.removeChild(contents.lastChild);
     }    
-    const name = document.getElementById("name").innerText.substr("Script: ".length);
+    const name = document.getElementById("name").innerText.substring("Script: ".length);
     let data = window.localStorage.getItem("checkerlang_notebook_cells_" + name);
     if (data === null) data = window.localStorage.getItem("scriptlang_notebook_cells_" + name);
     if (data === null) {
@@ -131,7 +131,7 @@ function clearOutput() {
 }
 
 function getMode() {
-    return document.getElementById("mode").innerText.substr("Mode: ".length)
+    return document.getElementById("mode").innerText.substring("Mode: ".length)
 }
 
 function setMode(mode) {

@@ -52,7 +52,7 @@ for (let arg of process.argv.slice(2)) {
         if (arg === "--secure") secure = true;
         else if (arg === "--legacy") legacy = true;
         else if (arg.startsWith("-I")) {
-            modulepath.addItem(new ValueString(arg.substr(2)));
+            modulepath.addItem(new ValueString(arg.substring(2)));
         } else if (arg.startsWith("--")) {
             process.stderr.write(`Unknown option ${arg}\n`);
             exit(1);

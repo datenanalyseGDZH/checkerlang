@@ -44,7 +44,7 @@ const modulepath = new ValueList();
 for (let arg of process.argv.slice(2)) {
     if (arg === "--secure") secure = true;
     else if (arg === "--legacy") legacy = true;
-    else if (arg.startsWith("-I")) modulepath.addItem(new ValueString(arg.substr(2)));
+    else if (arg.startsWith("-I")) modulepath.addItem(new ValueString(arg.substring(2)));
 }
 
 const interpreter = new Interpreter(secure, legacy);

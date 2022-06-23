@@ -447,7 +447,7 @@ for (const symbol of env.getSymbols()) {
     const info = obj.info;
     info.split(/[\r\n]+/).forEach(line => { 
         if (line.startsWith(":")) {
-            const [test, expected] = line.substr(1).split(" ==> ");
+            const [test, expected] = line.substring(1).split(" ==> ");
             tests.push([test, expected]);
         }
     });
@@ -457,7 +457,7 @@ for (const symbol of env.getSymbols()) {
         let result = interpreter.interpret(test, "{info-test}");
         if (!expected.startsWith("<")) expected = interpreter.interpret(expected, "{info-test-expected}");
         else expected = new ValueString(expected);
-        if (expected.isString() && expected.value.startsWith("'")) expected = expected.substr(1, expected.length - 1);
+        if (expected.isString() && expected.value.startsWith("'")) expected = expected.substring(1, expected.length);
         if (expected.isString() && !result.isString()) result = result.asString();
         if (!result.isEquals(expected)) {
             tests_failed++;

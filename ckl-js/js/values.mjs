@@ -100,7 +100,7 @@ export class StringInput {
 
     read() {
         if (this.pos >= this.input.length) return null;
-        const result = this.input.substr(this.pos, 1);
+        const result = this.input.substring(this.pos, this.pos + 1);
         this.pos++;
         return result;
     }
@@ -947,7 +947,7 @@ export class ValueList extends Value {
         for (const item of this.value) {
             result = result.concat(item.toString(), ", ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - 2);
+        if (result.length > 1) result = result.substring(0, result.length - 2);
         return result.concat("]");
     }
 }
@@ -1057,7 +1057,7 @@ export class ValueMap extends Value {
         for (const key of this.getSortedKeys()) {
             result = result.concat(key.toString(), " => ", this.getItem(key).toString(), ", ");
         }
-        if (result.length > "<<<".length) result = result.substr(0, result.length - 2);
+        if (result.length > "<<<".length) result = result.substring(0, result.length - 2);
         return result.concat(">>>");
     }
 }
@@ -1268,7 +1268,7 @@ export class ValueObject extends Value {
                 if (key.startsWith("_")) continue;
                 result = result.concat(key, "=", this.value.get(key).toString(), ", ");
             }
-            if (result.length > "<*".length) result = result.substr(0, result.length - 2);
+            if (result.length > "<*".length) result = result.substring(0, result.length - 2);
             return result.concat("*>");
         }
     }
@@ -1451,7 +1451,7 @@ export class ValueSet extends Value {
         for (const item of this.getSortedItems()) {
             result = result.concat(item.toString(), ", ");
         }
-        if (result.length > "<<".length) result = result.substr(0, result.length - 2);
+        if (result.length > "<<".length) result = result.substring(0, result.length - 2);
         return result.concat(">>");
     }
 }
@@ -1505,12 +1505,12 @@ export class ValueString extends Value {
     asDate() {
         // handle yyyyMMddHHmmss, yyyyMMddHH and yyyyMMdd, throw exception if not matching
         if (this.value.length < 8) throw new RuntimeError("ERROR", "Cannot convert " + this.value + " to date");
-        const year = Number(this.value.substr(0, 4));
-        const month = Number(this.value.substr(4, 2));
-        const day = Number(this.value.substr(6, 2));
-        const hours = this.value.length >= 10 ? Number(this.value.substr(8, 2)) : 0;
-        const minutes = this.value.length == 14 ? Number(this.value.substr(10, 2)) : 0;
-        const seconds = this.value.length == 14 ? Number(this.value.substr(12, 2)) : 0;
+        const year = Number(this.value.substring(0, 4));
+        const month = Number(this.value.substring(4, 6));
+        const day = Number(this.value.substring(6, 8));
+        const hours = this.value.length >= 10 ? Number(this.value.substring(8, 10)) : 0;
+        const minutes = this.value.length == 14 ? Number(this.value.substring(10, 12)) : 0;
+        const seconds = this.value.length == 14 ? Number(this.value.substring(12, 14)) : 0;
         if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) throw new RuntimeError("ERROR", "Cannot convert " + this.value + " to date");
         return new ValueDate(new Date(year, month - 1, day, hours, minutes, seconds));
     }

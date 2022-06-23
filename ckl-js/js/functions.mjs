@@ -2481,7 +2481,7 @@ export class FuncParseDate extends ValueFunc {
             for (const part of ["yyyy", "yy", "MM", "dd", "HH", "mm", "ss"]) {
                 const idx = fmt.indexOf(part);
                 if (idx === -1) continue;
-                vals[part] = Number(str.substr(idx, part.length));
+                vals[part] = Number(str.substring(idx, idx + part.length));
                 str = str.substring(0, idx) + str.substring(idx + part.length);
                 fmt = fmt.substring(0, idx) + fmt.substring(idx + part.length);
                 if (str === "") break;

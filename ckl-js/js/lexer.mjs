@@ -516,7 +516,7 @@ export class Lexer {
         for (const token of this.tokens) {
             result = result.concat(token, ", ");
         }
-        if (result.length > 1) result = result.substr(0, result.length - 2);
+        if (result.length > 1) result = result.substring(0, result.length - 2);
         return result.concat("] @ ", this.nextToken.toString());
     }
 }

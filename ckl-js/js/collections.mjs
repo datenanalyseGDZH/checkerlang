@@ -144,7 +144,7 @@ export class HashSet {
         for (const item of this.sortedValues()) {
             result = result.concat(item.toString(), ", ");
         }
-        if (result.endsWith(", ")) result = result.substr(0, result.length - 2);
+        if (result.endsWith(", ")) result = result.substring(0, result.length - 2);
         return result + "])";
     }
 }
@@ -294,7 +294,7 @@ export class HashMap {
         for (const [key, value] of this.sortedEntries()) {
             result = result.concat(key.toString(), " => ", value.toString(), ", ");
         }
-        if (result.endsWith(", ")) result = result.substr(0, result.length - 2);
+        if (result.endsWith(", ")) result = result.substring(0, result.length - 2);
         return result + "])";
     }
 }

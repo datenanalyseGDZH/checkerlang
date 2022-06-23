@@ -44,10 +44,10 @@ export const moduleloader = function(modulefile, environment, pos) {
                         if (system.fs.existsSync(modulepath)) return system.fs.readFileSync(modulepath, {encoding: 'utf8', flag: 'r'});
                     }
                 }
-                if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
+                if (!system.fs.existsSync(filename)) throw new RuntimeError("ERROR", "Module " + modulefile.substring(0, modulefile.length - 4) + " not found", pos);
                 return system.fs.readFileSync(filename, {encoding: 'utf8', flag: 'r'});
             } else {
-                throw new RuntimeError("ERROR", "Module " + modulefile.substr(0, modulefile.length - 4) + " not found", pos);
+                throw new RuntimeError("ERROR", "Module " + modulefile.substring(0, modulefile.length - 4) + " not found", pos);
             }
     }
 };
