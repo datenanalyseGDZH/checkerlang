@@ -50,7 +50,7 @@ namespace CheckerLang
             var encoding = args.GetString("encoding", "UTF-8").GetValue();
             var append = ValueBoolean.FALSE;
             if (args.HasArg("append")) append = args.Get("append").AsBoolean();
-            return new ValueOutput(new StreamWriter(filename, append.GetValue(), encoding == "UTF-8" ? Encoding.UTF8 : Encoding.GetEncoding(encoding)));
+            return new ValueOutput(new StreamWriter(filename, append.GetValue(), encoding == "UTF-8" ? new UTF8Encoding(false) : Encoding.GetEncoding(encoding)));
         }
     }
     
