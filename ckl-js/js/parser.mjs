@@ -234,7 +234,7 @@ export class Parser {
                     while (!lexer.peekn(1, "end", "keyword")) {
                         if (lexer.matchIf("def", "keyword")) {
                             pos = lexer.getPos();
-                            let token = lexer.next();
+                            token = lexer.next();
                             if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
                             if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
                             if (lexer.peekn(1, "(", "interpunction")) {
