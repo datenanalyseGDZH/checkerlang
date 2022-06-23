@@ -225,7 +225,7 @@ export class Parser {
             } else {
                 // handle single var def
                 let token = lexer.next();
-                if (token.type === "identifier" && token.value === "class") {
+                if (token.type === "identifier" && token.value === "class" && lexer.peek().type === "identifier") {
                     token = lexer.next();
                     if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
                     if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
