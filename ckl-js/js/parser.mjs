@@ -36,6 +36,7 @@ import {
     NodeAssignDestructuring,
     NodeBlock,
     NodeBreak,
+    NodeClass,
     NodeContinue,
     NodeDef,
     NodeDeref,
@@ -207,7 +208,7 @@ export class Parser {
         }
 
         if (lexer.matchIf("def", "keyword")) {
-            const pos = lexer.getPos();
+            let pos = lexer.getPos();
             if (lexer.matchIf("[", "interpunction")) {
                 // handle destructuring def
                 let identifiers = [];
@@ -223,14 +224,39 @@ export class Parser {
                 return new NodeDefDestructuring(identifiers, this.parseExpression(lexer), comment, pos);
             } else {
                 // handle single var def
-                const token = lexer.next();
-                if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
-                if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
-                if (lexer.peekn(1, "(", "interpunction")) {
-                    return new NodeDef(token.value, this.parseFn(lexer, pos), comment, pos);
+                let token = lexer.next();
+                if (token.type === "identifier" && token.value === "class") {
+                    token = lexer.next();
+                    if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                    if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                    lexer.match("do", "keyword");
+                    const result = new NodeClass(token.value, pos);
+                    while (!lexer.peekn(1, "end", "keyword")) {
+                        if (lexer.matchIf("def", "keyword")) {
+                            pos = lexer.getPos();
+                            let token = lexer.next();
+                            if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                            if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                            if (lexer.peekn(1, "(", "interpunction")) {
+                                result.addMember(new NodeDef(token.value, this.parseFn(lexer, pos), comment, pos));
+                            } else {
+                                lexer.match("=", "operator");
+                                result.addMember(new NodeDef(token.value, this.parseExpression(lexer), comment, pos));
+                            }
+                            if (lexer.peekn(1, ";", "interpunction")) lexer.match(";", "interpunction");
+                        }
+                    }
+                    lexer.match("end", "keyword");
+                    return result;
                 } else {
-                    lexer.match("=", "operator");
-                    return new NodeDef(token.value, this.parseExpression(lexer), comment, pos);
+                    if (token.type === "keyword") throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                    if (token.type !== "identifier") throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                    if (lexer.peekn(1, "(", "interpunction")) {
+                        return new NodeDef(token.value, this.parseFn(lexer, pos), comment, pos);
+                    } else {
+                        lexer.match("=", "operator");
+                        return new NodeDef(token.value, this.parseExpression(lexer), comment, pos);
+                    }
                 }
             }
         }

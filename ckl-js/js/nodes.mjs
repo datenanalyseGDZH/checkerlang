@@ -374,6 +374,45 @@ export class NodeBreak {
     }
 }
 
+export class NodeClass {
+    constructor(identifier, pos) {
+        this.identifier = identifier;
+        this.members = [];
+        this.pos = pos;
+    }
+
+    addMember(member) {
+        this.members.push(member);
+    }
+
+    evaluate(environment) {
+        const result = new ValueObject();
+        for (let member of this.members) {
+            result.addItem(member.identifier, member.evaluate(environment));
+        }
+        environment.put(this.identifier, result);
+        return result;
+    }
+
+    toString() {
+        let result = "(class " + this.identifier + " ";
+        for (let expression of this.expressions) {
+            result = result.concat(expression.toString(), " ");
+        }
+        if (this.expressions.length > 0) result = result.substr(0, result.length - 2);
+        return result.concat(")");
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        for (let expression of this.expressions) {
+            expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        }
+        if (!boundVars.includes(this.identifier)) {
+            boundVars.push(this.identifier);
+        }
+    }
+}
+
 export class NodeContinue {
     constructor(pos) {
         this.pos = pos;
