@@ -1930,3 +1930,28 @@ export class NodeWhile {
         this.block.collectVars(freeVars, boundVarsLocal, additionalBoundVars);
     }
 }
+
+export class NodeXor {
+    constructor(pos, firstExpr, secondExpr) {
+        this.pos = pos;
+        this.firstExpr = firstExpr;
+        this.secondExpr = secondExpr;
+    }
+
+    evaluate(environment) {
+        const firstValue = this.firstExpr.evaluate(environment);
+        const secondValue = this.secondExpr.evaluate(environment);
+        if (!firstValue.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean but got " + firstValue.type(), this.pos);
+        if (!secondValue.isBoolean()) throw new RuntimeError("ERROR", "Expected boolean but got " + secondValue.type(), this.pos);
+        return ValueBoolean.from(firstValue.value ^ secondValue.value);
+    }
+
+    toString() {
+        return `(${this.firstExpr} xor ${this.secondExpr})`;
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        this.firstExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+        this.secondExpr.collectVars(freeVars, boundVars, additionalBoundVars);
+    }
+}

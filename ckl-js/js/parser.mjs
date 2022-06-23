@@ -67,7 +67,8 @@ import {
     NodeSetComprehensionParallel,
     NodeSetComprehensionProduct,
     NodeSpread,
-    NodeWhile
+    NodeWhile,
+    NodeXor
 } from "./nodes.mjs";
 
 export class Parser {
@@ -303,6 +304,16 @@ export class Parser {
             const result = new NodeOr(lexer.getPosNext()).addOrClause(expr);
             while (lexer.matchIf("or", "keyword")) {
                 result.addOrClause(this.parseAndExpr(lexer));
+            }
+            return result;
+        } else if (lexer.matchIf("xor", "keyword")) {
+            let pos = lexer.getPos();
+            let secondExpr = this.parseAndExpr(lexer);
+            let result = new NodeXor(pos, expr, secondExpr);
+            while (lexer.matchIf("xor", "keyword")) {
+                pos = lexer.getPos();
+                secondExpr = this.parseAndExpr(lexer);
+                result = new NodeXor(pos, result, secondExpr);
             }
             return result;
         }

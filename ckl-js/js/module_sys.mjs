@@ -19,7 +19,7 @@ export const modulesys = `
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-def checkerlang_version = "3.5.2";
+def checkerlang_version = "3.5.3";
 def checkerlang_platform = "js";
 
 def checkerlang_modules = ["Bitwise", "Core", "Date", "IO", "List", "Math", "OS", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
