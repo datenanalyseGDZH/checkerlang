@@ -1067,37 +1067,48 @@ public class Parser {
         } else if (lexer.matchIf("[", TokenType.Interpunction)) {
             SourcePos pos = lexer.getPos();
             Node index = this.parseExpression(lexer);
-            Node defaultValue = null;
-            if (lexer.matchIf(",", TokenType.Interpunction)) {
-                defaultValue = this.parseExpression(lexer);
-            }
-            if (lexer.matchIf("]", TokenType.Interpunction, "=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, value, pos);
-                result.interrupt = true;
-            } else if (lexer.matchIf("]", TokenType.Interpunction, "+=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
-                result.interrupt = true;
-            } else if (lexer.matchIf("]", TokenType.Interpunction, "-=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
-                result.interrupt = true;
-            } else if (lexer.matchIf("]", TokenType.Interpunction, "*=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
-                result.interrupt = true;
-            } else if (lexer.matchIf("]", TokenType.Interpunction, "/=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
-                result.interrupt = true;
-            } else if (lexer.matchIf("]", TokenType.Interpunction, "%=", TokenType.Operator)) {
-                Node value = this.parseExpression(lexer);
-                result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
-                result.interrupt = true;
-            } else {
-                result.node = new NodeDeref(node, index, defaultValue, pos);
+            if (lexer.matchIf("to", TokenType.Identifier)) {
+                Node end;
+                if (lexer.matchIf("*", TokenType.Operator)) {
+                    end = null;
+                } else {
+                    end = this.parseExpression(lexer);
+                }
+                result.node = new NodeDerefSlice(node, index, end, pos);
                 lexer.match("]", TokenType.Interpunction);
+            } else {
+                Node defaultValue = null;
+                if (lexer.matchIf(",", TokenType.Interpunction)) {
+                    defaultValue = this.parseExpression(lexer);
+                }
+                if (lexer.matchIf("]", TokenType.Interpunction, "=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, value, pos);
+                    result.interrupt = true;
+                } else if (lexer.matchIf("]", TokenType.Interpunction, "+=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
+                    result.interrupt = true;
+                } else if (lexer.matchIf("]", TokenType.Interpunction, "-=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
+                    result.interrupt = true;
+                } else if (lexer.matchIf("]", TokenType.Interpunction, "*=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
+                    result.interrupt = true;
+                } else if (lexer.matchIf("]", TokenType.Interpunction, "/=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
+                    result.interrupt = true;
+                } else if (lexer.matchIf("]", TokenType.Interpunction, "%=", TokenType.Operator)) {
+                    Node value = this.parseExpression(lexer);
+                    result.node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, defaultValue, pos), value, pos), pos);
+                    result.interrupt = true;
+                } else {
+                    result.node = new NodeDeref(node, index, defaultValue, pos);
+                    lexer.match("]", TokenType.Interpunction);
+                }
             }
         }
         return result;

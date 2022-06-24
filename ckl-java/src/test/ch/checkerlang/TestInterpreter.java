@@ -839,6 +839,61 @@ public class TestInterpreter {
         + "t->f(3)");
     }
 
+    @Test
+    public void testSliceString1() {
+        verify("'bc'", "'abcdef'[1 to 3]");
+    }
+
+    @Test
+    public void testSliceString2() {
+        verify("'bcde'", "'abcdef'[1 to -1]");
+    }
+
+    @Test
+    public void testSliceString3() {
+        verify("'bcdef'", "'abcdef'[1 to 99]");
+    }
+
+    @Test
+    public void testSliceString4() {
+        verify("'bcd'", "'abcdef'[range(4)[1] to 6-2*1]");
+    }
+
+    @Test
+    public void testSliceString5() {
+        verify("'abc'", "def s = 'abcdef'; s[0 to length(s)/2]");
+    }
+
+    @Test
+    public void testSliceList1() {
+        verify("[2, 3]", "[1, 2, 3, 4, 5][1 to 3]");
+    }
+
+    @Test
+    public void testSliceList2() {
+        verify("[2, 3, 4]", "range(6)[2 to -1]");
+    }
+
+    @Test
+    public void testSliceList3() {
+        verify("[2, 3, 4, 5]", "range(6)[2 to *]");
+    }
+
+    @Test
+    public void testSliceList4() {
+        verify("[0, 1, 2, 3, 4, 5]", "range(6)[0 to 99]");
+    }
+
+    @Test
+    public void testSliceList5() {
+        verify("[3, 4]", "range(6)[-3 to -1]");
+    }
+
+    @Test
+    public void testSliceList6() {
+        verify("[0, 1, 2, 3, 4]", "range(6)[-99 to -1]");
+    }
+
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {
