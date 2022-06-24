@@ -69,7 +69,8 @@ import {
     NodeSetComprehensionProduct,
     NodeSpread,
     NodeWhile,
-    NodeXor
+    NodeXor,
+    NodeDerefSlice
 } from "./nodes.mjs";
 
 export class Parser {
@@ -1074,37 +1075,48 @@ export class Parser {
         } else if (lexer.matchIf("[", "interpunction")) {
             const pos = lexer.getPos();
             const index = this.parseExpression(lexer);
-            let default_value = null;
-            if (lexer.matchIf(",", "interpunction")) {                
-                default_value = this.parseExpression(lexer);
-            }
-            if (lexer.matchIf(["]", "="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, value, pos);
-                interrupt = true;
-            } else if (lexer.matchIf(["]", "+="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, default_value, pos), value, pos), pos);
-                interrupt = true;
-            } else if (lexer.matchIf(["]", "-="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, default_value, pos), value, pos), pos);
-                interrupt = true;
-            } else if (lexer.matchIf(["]", "*="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, default_value, pos), value, pos), pos);
-                interrupt = true;
-            } else if (lexer.matchIf(["]", "/="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, default_value, pos), value, pos), pos);
-                interrupt = true;
-            } else if (lexer.matchIf(["]", "%="], ["interpunction", "operator"])) {
-                const value = this.parseExpression(lexer);
-                node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, default_value, pos), value, pos), pos);
-                interrupt = true;
-            } else {
-                node = new NodeDeref(node, index, default_value, pos);
+            if (lexer.matchIf("to", "identifier")) {
+                let end;
+                if (lexer.matchIf("*", "operator")) {
+                    end = undefined;
+                } else {
+                    end = this.parseExpression(lexer);
+                }
+                node = new NodeDerefSlice(node, index, end, pos);
                 lexer.match("]", "interpunction");
+            } else {
+                let default_value = null;
+                if (lexer.matchIf(",", "interpunction")) {                
+                    default_value = this.parseExpression(lexer);
+                }
+                if (lexer.matchIf(["]", "="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, value, pos);
+                    interrupt = true;
+                } else if (lexer.matchIf(["]", "+="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, this.funcCall("add", new NodeDeref(node, index, default_value, pos), value, pos), pos);
+                    interrupt = true;
+                } else if (lexer.matchIf(["]", "-="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, this.funcCall("sub", new NodeDeref(node, index, default_value, pos), value, pos), pos);
+                    interrupt = true;
+                } else if (lexer.matchIf(["]", "*="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, this.funcCall("mul", new NodeDeref(node, index, default_value, pos), value, pos), pos);
+                    interrupt = true;
+                } else if (lexer.matchIf(["]", "/="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, this.funcCall("div", new NodeDeref(node, index, default_value, pos), value, pos), pos);
+                    interrupt = true;
+                } else if (lexer.matchIf(["]", "%="], ["interpunction", "operator"])) {
+                    const value = this.parseExpression(lexer);
+                    node = new NodeDerefAssign(node, index, this.funcCall("mod", new NodeDeref(node, index, default_value, pos), value, pos), pos);
+                    interrupt = true;
+                } else {
+                    node = new NodeDeref(node, index, default_value, pos);
+                    lexer.match("]", "interpunction");
+                }
             }
         }        
         return [node, interrupt];

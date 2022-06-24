@@ -678,6 +678,57 @@ export class NodeDerefInvoke {
     }
 }
 
+export class NodeDerefSlice {
+    constructor(expression, start, end, pos) {
+        this.expression = expression;
+        this.start = start;
+        this.end = end;
+        this.pos = pos;
+    }
+
+    evaluate(environment) {
+        let value = this.expression.evaluate(environment);
+        let start = this.start.evaluate(environment);
+        let end = this.end && this.end.evaluate(environment);
+        if (value == ValueNull.NULL) return ValueNull.NULL;
+        if (value instanceof ValueString) {
+            const s = value.value;
+            start = Number(start.value);
+            end = end ? Number(end.value) : s.length;
+            if (start < 0) start = start + s.length;
+            if (end < 0) end = end + s.length;
+            if (start < 0) start = 0;
+            if (end > s.length) end = s.length;
+            return new ValueString(s.substring(start, end));
+        }
+        if (value instanceof ValueList) {
+            const list = value.value;
+            start = Number(start.value);
+            end = end ? Number(end.value) : list.length;
+            if (start < 0) start = start + list.length;
+            if (end < 0) end = end + list.length;
+            if (start < 0) start = 0;
+            if (end > list.length) end = list.length;
+            const result = new ValueList();
+            for (let i = start; i < end; i++) {
+                result.addItem(list[i]);
+            }
+            return result;
+        }
+        throw new RuntimeError("ERROR", "Cannot slice value " + value, this.pos);
+    }
+
+    toString() {
+        return this.expression + "[" + this.start + ":" + this.end + "]";
+    }
+
+    collectVars(freeVars, boundVars, additionalBoundVars) {
+        this.expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        this.start.collectVars(freeVars, boundVars, additionalBoundVars);
+        this.end.collectVars(freeVars, boundVars, additionalBoundVars);
+    }
+}
+
 export class NodeError {
     constructor(expression, pos) {
         this.expression = expression;

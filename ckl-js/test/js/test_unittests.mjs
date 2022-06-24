@@ -417,6 +417,17 @@ def class Test do \
 end; \
 def t = new(Test, 12); \
 t->f(3)", "36");
+interpreter_test("SliceString1", "'abcdef'[1 to 3]", "'bc'");
+interpreter_test("SliceString2", "'abcdef'[1 to -1]", "'bcde'");
+interpreter_test("SliceString3", "'abcdef'[1 to 99]", "'bcdef'");
+interpreter_test("SliceString4", "'abcdef'[range(4)[1] to 6-2*1]", "'bcd'");
+interpreter_test("SliceString5", "def s = 'abcdef'; s[0 to length(s)/2]", "'abc'");
+interpreter_test("SliceList1", "[1, 2, 3, 4, 5][1 to 3]", "[2, 3]");
+interpreter_test("SliceList2", "range(6)[2 to -1]", "[2, 3, 4]");
+interpreter_test("SliceList3", "range(6)[2 to *]", "[2, 3, 4, 5]");
+interpreter_test("SliceList4", "range(6)[0 to 99]", "[0, 1, 2, 3, 4, 5]");
+interpreter_test("SliceList5", "range(6)[-3 to -1]", "[3, 4]");
+interpreter_test("SliceList6", "range(6)[-99 to -1]", "[0, 1, 2, 3, 4]");
 
 function collectvars_test(description, code, expected) {
     let get_freevars = function(node, environment) {
