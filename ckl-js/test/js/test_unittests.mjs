@@ -406,6 +406,17 @@ interpreter_test("TestForObjectKeys", "def result = []; def obj = <*a=1, b=2, c=
 interpreter_test("TestForObjectEntries", "def result = []; def obj = <*a=1, b=2, c=3*>; for o in entries obj append(result, o); result;", "[['a', 1], ['b', 2], ['c', 3]]");
 interpreter_test("MapDefaultValue", "def m = <<<'a' => 1>>>; m['b', 0]", "0");
 interpreter_test("MapIncrementDefaultValue", "def m = <<<>>>; m['a', 0] += 1; m['a']", "1");
+interpreter_test("Class1", "\
+def class Test do \
+  def _init_(self, x) do \
+    self->x = x; \
+  end; \
+  def f(self, n) do \
+    self->x * n; \
+  end; \
+end; \
+def t = new(Test, 12); \
+t->f(3)", "36");
 
 function collectvars_test(description, code, expected) {
     let get_freevars = function(node, environment) {
