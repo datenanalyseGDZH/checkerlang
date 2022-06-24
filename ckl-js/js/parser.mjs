@@ -329,7 +329,7 @@ export class Parser {
         if (lexer.peekn(1, "or", "keyword")) {
             const result = new NodeOr(lexer.getPosNext()).addOrClause(expr);
             while (lexer.matchIf("or", "keyword")) {
-                result.addOrClause(this.parseOrExpr(lexer));
+                result.addOrClause(this.parseXorExpr(lexer));
             }
             return result;
         }
