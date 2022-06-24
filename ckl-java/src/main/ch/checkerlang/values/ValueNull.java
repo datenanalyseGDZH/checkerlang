@@ -23,6 +23,9 @@ package ch.checkerlang.values;
 public class ValueNull extends Value {
     public static ValueNull NULL = new ValueNull();
 
+    // prevent instantiation
+    private ValueNull() {}
+
     public boolean isEquals(Value value) {
         return value == NULL;
     }

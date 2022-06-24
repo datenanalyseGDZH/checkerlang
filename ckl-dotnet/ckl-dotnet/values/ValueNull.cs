@@ -24,6 +24,9 @@ namespace CheckerLang
     {
         public static ValueNull NULL = new ValueNull();
         
+        // prevent instantiation
+        private ValueNull() {}
+
         public override bool IsEquals(Value value)
         {
             return value == NULL;
