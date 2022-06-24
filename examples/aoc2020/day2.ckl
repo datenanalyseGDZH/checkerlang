@@ -1,0 +1,57 @@
+# https://adventofcode.com/2020/day/2
+
+require IO import [read_file];
+require List import [map_list];
+
+def data = read_file("day2-input.txt") !> trim() !> lines();
+
+def class Verify1 do
+    def _init_(self, min, max, char) do
+        self->min = int(min);
+        self->max = int(max);
+        self->char = char;
+    end;
+    def matches(self, psw) do
+        self->min <= sum([int(ch == self->char) for ch in psw]) <= self->max;
+    end;
+end;
+
+def parse_line1(line) do
+    def [spec, psw] = line !> split(": ");
+    def [min, max, char] = spec !> split("[- ]");
+    [new(Verify1, min, max, char), psw];
+end;
+
+def process(data, parser) do
+    data !>
+    map_list(parser) !>
+    map_list(fn(entry) int(entry[0]->matches(entry[1]))) !>
+    sum();
+end;
+
+def result = process(data, parse_line1);
+if result == 538 then println(result + " OK")
+else println(result + " NOK");
+
+
+def class Verify2 do
+    def _init_(self, a, b, char) do
+        self->a = int(a) - 1;
+        self->b = int(b) - 1;
+        self->char = char;
+    end;
+    def matches(self, psw) do
+        psw[self->a] == self->char xor psw[self->b] == self->char;
+    end;
+end;
+
+def parse_line2(line) do
+    def [spec, psw] = line !> split(": ");
+    def [a, b, char] = spec !> split("[- ]");
+    [new(Verify2, a, b, char), psw];
+end;
+
+def result = process(data, parse_line2);
+if result == 489 then println(result + " OK")
+else println(result + " NOK");
+
