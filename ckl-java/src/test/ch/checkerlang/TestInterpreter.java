@@ -823,6 +823,22 @@ public class TestInterpreter {
         verify("1", "def m = <<<>>>; m['a', 0] += 1; m['a']");
     }
 
+    @Test
+    public void testClass() {
+        verify("36", 
+        "" 
+        + "def class Test do " 
+        + "  def _init_(self, x) do " 
+        + "    self->x = x; " 
+        + "  end; " 
+        + "  def f(self, n) do " 
+        + "    self->x * n; " 
+        + "  end; " 
+        + "end; " 
+        + "def t = new(Test, 12); " 
+        + "t->f(3)");
+    }
+
     private void verify(String expected, String script) {
         Environment env = new Environment();
         try {
