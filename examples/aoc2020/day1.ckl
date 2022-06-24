@@ -1,0 +1,48 @@
+# https://adventofcode.com/2020/day/1
+
+require IO import [read_file];
+require List import [map_list];
+
+def data = read_file("day1-input.txt") !> trim() !> lines() !> map_list(fn(line) int(line)) !> sorted();
+
+def a = 0;
+def b = 0;
+for n in data do
+    for m in data do        
+        if n + m == 2020 then do
+            a = n;
+            b = m;
+            break;
+        end elif n + m > 2020 then do
+            break;
+        end;
+    end;
+    if a != 0 then break;
+end;
+def result = a * b;
+if result == 319531 then println(result + " OK")
+else println(result + " NOK");
+
+
+def a = 0;
+def b = 0;
+def c = 0;
+for n in data do
+    for m in data do
+        if n + m > 2020 then break;
+        for k in data do
+            if n + m + k > 2020 then break;
+            if n + m + k == 2020 then do
+                a = n;
+                b = m;
+                c = k;
+                break;
+            end;
+        end;
+        if a != 0 then break;
+    end;
+    if a != 0 then break;
+end;
+def result = a * b * c;
+if result == 244300320 then println(result + " OK")
+else println(result + " NOK");
