@@ -16,20 +16,19 @@ def class Verify1 do
     end;
 end;
 
-def parse_line1(line) do
+def check_line1(line) do
     def [spec, psw] = line !> split(": ");
     def [min, max, char] = spec !> split("[- ]");
-    [new(Verify1, min, max, char), psw];
+    int(new(Verify1, min, max, char)->matches(psw));
 end;
 
 def process(data, parser) do
     data !>
     map_list(parser) !>
-    map_list(fn(entry) int(entry[0]->matches(entry[1]))) !>
     sum();
 end;
 
-def result = process(data, parse_line1);
+def result = process(data, check_line1);
 if result == 538 then println(result + " OK")
 else println(result + " NOK");
 
@@ -45,13 +44,13 @@ def class Verify2 do
     end;
 end;
 
-def parse_line2(line) do
+def check_line2(line) do
     def [spec, psw] = line !> split(": ");
     def [a, b, char] = spec !> split("[- ]");
-    [new(Verify2, a, b, char), psw];
+    int(new(Verify2, a, b, char)->matches(psw));
 end;
 
-def result = process(data, parse_line2);
+def result = process(data, check_line2);
 if result == 489 then println(result + " OK")
 else println(result + " NOK");
 
