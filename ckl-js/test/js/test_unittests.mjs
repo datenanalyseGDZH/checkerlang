@@ -166,6 +166,7 @@ interpreter_test("XorExpr1", "TRUE xor FALSE", "TRUE");
 interpreter_test("XorExpr2", "TRUE xor TRUE", "FALSE");
 interpreter_test("XorExpr3", "FALSE xor FALSE", "FALSE");
 interpreter_test("XorExpr4", "FALSE xor TRUE xor FALSE and TRUE", "TRUE");
+interpreter_test("XorExpr4", "FALSE xor TRUE or FALSE", "TRUE");
 interpreter_test("AndExpr", "2 == 2 and 3 == 3 and 4 == 4", "TRUE");
 interpreter_test("AndExpr", "2 == 2 and 3 == 3 and 4 == 5", "FALSE");
 interpreter_test("NotExpr", "not 2 == 3", "TRUE");

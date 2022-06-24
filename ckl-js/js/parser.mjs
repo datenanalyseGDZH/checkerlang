@@ -325,23 +325,27 @@ export class Parser {
     }
 
     parseOrExpr(lexer) {
-        const expr = this.parseAndExpr(lexer);
+        const expr = this.parseXorExpr(lexer);
         if (lexer.peekn(1, "or", "keyword")) {
             const result = new NodeOr(lexer.getPosNext()).addOrClause(expr);
             while (lexer.matchIf("or", "keyword")) {
-                result.addOrClause(this.parseAndExpr(lexer));
+                result.addOrClause(this.parseOrExpr(lexer));
             }
             return result;
-        } else if (lexer.matchIf("xor", "keyword")) {
+        }
+        return expr;
+    }
+
+    parseXorExpr(lexer) {
+        let expr = this.parseAndExpr(lexer);
+        if (lexer.peekn(1, "xor", "keyword")) {
+            lexer.match("xor", "keyword");
             let pos = lexer.getPos();
-            let secondExpr = this.parseAndExpr(lexer);
-            let result = new NodeXor(pos, expr, secondExpr);
+            let expr2 = this.parseAndExpr(lexer);
+            expr = new NodeXor(pos, expr, expr2);
             while (lexer.matchIf("xor", "keyword")) {
-                pos = lexer.getPos();
-                secondExpr = this.parseAndExpr(lexer);
-                result = new NodeXor(pos, result, secondExpr);
+                expr = new NodeXor(lexer.getPos(), expr, this.parseAndExpr(lexer));
             }
-            return result;
         }
         return expr;
     }
