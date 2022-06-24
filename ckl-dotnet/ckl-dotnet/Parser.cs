@@ -217,17 +217,43 @@ namespace CheckerLang
                 }
                 // handle single var def
                 token = lexer.Next();
-                if (token.type == TokenType.Keyword)
-                    throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
-                if (token.type != TokenType.Identifier)
-                    throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
-                if (lexer.Peek("(", TokenType.Interpunction))
-                {
-                    return new NodeDef(token.value, ParseFn(lexer, pos), comment, pos);
-                }
+                if (token.type == TokenType.Keyword && token.value == "class" && lexer.Peek().type == TokenType.Identifier) {
+                    token = lexer.Next();
+                    if (token.type == TokenType.Keyword) throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                    if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                    lexer.Match("do", TokenType.Keyword);
+                    NodeClass result = new NodeClass(token.value, "", pos);
+                    while (!lexer.Peekn(1, "end", TokenType.Keyword)) {
+                        if (lexer.MatchIf("def", TokenType.Keyword)) {
+                            pos = lexer.GetPos();
+                            token = lexer.Next();
+                            if (token.type == TokenType.Keyword) throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                            if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                            if (lexer.Peekn(1, "(", TokenType.Interpunction)) {
+                                result.AddMember(new NodeDef(token.value, this.ParseFn(lexer, pos), comment, pos));
+                            } else {
+                                lexer.Match("=", TokenType.Operator);
+                                result.AddMember(new NodeDef(token.value, this.ParseExpression(lexer), comment, pos));
+                            }
+                            if (lexer.Peekn(1, ";", TokenType.Interpunction)) 
+                                lexer.Match(";", TokenType.Interpunction);
+                        }
+                    }
+                    lexer.Match("end", TokenType.Keyword);
+                    return result;
+                } else {
+                    if (token.type == TokenType.Keyword)
+                        throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
+                    if (token.type != TokenType.Identifier)
+                        throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
+                    if (lexer.Peek("(", TokenType.Interpunction))
+                    {
+                        return new NodeDef(token.value, ParseFn(lexer, pos), comment, pos);
+                    }
 
-                lexer.Match("=", TokenType.Operator);
-                return new NodeDef(token.value, ParseExpression(lexer), comment, pos);
+                    lexer.Match("=", TokenType.Operator);
+                    return new NodeDef(token.value, ParseExpression(lexer), comment, pos);
+                }
             }
             
             if (lexer.MatchIf("for", TokenType.Keyword))

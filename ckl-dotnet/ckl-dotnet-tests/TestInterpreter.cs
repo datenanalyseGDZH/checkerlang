@@ -1006,6 +1006,23 @@ namespace Tests
                 "<<<x[0] => x[1][1] for x in entries <<<'a' => ['u', 12], 'b' => ['v', 13]>>> >>>");
         }
 
+        [Test]
+        public void TestClass()
+        {
+            Verify("36",
+                "" 
+                + "def class Test do " 
+                + "  def _init_(self, x) do " 
+                + "    self->x = x; " 
+                + "  end; " 
+                + "  def f(self, n) do " 
+                + "    self->x * n; " 
+                + "  end; " 
+                + "end; " 
+                + "def t = new(Test, 12); " 
+                + "t->f(3)");
+        }
+
         private void Verify(string expected, string script)
         {
             var env = new Environment();
