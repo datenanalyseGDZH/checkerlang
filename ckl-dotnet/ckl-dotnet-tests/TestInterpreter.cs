@@ -406,13 +406,13 @@ namespace Tests
         }
 
         [Test]
-        public void testListWithIf()
+        public void TestListWithIf()
         {
             Verify("['a', 'x', 'd']", "[if 1 < 2 then 'a' else 'b', 'x', if 1 > 2 then 'c' else 'd']");
         }
 
         [Test]
-        public void testListWithFn()
+        public void TestListWithFn()
         {
             Verify("[1, <#lambda>, 2]", "[1, fn(x) 2*x, 2]");
         }
@@ -675,13 +675,13 @@ namespace Tests
         }
 
         [Test]
-        public void testSpreadInListLiteral()
+        public void TestSpreadInListLiteral()
         {
             Verify("[1, 2, 3, 4, 5]", "[1, ...[2, 3, 4], 5]");
         }
 
         [Test]
-        public void testSpreadInListLiteralWithIdentifier()
+        public void TestSpreadInListLiteralWithIdentifier()
         {
             Verify("[1, 2, 3, 4, 5]", "def a = [2, 3, 4]; [1, ...a, 5]");
         }
@@ -693,19 +693,19 @@ namespace Tests
         }
 
         [Test]
-        public void testSpreadInFuncallMap()
+        public void TestSpreadInFuncallMap()
         {
             Verify("[1, 2, 3]", "def f(a, b, c) [a, b, c]; f(...<<<'c' => 3, 'a' => 1, 'b' => 2>>>)");
         }
 
         [Test]
-        public void testSpreadInFuncall()
+        public void TestSpreadInFuncall()
         {
             Verify("[1, 2, 3, 4, 5]", "def f(args...) args...; f(1, ...[2, 3, 4], 5)");
         }
 
         [Test]
-        public void testSpreadInFuncallWithIdentifier()
+        public void TestSpreadInFuncallWithIdentifier()
         {
             Verify("[1, 2, 3, 4, 5]", "def f(args...) args...; def a = [2, 3, 4]; f(1, ...a, 5)");
         }
@@ -807,7 +807,7 @@ namespace Tests
         }
 
         [Test]
-        public void testPipelineLambda()
+        public void TestPipelineLambda()
         {
             Verify("3", "[1, 2, 3] !> (fn(lst) lst[2])()");
         }
@@ -1021,6 +1021,61 @@ namespace Tests
                 + "end; " 
                 + "def t = new(Test, 12); " 
                 + "t->f(3)");
+        }
+        
+        [Test]
+        public void TestSliceString1() {
+            Verify("'bc'", "'abcdef'[1 to 3]");
+        }
+
+        [Test]
+        public void TestSliceString2() {
+            Verify("'bcde'", "'abcdef'[1 to -1]");
+        }
+
+        [Test]
+        public void TestSliceString3() {
+            Verify("'bcdef'", "'abcdef'[1 to 99]");
+        }
+
+        [Test]
+        public void TestSliceString4() {
+            Verify("'bcd'", "'abcdef'[range(4)[1] to 6-2*1]");
+        }
+
+        [Test]
+        public void TestSliceString5() {
+            Verify("'abc'", "def s = 'abcdef'; s[0 to length(s)/2]");
+        }
+
+        [Test]
+        public void TestSliceList1() {
+            Verify("[2, 3]", "[1, 2, 3, 4, 5][1 to 3]");
+        }
+
+        [Test]
+        public void TestSliceList2() {
+            Verify("[2, 3, 4]", "range(6)[2 to -1]");
+        }
+
+        [Test]
+        public void TestSliceList3() {
+            Verify("[2, 3, 4, 5]", "range(6)[2 to *]");
+        }
+
+        [Test]
+        public void TestSliceList4() {
+            Verify("[0, 1, 2, 3, 4, 5]", "range(6)[0 to 99]");
+        }
+
+        [Test]
+        public void TestSliceList5() {
+            Verify("[3, 4]", "range(6)[-3 to -1]");
+        }
+
+        [Test]
+        public void TestSliceList6() {
+            Verify("[0, 1, 2, 3, 4]", "range(6)[-99 to -1]");
         }
 
         private void Verify(string expected, string script)
