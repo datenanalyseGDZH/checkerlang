@@ -110,6 +110,15 @@ namespace Tests
         }
 
         [Test]
+        public void TestXorExpr() {
+            Verify("TRUE", "TRUE xor FALSE");
+            Verify("FALSE", "TRUE xor TRUE");
+            Verify("FALSE", "FALSE xor FALSE");
+            Verify("TRUE", "FALSE xor TRUE xor FALSE and TRUE");
+            Verify("TRUE", "FALSE xor TRUE or FALSE");
+        }
+
+        [Test]
         public void TestNotExpr()
         {
             Verify("TRUE", "not 2 == 3");

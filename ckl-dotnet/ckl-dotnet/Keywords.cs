@@ -31,6 +31,7 @@ namespace CheckerLang
             "elif",
             "else",
             "and",
+            "xor",
             "or",
             "not",
             "is",

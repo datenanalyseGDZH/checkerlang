@@ -314,13 +314,32 @@ namespace CheckerLang
 
         private Node ParseOrExpr(Lexer lexer)
         {
-            var expr = ParseAndExpr(lexer);
+            var expr = ParseXorExpr(lexer);
             if (lexer.Peek("or", TokenType.Keyword))
             {
                 var result = new NodeOr(expr, lexer.GetPosNext());
                 while (lexer.MatchIf("or", TokenType.Keyword))
                 {
-                    result.AddOrClause(ParseAndExpr(lexer));
+                    result.AddOrClause(ParseXorExpr(lexer));
+                }
+
+                return result;
+            }
+
+            return expr;
+        }
+
+        private Node ParseXorExpr(Lexer lexer)
+        {
+            var expr = ParseAndExpr(lexer);
+            if (lexer.MatchIf("xor", TokenType.Keyword)) 
+            {
+                SourcePos pos = lexer.GetPos();
+                Node expr2 = ParseAndExpr(lexer);
+                NodeXor result = new NodeXor(pos, expr, expr2);
+                while (lexer.MatchIf("xor", TokenType.Keyword)) 
+                {
+                    result = new NodeXor(pos, result, ParseAndExpr(lexer));
                 }
 
                 return result;
