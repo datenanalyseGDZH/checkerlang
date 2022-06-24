@@ -266,11 +266,27 @@ public class Parser {
     }
 
     private Node parseOrExpr(Lexer lexer) {
-        Node expr = parseAndExpr(lexer);
+        Node expr = parseXorExpr(lexer);
         if (lexer.peek("or", TokenType.Keyword)) {
             NodeOr result = new NodeOr(expr, lexer.getPosNext());
             while (lexer.matchIf("or", TokenType.Keyword)) {
-                result.addOrClause(parseAndExpr(lexer));
+                result.addOrClause(parseXorExpr(lexer));
+            }
+
+            return result;
+        }
+
+        return expr;
+    }
+
+    private Node parseXorExpr(Lexer lexer) {
+        Node expr = parseAndExpr(lexer);
+        if (lexer.matchIf("xor", TokenType.Keyword)) {
+            SourcePos pos = lexer.getPos();
+            Node expr2 = parseAndExpr(lexer);
+            NodeXor result = new NodeXor(pos, expr, expr2);
+            while (lexer.matchIf("xor", TokenType.Keyword)) {
+                result = new NodeXor(pos, result, parseAndExpr(lexer));
             }
 
             return result;

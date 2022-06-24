@@ -1,4 +1,4 @@
-/*  Copyright (c) 2021 Damian Brunold, Gesundheitsdirektion Kanton Zürich
+/*  Copyright (c) 2022 Damian Brunold, Gesundheitsdirektion Kanton Zürich
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ public class Keywords {
         keywords.add("elif");
         keywords.add("else");
         keywords.add("and");
+        keywords.add("xor");
         keywords.add("or");
         keywords.add("not");
         keywords.add("is");

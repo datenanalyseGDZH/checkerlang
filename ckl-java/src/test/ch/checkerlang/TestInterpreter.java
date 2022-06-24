@@ -79,6 +79,15 @@ public class TestInterpreter {
     }
 
     @Test
+    public void testXorExpr() {
+        verify("TRUE", "TRUE xor FALSE");
+        verify("FALSE", "TRUE xor TRUE");
+        verify("FALSE", "FALSE xor FALSE");
+        verify("TRUE", "FALSE xor TRUE xor FALSE and TRUE");
+        verify("TRUE", "FALSE xor TRUE or FALSE");
+    }
+
+    @Test
     public void testAndExpr() {
         verify("TRUE", "2 == 2 and 3 == 3 and 4 == 4");
         verify("FALSE", "2 == 2 and 3 == 3 and 4 == 5");
