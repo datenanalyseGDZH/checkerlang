@@ -719,7 +719,7 @@ export class NodeDerefSlice {
     }
 
     toString() {
-        return this.expression + "[" + this.start + ":" + this.end + "]";
+        return this.expression + "[" + this.start + " to " + this.end + "]";
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {

@@ -78,7 +78,7 @@ public class NodeDerefSlice implements Node {
     }
 
     public String toString() {
-        return "(" + expression + "[" + start + " " + end + "])";
+        return "(" + expression + "[" + start + " to " + end + "])";
     }
 
     public void collectVars(Collection<String> freeVars, Collection<String> boundVars, Collection<String> additionalBoundVars) {
