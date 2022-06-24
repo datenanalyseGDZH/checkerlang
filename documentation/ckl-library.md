@@ -1,4 +1,4 @@
-# CKL 3.5.2-js library
+# CKL 3.6.0-js library
 ## Table of contents
 * [Module Bitwise](#module_Bitwise)
 * [Module Date](#module_Date)
@@ -4641,7 +4641,7 @@ Core, String
 ### Examples
 ```
 split2('a:b:c|d:e:f', escape_pattern('|'), escape_pattern(':')) ==> [['a', 'b', 'c'], ['d', 'e', 'f']]
-split2('', '\|', ':') ==> []
+split2('', //\|//, //://) ==> []
 ```
 
 <a name="sprintf"></a>
