@@ -404,7 +404,7 @@ export class NodeClass {
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
-        for (let expression of this.expressions) {
+        for (let expression of this.members) {
             expression.collectVars(freeVars, boundVars, additionalBoundVars);
         }
         if (!boundVars.includes(this.identifier)) {
