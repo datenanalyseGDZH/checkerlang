@@ -275,7 +275,7 @@ x * y
 ## Functions
 
 CKL contains quite a lot of function, which you can use freely.
-See [CKL Functions](ckl-functions.md)).
+See [CKL Library](ckl-library.md)).
 
 You can define your own functions and use then in the same way
 as built in functions.
