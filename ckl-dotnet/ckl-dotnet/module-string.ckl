@@ -102,3 +102,24 @@ Escapes the characters <, > and & by their HTML entities.
 def esc(str) do
     return replace(replace(replace(str, '&', '&amp;'), '<', '&lt;'), '>', '&gt;');
 end;
+
+
+"
+count_char(str, ch)
+
+Returns the number of occurrences of the character ch in
+the string str.
+
+: count_char('abc', 'a') ==> 1
+: count_char('abc', 'c') ==> 1
+: count_char('abc', 'd') ==> 0
+: count_char('aaa', 'a') ==> 3
+: count_char('abcabcabd', 'c') ==> 2
+"
+def count_char(str, ch) do
+    def result = 0;
+    for c in str do
+        if c == ch then result += 1;
+    end;
+    result;
+end;
