@@ -1,4 +1,4 @@
-# CKL 3.6.0-js library
+# CKL 3.6.1-js library
 ## Table of contents
 * [Module Bitwise](#module_Bitwise)
 * [Module Date](#module_Date)
@@ -175,6 +175,7 @@
 ## String
 * [chr](#chr)
 * [contains](#contains)
+* [count_char](#count_char)
 * [ends_with](#ends_with)
 * [esc](#esc)
 * [find](#find)
@@ -1191,6 +1192,31 @@ Core
 count([1, 2, 2, 2, 3, 4], 2) ==> 3
 count(<<<1 => 1, 1 => 2, 2 => 2, 3 => 3>>>, 2) ==> 2
 count('122234', '2') ==> 3
+```
+
+<a name="count_char"></a>
+## count_char
+### Syntax
+```
+count_char(str, ch)
+```
+
+### Description
+Returns the number of occurrences of the character ch in
+the string str.
+
+
+
+### Modules
+String
+
+### Examples
+```
+count_char('abc', 'a') ==> 1
+count_char('abc', 'c') ==> 1
+count_char('abc', 'd') ==> 0
+count_char('aaa', 'a') ==> 3
+count_char('abcabcabd', 'c') ==> 2
 ```
 
 <a name="curry"></a>

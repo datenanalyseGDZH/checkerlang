@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>CKL 3.6.0-js function ref</title>
+<title>CKL 3.6.1-js function ref</title>
 <style>
 h1 { font-family: Arial Black; font-height: 18pt; }
 h2 { font-family: Arial Black; font-height: 14pt; margin-top: 1.5em; margin-bottom: 0; }
@@ -21,7 +21,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <link rel="shortcut icon" type="image/png" href="../img/ckl.png">
 </head>
 <body>
-<h1>CKL 3.6.0-js function ref</h1>
+<h1>CKL 3.6.1-js function ref</h1>
 <h2>Table of contents</h2>
 <ul class='toc'>
 <li><a href='#module_Bitwise'>Module Bitwise</a></li>
@@ -87,6 +87,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <li><a href='#contains'>contains</a></li>
 <li><a href='#cos'>cos</a></li>
 <li><a href='#count'>count</a></li>
+<li><a href='#count_char'>count_char</a></li>
 <li><a href='#curry'>curry</a></li>
 <li><a href='#date'>date</a></li>
 <li><a href='#date_day'>date_day</a></li>
@@ -434,6 +435,7 @@ a:link, a:active, a:hover, a:visited { text-decoration: none; color: #aaa; font-
 <ul class='toc'>
 <li><a href='#chr'>chr</a></li>
 <li><a href='#contains'>contains</a></li>
+<li><a href='#count_char'>count_char</a></li>
 <li><a href='#ends_with'>ends_with</a></li>
 <li><a href='#esc'>esc</a></li>
 <li><a href='#find'>find</a></li>
@@ -1427,6 +1429,30 @@ Core
 <div class='example'>count([1, 2, 2, 2, 3, 4], 2) ==&gt; 3</div>
 <div class='example'>count(&lt;&lt;&lt;1 =&gt; 1, 1 =&gt; 2, 2 =&gt; 2, 3 =&gt; 3&gt;&gt;&gt;, 2) ==&gt; 2</div>
 <div class='example'>count('122234', '2') ==&gt; 3</div>
+</div>
+<h2 id='count_char'>count_char</h2>
+<div class='header'>
+<div class='header_title'>Syntax</div>
+count_char(str, ch)
+</div>
+<div class='text'>
+<div class='text_title'>Description</div>
+Returns the number of occurrences of the character ch in
+the string str.
+
+
+</div>
+<div class='module'>
+<div class='module_title'>Modules</div>
+String
+</div>
+<div class='examples'>
+<div class='examples_title'>Examples</div>
+<div class='example'>count_char('abc', 'a') ==&gt; 1</div>
+<div class='example'>count_char('abc', 'c') ==&gt; 1</div>
+<div class='example'>count_char('abc', 'd') ==&gt; 0</div>
+<div class='example'>count_char('aaa', 'a') ==&gt; 3</div>
+<div class='example'>count_char('abcabcabd', 'c') ==&gt; 2</div>
 </div>
 <h2 id='curry'>curry</h2>
 <div class='header'>
