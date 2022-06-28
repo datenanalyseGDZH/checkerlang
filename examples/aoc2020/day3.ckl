@@ -36,9 +36,7 @@ def process(data, dx, dy) do
     return trees;
 end;
 
-def result = process(data, 3, 1);
-if result == 244 then println(result + " OK")
-else println(result + " NOK");
+process(data, 3, 1) !> println();
 
 def slopes = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]];
 
@@ -46,6 +44,4 @@ def process_slope(slope) do
     process(data, slope[0], slope[1]);
 end;
 
-def result = slopes !> map_list(process_slope) !> prod();
-if result == 9406609920 then println(result + " OK")
-else println(result + " NOK");
+slopes !> map_list(process_slope) !> prod() !> println();

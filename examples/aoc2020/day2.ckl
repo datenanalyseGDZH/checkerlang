@@ -28,9 +28,7 @@ def process(data, parser) do
     sum();
 end;
 
-def result = process(data, check_line1);
-if result == 538 then println(result + " OK")
-else println(result + " NOK");
+process(data, check_line1) !> println();
 
 
 def class Verify2 do
@@ -50,7 +48,4 @@ def check_line2(line) do
     int(new(Verify2, a, b, char)->matches(psw));
 end;
 
-def result = process(data, check_line2);
-if result == 489 then println(result + " OK")
-else println(result + " NOK");
-
+process(data, check_line2) !> println();

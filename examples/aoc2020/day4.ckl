@@ -1,0 +1,54 @@
+# https://adventofcode.com/2020/day/4
+
+require IO import [read_file];
+require List import [map_list];
+require Set import [intersection];
+
+def data = read_file("day4-input.txt") !> 
+    trim() !> 
+    lines() !>
+    map_list(fn(line) if line == "" then "|" else line) !>
+    join(" ") !>
+    split(// \| //) !>
+    map_list(fn(line) split2(line, " ", ":")) !>
+    map_list(fn(entry) <<<e[0] => e[1] for e in entry>>>);
+
+def has_all_keys(entry, keys) do
+    intersection(set(entry), keys) == keys;
+end;
+
+def required_keys = <<'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'>>;
+
+map_list(data, fn(entry) has_all_keys(entry, required_keys)) !>
+    map_list(int) !>
+    sum() !>
+    println();
+
+
+def valid_int(s, minval, maxval) do
+    if not s is numerical exact_len 4 then return FALSE;
+    minval <= int(s) <= maxval;
+end;
+
+def valid_height(s) do
+    if not s matches //^\d+(cm|in)$// then return FALSE;
+    def value = int(s[0 to -2]);
+    if s !> ends_with('cm') then 150 <= value <= 193
+    else 59 <= value <= 76;
+end;
+
+def is_valid(passport) do
+    if not has_all_keys(passport, required_keys) then return FALSE;
+    for [key, value] in entries passport do
+        if key == 'byr' and not valid_int(value, 1920, 2002) then return FALSE;
+        if key == 'iyr' and not valid_int(value, 2010, 2020) then return FALSE;
+        if key == 'eyr' and not valid_int(value, 2020, 2030) then return FALSE;
+        if key == 'hgt' and not valid_height(value) then return FALSE;
+        if key == 'hcl' and not value matches //^#[0-9a-f]{6}$// then return FALSE;
+        if key == 'ecl' and not value in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'] then return FALSE;
+        if key == 'pid' and not value is numerical exact_len 9 then return FALSE;
+    end;
+    return TRUE;
+end;
+
+map_list(data, is_valid) !> map_list(int) !> sum() !> println();
