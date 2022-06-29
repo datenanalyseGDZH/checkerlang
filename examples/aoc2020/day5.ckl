@@ -1,0 +1,36 @@
+# https://adventofcode.com/2020/day/5
+
+require IO import [read_file];
+require List import [map_list, first];
+require Set import [diff];
+
+def parse_boarding_pass(boarding_pass) do
+    def row = int("0b" + join([if c == 'F' then 0 else 1 for c in boarding_pass[0 to 7]], ""));
+    def col = int("0b" + join([if c == 'R' then 1 else 0 for c in boarding_pass[7 to 10]], ""));
+    return [row * 8 + col, row, col];
+end;
+
+read_file("day5-input.txt") !> 
+    trim() !> 
+    lines() !>
+    map_list(parse_boarding_pass) !>
+    map_list(first) !>
+    max() !>
+    println() !>
+    identity();
+
+
+def ids = read_file("day5-input.txt") !> 
+    trim() !> 
+    lines() !>
+    map_list(parse_boarding_pass) !>
+    map_list(first) !>
+    set();
+
+def missing = set(range(128*8)) !> diff(ids);
+
+for n in missing do
+    if (n-1) not in missing and (n+1) not in missing then do
+        println(n);
+    end;
+end;
