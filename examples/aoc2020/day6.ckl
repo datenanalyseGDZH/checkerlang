@@ -1,0 +1,38 @@
+# https://adventofcode.com/2020/day/6
+
+require IO import [read_file];
+require List import [map_list, reduce];
+require Set import [intersection];
+
+def lines = read_file("day6-input.txt") !> trim() !> lines();
+#def lines = ["abc", "", "a", "b", "c", "", "ab", "ac", "", "a", "a", "a", "a", "", "b"];
+
+def blocks(lines) do
+    def result = [];
+    def block = [];
+    for line in lines do
+        if line == "" then do
+            result !> append(block);
+            block = [];
+        end else do
+            block !> append(line);
+        end;
+    end;
+    result !> append(block);
+    return result;
+end;
+
+def question_count_any(group) do
+    length(<<ch for ch in join(group, "")>>);
+end;
+
+blocks(lines) !> map_list(question_count_any) !> sum() !> println();
+
+def question_count_all(group) do
+    group !>
+    map_list(fn(s) set(split(s, ""))) !>
+    reduce(intersection) !>
+    length();
+end;
+
+blocks(lines) !> map_list(question_count_all) !> sum() !> println();
