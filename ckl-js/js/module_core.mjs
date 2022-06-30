@@ -571,7 +571,7 @@ an explanation of available formatting suffixes.
 "
 def sprintf(fmt, args...) do
     for entry in enumerate(args...) do
-        if is_string(entry[1]) then entry[1] = "'" + entry[1] + "'";
+        if is_string(entry[1]) then entry[1] = "'" + entry[1] !> replace("'", "\\\\'") + "'";
         fmt = fmt !> replace('{' + entry[0] + '}', '{x' + entry[1] + '}') !> replace('{' + entry[0] + '#', '{x' + entry[1] + '#');
     end;
     return s(fmt !> replace('{x', '{'));

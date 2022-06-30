@@ -428,6 +428,7 @@ interpreter_test("SliceList3", "range(6)[2 to *]", "[2, 3, 4, 5]");
 interpreter_test("SliceList4", "range(6)[0 to 99]", "[0, 1, 2, 3, 4, 5]");
 interpreter_test("SliceList5", "range(6)[-3 to -1]", "[3, 4]");
 interpreter_test("SliceList6", "range(6)[-99 to -1]", "[0, 1, 2, 3, 4]");
+interpreter_test("Sprintf", "sprintf(\"abc {0#-12} def\", \"test'fall\")", "'abc test\\'fall    def'");
 
 function collectvars_test(description, code, expected) {
     let get_freevars = function(node, environment) {
