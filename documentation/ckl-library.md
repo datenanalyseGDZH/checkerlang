@@ -4656,8 +4656,8 @@ Formats a string format using the provided args. Each
 value can be referred to in the fmt string using the
 {0} syntax, where 0 means the first argument passed.
 
-This uses internally the s function. See there for
-an explanation of available formatting suffixes.
+This uses the same formatting suffixes as the s function.
+See there for an explanation of available formatting suffixes.
 
 
 
