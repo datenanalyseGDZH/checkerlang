@@ -106,6 +106,7 @@ public class BindNative {
             case "sorted": bindNative(env, new FuncSorted(), nativeAlias); break;
             case "split": bindNative(env, new FuncSplit(), nativeAlias); break;
             case "split2": bindNative(env, new FuncSplit2(), nativeAlias); break;
+            case "sprintf": bindNative(env, new FuncSprintf(), nativeAlias); break;
             case "sqrt": bindNative(env, new FuncSqrt(), nativeAlias); break;
             case "str_input": bindNative(env, new FuncStrInput(), nativeAlias); break;
             case "starts_with": bindNative(env, new FuncStartsWith(), nativeAlias); break;
