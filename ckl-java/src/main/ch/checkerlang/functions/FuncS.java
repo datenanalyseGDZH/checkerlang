@@ -31,6 +31,8 @@ import ch.checkerlang.values.ValueString;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FuncS extends FuncBase {
     public FuncS() {
@@ -64,6 +66,7 @@ public class FuncS extends FuncBase {
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
                 ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
                 ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
+                ": s('{1} { {2}') ==> '1 { 2'\r\n" +
                 ": s('{PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -71,26 +74,36 @@ public class FuncS extends FuncBase {
         return Arrays.asList("str", "start");
     }
 
+    private static Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^#{}]+)(#-?[0-9.]*x?)?\\}");
+    
     public Value execute(Args args, Environment environment, SourcePos pos) {
         if (args.isNull("str")) return ValueNull.NULL;
         String str = args.getString("str").getValue();
-        int start = (int) args.getInt("start", 0).getValue();
-        if (start < 0) start = str.length() + start;
-        while (true) {
-            int idx1 = str.indexOf('{', start);
-            if (idx1 == -1) return new ValueString(str);
-            int idx2 = str.indexOf('}', idx1 + 1);
-            if (idx2 == -1) return new ValueString(str);
-            String var = str.substring(idx1 + 1, idx2);
+        int start_ = (int) args.getInt("start", 0).getValue();
+        if (start_ < 0) start_ = str.length() + start_;
+
+        String result = "";
+        if (start_ > 0) {
+            result = str.substring(0, start_);
+            str = str.substring(start_);
+        }
+
+        int lastidx = 0;
+        Matcher matcher = PLACEHOLDER_PATTERN.matcher(str);
+        while (matcher.find()) {
+            int start = matcher.start(0);
+            int end = matcher.end(0);
+            String expr = matcher.group(1);
+            String spec = matcher.group(2);
+
             int width = 0;
             boolean zeroes = false;
             boolean leading = true;
             int base = 10;
             int digits = -1;
-            int idx3 = var.indexOf('#');
-            if (idx3 != -1) {
-                String spec = var.substring(idx3 + 1);
-                var = var.substring(0, idx3);
+
+            if (spec != null) {
+                spec = spec.substring(1); // skip #
                 if (spec.startsWith("-")) {
                     leading = false;
                     spec = spec.substring(1);
@@ -104,21 +117,23 @@ public class FuncS extends FuncBase {
                     base = 16;
                     spec = spec.substring(0, spec.length() - 1);
                 }
-                int idx4 = spec.indexOf('.');
-                if (idx4 == -1) {
+                int idx = spec.indexOf('.');
+                if (idx == -1) {
                     digits = -1;
                     width = Integer.parseInt(spec.isEmpty() ? "0" : spec);
                 } else {
-                    digits = Integer.parseInt(spec.substring(idx4 + 1));
-                    width = idx4 == 0 ? 0 : Integer.parseInt(spec.substring(0, idx4));
+                    digits = Integer.parseInt(spec.substring(idx + 1));
+                    width = idx == 0 ? 0 : Integer.parseInt(spec.substring(0, idx));
                 }
             }
-            String value = var;
+
+            String value = "";
             try {
-                Node node = Parser.parse(var, pos.filename);
-                value = node.evaluate(environment).asString().getValue();
-                if (base != 10) value = String.format("%x", Integer.parseInt(value));
-                else if (digits != -1) value = String.format("%." + digits + "f", Double.parseDouble(value));
+                Node node = Parser.parse(expr, pos.filename);
+                Value val = node.evaluate(environment);
+                if (base != 10) value = String.format("%x", val.asInt().getValue());
+                else if (digits != -1) value = String.format("%." + digits + "f", val.asDecimal().getValue());
+                else value = val.asString().getValue();
                 while (value.length() < width) {
                     if (leading) value = ' ' + value;
                     else if (zeroes) value = '0' + value;
@@ -127,8 +142,13 @@ public class FuncS extends FuncBase {
             } catch (Exception e) {
                 // ignore
             }
-            str = str.substring(0, idx1) + value + str.substring(idx2 + 1);
-            start = idx1 + value.length();
+
+            if (lastidx < start) result += str.substring(lastidx, start);
+            result += value;
+            lastidx = end;
         }
+        if (lastidx < str.length()) result += str.substring(lastidx);
+
+        return new ValueString(result);
     }
 }

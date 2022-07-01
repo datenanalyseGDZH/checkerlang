@@ -3074,6 +3074,7 @@ export class FuncS extends ValueFunc {
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
                 ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
                 ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
+                ": s('{1} { {2}') ==> '1 { 2'\r\n" +
                 ": require Math; s('{Math->PI} is cool') ==> '3.141592653589793 is cool'\r\n";
     }
 
@@ -3084,57 +3085,72 @@ export class FuncS extends ValueFunc {
     execute(args, environment, pos) {
         if (args.isNull("str")) return ValueNull.NULL;
         let str = args.getString("str").value;
-        let start = args.getInt("start", 0).value;
-        if (start < 0) start = str.length + start;
-        while (true) {
-            const idx1 = str.indexOf('{', start);
-            if (idx1 == -1) return new ValueString(str);
-            const idx2 = str.indexOf('}', idx1 + 1);
-            if (idx2 == -1) return new ValueString(str);
-            let variable = str.substring(idx1 + 1, idx2);
+        let start_ = args.getInt("start", 0).value;
+        if (start_ < 0) start_ = str.length + start_;
+
+        let result = "";
+        if (start_ > 0) {
+            result = str.substring(0, start_);
+            start_ = str.substring(start_);
+        }
+
+        let lastidx = 0;
+        const pattern = /\{([^#{}]+)(#-?[0-9.]*x?)?\}/g;
+        for (const match of str.matchAll(pattern)) {
+            const start = match.index;
+            const end = match.index + match[0].length;
+            const expr = match[1];
+            let spec = match[2];
+
             let width = 0;
             let zeroes = false;
             let leading = true;
-            let digits = -1;
             let base = 10;
-            const idx3 = variable.indexOf('#');
-            if (idx3 != -1) {
-                let spec = variable.substring(idx3 + 1);
-                variable = variable.substring(0, idx3);
-                if (spec.startsWith('-')) {
+            let digits = -1;
+
+            if (spec != null) {
+                spec = spec.substring(1); // skip #
+                if (spec.startsWith("-")) {
                     leading = false;
                     spec = spec.substring(1);
                 }
-                if (spec.startsWith('0')) {
+                if (spec.startsWith("0")) {
                     zeroes = true;
                     leading = false;
                     spec = spec.substring(1);
                 }
-                if (spec.endsWith('x')) {
+                if (spec.endsWith("x")) {
                     base = 16;
                     spec = spec.substring(0, spec.length - 1);
                 }
-                const idx4 = spec.indexOf('.');
-                if (idx4 == -1) {
+                let idx = spec.indexOf('.');
+                if (idx == -1) {
                     digits = -1;
-                    width = Number(spec);
+                    width = Number(spec === "" ? "0" : spec);
                 } else {
-                    digits = Number(spec.substring(idx4 + 1));
-                    width = Number(spec.substring(0, idx4));
+                    digits = Number(spec.substring(idx + 1));
+                    width = idx == 0 ? 0 : parseInt(spec.substring(0, idx));
                 }
             }
-            const node = Parser.parseScript(variable, pos.filename);
-            let value = node.evaluate(environment).asString().value;
-            if (base != 10) value = Number(value).toString(base);
-            else if (digits !== -1) value = Number(value).toFixed(digits);
+
+            let value = "";
+            const node = Parser.parseScript(expr, pos.filename);
+            let val = node.evaluate(environment);
+            if (base != 10) value = val.asInt().value.toString(base);
+            else if (digits !== -1) value = val.asDecimal().value.toFixed(digits);
+            else value = val.asString().value;
             while (value.length < width) {
                 if (leading) value = ' ' + value;
                 else if (zeroes) value = '0' + value;
                 else value = value + ' ';
             }
-            str = str.substring(0, idx1) + value + str.substring(idx2 + 1);
-            start = idx1 + value.length;
+
+            if (lastidx < start) result += str.substring(lastidx, start);
+            result += value;
+            lastidx = end;
         }
+        if (lastidx < str.length) result += str.substring(lastidx);
+        return new ValueString(result);
     }
 }
 
@@ -3364,7 +3380,7 @@ export class FuncSprintf extends ValueFunc {
                 }
                 if (spec.endsWith("x")) {
                     base = 16;
-                    spec = spec.substring(0, spec.length() - 1);
+                    spec = spec.substring(0, spec.length - 1);
                 }
                 let idx = spec.indexOf('.');
                 if (idx == -1) {

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.IO;
 
 namespace CheckerLang
@@ -58,6 +59,7 @@ namespace CheckerLang
                    ": s('2x3 = {2*3}') ==> '2x3 = 6'\r\n" +
                    ": def n = 123; s('n = {n#x}') ==> 'n = 7b'\r\n" +
                    ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'\r\n" +
+                   ": s('{1} { {2}') ==> '1 { 2'\r\n" +
                    ": s('{PI} is cool') ==> '3.14159265358979 is cool'\r\n";
         }
         
@@ -70,23 +72,33 @@ namespace CheckerLang
         {
             if (args.IsNull("str")) return ValueNull.NULL;
             var str = args.GetString("str").GetValue();
-            var start = (int) args.GetInt("start", 0).GetValue();
-            if (start < 0) start = str.Length + start;
-            while (true) {
-                var idx1 = str.IndexOf('{', start);
-                if (idx1 == -1) return new ValueString(str);
-                var idx2 = str.IndexOf('}', idx1 + 1);
-                if (idx2 == -1) return new ValueString(str);
-                var variable = str.Substring(idx1 + 1, idx2 - idx1 - 1);
+            var start_ = (int) args.GetInt("start", 0).GetValue();
+            if (start_ < 0) start_ = str.Length + start_;
+
+            var result = "";
+            if (start_ > 0) {
+                result = str.Substring(0, start_);
+                str = str.Substring(start_);
+            }
+
+            var lastidx = 0;
+            var pattern = "\\{([^#{}]+)(#-?[0-9.]*x?)?\\}";
+
+            foreach (Match match in Regex.Matches(str, pattern)) 
+            {
+                var start = match.Groups[0].Index;
+                var end = start + match.Groups[0].Length;
+                var expr = match.Groups[1].Value;
+                var spec = match.Groups[2].Value;
+
                 var width = 0;
                 var zeroes = false;
                 var leading = true;
                 int numbase = 10;
                 var digits = -1;
-                int idx3 = variable.IndexOf('#');
-                if (idx3 != -1) {
-                    var spec = variable.Substring(idx3 + 1);
-                    variable = variable.Substring(0, idx3);
+
+                if (spec != null && spec != "") {
+                    spec = spec.Substring(1); // skip #
                     if (spec.StartsWith("-")) {
                         leading = false;
                         spec = spec.Substring(1);
@@ -100,28 +112,38 @@ namespace CheckerLang
                         numbase = 16;
                         spec = spec.Substring(0, spec.Length - 1);
                     }
-                    int idx4 = spec.IndexOf('.');
-                    if (idx4 == -1) {
+                    int idx = spec.IndexOf('.');
+                    if (idx == -1) {
                         digits = -1;
                         width = int.Parse(spec == "" ? "0" : spec);
                     } else {
-                        digits = int.Parse(spec.Substring(idx4 + 1));
-                        width = idx4 == 0 ? 0 : int.Parse(spec.Substring(0, idx4));
+                        digits = int.Parse(spec.Substring(idx + 1));
+                        width = idx == 0 ? 0 : int.Parse(spec.Substring(0, idx));
                     }
                 }
-                var node = Parser.Parse(variable, pos.filename);
-                var value = node.Evaluate(environment).AsString().GetValue();
-                if (numbase == 16) value = string.Format("{0:x}", int.Parse(value));
-                else if (digits != -1) value = string.Format("{0:f" + digits + "}", decimal.Parse(value));
-                while (value.Length < width) {
-                    if (leading) value = ' ' + value;
-                    else if (zeroes) value = '0' + value;
-                    else value = value + ' ';
+
+                string value = "";
+                try {
+                    var node = Parser.Parse(expr, pos.filename);
+                    var val = node.Evaluate(environment);
+                    if (numbase != 10) value = string.Format("{0:x}", val.AsInt().GetValue());
+                    else if (digits != -1) value = string.Format("{0:f" + digits + "}", val.AsDecimal().GetValue());
+                    else value = val.AsString().GetValue();
+                    while (value.Length < width) {
+                        if (leading) value = ' ' + value;
+                        else if (zeroes) value = '0' + value;
+                        else value = value + ' ';
+                    }
+                } catch (Exception) {
+                    // ignore
                 }
-                str = str.Substring(0, idx1) + value + str.Substring(idx2 + 1);
-                start = idx1 + value.Length;
+
+                if (lastidx < start) result += str.Substring(lastidx, start-lastidx);
+                result += value;
+                lastidx = end;
             }
+            if (lastidx < str.Length) result += str.Substring(lastidx);
+            return new ValueString(result);
         }
     }
-    
 }
