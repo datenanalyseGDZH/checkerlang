@@ -279,6 +279,7 @@ const bind_native = function(environment, native, alias = null) {
         case "sorted": bind_native_fun(environment, new FuncSorted(), alias); break;
         case "split": bind_native_fun(environment, new FuncSplit(), alias); break;
         case "split2": bind_native_fun(environment, new FuncSplit2(), alias); break;
+        case "sprintf": bind_native_fun(environment, new FuncSprintf(), alias); break;
         case "sqrt": bind_native_fun(environment, new FuncSqrt(), alias); break;
         case "str_input": bind_native_fun(environment, new FuncStrInput(), alias); break;
         case "starts_with": bind_native_fun(environment, new FuncStartsWith(), alias); break;
@@ -3306,6 +3307,98 @@ export class FuncSplit2 extends ValueFunc {
         return result;
     }
 }
+
+export class FuncSprintf extends ValueFunc {
+    constructor() {
+        super("sprintf");
+        this.info = "sprintf(fmt, args...)\r\n" +
+                "\r\n" +
+                "Formats a string format using the provided args. Each\r\n" +
+                "value can be referred to in the fmt string using the\r\n" +
+                "{0} syntax, where 0 means the first argument passed.\r\n" +
+                "\r\n" +
+                "This uses the same formatting suffixes as the s function.\r\n" + 
+                "See there for an explanation of available formatting suffixes.\r\n" +
+                "\r\n" +
+                ": sprintf('{0} {1}', 1, 2) ==> '1 2'\r\n" +
+                ": sprintf('{0} {1}', 'a', 'b') ==> 'a b'\r\n" +
+                ": sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'\r\n" +
+                ": sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '\r\n" +
+                ": sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'\r\n" +
+                ": require Math; sprintf('{0#.4}', Math->PI) ==> '3.1416'\r\n";
+    }
+
+    getArgNames() {
+        return ["fmt", "args..."];
+    }
+
+    execute(args, environment, pos) {
+        if (args.isNull("fmt")) return ValueNull.NULL;
+        let fmt = args.getString("fmt").value;
+        let args_ = args.get("args...").asList().value;
+        let result = "";
+        let lastidx = 0;
+        const pattern = /\{([0-9]+)(#[^}]+)?\}/g;
+        for (const match of fmt.matchAll(pattern)) {
+            const start = match.index;
+            const end = match.index + match[0].length;
+            const variable = Number(match[1]);
+            let spec = match[2];
+
+            let width = 0;
+            let zeroes = false;
+            let leading = true;
+            let base = 10;
+            let digits = -1;
+
+            if (spec != null) {
+                spec = spec.substring(1); // skip #
+                if (spec.startsWith("-")) {
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                if (spec.startsWith("0")) {
+                    zeroes = true;
+                    leading = false;
+                    spec = spec.substring(1);
+                }
+                if (spec.endsWith("x")) {
+                    base = 16;
+                    spec = spec.substring(0, spec.length() - 1);
+                }
+                let idx = spec.indexOf('.');
+                if (idx == -1) {
+                    digits = -1;
+                    width = Number(spec === "" ? "0" : spec);
+                } else {
+                    digits = Number(spec.substring(idx + 1));
+                    width = idx == 0 ? 0 : parseInt(spec.substring(0, idx));
+                }
+            }
+
+            let value;
+            if (base != 10) {
+                value = args_[variable].asInteger().value.toString(base);
+            } else if (digits != -1) {
+                value = args_[variable].asDecimal().value.toFixed(digits);
+            } else {
+                value = args_[variable].asString().value;
+            }
+            while (value.length < width) {
+                if (leading) value = ' ' + value;
+                else if (zeroes) value = '0' + value;
+                else value = value + ' ';
+            }
+
+            if (lastidx < start) result += fmt.substring(lastidx, start);
+            result += value;
+            lastidx = end;
+        }
+        if (lastidx < fmt.length) result += fmt.substring(lastidx);
+        return new ValueString(result);
+    }
+}
+
 
 export class FuncSqrt extends ValueFunc {
     constructor() {
