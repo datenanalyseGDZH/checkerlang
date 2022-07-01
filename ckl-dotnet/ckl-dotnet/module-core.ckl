@@ -60,6 +60,7 @@ bind_native("remove");
 bind_native("round");
 bind_native("set");
 bind_native("sorted");
+bind_native("sprintf");
 bind_native("string");
 bind_native("sub");
 bind_native("sublist");
@@ -548,32 +549,6 @@ def enumerate(obj) do
     elif is_map(obj) then [[key, obj[key]] for key in set(obj)]
     elif is_object(obj) then [[member, obj[member]] for member in obj]
     else error("can only enumerate list, set and map objects")
-end;
-
-
-"
-sprintf(fmt, args...)
-
-Formats a string format using the provided args. Each
-value can be referred to in the fmt string using the
-{0} syntax, where 0 means the first argument passed.
-
-This uses internally the s function. See there for
-an explanation of available formatting suffixes.
-
-: sprintf('{0} {1}', 1, 2) ==> '1 2'
-: sprintf('{0} {1}', 'a', 'b') ==> 'a b'
-: sprintf('{0#5} {1#5}', 1, 2) ==> '    1     2'
-: sprintf('{0#-5} {1#-5}', 1, 2) ==> '1     2    '
-: sprintf('{0#05} {1#05}', 1, 2) ==> '00001 00002'
-: require Math; sprintf('{0#.4}', Math->PI) ==> '3.1416'
-"
-def sprintf(fmt, args...) do
-    for entry in enumerate(args...) do
-        if is_string(entry[1]) then entry[1] = "'" + entry[1] !> replace("'", "\\\\'") + "'";
-        fmt = fmt !> replace('{' + entry[0] + '}', '{x' + entry[1] + '}') !> replace('{' + entry[0] + '#', '{x' + entry[1] + '#');
-    end;
-    return s(fmt !> replace('{x', '{'));
 end;
 
 

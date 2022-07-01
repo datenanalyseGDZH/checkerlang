@@ -109,6 +109,7 @@ namespace CheckerLang
                 case "sorted": BindNativeFunc(env, new FuncSorted(), nativeAlias); break;
                 case "split": BindNativeFunc(env, new FuncSplit(), nativeAlias); break;
                 case "split2": BindNativeFunc(env, new FuncSplit2(), nativeAlias); break;
+                case "sprintf": BindNativeFunc(env, new FuncSprintf(), nativeAlias); break;
                 case "sqrt": BindNativeFunc(env, new FuncSqrt(), nativeAlias); break;
                 case "str_input": BindNativeFunc(env, new FuncStrInput(), nativeAlias); break;
                 case "starts_with": BindNativeFunc(env, new FuncStartsWith(), nativeAlias); break;
