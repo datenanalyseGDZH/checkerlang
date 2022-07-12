@@ -50,8 +50,7 @@ namespace CheckerLang
             "error",
             "require",
             "as",
-            "also",
-            "class"
+            "also"
         };
 
         public static bool IsKeyword(string s)

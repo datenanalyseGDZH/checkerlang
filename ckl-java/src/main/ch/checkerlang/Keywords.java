@@ -52,7 +52,6 @@ public class Keywords {
         keywords.add("require");
         keywords.add("as");
         keywords.add("also");
-        keywords.add("class");
     }
 
     public static boolean isKeyword(String s) {

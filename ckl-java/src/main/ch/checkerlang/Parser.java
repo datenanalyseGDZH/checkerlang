@@ -187,7 +187,7 @@ public class Parser {
             }
             // handle single var def
             token = lexer.next();            
-            if (token.type == TokenType.Keyword && token.value.equals("class") && lexer.peek().type == TokenType.Identifier) {
+            if (token.type == TokenType.Identifier && token.value.equals("class") && lexer.peek().type == TokenType.Identifier) {
                 token = lexer.next();
                 if (token.type == TokenType.Keyword)
                     throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);

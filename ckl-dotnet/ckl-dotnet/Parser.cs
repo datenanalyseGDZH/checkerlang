@@ -217,7 +217,7 @@ namespace CheckerLang
                 }
                 // handle single var def
                 token = lexer.Next();
-                if (token.type == TokenType.Keyword && token.value == "class" && lexer.Peek().type == TokenType.Identifier) {
+                if (token.type == TokenType.Identifier && token.value == "class" && lexer.Peek().type == TokenType.Identifier) {
                     token = lexer.Next();
                     if (token.type == TokenType.Keyword) throw new SyntaxError("Cannot redefine keyword '" + token + "'", token.pos);
                     if (token.type != TokenType.Identifier) throw new SyntaxError("Expected identifier but got '" + token + "'", token.pos);
