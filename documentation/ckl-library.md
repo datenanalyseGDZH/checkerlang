@@ -1,4 +1,4 @@
-# CKL 3.6.2-js library
+# CKL 3.6.3-js library
 ## Table of contents
 * [Module Bitwise](#module_Bitwise)
 * [Module Date](#module_Date)
@@ -4471,6 +4471,7 @@ def n = 1.2345678; s('n = {n#06.2}') ==> 'n = 001.23'
 s('2x3 = {2*3}') ==> '2x3 = 6'
 def n = 123; s('n = {n#x}') ==> 'n = 7b'
 def n = 255; s('n = {n#04x}') ==> 'n = 00ff'
+s('{1} { {2}') ==> '1 { 2'
 require Math; s('{Math->PI} is cool') ==> '3.141592653589793 is cool'
 ```
 
