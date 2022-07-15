@@ -396,16 +396,16 @@ export class NodeClass {
 
     toString() {
         let result = "(class " + this.identifier + " ";
-        for (let expression of this.expressions) {
-            result = result.concat(expression.toString(), " ");
+        for (let member of this.members) {
+            result = result.concat(members.toString(), " ");
         }
         if (this.expressions.length > 0) result = result.substring(0, result.length - 2);
         return result.concat(")");
     }
 
     collectVars(freeVars, boundVars, additionalBoundVars) {
-        for (let expression of this.members) {
-            expression.collectVars(freeVars, boundVars, additionalBoundVars);
+        for (let member of this.members) {
+            member.collectVars(freeVars, boundVars, additionalBoundVars);
         }
         if (!boundVars.includes(this.identifier)) {
             boundVars.push(this.identifier);
